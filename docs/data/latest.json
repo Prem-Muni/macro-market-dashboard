@@ -1,6 +1,6 @@
 {
   "session": "2026-11-20",
-  "generated_at": "2026-11-22T05:42:19.032191+00:00",
+  "generated_at": "2026-11-22T05:55:01.827040+00:00",
   "model_version": "15-point-v2-original-trend-rsi",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -4176,44 +4176,174 @@
           "incomplete_days": 0,
           "zero_to_four": {
             "days": 87,
+            "forward1_observations": 87,
+            "forward1_mean_pct": -0.079,
             "forward5_observations": 87,
             "forward5_mean_pct": 0.286,
-            "forward5_positive_pct": 62.1
+            "forward5_positive_pct": 62.1,
+            "forward5_worst_close_mean_pct": -0.853,
+            "forward5_below_minus2_pct": 12.6
           },
           "exactly_five": {
             "days": 45,
+            "forward1_observations": 45,
+            "forward1_mean_pct": -0.022,
             "forward5_observations": 45,
             "forward5_mean_pct": -0.153,
-            "forward5_positive_pct": 37.8
+            "forward5_positive_pct": 37.8,
+            "forward5_worst_close_mean_pct": -1.098,
+            "forward5_below_minus2_pct": 17.8
           },
           "zero_to_five": {
             "days": 132,
+            "forward1_observations": 132,
+            "forward1_mean_pct": -0.059,
             "forward5_observations": 132,
             "forward5_mean_pct": 0.136,
-            "forward5_positive_pct": 53.8
-          }
+            "forward5_positive_pct": 53.8,
+            "forward5_worst_close_mean_pct": -0.936,
+            "forward5_below_minus2_pct": 14.4
+          },
+          "score_five_trend": {
+            "improving": {
+              "days": 13,
+              "forward1_observations": 13,
+              "forward1_mean_pct": -0.157,
+              "forward5_observations": 13,
+              "forward5_mean_pct": 0.039,
+              "forward5_positive_pct": 38.5,
+              "forward5_worst_close_mean_pct": -1.034,
+              "forward5_below_minus2_pct": 7.7
+            },
+            "stable": {
+              "days": 21,
+              "forward1_observations": 21,
+              "forward1_mean_pct": 0.021,
+              "forward5_observations": 21,
+              "forward5_mean_pct": -0.051,
+              "forward5_positive_pct": 42.9,
+              "forward5_worst_close_mean_pct": -1.055,
+              "forward5_below_minus2_pct": 19.0
+            },
+            "deteriorating": {
+              "days": 11,
+              "forward1_observations": 11,
+              "forward1_mean_pct": 0.055,
+              "forward5_observations": 11,
+              "forward5_mean_pct": -0.574,
+              "forward5_positive_pct": 27.3,
+              "forward5_worst_close_mean_pct": -1.256,
+              "forward5_below_minus2_pct": 27.3
+            },
+            "unavailable": {
+              "days": 0,
+              "forward1_observations": 0,
+              "forward1_mean_pct": null,
+              "forward5_observations": 0,
+              "forward5_mean_pct": null,
+              "forward5_positive_pct": null,
+              "forward5_worst_close_mean_pct": null,
+              "forward5_below_minus2_pct": null
+            }
+          },
+          "zero_to_four_plus_five_improving": {
+            "days": 100,
+            "forward1_observations": 100,
+            "forward1_mean_pct": -0.089,
+            "forward5_observations": 100,
+            "forward5_mean_pct": 0.254,
+            "forward5_positive_pct": 59.0,
+            "forward5_worst_close_mean_pct": -0.876,
+            "forward5_below_minus2_pct": 12.0
+          },
+          "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
           "complete_days": 252,
           "incomplete_days": 0,
           "zero_to_four": {
             "days": 69,
+            "forward1_observations": 69,
+            "forward1_mean_pct": 0.038,
             "forward5_observations": 69,
             "forward5_mean_pct": 0.369,
-            "forward5_positive_pct": 56.5
+            "forward5_positive_pct": 56.5,
+            "forward5_worst_close_mean_pct": -1.285,
+            "forward5_below_minus2_pct": 24.6
           },
           "exactly_five": {
             "days": 46,
+            "forward1_observations": 46,
+            "forward1_mean_pct": -0.22,
             "forward5_observations": 46,
             "forward5_mean_pct": 0.148,
-            "forward5_positive_pct": 50.0
+            "forward5_positive_pct": 50.0,
+            "forward5_worst_close_mean_pct": -1.589,
+            "forward5_below_minus2_pct": 30.4
           },
           "zero_to_five": {
             "days": 115,
+            "forward1_observations": 115,
+            "forward1_mean_pct": -0.065,
             "forward5_observations": 115,
             "forward5_mean_pct": 0.281,
-            "forward5_positive_pct": 53.9
-          }
+            "forward5_positive_pct": 53.9,
+            "forward5_worst_close_mean_pct": -1.407,
+            "forward5_below_minus2_pct": 27.0
+          },
+          "score_five_trend": {
+            "improving": {
+              "days": 9,
+              "forward1_observations": 9,
+              "forward1_mean_pct": 0.144,
+              "forward5_observations": 9,
+              "forward5_mean_pct": 1.476,
+              "forward5_positive_pct": 55.6,
+              "forward5_worst_close_mean_pct": -1.003,
+              "forward5_below_minus2_pct": 22.2
+            },
+            "stable": {
+              "days": 33,
+              "forward1_observations": 33,
+              "forward1_mean_pct": -0.283,
+              "forward5_observations": 33,
+              "forward5_mean_pct": -0.378,
+              "forward5_positive_pct": 45.5,
+              "forward5_worst_close_mean_pct": -1.791,
+              "forward5_below_minus2_pct": 36.4
+            },
+            "deteriorating": {
+              "days": 4,
+              "forward1_observations": 4,
+              "forward1_mean_pct": -0.524,
+              "forward5_observations": 4,
+              "forward5_mean_pct": 1.499,
+              "forward5_positive_pct": 75.0,
+              "forward5_worst_close_mean_pct": -1.246,
+              "forward5_below_minus2_pct": 0.0
+            },
+            "unavailable": {
+              "days": 0,
+              "forward1_observations": 0,
+              "forward1_mean_pct": null,
+              "forward5_observations": 0,
+              "forward5_mean_pct": null,
+              "forward5_positive_pct": null,
+              "forward5_worst_close_mean_pct": null,
+              "forward5_below_minus2_pct": null
+            }
+          },
+          "zero_to_four_plus_five_improving": {
+            "days": 78,
+            "forward1_observations": 78,
+            "forward1_mean_pct": 0.051,
+            "forward5_observations": 78,
+            "forward5_mean_pct": 0.497,
+            "forward5_positive_pct": 56.4,
+            "forward5_worst_close_mean_pct": -1.252,
+            "forward5_below_minus2_pct": 24.4
+          },
+          "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         }
       }
     },
@@ -4227,44 +4357,174 @@
           "incomplete_days": 0,
           "zero_to_four": {
             "days": 159,
+            "forward1_observations": 159,
+            "forward1_mean_pct": -0.011,
             "forward5_observations": 159,
             "forward5_mean_pct": 0.387,
-            "forward5_positive_pct": 65.4
+            "forward5_positive_pct": 65.4,
+            "forward5_worst_close_mean_pct": -0.743,
+            "forward5_below_minus2_pct": 10.7
           },
           "exactly_five": {
             "days": 73,
+            "forward1_observations": 73,
+            "forward1_mean_pct": 0.038,
             "forward5_observations": 73,
             "forward5_mean_pct": 0.118,
-            "forward5_positive_pct": 50.7
+            "forward5_positive_pct": 50.7,
+            "forward5_worst_close_mean_pct": -0.937,
+            "forward5_below_minus2_pct": 16.4
           },
           "zero_to_five": {
             "days": 232,
+            "forward1_observations": 232,
+            "forward1_mean_pct": 0.005,
             "forward5_observations": 232,
             "forward5_mean_pct": 0.302,
-            "forward5_positive_pct": 60.8
-          }
+            "forward5_positive_pct": 60.8,
+            "forward5_worst_close_mean_pct": -0.804,
+            "forward5_below_minus2_pct": 12.5
+          },
+          "score_five_trend": {
+            "improving": {
+              "days": 19,
+              "forward1_observations": 19,
+              "forward1_mean_pct": -0.022,
+              "forward5_observations": 19,
+              "forward5_mean_pct": 0.239,
+              "forward5_positive_pct": 52.6,
+              "forward5_worst_close_mean_pct": -0.891,
+              "forward5_below_minus2_pct": 10.5
+            },
+            "stable": {
+              "days": 36,
+              "forward1_observations": 36,
+              "forward1_mean_pct": 0.101,
+              "forward5_observations": 36,
+              "forward5_mean_pct": 0.308,
+              "forward5_positive_pct": 55.6,
+              "forward5_worst_close_mean_pct": -0.836,
+              "forward5_below_minus2_pct": 13.9
+            },
+            "deteriorating": {
+              "days": 18,
+              "forward1_observations": 18,
+              "forward1_mean_pct": -0.023,
+              "forward5_observations": 18,
+              "forward5_mean_pct": -0.39,
+              "forward5_positive_pct": 38.9,
+              "forward5_worst_close_mean_pct": -1.188,
+              "forward5_below_minus2_pct": 27.8
+            },
+            "unavailable": {
+              "days": 0,
+              "forward1_observations": 0,
+              "forward1_mean_pct": null,
+              "forward5_observations": 0,
+              "forward5_mean_pct": null,
+              "forward5_positive_pct": null,
+              "forward5_worst_close_mean_pct": null,
+              "forward5_below_minus2_pct": null
+            }
+          },
+          "zero_to_four_plus_five_improving": {
+            "days": 178,
+            "forward1_observations": 178,
+            "forward1_mean_pct": -0.012,
+            "forward5_observations": 178,
+            "forward5_mean_pct": 0.371,
+            "forward5_positive_pct": 64.0,
+            "forward5_worst_close_mean_pct": -0.759,
+            "forward5_below_minus2_pct": 10.7
+          },
+          "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
           "complete_days": 422,
           "incomplete_days": 0,
           "zero_to_four": {
             "days": 138,
+            "forward1_observations": 138,
+            "forward1_mean_pct": 0.083,
             "forward5_observations": 138,
             "forward5_mean_pct": 0.47,
-            "forward5_positive_pct": 60.9
+            "forward5_positive_pct": 60.9,
+            "forward5_worst_close_mean_pct": -0.999,
+            "forward5_below_minus2_pct": 19.6
           },
           "exactly_five": {
             "days": 72,
+            "forward1_observations": 72,
+            "forward1_mean_pct": -0.126,
             "forward5_observations": 72,
             "forward5_mean_pct": 0.389,
-            "forward5_positive_pct": 55.6
+            "forward5_positive_pct": 55.6,
+            "forward5_worst_close_mean_pct": -1.363,
+            "forward5_below_minus2_pct": 26.4
           },
           "zero_to_five": {
             "days": 210,
+            "forward1_observations": 210,
+            "forward1_mean_pct": 0.011,
             "forward5_observations": 210,
             "forward5_mean_pct": 0.442,
-            "forward5_positive_pct": 59.0
-          }
+            "forward5_positive_pct": 59.0,
+            "forward5_worst_close_mean_pct": -1.124,
+            "forward5_below_minus2_pct": 21.9
+          },
+          "score_five_trend": {
+            "improving": {
+              "days": 16,
+              "forward1_observations": 16,
+              "forward1_mean_pct": 0.084,
+              "forward5_observations": 16,
+              "forward5_mean_pct": 0.957,
+              "forward5_positive_pct": 56.2,
+              "forward5_worst_close_mean_pct": -1.166,
+              "forward5_below_minus2_pct": 25.0
+            },
+            "stable": {
+              "days": 45,
+              "forward1_observations": 45,
+              "forward1_mean_pct": -0.184,
+              "forward5_observations": 45,
+              "forward5_mean_pct": -0.034,
+              "forward5_positive_pct": 53.3,
+              "forward5_worst_close_mean_pct": -1.474,
+              "forward5_below_minus2_pct": 28.9
+            },
+            "deteriorating": {
+              "days": 11,
+              "forward1_observations": 11,
+              "forward1_mean_pct": -0.195,
+              "forward5_observations": 11,
+              "forward5_mean_pct": 1.294,
+              "forward5_positive_pct": 63.6,
+              "forward5_worst_close_mean_pct": -1.192,
+              "forward5_below_minus2_pct": 18.2
+            },
+            "unavailable": {
+              "days": 0,
+              "forward1_observations": 0,
+              "forward1_mean_pct": null,
+              "forward5_observations": 0,
+              "forward5_mean_pct": null,
+              "forward5_positive_pct": null,
+              "forward5_worst_close_mean_pct": null,
+              "forward5_below_minus2_pct": null
+            }
+          },
+          "zero_to_four_plus_five_improving": {
+            "days": 154,
+            "forward1_observations": 154,
+            "forward1_mean_pct": 0.083,
+            "forward5_observations": 154,
+            "forward5_mean_pct": 0.521,
+            "forward5_positive_pct": 60.4,
+            "forward5_worst_close_mean_pct": -1.016,
+            "forward5_below_minus2_pct": 20.1
+          },
+          "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         }
       }
     }
