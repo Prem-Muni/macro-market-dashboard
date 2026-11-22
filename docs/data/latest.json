@@ -1,32 +1,33 @@
 {
   "session": "2026-11-20",
-  "generated_at": "2026-11-22T03:14:17.614050+00:00",
+  "generated_at": "2026-11-22T04:23:12.679703+00:00",
+  "model_version": "14-point-v3-clean-axis-fix",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
     "sp500": {
       "score": {
         "bearish": 10,
-        "possible_max": 11,
-        "total": 15,
+        "possible_max": 10,
+        "total": 14,
         "available": 14,
-        "missing": 1,
+        "missing": 0,
         "regime": "RISK-OFF",
-        "complete": false
+        "complete": true
       },
       "momentum": {
         "d1": -1,
         "d5": 4,
         "state": "DETERIORATING",
         "d1_range": [
-          -2,
-          0
+          -1,
+          -1
         ],
         "d5_range": [
-          3,
-          5
+          4,
+          4
         ],
-        "partial": true
+        "partial": false
       },
       "confirmation": {
         "confirmed": 0,
@@ -44,26 +45,26 @@
     "nasdaq100": {
       "score": {
         "bearish": 10,
-        "possible_max": 11,
-        "total": 15,
+        "possible_max": 10,
+        "total": 14,
         "available": 14,
-        "missing": 1,
+        "missing": 0,
         "regime": "RISK-OFF",
-        "complete": false
+        "complete": true
       },
       "momentum": {
         "d1": 1,
         "d5": 1,
-        "state": "UNCERTAIN",
+        "state": "STABLE",
         "d1_range": [
-          0,
-          2
+          1,
+          1
         ],
         "d5_range": [
-          0,
-          2
+          1,
+          1
         ],
-        "partial": true
+        "partial": false
       },
       "confirmation": {
         "confirmed": 0,
@@ -135,20 +136,6 @@
       "value": 1.16,
       "note": "VIX / VIX3M implied-volatility ratio",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
-    },
-    "spx_pc": {
-      "state": "na",
-      "label": "N/A",
-      "value": null,
-      "note": "Thinkorswim $PCSP requires an independently licensed/authorized data feed",
-      "source": ""
-    },
-    "ndx_pc": {
-      "state": "na",
-      "label": "N/A",
-      "value": null,
-      "note": "Thinkorswim $PCND requires an independently licensed/authorized data feed",
-      "source": ""
     },
     "sp_def": {
       "state": "bear",
@@ -913,7 +900,6 @@
     ],
     "sp500": [
       "vix",
-      "spx_pc",
       "sp_def",
       "sp_xle",
       "sp_smh",
@@ -926,7 +912,6 @@
     ],
     "nasdaq100": [
       "vxn",
-      "ndx_pc",
       "nd_def",
       "nd_xle",
       "nd_smh",
@@ -946,7 +931,6 @@
     "credit": "Credit HYG/IEF",
     "copper": "Copper",
     "vix_curve": "VIX Curve",
-    "spx_pc": "SPX Put/Call",
     "sp_def": "Defensives/SPY",
     "sp_xle": "XLE/SPY",
     "sp_smh": "SMH/SPY",
@@ -956,7 +940,6 @@
     "sp_breadth1d": "S&P Breadth 1D",
     "sp_breadth5d": "S&P Breadth 5D",
     "sp_breadth200": "S&P Breadth 200D",
-    "ndx_pc": "NDX Put/Call",
     "nd_def": "Defensives/QQQ",
     "nd_xle": "XLE/QQQ",
     "nd_smh": "SMH/QQQ",
@@ -967,9 +950,10 @@
     "nd_breadth5d": "Nasdaq Breadth 5D"
   },
   "explanation": {
-    "missing": "Index-specific put/call feeds require authorized public-display rights or a separately licensed source. Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
+    "missing": "Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
     "partial": "Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.",
-    "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly."
+    "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly.",
+    "model": "14 scored indicators per market."
   },
   "sources": {
     "SPY": {
