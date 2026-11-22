@@ -1,6 +1,6 @@
 {
   "session": "2026-11-20",
-  "generated_at": "2026-11-22T04:23:12.679703+00:00",
+  "generated_at": "2026-11-22T04:36:12.943780+00:00",
   "model_version": "14-point-v3-clean-axis-fix",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
