@@ -1,6 +1,6 @@
 {
   "session": "2026-11-20",
-  "generated_at": "2026-11-22T06:08:29.909804+00:00",
+  "generated_at": "2026-11-22T06:13:32.987863+00:00",
   "model_version": "15-point-v2-original-trend-rsi",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
