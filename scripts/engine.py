@@ -7,6 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import math
+from statistics import median, stdev
 import pandas as pd
 
 S = {"bull":"BULLISH", "bear":"BEARISH", "warn":"CAUTION", "na":"N/A"}
@@ -299,83 +300,155 @@ def swing_from_bounds(score: dict, prev_score: dict | None, confirmation: dict, 
 
 
 def historical_backtest(records: list[dict], frame: pd.DataFrame, end_date: pd.Timestamp, months: int = 20) -> dict:
-    """Descriptive post-signal return study, no look-ahead in indicator state.
+    """Research-only forward close-to-close returns, no look-ahead score inputs.
 
-    For 'exactly 5' sessions, classify the 5-session SCORE change (not ETF
-    price momentum): improving <=-2, stable -1..+1, deteriorating >=+2.
-    Both score endpoints MUST have complete coverage. A full t+5 close is
-    required to record a forward return; incomplete futures are never imputed.
-    Historic constituent universe and overlapping observations are caveats.
+    All qualifying sessions have complete 15/15 signals. A valid full five-
+    session forward QQQ/SPY closing-price window is required to count an
+    outcome. Overlapping windows are retained in primary descriptive statistics
+    but a chronological non-overlapping sensitivity sample is also reported.
+    Historical constituent breadth is NOT point-in-time and may bias outcomes.
     """
     locs = {pd.Timestamp(d): i for i, d in enumerate(frame.index)}
     rec_by_date = {pd.Timestamp(r['date']): r for r in records}
     ordered_dates = list(frame.index)
 
+    def quantile(values, probability):
+        if not values:
+            return None
+        values = sorted(values)
+        position = (len(values) - 1) * probability
+        low = int(position)
+        high = min(low + 1, len(values) - 1)
+        return values[low] + (values[high] - values[low]) * (position - low)
+
     def stat(items, symbol):
-        r5, r1, adverse = [], [], []
-        for rec in items:
+        r5, r1, adverse, paired = [], [], [], []
+        for rec in sorted(items, key=lambda r: r['date']):
             loc = locs.get(pd.Timestamp(rec['date']))
-            if loc is None: continue
+            if loc is None:
+                continue
             initial = safe(frame[symbol].iloc[loc])
-            if initial is None or initial <= 0: continue
-            if loc+1 < len(frame):
-                p1 = safe(frame[symbol].iloc[loc+1])
-                if p1 is not None: r1.append((p1/initial-1)*100)
-            if loc+5 >= len(frame): continue
-            next_closes = [safe(x) for x in frame[symbol].iloc[loc+1:loc+6]]
-            if any(x is None or x <= 0 for x in next_closes): continue
-            r5.append((next_closes[-1]/initial-1)*100)
-            # Worst of the subsequent five daily closes relative to signal close.
-            # This is a close-only adverse excursion, not an intraday drawdown.
-            adverse.append(min(0.0, min((x/initial-1)*100 for x in next_closes)))
+            if initial is None or initial <= 0:
+                continue
+            if loc + 1 < len(frame):
+                p1 = safe(frame[symbol].iloc[loc + 1])
+                if p1 is not None and p1 > 0:
+                    r1.append((p1 / initial - 1) * 100)
+            if loc + 5 >= len(frame):
+                continue
+            next_closes = [safe(x) for x in frame[symbol].iloc[loc + 1:loc + 6]]
+            if any(x is None or x <= 0 for x in next_closes):
+                continue
+            forward = (next_closes[-1] / initial - 1) * 100
+            worst_close = min(0.0, min((x / initial - 1) * 100 for x in next_closes))
+            r5.append(forward)
+            adverse.append(worst_close)
+            paired.append((loc, forward))
+        # Every selected five-session return spans [close(t), close(t+5)].
+        # Requiring the next signal at least five sessions later avoids
+        # overlapping return intervals. This is a sensitivity check, not a
+        # real trading strategy, and its sample depends on date ordering.
+        nonoverlap = []
+        last_loc = -10**8
+        for loc, ret in paired:
+            if loc >= last_loc + 5:
+                nonoverlap.append(ret)
+                last_loc = loc
         n = len(r5)
         return {
             'days': len(items),
-            'forward1_observations':len(r1),
-            'forward1_mean_pct':round(sum(r1)/len(r1),3) if r1 else None,
-            'forward5_observations':n,
-            'forward5_mean_pct':round(sum(r5)/n,3) if n else None,
-            'forward5_positive_pct':round(100*sum(x>0 for x in r5)/n,1) if n else None,
-            'forward5_worst_close_mean_pct':round(sum(adverse)/n,3) if n else None,
-            'forward5_below_minus2_pct':round(100*sum(x<=-2 for x in adverse)/n,1) if n else None,
+            'forward1_observations': len(r1),
+            'forward1_mean_pct': round(sum(r1) / len(r1), 3) if r1 else None,
+            'forward5_observations': n,
+            'forward5_mean_pct': round(sum(r5) / n, 3) if n else None,
+            'forward5_median_pct': round(median(r5), 3) if n else None,
+            'forward5_stddev_pct': round(stdev(r5), 3) if n >= 2 else None,
+            'forward5_p10_pct': round(quantile(r5, .10), 3) if n else None,
+            'forward5_worst_pct': round(min(r5), 3) if n else None,
+            'forward5_positive_pct': round(100 * sum(x > 0 for x in r5) / n, 1) if n else None,
+            'forward5_worst_close_mean_pct': round(sum(adverse) / n, 3) if n else None,
+            'forward5_worst_close_pct': round(min(adverse), 3) if n else None,
+            'forward5_worst_close_median_pct': round(median(adverse), 3) if n else None,
+            'forward5_below_minus2_pct': round(100 * sum(x <= -2 for x in adverse) / n, 1) if n else None,
+            'nonoverlap_observations': len(nonoverlap),
+            'nonoverlap_mean_pct': round(sum(nonoverlap) / len(nonoverlap), 3) if nonoverlap else None,
+            'nonoverlap_median_pct': round(median(nonoverlap), 3) if nonoverlap else None,
+            'nonoverlap_positive_pct': round(100 * sum(x > 0 for x in nonoverlap) / len(nonoverlap), 1) if nonoverlap else None,
         }
 
     def classify_score5_trend(rec, market):
         loc = locs.get(pd.Timestamp(rec['date']))
-        if loc is None or loc < 5: return 'unavailable'
-        earlier = rec_by_date.get(pd.Timestamp(ordered_dates[loc-5]))
-        if not earlier or not earlier[market]['complete']: return 'unavailable'
+        if loc is None or loc < 5:
+            return 'unavailable'
+        earlier = rec_by_date.get(pd.Timestamp(ordered_dates[loc - 5]))
+        if not earlier or not earlier[market]['complete']:
+            return 'unavailable'
         delta = rec[market]['bearish'] - earlier[market]['bearish']
         return 'improving' if delta <= -2 else 'deteriorating' if delta >= 2 else 'stable'
 
-    def one_window(begin: pd.Timestamp) -> dict:
-        sub = [r for r in records if pd.Timestamp(r['date']) >= begin and pd.Timestamp(r['date']) <= end_date]
+    def qqq_groups(items):
+        eligible = [r for r in items if r['nd']['complete']]
+        groups = {'zero_to_four': [], 'exactly_five': [], 'five_improving': [],
+                  'five_stable': [], 'five_deteriorating': [], 'selective': []}
+        for rec in eligible:
+            score = rec['nd']['bearish']
+            if score <= 4:
+                groups['zero_to_four'].append(rec)
+                groups['selective'].append(rec)
+            elif score == 5:
+                groups['exactly_five'].append(rec)
+                trend = classify_score5_trend(rec, 'nd')
+                if trend != 'unavailable':
+                    groups['five_' + trend].append(rec)
+                if trend == 'improving':
+                    groups['selective'].append(rec)
+        return {k: stat(v, 'QQQ') for k, v in groups.items()}
+
+    def one_window(begin: pd.Timestamp, include_splits=False) -> dict:
+        sub = [r for r in records if begin <= pd.Timestamp(r['date']) <= end_date]
         answer = {'start': begin.strftime('%Y-%m-%d'),
                   'end': end_date.strftime('%Y-%m-%d'),
                   'sessions': len(sub), 'markets': {}}
-        for market,symbol in [('sp','SPY'),('nd','QQQ')]:
+        for market, symbol in [('sp', 'SPY'), ('nd', 'QQQ')]:
             complete = [r for r in sub if r[market]['complete']]
-            groups = {'zero_to_four':[], 'exactly_five':[], 'zero_to_five':[]}
-            trend_groups={'improving':[], 'stable':[], 'deteriorating':[], 'unavailable':[]}
+            groups = {'zero_to_four': [], 'exactly_five': [], 'zero_to_five': []}
+            trend_groups = {'improving': [], 'stable': [], 'deteriorating': [], 'unavailable': []}
             for rec in complete:
                 score = rec[market]['bearish']
-                if score <= 4: groups['zero_to_four'].append(rec)
+                if score <= 4:
+                    groups['zero_to_four'].append(rec)
                 if score == 5:
                     groups['exactly_five'].append(rec)
-                    trend_groups[classify_score5_trend(rec,market)].append(rec)
-                if score <= 5: groups['zero_to_five'].append(rec)
+                    trend_groups[classify_score5_trend(rec, market)].append(rec)
+                if score <= 5:
+                    groups['zero_to_five'].append(rec)
             answer['markets'][market] = {
-                'complete_days':len(complete),'incomplete_days':len(sub)-len(complete),
-                **{k: stat(items,symbol) for k,items in groups.items()},
-                'score_five_trend':{k:stat(items,symbol) for k,items in trend_groups.items()},
-                # Proposed selective rule, RESEARCH ONLY: Risk-On if 0–4,
-                # or exactly 5 only when 5-session bearish score improves >=2.
-                'zero_to_four_plus_five_improving':stat(groups['zero_to_four']+trend_groups['improving'],symbol),
-                'trend_rule':'5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating',
+                'complete_days': len(complete),
+                'incomplete_days': len(sub) - len(complete),
+                **{k: stat(items, symbol) for k, items in groups.items()},
+                'score_five_trend': {k: stat(items, symbol) for k, items in trend_groups.items()},
+                'zero_to_four_plus_five_improving': stat(groups['zero_to_four'] + trend_groups['improving'], symbol),
+                'trend_rule': '5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating',
             }
+        # QQQ-specific risk-adjusted comparison, using complete indicator
+        # histories only, with a chronological split for robustness.
+        answer['qqq_risk'] = {'groups': qqq_groups(sub)}
+        if include_splits:
+            midpoint = begin + pd.DateOffset(months=months // 2)
+            first = [r for r in sub if pd.Timestamp(r['date']) < midpoint]
+            second = [r for r in sub if pd.Timestamp(r['date']) >= midpoint]
+            answer['qqq_risk']['halves'] = [
+                {'label': 'Earlier 10 months', 'start': begin.strftime('%Y-%m-%d'),
+                 'end': (midpoint - pd.Timedelta(days=1)).strftime('%Y-%m-%d'),
+                 'sessions': len(first), 'groups': qqq_groups(first)},
+                {'label': 'Later 10 months', 'start': midpoint.strftime('%Y-%m-%d'),
+                 'end': end_date.strftime('%Y-%m-%d'),
+                 'sessions': len(second), 'groups': qqq_groups(second)},
+            ]
         return answer
-    return {'year':one_window(end_date-pd.Timedelta(days=365)),
-            'twenty_months':one_window(end_date-pd.DateOffset(months=months))}
+
+    return {'year': one_window(end_date - pd.Timedelta(days=365)),
+            'twenty_months': one_window(end_date - pd.DateOffset(months=months), True)}
 
 
 def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=None, history_days=100, history_months=20):
@@ -473,4 +546,4 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
               "sp_max":r["sp"]["possible_max"], "nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"],
               "nd_max":r["nd"]["possible_max"]} for r in historical_records]
     backtest=historical_backtest(records,f,pd.Timestamp(d),history_months)  # include 8 warm-up sessions for score-trend classification
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v2-original-trend-rsi", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point model; Risk-On threshold unchanged at 0–4. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score ≤4/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."}}
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v2-original-trend-rsi", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point model; Risk-On threshold unchanged at 0–4. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score ≤4/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."}}

@@ -174,6 +174,69 @@ function renderBacktest(data){
  if(details&&periods.twenty_months){const p=periods.twenty_months;details.textContent=`Historical window: ${p.start} to ${p.end} · ${p.sessions} observed sessions`;}
 }
 
+// Robustness check for QQQ score=5; never changes scoring or live regimes.
+function renderQqqRisk(data){
+ const periods=data.backtest||{};
+ const rows=[
+  ['zero_to_four','0–4 (baseline)'],
+  ['exactly_five','Exactly 5 (all)'],
+  ['five_improving','5 + improving'],
+  ['five_stable','5 + stable'],
+  ['five_deteriorating','5 + deteriorating'],
+  ['selective','0–4 or 5 + improving']
+ ];
+ const pct=value=>value==null||!Number.isFinite(Number(value))?'—':`${Number(value).toFixed(1)}%`;
+ const cells=[
+  ['days','Days',x=>x==null?'—':String(x)],
+  ['forward5_observations','Returns (n)',x=>x==null?'—':String(x)],
+  ['forward5_median_pct','Median 5D',pct],
+  ['forward5_mean_pct','Mean 5D',pct],
+  ['forward5_stddev_pct','Std dev',pct],
+  ['forward5_p10_pct','10th pct.',pct],
+  ['forward5_worst_pct','Worst 5D',pct],
+  ['forward5_worst_close_pct','Worst close',pct],
+  ['forward5_positive_pct','Positive',pct],
+ ];
+ const makeTable=(groups,compact=false)=>{
+  const wrap=document.createElement('div');wrap.className='risk-table-wrap';
+  const table=document.createElement('table');table.className='risk-table';
+  const h=document.createElement('thead');const header=document.createElement('tr');
+  const title=document.createElement('th');title.textContent='QQQ score';header.appendChild(title);
+  const columns=compact?cells.filter(([k])=>['days','forward5_observations','forward5_median_pct','forward5_stddev_pct','forward5_positive_pct'].includes(k)):cells;
+  for(const [,label] of columns){const th=document.createElement('th');th.textContent=label;header.appendChild(th);}
+  h.appendChild(header);table.appendChild(h);
+  const body=document.createElement('tbody');
+  for(const [key,label] of rows){
+   const result=groups?.[key]||{};
+   const tr=document.createElement('tr');const td=document.createElement('td');td.textContent=label;tr.appendChild(td);
+   for(const [field,,formatter] of columns){const v=document.createElement('td');v.textContent=formatter(result[field]);tr.appendChild(v);}
+   body.appendChild(tr);
+  }
+  table.appendChild(body);wrap.appendChild(table);return wrap;
+ };
+ for(const [key,id] of [['year','qqq-risk-year'],['twenty_months','qqq-risk-20m']]){
+  const container=$(id);if(!container)continue;container.replaceChildren();
+  const risk=periods[key]?.qqq_risk;
+  if(!risk){container.textContent='Awaiting recalculated QQQ historical study from next EOD update';continue;}
+  container.appendChild(makeTable(risk.groups));
+  const note=document.createElement('p');note.className='risk-validation-note';
+  const chosen=risk.groups?.five_improving||{};
+  note.textContent=`5 + improving: ${chosen.nonoverlap_observations??'—'} non-overlapping return intervals, ${pct(chosen.nonoverlap_median_pct)} median and ${pct(chosen.nonoverlap_positive_pct)} positive (chronological sensitivity sample). Compare with 0–4 and exactly 5, above. Small subgroups can be driven by a few outliers.`;
+  container.appendChild(note);
+ }
+ const halves=$('qqq-risk-halves');if(!halves)return;halves.replaceChildren();
+ const split=periods.twenty_months?.qqq_risk?.halves;
+ if(!Array.isArray(split)){halves.textContent='Awaiting chronological split from next EOD update';return;}
+ const grid=document.createElement('div');grid.className='risk-stability-grid';
+ for(const half of split){
+  const card=document.createElement('div');card.className='risk-stability-card';
+  const heading=document.createElement('strong');heading.textContent=`${half.label} · ${half.start} – ${half.end}`;
+  const note=document.createElement('p');note.className='risk-validation-note';note.textContent=`${half.sessions} market sessions. Five-session outcome windows may cross the split boundary; only score dates determine group membership.`;
+  card.append(heading,note,makeTable(half.groups,true));grid.appendChild(card);
+ }
+ halves.appendChild(grid);
+}
+
 // EOD SMA and RSI context; all five SMA comparisons are informational.
 // The original 50D/200D trend signal and RSI14 are scored once each.
 function renderMovingAverages(data){
@@ -229,6 +292,7 @@ function render(data){
  $('diagnostics').textContent=JSON.stringify({sources:data.sources,warnings:data.warnings},null,2);
  plot(data.history);
  renderBacktest(data);
+ renderQqqRisk(data);
 }
 async function load(){
  try{const res=await fetch('data/latest.json?refresh='+Date.now(),{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);const data=await res.json();render(data)}

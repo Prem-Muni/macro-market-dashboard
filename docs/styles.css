@@ -143,3 +143,20 @@
 @media(max-width:1100px){.score5-grid{grid-template-columns:1fr}}
 
 .score5-combined{font-size:.74rem;font-weight:650;line-height:1.6;color:#bad7f5;border-left:3px solid #79bafb;padding:7px 10px;background:rgba(72,134,200,.07);border-radius:2px 7px 7px 2px;margin:12px 0 7px}
+
+/* QQQ score-five risk validation (research only) */
+.risk-validation-panel h3{font-size:1rem;margin:16px 0 9px;color:#e0e9f7}
+.risk-validation-content{margin:0 0 12px}
+.risk-table-wrap{overflow-x:auto;max-width:100%;border:1px solid rgba(130,156,186,.24);border-radius:12px;background:rgba(115,148,184,.045)}
+.risk-table{border-collapse:collapse;width:100%;min-width:790px;font-variant-numeric:tabular-nums}
+.risk-table th,.risk-table td{padding:10px 9px;border-bottom:1px solid rgba(130,156,186,.13);font-size:.78rem;white-space:nowrap;text-align:right}
+.risk-table th:first-child,.risk-table td:first-child{text-align:left;min-width:170px}
+.risk-table thead th{font-size:.70rem;letter-spacing:.02em;color:#a6bfdf;background:rgba(115,148,184,.08)}
+.risk-table tbody tr:last-child td{border-bottom:0}
+.risk-table tbody tr:hover{background:rgba(115,148,184,.08)}
+.risk-validation-note{color:#aabbd2;font-size:.79rem;line-height:1.5;margin:8px 0 14px}
+.risk-stability-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.risk-stability-card{border:1px solid rgba(130,156,186,.18);border-radius:12px;padding:12px;background:rgba(115,148,184,.055)}
+.risk-stability-card strong{display:block;font-size:.88rem;margin-bottom:7px}
+.risk-stability-card .risk-table{min-width:560px}
+@media(max-width:800px){.risk-stability-grid{grid-template-columns:1fr}}

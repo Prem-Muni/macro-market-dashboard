@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=backtest20m-20261122">
+  <link rel="stylesheet" href="styles.css?v=qqq-risk-robustness-20261122">
 </head>
 <body>
   <div class="shell">
@@ -108,6 +108,16 @@
         </div>
         <p class="provider-note">Reconstructed from EOD market history; not a stored record of past live dashboard outputs. Sessions with any missing scored indicator are <strong>excluded</strong> from threshold counts, not treated as bullish. Five-session forward price returns use subsequent ETF closing prices, overlap, exclude pending sessions, and do not account for dividends, costs or slippage. Historical constituent breadth uses <strong>current members</strong> and may introduce survivorship bias. The score-5 trend split requires complete 15/15 scores today and five trading sessions earlier; the five-session forward-return windows overlap. Worst subsequent close is based on daily closes, not intraday lows. Research only—not a validated strategy or an independently sourced backtest.</p>
       </section>
+      <section class="chartpanel risk-validation-panel" aria-label="QQQ score five risk and stability research">
+        <div class="panel-head"><div><div class="eyebrow">QQQ · ADDITIONAL RISK VALIDATION</div>
+          <h2>Does a QQQ score of 5 deserve Risk-On?</h2>
+          <p>Compare median subsequent returns, return dispersion, worst drawdowns at daily closes, and the earlier/later halves of the 20-month sample. This is historical research, not a trading signal.</p>
+        </div></div>
+        <h3>Past 365 calendar days</h3><div id="qqq-risk-year" class="risk-validation-content">Awaiting completed EOD research data</div>
+        <h3>Past 20 calendar months</h3><div id="qqq-risk-20m" class="risk-validation-content">Awaiting completed EOD research data</div>
+        <h3>Stability over time · first 10 months vs last 10 months</h3><div id="qqq-risk-halves" class="risk-validation-content">Awaiting completed EOD research data</div>
+        <p class="provider-note">Only sessions with complete 15/15 scores count. Future returns are based on the next five closing prices (no intraday lows), exclude pending windows, and overlap unless specifically labeled non-overlapping. Standard deviation is the sample standard deviation of subsequent five-session returns, not annualized volatility. The worst subsequent daily close is measured against the signal close, not as a portfolio drawdown. Historical constituent breadth uses current members and may introduce survivorship bias. Historical price returns omit dividends, transaction costs and slippage. Dividing the same 20 months into two halves is a stability check, not an out-of-sample backtest. Both live Risk-On thresholds remain 0–4.</p>
+      </section>
       <!-- Separate independent market-sentiment index; does not affect either score. -->
       <section class="chartpanel fear-panel" aria-label="Independent Fear and Greed Index history">
         <div class="panel-head fear-head">
@@ -129,7 +139,7 @@
     </main>
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>Refresh scheduled after the US market close · Version 0.1</span></footer>
   </div>
-  <script src="app.js?v=score5-trend-20261122" defer></script>
+  <script src="app.js?v=qqq-risk-robustness-20261122" defer></script>
   <script src="market-extras.js?v=charts-fear-ytd-20261122" defer></script>
 </body>
 </html>
