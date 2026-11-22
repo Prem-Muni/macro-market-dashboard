@@ -11,10 +11,11 @@ import pandas as pd
 
 S = {"bull":"BULLISH", "bear":"BEARISH", "warn":"CAUTION", "na":"N/A"}
 SHARED = ["oil", "usd", "tnx", "credit", "copper", "vix_curve"]
-SP = ["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "rsp_spy", "iwm_spy", "sp_breadth1d"]
-ND = ["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
+SP = ["vix", "sp_def", "sp_xle", "sp_smh", "sp_ma_alignment", "sp_rsi14", "rsp_spy", "iwm_spy", "sp_breadth1d"]
+ND = ["vxn", "nd_def", "nd_xle", "nd_smh", "nd_ma_alignment", "nd_rsi14", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
 LABELS = {
  "vix":"VIX", "vxn":"VXN", "oil":"Crude Oil", "usd":"US Dollar", "tnx":"10Y Yield", "credit":"Credit HYG/IEF", "copper":"Copper", "vix_curve":"VIX Curve",
+ "sp_ma_alignment":"SPY MA Alignment", "sp_rsi14":"SPY RSI (14)", "nd_ma_alignment":"QQQ MA Alignment", "nd_rsi14":"QQQ RSI (14)",
  "sp_def":"Defensives/SPY", "sp_xle":"XLE/SPY", "sp_smh":"SMH/SPY", "spy_trend":"SPY Trend", "rsp_spy":"RSP/SPY", "iwm_spy":"IWM/SPY", "sp_breadth1d":"S&P Breadth 1D", "sp_breadth5d":"S&P Breadth 5D", "sp_breadth200":"S&P Breadth 200D",
  "nd_def":"Defensives/QQQ", "nd_xle":"XLE/QQQ", "nd_smh":"SMH/QQQ", "qqq_trend":"QQQ Trend", "qqqe_qqq":"QQQE/QQQ", "iwm_qqq":"IWM/QQQ", "nd_breadth1d":"Nasdaq Breadth 1D", "nd_breadth5d":"Nasdaq Breadth 5D",
 }
@@ -49,6 +50,46 @@ def signal(kind="na", label=None, value=None, note="", source=""):
     return Signal(kind, label or S[kind], value, note, source)
 
 
+def wilder_rsi(close: pd.Series, period: int = 14) -> pd.Series:
+    """Wilder RSI with SMA-seeded smoothed gains/losses over `period` changes.
+
+    Returns NaN until period price changes exist. Any missing close resets
+    initialization, preventing a discontinuity from being treated as a daily move.
+    Flat prices conventionally return neutral RSI=50, not a division-by-zero.
+    """
+    if period < 1:
+        raise ValueError("RSI period must be positive")
+    values=pd.to_numeric(close,errors="coerce")
+    result=pd.Series(float("nan"),index=values.index,dtype=float)
+    average_gain=average_loss=None
+    start_gains=[]; start_losses=[]
+    for i in range(1,len(values)):
+        now=safe(values.iloc[i]); before=safe(values.iloc[i-1])
+        if now is None or before is None:
+            average_gain=average_loss=None
+            start_gains.clear(); start_losses.clear()
+            continue
+        change=now-before
+        gain=max(change,0.0); loss=max(-change,0.0)
+        if average_gain is None:
+            start_gains.append(gain); start_losses.append(loss)
+            if len(start_gains)<period:
+                continue
+            average_gain=sum(start_gains)/period
+            average_loss=sum(start_losses)/period
+        else:
+            average_gain=(average_gain*(period-1)+gain)/period
+            average_loss=(average_loss*(period-1)+loss)/period
+        if average_gain==0 and average_loss==0:
+            result.iloc[i]=50.0
+        elif average_loss==0:
+            result.iloc[i]=100.0
+        else:
+            rs=average_gain/average_loss
+            result.iloc[i]=100.0-100.0/(1.0+rs)
+    return result
+
+
 def build_frames(prices: pd.DataFrame, extra: pd.DataFrame | None = None):
     """DataFrames must be session-date indexed. All values end-of-day."""
     f = prices.copy().sort_index().astype(float)
@@ -74,7 +115,13 @@ def build_frames(prices: pd.DataFrame, extra: pd.DataFrame | None = None):
     f["hyg_r"],f["ief_r"] = pct("HYG",1),pct("IEF",1)
     f["basket_1"],f["basket_10"] = basket1,basket10
     f["spy_1"],f["spy_10"],f["qqq_1"],f["qqq_10"],f["xle_10"] = pct("SPY",1),pct("SPY",10),pct("QQQ",1),pct("QQQ",10),pct("XLE",10)
-    f["spy_ma50"],f["spy_ma200"],f["qqq_ma50"],f["qqq_ma200"] = ma(spy,50),ma(spy,200),ma(qqq,50),ma(qqq,200)
+    # Daily simple moving averages and Wilder RSI. Their new score signals
+    # replace the old one-point trend measure (MA alignment) and add one point
+    # for RSI. Do not score each MA separately.
+    for symbol, close_series in (("spy", spy), ("qqq", qqq)):
+        for days in (5, 20, 50, 100, 200):
+            f[f"{symbol}_ma{days}"] = ma(close_series, days)
+        f[f"{symbol}_rsi14"] = wilder_rsi(close_series, 14)
     f["smh_ema20"],f["spy_ema20"],f["qqq_ema20"] = smh.ewm(span=20,adjust=False,min_periods=20).mean(), spy.ewm(span=20,adjust=False,min_periods=20).mean(), qqq.ewm(span=20,adjust=False,min_periods=20).mean()
     f["smh_sp_ma15"],f["smh_nd_ma15"] = ma(smh/spy,15),ma(smh/qqq,15)
     for name,ratio in (("rsp_spy",rsp/spy),("iwm_spy",iwm/spy),("qqqe_qqq",qqqe/qqq),("iwm_qqq",iwm/qqq)):
@@ -148,6 +195,28 @@ def build_day(f: pd.DataFrame, pos: int, sources:dict | None=None):
             if c>ma50 and ma50>ma200: return "bull","BULLISH",None,"Above 50D SMA; 50D above 200D"
             return "warn","CAUTION",None,"Mixed trend"
         condition(key,[bench.upper(),f"{bench}_ma50",f"{bench}_ma200"],trend,bench.upper())
+    # A single trend vote from all five MAs prevents five heavily correlated
+    # price-vs-average observations from crowding out macro/credit/breadth.
+    # For each SMA, closing price >= average is bullish (user-selected rule).
+    # When ANY SMA is missing, the composite is N/A, never assumed bullish.
+    for key, bench in (("sp_ma_alignment", "spy"), ("nd_ma_alignment", "qqq")):
+        periods=(5,20,50,100,200)
+        def alignment(*vals):
+            close=vals[0]
+            levels=vals[1:]
+            below=[n for n,level in zip(periods,levels) if close<level]
+            n=len(below)
+            st="bear" if n>=3 else "warn" if n==2 else "bull"
+            note=f"Close below {n}/5 SMAs" + (f" ({', '.join(str(d)+'D' for d in below)})" if below else "") + "; equality counts bullish"
+            return st,S[st],n,note
+        condition(key,[bench.upper()]+[f"{bench}_ma{n}" for n in periods],alignment,bench.upper()+" EOD close")
+    # 45-55 is an intentionally neutral momentum buffer around RSI's 50
+    # centreline; these are research thresholds, not 30/70 reversal signals.
+    for key,bench in (("sp_rsi14","spy"),("nd_rsi14","qqq")):
+        def rsiscore(v):
+            st="bear" if v<45 else "bull" if v>55 else "warn"
+            return st,S[st],v,"Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish"
+        condition(key,[f"{bench}_rsi14"],rsiscore,bench.upper()+" EOD close")
     for key in ("rsp_spy","iwm_spy","qqqe_qqq","iwm_qqq"):
         def relative(diff):
             st="bull" if diff>0.25 else "bear" if diff < -0.25 else "warn"
@@ -180,10 +249,20 @@ def score_of(signals, keys):
     valid=[k for k in keys if signals[k].state!="na"]
     bears=sum(signals[k].state in ("bear","wash") for k in valid)
     missing=len(keys)-len(valid)
-    # Initial 14-point cutoffs preserve existing integer score bands; validate empirically.
-    def regime(n): return "RISK-ON" if n<=4 else "CAUTION" if n<=7 else "RISK-OFF"
+    # Experimental 15-point regime cutoffs, to be validated against history.
+    def regime(n): return "RISK-ON" if n<=4 else "CAUTION" if n<=8 else "RISK-OFF"
     low,high=regime(bears),regime(bears+missing)
     return {"bearish":bears,"possible_max":bears+missing,"total":len(keys),"available":len(valid),"missing":missing,"regime":low if low==high else "INCOMPLETE","complete":missing==0,"available_keys":valid}
+
+
+def score_of_legacy14(signals, keys):
+    # Preserve original 14-point risk labels for an apples-to-apples audit.
+    value=score_of(signals,keys)
+    def old_regime(n): return "RISK-ON" if n<=4 else "CAUTION" if n<=7 else "RISK-OFF"
+    low=old_regime(value["bearish"])
+    high=old_regime(value["possible_max"])
+    value["regime"]=low if low==high else "INCOMPLETE"
+    return value
 
 
 def score_momentum_bounds(today: dict, previous: dict | None, threshold=2):
@@ -214,9 +293,9 @@ def swing_from_bounds(score: dict, prev_score: dict | None, confirmation: dict, 
     def swing_one(points, change, confirms, is_beartrend):
         if points<=4 and change<2 and confirms>=3 and not is_beartrend:
             return "BULLISH"
-        if points>=8 and change<=-2 and confirms>=2:
+        if points>=9 and change<=-2 and confirms>=2:
             return "EARLY IMPROVEMENT"
-        if points>=8:
+        if points>=9:
             return "BEARISH"
         if 5<=points<=7 and change>=2:
             return "DETERIORATING"
@@ -241,9 +320,16 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     indexpos=f.index.get_loc(d)
     records=[]
     # More days retained so 5D analytics compare the same available inputs.
+    # Keep the original 14-point model for comparison, including its original
+    # 50D/200D trend signal. It does not affect the new 15-point totals.
+    old_sp=["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "rsp_spy", "iwm_spy", "sp_breadth1d"]
+    old_nd=["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
     for pos in range(max(0,indexpos-history_days-8),indexpos+1):
         day,sigs=build_day(f,pos,sources)
-        records.append({"date":day,"signals":sigs,"sp":score_of(sigs,SHARED+SP),"nd":score_of(sigs,SHARED+ND)})
+        records.append({"date":day,"signals":sigs,
+                        "sp":score_of(sigs,SHARED+SP),"nd":score_of(sigs,SHARED+ND),
+                        "sp_legacy":score_of_legacy14(sigs,SHARED+old_sp),
+                        "nd_legacy":score_of_legacy14(sigs,SHARED+old_nd)})
     latest=records[-1]
     def momentum(index):
         today=latest[index]
@@ -277,13 +363,37 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     latest["nd_confirmation"]=confirmation(volnd,brnd,pricend)
     def swing(index):
         prev_score=records[-6][index] if len(records)>5 else None
-        trend_key="spy_trend" if index=="sp" else "qqq_trend"
+        trend_key="sp_ma_alignment" if index=="sp" else "nd_ma_alignment"
         return swing_from_bounds(latest[index],prev_score,
             latest[index+"_confirmation"],latest["signals"][trend_key].state)
     latest["sp_swing"]=swing("sp")
     latest["nd_swing"]=swing("nd")
+    # Derived ETF averages and RSI remain visible as detailed price context.
+    # Their two composite signals ARE included in this experimental model.
+    def ma_context(symbol):
+        close=safe(frow.get(symbol.upper()))
+        averages={}
+        for days in (5, 20, 50, 100, 200):
+            level=safe(frow.get(f"{symbol}_ma{days}"))
+            averages[str(days)]={
+                "value": round(level, 3) if level is not None else None,
+                "distance_pct": round((close/level-1)*100, 2) if close is not None and level is not None and level>0 else None,
+                # Equality is bullish by design; use unrounded prices to avoid
+                # a displayed 0.00% gap masking a tiny but real difference.
+                "state": ("BULLISH" if close>=level else "BEARISH") if close is not None and level is not None and level>0 else "N/A",
+            }
+        rsi=safe(frow.get(f"{symbol}_rsi14"))
+        rsi_label=("OVERBOUGHT" if rsi>=70 else "OVERSOLD" if rsi<=30 else "NEUTRAL") if rsi is not None else "N/A"
+        return {"symbol":symbol.upper(), "as_of":latest["date"],
+                "close":round(close, 3) if close is not None else None,
+                "averages":averages,
+                "rsi": {"period":14, "value":round(rsi,2) if rsi is not None else None,
+                        "state":rsi_label}}
+    moving_averages={"spy":ma_context("spy"), "qqq":ma_context("qqq")}
     latest["signals"]={k:v.json() for k,v in latest["signals"].items()}
     def prune_sc(x): return {k:v for k,v in x.items() if k!="available_keys"}
     latest["sp"]=prune_sc(latest["sp"]); latest["nd"]=prune_sc(latest["nd"])
+    legacy_sp=prune_sc(latest["sp_legacy"])
+    legacy_nd=prune_sc(latest["nd_legacy"])
     history=[{"date":r["date"],"sp":r["sp"]["bearish"],"sp_available":r["sp"]["available"],"nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"]} for r in records[-90:]]
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"14-point-v3-clean-axis-fix", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"history":history,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"14 scored indicators per market."}}
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v1-ma-composite-rsi", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"moving_averages":moving_averages,"history":history,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point model. Old trend point replaced by 5-SMA composite; one RSI point added. The legacy 14-point score is reported separately for comparison. Thresholds unvalidated."}}

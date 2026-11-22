@@ -12,6 +12,8 @@ function summary(prefix,model){
  const s=model.score,m=model.momentum,c=model.confirmation;
  $(prefix+'-score').textContent=scoreFormat(s);
  $(prefix+'-coverage').textContent=`${s.available}/${s.total} signals available${s.complete?'':' · score range'}`;
+ const base=$(prefix+'-baseline');
+ if(base)base.textContent=model.legacy_14?`Previous website model: ${scoreFormat(model.legacy_14)} (reference only)`:'Previous website model: —';
  const status=$(prefix+'-regime');status.textContent=s.regime;status.className='regime '+stateClass(s.regime);
  $(prefix+'-meter').style.width=((s.bearish/s.total)*100).toFixed(1)+'%';
  const tr=$(prefix+'-trend');tr.textContent=m.state;tr.className=tone(m.state);
@@ -105,6 +107,44 @@ function plot(history){
  }
 }
 
+// EOD SMA and RSI context; the engine scores a five-SMA composite and RSI once each.
+function renderMovingAverages(data){
+ const all=data.moving_averages||{};
+ for(const sym of ['spy','qqq']){
+  const info=all[sym]||{};
+  const close=Number(info.close);
+  const hasClose=info.close!=null && Number.isFinite(close) && close>0;
+  $(sym+'-ma-close').textContent=hasClose?`$${close.toFixed(2)}`:'—';
+  $(sym+'-ma-asof').textContent=info.as_of?`As of ${info.as_of} close`:'Awaiting EOD update';
+  for(const period of [5,20,50,100,200]){
+   const item=info.averages?.[String(period)]||{};
+   const v=Number(item.value), pct=Number(item.distance_pct);
+   const valid=item.value!=null && Number.isFinite(v) && v>0;
+   $(sym+'-ma'+period).textContent=valid?`$${v.toFixed(2)}`:'—';
+   const gap=$(sym+'-ma'+period+'-gap');
+   if(!valid || !hasClose){gap.textContent='Not available';gap.className='ma-gap';continue;}
+   const delta=(item.distance_pct==null || !Number.isFinite(pct)) ? ((close/v-1)*100) : pct;
+   // Compare true unrounded prices when supplied by the EOD engine. If the
+   // legacy payload has no state, equality is BULLISH (>=), never neutral.
+   const bullish=item.state==='BULLISH'?true:item.state==='BEARISH'?false:close>=v;
+   const atAverage=close===v;
+   const distance=atAverage?'At average':`${Math.abs(delta).toFixed(2)}% ${bullish?'above':'below'}`;
+   gap.textContent=`${bullish?'BULLISH':'BEARISH'} · ${distance}`;
+   gap.className='ma-gap '+(bullish?'ma-above':'ma-below');
+  }
+  const raw=info.rsi?.value;
+  const rsi=raw==null?NaN:Number(raw);
+  const validRsi=Number.isFinite(rsi) && rsi>=0 && rsi<=100;
+  $(sym+'-rsi14').textContent=validRsi?rsi.toFixed(2):'—';
+  const state=$(sym+'-rsi14-state');
+  // Recompute classification from the number so old cached labels cannot drift.
+  state.textContent=!validRsi?'Not available':rsi>=70?'Overbought':rsi<=30?'Oversold':'Neutral';
+  state.className='rsi-state '+(!validRsi?'':rsi>=70?'rsi-overbought':rsi<=30?'rsi-oversold':'rsi-neutral');
+  const marker=$(sym+'-rsi14-marker');
+  marker.style.left=validRsi?`${rsi}%`:'50%';
+  marker.style.opacity=validRsi?'1':'0';
+ }
+}
 function render(data){
  snapshot=data;
  $('session').textContent=data.session||'—';
@@ -114,9 +154,10 @@ function render(data){
  if(!data.markets?.sp500 || !data.markets?.nasdaq100){$('warning').textContent='The website is installed, but no market update has run. Open GitHub → Actions → Refresh EOD dashboard → Run workflow.';return;}
  summary('sp',data.markets.sp500); summary('nd',data.markets.nasdaq100);
  signals('sp-signals',data.order.sp500);signals('nd-signals',data.order.nasdaq100);signals('shared-signals',data.order.shared);
+ renderMovingAverages(data);
  $('coverage-note').textContent=data.explanation?.partial||'';
  const all=data.markets.sp500.score.complete && data.markets.nasdaq100.score.complete;
- $('warning').textContent=all?'Complete daily-bar inputs reported. Validate vendor timing and prices against Thinkorswim.':'PARTIAL FEEDS: This is not your full Thinkorswim score. Available data may support only a bounded risk classification; missing inputs are not bullish.';
+ $('warning').textContent=all?'EXPERIMENTAL 15-point model (not yet mirrored in Thinkorswim). Validate data and thresholds before trading.':'EXPERIMENTAL 15-point model: PARTIAL FEEDS. Missing inputs are not bullish; scores can be ranges. Thinkorswim still uses the older 14-point model.';
  $('diagnostics').textContent=JSON.stringify({sources:data.sources,warnings:data.warnings},null,2);
  plot(data.history);
 }

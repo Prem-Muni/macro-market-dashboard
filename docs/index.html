@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=charts-fear-ytd-20261122">
+  <link rel="stylesheet" href="styles.css?v=scored15-20261122">
 </head>
 <body>
   <div class="shell">
@@ -16,21 +16,20 @@
     </header>
     <div class="info-line" id="warning">A research dashboard, not a trading signal. Data and scores are indicative; verify against Thinkorswim before acting.</div>
     <main>
-      <div class="section-intro"><div><div class="eyebrow">MARKET REGIME</div><h2>Two markets. One decision framework.</h2><p>Separate 14-point bearish scores, five-session trends, and market confirmation.</p></div><div class="session-box"><div class="eyebrow">LATEST PRICED SESSION</div><strong id="session">—</strong><small id="feed-state">No market snapshot yet</small></div></div>
+      <div class="section-intro"><div><div class="eyebrow">MARKET REGIME</div><h2>Two markets. One decision framework.</h2><p>Separate experimental 15-point bearish scores, five-session trends, and market confirmation.</p></div><div class="session-box"><div class="eyebrow">LATEST PRICED SESSION</div><strong id="session">—</strong><small id="feed-state">No market snapshot yet</small></div></div>
       <section class="market-grid" aria-label="Market summary">
-        <article class="market-card" id="sp-card"><div class="market-head"><div><div class="eyebrow">S&P 500</div><h3>Broad Market</h3></div><span class="tiny-pill">SPY BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="sp-score">—/14</div><div class="detail-caption" id="sp-coverage">Waiting for feeds</div></div><div class="regime neutral" id="sp-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="sp-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="sp-trend">—</b><small id="sp-delta">—</small></div><div><span>Market Confirmation</span><b id="sp-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="sp-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
-        <article class="market-card" id="nd-card"><div class="market-head"><div><div class="eyebrow">NASDAQ-100</div><h3>Growth & Technology</h3></div><span class="tiny-pill">QQQ BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="nd-score">—/14</div><div class="detail-caption" id="nd-coverage">Waiting for feeds</div></div><div class="regime neutral" id="nd-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="nd-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="nd-trend">—</b><small id="nd-delta">—</small></div><div><span>Market Confirmation</span><b id="nd-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="nd-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
+        <article class="market-card" id="sp-card"><div class="market-head"><div><div class="eyebrow">S&P 500</div><h3>Broad Market</h3></div><span class="tiny-pill">SPY BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="sp-score">—/15</div><div class="detail-caption" id="sp-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="sp-baseline">Prior 14-point model: —</div></div><div class="regime neutral" id="sp-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="sp-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="sp-trend">—</b><small id="sp-delta">—</small></div><div><span>Market Confirmation</span><b id="sp-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="sp-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
+        <article class="market-card" id="nd-card"><div class="market-head"><div><div class="eyebrow">NASDAQ-100</div><h3>Growth & Technology</h3></div><span class="tiny-pill">QQQ BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="nd-score">—/15</div><div class="detail-caption" id="nd-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="nd-baseline">Prior 14-point model: —</div></div><div class="regime neutral" id="nd-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="nd-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="nd-trend">—</b><small id="nd-delta">—</small></div><div><span>Market Confirmation</span><b id="nd-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="nd-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
       </section>
-      <section class="chartpanel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Bearish signals over time</h2><p>Observed bearish points out of 14; dates follow market trading sessions (weekends and holidays omitted).</p><p class="chart-range" id="chart-range">Awaiting date range</p></div><div class="seg"><button id="hist30" class="active" type="button" title="Last 30 trading sessions">30 Sessions</button><button id="hist90" type="button" title="Last 90 trading sessions">90 Sessions</button></div></div><svg id="history-svg" viewBox="0 0 960 245" role="img" aria-label="Historical SP500 and Nasdaq bearish signal scores"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="subtle">Equal spacing represents consecutive trading sessions, not calendar days. Partial scores are marked.</span></div></section>
-      <!-- Hosted market charts: automatically updated by TradingView; not part of the 14-point score. -->
-      <section class="market-prices" aria-label="SPY and QQQ year-to-date price charts">
+      <!-- Hosted market charts: TradingView display is separate; EOD MA/RSI composites are scored. -->
+      <section class="market-prices" aria-label="SPY and QQQ daily price history and moving averages">
         <div class="extras-header">
-          <div><div class="eyebrow">PRICE CONTEXT</div><h2>SPY &amp; QQQ · Year to date</h2><p>Daily candlesticks, starting at the beginning of the year. Hosted charts may include intraday/delayed quotes; check the provider's market-data status.</p></div>
-          <span class="capsule">INFORMATIONAL ONLY</span>
+          <div><div class="eyebrow">PRICE CONTEXT</div><h2>SPY &amp; QQQ · Price History</h2><p>Daily price charts with adjustable date ranges. Hosted charts may include intraday/delayed quotes; the moving averages below use the latest completed end-of-day session.</p></div>
+          <span class="capsule">5-SMA ALIGNMENT + RSI SCORED</span>
         </div>
         <div class="market-chart-grid">
           <article class="chartpanel market-price-panel">
-            <div class="market-chart-heading"><div><div class="eyebrow">S&amp;P 500 ETF</div><h3>SPY · YTD</h3></div><a class="data-link" href="https://www.tradingview.com/symbols/AMEX-SPY/" target="_blank" rel="noopener noreferrer">Open chart</a></div>
+            <div class="market-chart-heading"><div><div class="eyebrow">S&amp;P 500 ETF</div><h3>SPY · Daily</h3></div><a class="data-link" href="https://www.tradingview.com/symbols/AMEX-SPY/" target="_blank" rel="noopener noreferrer">Open chart</a></div>
             <div class="tv-frame">
               <div class="tradingview-widget-container" style="height:100%;width:100%">
                 <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
@@ -40,9 +39,27 @@
                 </script>
               </div>
             </div>
+            <div class="ma-panel" aria-label="SPY 5, 20, 50, 100 and 200 day simple moving averages and 14-day RSI">
+              <div class="ma-heading"><strong>Simple moving averages</strong><span id="spy-ma-asof">Awaiting EOD update</span></div>
+              <div class="ma-last-close">Latest completed close: <strong id="spy-ma-close">—</strong><span>· 5-SMA composite contributes up to 1 bearish point</span></div>
+              <dl class="ma-values">
+              <div class="ma-item"><dt>5D SMA</dt><dd id="spy-ma5">—</dd><span id="spy-ma5-gap" class="ma-gap">Awaiting EOD data</span></div>
+              <div class="ma-item"><dt>20D SMA</dt><dd id="spy-ma20">—</dd><span id="spy-ma20-gap" class="ma-gap">Awaiting EOD data</span></div>
+              <div class="ma-item"><dt>50D SMA</dt><dd id="spy-ma50">—</dd><span id="spy-ma50-gap" class="ma-gap">Awaiting EOD data</span></div>
+              <div class="ma-item"><dt>100D SMA</dt><dd id="spy-ma100">—</dd><span id="spy-ma100-gap" class="ma-gap">Awaiting EOD data</span></div>
+              <div class="ma-item"><dt>200D SMA</dt><dd id="spy-ma200">—</dd><span id="spy-ma200-gap" class="ma-gap">Awaiting EOD data</span></div>
+              </dl>
+              <div class="rsi-strip" aria-label="SPY 14-day relative strength index; contributes to scoring">
+                <div class="rsi-caption"><strong>RSI (14)</strong><span>Scored: &lt;45 bearish · 45–55 caution · &gt;55 bullish</span></div>
+                <div class="rsi-result"><strong id="spy-rsi14">—</strong><span class="rsi-state" id="spy-rsi14-state">Awaiting EOD data</span></div>
+                <div class="rsi-track" aria-hidden="true"><div id="spy-rsi14-marker" class="rsi-marker" style="left:50%"></div></div>
+                <div class="rsi-scale"><span>0</span><span>30 · Oversold</span><span>70 · Overbought</span><span>100</span></div>
+              </div>
+            </div>
+
           </article>
           <article class="chartpanel market-price-panel">
-            <div class="market-chart-heading"><div><div class="eyebrow">NASDAQ-100 ETF</div><h3>QQQ · YTD</h3></div><a class="data-link" href="https://www.tradingview.com/symbols/NASDAQ-QQQ/" target="_blank" rel="noopener noreferrer">Open chart</a></div>
+            <div class="market-chart-heading"><div><div class="eyebrow">NASDAQ-100 ETF</div><h3>QQQ · Daily</h3></div><a class="data-link" href="https://www.tradingview.com/symbols/NASDAQ-QQQ/" target="_blank" rel="noopener noreferrer">Open chart</a></div>
             <div class="tv-frame">
               <div class="tradingview-widget-container" style="height:100%;width:100%">
                 <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
@@ -52,14 +69,33 @@
                 </script>
               </div>
             </div>
+            <div class="ma-panel" aria-label="QQQ 5, 20, 50, 100 and 200 day simple moving averages and 14-day RSI">
+              <div class="ma-heading"><strong>Simple moving averages</strong><span id="qqq-ma-asof">Awaiting EOD update</span></div>
+              <div class="ma-last-close">Latest completed close: <strong id="qqq-ma-close">—</strong><span>· 5-SMA composite contributes up to 1 bearish point</span></div>
+              <dl class="ma-values">
+              <div class="ma-item"><dt>5D SMA</dt><dd id="qqq-ma5">—</dd><span id="qqq-ma5-gap" class="ma-gap">Awaiting EOD data</span></div>
+              <div class="ma-item"><dt>20D SMA</dt><dd id="qqq-ma20">—</dd><span id="qqq-ma20-gap" class="ma-gap">Awaiting EOD data</span></div>
+              <div class="ma-item"><dt>50D SMA</dt><dd id="qqq-ma50">—</dd><span id="qqq-ma50-gap" class="ma-gap">Awaiting EOD data</span></div>
+              <div class="ma-item"><dt>100D SMA</dt><dd id="qqq-ma100">—</dd><span id="qqq-ma100-gap" class="ma-gap">Awaiting EOD data</span></div>
+              <div class="ma-item"><dt>200D SMA</dt><dd id="qqq-ma200">—</dd><span id="qqq-ma200-gap" class="ma-gap">Awaiting EOD data</span></div>
+              </dl>
+              <div class="rsi-strip" aria-label="QQQ 14-day relative strength index; contributes to scoring">
+                <div class="rsi-caption"><strong>RSI (14)</strong><span>Scored: &lt;45 bearish · 45–55 caution · &gt;55 bullish</span></div>
+                <div class="rsi-result"><strong id="qqq-rsi14">—</strong><span class="rsi-state" id="qqq-rsi14-state">Awaiting EOD data</span></div>
+                <div class="rsi-track" aria-hidden="true"><div id="qqq-rsi14-marker" class="rsi-marker" style="left:50%"></div></div>
+                <div class="rsi-scale"><span>0</span><span>30 · Oversold</span><span>70 · Overbought</span><span>100</span></div>
+              </div>
+            </div>
+
           </article>
         </div>
-        <p class="provider-note">Charts by <a href="https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/" target="_blank" rel="noopener noreferrer">TradingView</a>. Price data can be delayed or use Cboe-derived U.S. quotes; they may not match Thinkorswim tick-for-tick. These charts update independently of the dashboard's end-of-day scoring.</p>
+        <p class="provider-note">Charts by <a href="https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/" target="_blank" rel="noopener noreferrer">TradingView</a>. Price data can be delayed or use Cboe-derived U.S. quotes; they may not match Thinkorswim tick-for-tick. These charts update independently of the dashboard's end-of-day scoring. Moving-average labels use BULLISH when the daily close is greater than or equal to its SMA, otherwise BEARISH. Moving-average and RSI(14) values use unadjusted SPY/QQQ end-of-day closes and can differ slightly from TradingView or Thinkorswim. RSI overbought/oversold thresholds describe momentum, not automatic trading signals. The five moving averages contribute through one combined trend point (price below 0–1 SMAs = BULLISH, below 2 = CAUTION, below 3–5 = BEARISH); RSI contributes through one separate momentum point. The price charts and Fear &amp; Greed remain external, informational visuals.</p>
       </section>
+      <section class="chartpanel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Bearish signals over time</h2><p>Observed bearish points out of 15; dates follow market trading sessions (weekends and holidays omitted).</p><p class="chart-range" id="chart-range">Awaiting date range</p></div><div class="seg"><button id="hist30" class="active" type="button" title="Last 30 trading sessions">30 Sessions</button><button id="hist90" type="button" title="Last 90 trading sessions">90 Sessions</button></div></div><svg id="history-svg" viewBox="0 0 960 245" role="img" aria-label="Historical SP500 and Nasdaq bearish signal scores"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="subtle">Equal spacing represents consecutive trading sessions, not calendar days. Partial scores are marked.</span></div></section>
       <!-- Separate independent market-sentiment index; does not affect either score. -->
       <section class="chartpanel fear-panel" aria-label="Independent Fear and Greed Index history">
         <div class="panel-head fear-head">
-          <div><div class="eyebrow">MARKET SENTIMENT · EXTERNAL DATA</div><h2>Fear &amp; Greed Index · History</h2><p>Independent stock-market sentiment index, not CNN's index. Informational only; not included in the 14-point score.</p></div>
+          <div><div class="eyebrow">MARKET SENTIMENT · EXTERNAL DATA</div><h2>Fear &amp; Greed Index · History</h2><p>Independent stock-market sentiment index, not CNN's index. Informational only; not included in the 15-point score.</p></div>
           <div class="fear-current"><div class="fear-score" id="fear-latest-score">—</div><div><div class="fear-zone" id="fear-latest-label">Loading</div><div class="fear-date" id="fear-latest-date">—</div></div></div>
         </div>
         <div class="fear-toolbar"><div class="seg" role="group" aria-label="Fear and Greed chart date range"><button id="fear90" type="button" aria-pressed="false">90 Days</button><button id="fearYTD" type="button" class="active" aria-pressed="true">YTD</button><button id="fear1Y" type="button" aria-pressed="false">1 Year</button></div><span id="fear-range-label" class="subtle">Loading sentiment history…</span></div>
@@ -73,11 +109,11 @@
         <section class="signals-panel"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC</div><h2>Nasdaq-100 internals</h2></div><span class="capsule">QQQ</span></div><div id="nd-signals" class="signal-list"></div></section>
       </div>
       <section class="signals-panel shared"><div class="panel-head"><div><div class="eyebrow">SHARED BY BOTH MARKET SCORES</div><h2>Macro signals</h2></div><span class="capsule">6 SIGNALS</span></div><div id="shared-signals" class="signal-list double"></div></section>
-      <section class="disclaimer"><h3>Reading the dashboard responsibly</h3><p id="coverage-note">Specialized index breadth data may require separate authorized data sources. An incomplete 14-point score can be a range, not a definitive RISK-ON / CAUTION / RISK-OFF classification.</p><p>The website recalculates daily-bar approximations of the Thinkorswim model. It is not a broker feed, a backtested strategy, or an instruction to trade. Futures and ETF proxies can differ from Thinkorswim settlements. Provider availability and data display rights vary.</p><details><summary>Data source diagnostics</summary><pre id="diagnostics">Awaiting first update.</pre></details></section>
+      <section class="disclaimer"><h3>Reading the dashboard responsibly</h3><p id="coverage-note">Specialized index breadth data may require separate authorized data sources. An incomplete 15-point score can be a range, not a definitive RISK-ON / CAUTION / RISK-OFF classification.</p><p>The website now uses an experimental 15-point extension of the previous Thinkorswim-style model; the original 14-point score remains visible for comparison. Thinkorswim itself is not updated by this package. It is not a broker feed, a backtested strategy, or an instruction to trade. Futures and ETF proxies can differ from Thinkorswim settlements. Provider availability and data display rights vary.</p><details><summary>Data source diagnostics</summary><pre id="diagnostics">Awaiting first update.</pre></details></section>
     </main>
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>Refresh scheduled after the US market close · Version 0.1</span></footer>
   </div>
-  <script src="app.js?v=14-point-no-pc-axis-20261122" defer></script>
+  <script src="app.js?v=scored15-20261122" defer></script>
   <script src="market-extras.js?v=charts-fear-ytd-20261122" defer></script>
 </body>
 </html>

@@ -40,3 +40,40 @@
 .fear-extreme{background:#ee5d73}.fear-fear{background:#ef986b}.fear-neutral{background:#c6c1a9}.fear-greed{background:#6bd9a1}.fear-high{background:#20ad81}
 @media(max-width:900px){.market-chart-grid{grid-template-columns:1fr}.tv-frame{height:420px}}
 @media(max-width:550px){.market-price-panel{padding:14px}.tv-frame{height:335px;min-height:335px}.fear-panel{padding:17px}.fear-current{width:100%}.fear-score{text-align:left}.fear-band-key{gap:7px 10px;font-size:10px}}
+
+/* Daily ETF moving-average context (separate from the 14-point risk score). */
+.ma-panel{margin-top:15px;padding:13px 0 2px;border-top:1px solid var(--line)}
+.ma-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ma-heading strong{color:#e7f0fa;font-size:13px}
+.ma-heading span{color:var(--sub);font-size:10px}
+.ma-last-close{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;margin:5px 0 10px;font-size:11px;color:var(--muted)}
+.ma-last-close strong{color:#eaf3ff;font-size:14px}
+.ma-last-close span{color:var(--sub)}
+.ma-values{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:0}
+.ma-item{min-width:0;background:#0d1826;border:1px solid #253349;border-radius:9px;padding:10px 7px;display:flex;flex-direction:column;gap:3px}
+.ma-item dt{font-size:10px;font-weight:750;letter-spacing:.3px;color:#92aeca}
+.ma-item dd{margin:0;color:#f2f6fd;font-size:15px;font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ma-gap{color:var(--sub);font-size:10px;white-space:normal;line-height:1.35;font-weight:700}
+.ma-gap.ma-above{color:#70d9b3}
+.ma-gap.ma-below{color:#f19c9c}
+@media(max-width:550px){.ma-values{grid-template-columns:repeat(2,minmax(0,1fr))}.ma-item{padding:10px}.ma-item dd{font-size:17px}}
+
+/* EOD RSI(14) strip: numerically transparent and not part of market scoring. */
+.rsi-strip{border-top:1px solid #253349;margin-top:13px;padding:12px 2px 3px}
+.rsi-caption{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.rsi-caption strong{font-size:12px;color:#dfeefa}
+.rsi-caption span{font-size:10px;color:var(--sub)}
+.rsi-result{display:flex;align-items:baseline;gap:10px;margin:7px 0 9px}
+.rsi-result strong{font-size:24px;letter-spacing:-.4px;font-variant-numeric:tabular-nums;color:#f2f7ff}
+.rsi-state{font-size:11px;font-weight:750;color:#b7cadc;text-transform:uppercase;letter-spacing:.4px}
+.rsi-overbought{color:#f1ac74}
+.rsi-oversold{color:#80d7bf}
+.rsi-neutral{color:#b4c9db}
+.rsi-track{position:relative;height:7px;border-radius:999px;background:linear-gradient(to right,#49ad98 0%,#55bd9c 30%,#627d9a 30%,#627d9a 70%,#b27d67 70%,#efb076 100%);opacity:.9}
+.rsi-marker{position:absolute;top:-4px;width:4px;height:15px;background:#ffffff;transform:translateX(-50%);border:1px solid #2a3a4a;border-radius:2px;box-shadow:0 1px 5px #0009}
+.rsi-scale{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:9px;margin-top:7px}
+@media(max-width:750px){.ma-values{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:550px){.ma-values{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Historical model preserved as a small audit reference. */
+.baseline-reference{margin-top:5px;opacity:.78;font-size:11px;}

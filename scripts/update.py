@@ -183,8 +183,8 @@ def main():
     result["warnings"]=(errors[:12] + ["Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.", "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
                  "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."])
     OUT.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
-    print(f"Wrote {OUT}: {result['session']} | SP {result['markets']['sp500']['score']['available']}/14, "
-          f"ND {result['markets']['nasdaq100']['score']['available']}/14")
+    print(f"Wrote {OUT}: {result['session']} | SP {result['markets']['sp500']['score']['available']}/{result['markets']['sp500']['score']['total']}, "
+          f"ND {result['markets']['nasdaq100']['score']['available']}/{result['markets']['nasdaq100']['score']['total']}")
     for err in errors[:8]:print("WARNING:",err[:160])
 
 if __name__=="__main__":
