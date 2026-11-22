@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=14-point-no-pc-axis-20261122">
+  <link rel="stylesheet" href="styles.css?v=charts-fear-ytd-20261122">
 </head>
 <body>
   <div class="shell">
@@ -22,6 +22,52 @@
         <article class="market-card" id="nd-card"><div class="market-head"><div><div class="eyebrow">NASDAQ-100</div><h3>Growth & Technology</h3></div><span class="tiny-pill">QQQ BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="nd-score">—/14</div><div class="detail-caption" id="nd-coverage">Waiting for feeds</div></div><div class="regime neutral" id="nd-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="nd-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="nd-trend">—</b><small id="nd-delta">—</small></div><div><span>Market Confirmation</span><b id="nd-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="nd-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
       </section>
       <section class="chartpanel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Bearish signals over time</h2><p>Observed bearish points out of 14; dates follow market trading sessions (weekends and holidays omitted).</p><p class="chart-range" id="chart-range">Awaiting date range</p></div><div class="seg"><button id="hist30" class="active" type="button" title="Last 30 trading sessions">30 Sessions</button><button id="hist90" type="button" title="Last 90 trading sessions">90 Sessions</button></div></div><svg id="history-svg" viewBox="0 0 960 245" role="img" aria-label="Historical SP500 and Nasdaq bearish signal scores"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="subtle">Equal spacing represents consecutive trading sessions, not calendar days. Partial scores are marked.</span></div></section>
+      <!-- Hosted market charts: automatically updated by TradingView; not part of the 14-point score. -->
+      <section class="market-prices" aria-label="SPY and QQQ year-to-date price charts">
+        <div class="extras-header">
+          <div><div class="eyebrow">PRICE CONTEXT</div><h2>SPY &amp; QQQ · Year to date</h2><p>Daily candlesticks, starting at the beginning of the year. Hosted charts may include intraday/delayed quotes; check the provider's market-data status.</p></div>
+          <span class="capsule">INFORMATIONAL ONLY</span>
+        </div>
+        <div class="market-chart-grid">
+          <article class="chartpanel market-price-panel">
+            <div class="market-chart-heading"><div><div class="eyebrow">S&amp;P 500 ETF</div><h3>SPY · YTD</h3></div><a class="data-link" href="https://www.tradingview.com/symbols/AMEX-SPY/" target="_blank" rel="noopener noreferrer">Open chart</a></div>
+            <div class="tv-frame">
+              <div class="tradingview-widget-container" style="height:100%;width:100%">
+                <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+                <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/AMEX-SPY/" rel="noopener nofollow" target="_blank"><span>SPY chart by TradingView</span></a></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                {"autosize":true,"symbol":"AMEX:SPY","interval":"D","range":"YTD","timezone":"America/New_York","theme":"dark","style":"1","locale":"en","backgroundColor":"#111827","gridColor":"rgba(96,127,158,0.12)","withdateranges":true,"hide_side_toolbar":true,"hide_top_toolbar":false,"hide_legend":true,"hide_volume":true,"allow_symbol_change":false,"save_image":false,"calendar":false,"support_host":"https://www.tradingview.com"}
+                </script>
+              </div>
+            </div>
+          </article>
+          <article class="chartpanel market-price-panel">
+            <div class="market-chart-heading"><div><div class="eyebrow">NASDAQ-100 ETF</div><h3>QQQ · YTD</h3></div><a class="data-link" href="https://www.tradingview.com/symbols/NASDAQ-QQQ/" target="_blank" rel="noopener noreferrer">Open chart</a></div>
+            <div class="tv-frame">
+              <div class="tradingview-widget-container" style="height:100%;width:100%">
+                <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+                <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/NASDAQ-QQQ/" rel="noopener nofollow" target="_blank"><span>QQQ chart by TradingView</span></a></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                {"autosize":true,"symbol":"NASDAQ:QQQ","interval":"D","range":"YTD","timezone":"America/New_York","theme":"dark","style":"1","locale":"en","backgroundColor":"#111827","gridColor":"rgba(96,127,158,0.12)","withdateranges":true,"hide_side_toolbar":true,"hide_top_toolbar":false,"hide_legend":true,"hide_volume":true,"allow_symbol_change":false,"save_image":false,"calendar":false,"support_host":"https://www.tradingview.com"}
+                </script>
+              </div>
+            </div>
+          </article>
+        </div>
+        <p class="provider-note">Charts by <a href="https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/" target="_blank" rel="noopener noreferrer">TradingView</a>. Price data can be delayed or use Cboe-derived U.S. quotes; they may not match Thinkorswim tick-for-tick. These charts update independently of the dashboard's end-of-day scoring.</p>
+      </section>
+      <!-- Separate independent market-sentiment index; does not affect either score. -->
+      <section class="chartpanel fear-panel" aria-label="Independent Fear and Greed Index history">
+        <div class="panel-head fear-head">
+          <div><div class="eyebrow">MARKET SENTIMENT · EXTERNAL DATA</div><h2>Fear &amp; Greed Index · History</h2><p>Independent stock-market sentiment index, not CNN's index. Informational only; not included in the 14-point score.</p></div>
+          <div class="fear-current"><div class="fear-score" id="fear-latest-score">—</div><div><div class="fear-zone" id="fear-latest-label">Loading</div><div class="fear-date" id="fear-latest-date">—</div></div></div>
+        </div>
+        <div class="fear-toolbar"><div class="seg" role="group" aria-label="Fear and Greed chart date range"><button id="fear90" type="button" aria-pressed="false">90 Days</button><button id="fearYTD" type="button" class="active" aria-pressed="true">YTD</button><button id="fear1Y" type="button" aria-pressed="false">1 Year</button></div><span id="fear-range-label" class="subtle">Loading sentiment history…</span></div>
+        <svg id="fear-history-svg" viewBox="0 0 960 245" role="img" aria-label="Daily stock-market fear and greed index on a zero to 100 scale"></svg>
+        <div id="fear-message" class="fear-message" role="status">Loading independent Fear &amp; Greed history…</div>
+        <div class="fear-band-key"><span><i class="fear-swatch fear-extreme"></i>Extreme Fear · 0–20</span><span><i class="fear-swatch fear-fear"></i>Fear · 21–40</span><span><i class="fear-swatch fear-neutral"></i>Neutral · 41–60</span><span><i class="fear-swatch fear-greed"></i>Greed · 61–80</span><span><i class="fear-swatch fear-high"></i>Extreme Greed · 81–100</span></div>
+        <p class="provider-note">Source: <a href="https://feargreedchart.com/" target="_blank" rel="noopener noreferrer">FearGreedChart.com</a> (<a href="https://feargreedchart.com/methodology" target="_blank" rel="noopener noreferrer">methodology</a>). Free public API, refreshed by its provider; values are not the CNN Fear &amp; Greed Index. <a href="https://www.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener noreferrer">View CNN's separate index</a>.</p>
+      </section>
       <div class="columns">
         <section class="signals-panel"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC</div><h2>S&P 500 internals</h2></div><span class="capsule">SPY</span></div><div id="sp-signals" class="signal-list"></div></section>
         <section class="signals-panel"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC</div><h2>Nasdaq-100 internals</h2></div><span class="capsule">QQQ</span></div><div id="nd-signals" class="signal-list"></div></section>
@@ -32,5 +78,6 @@
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>Refresh scheduled after the US market close · Version 0.1</span></footer>
   </div>
   <script src="app.js?v=14-point-no-pc-axis-20261122" defer></script>
+  <script src="market-extras.js?v=charts-fear-ytd-20261122" defer></script>
 </body>
 </html>

@@ -9,3 +9,34 @@
 
 /* Informational-only index constituent P/C readings use blue, never score colors. */
 .regime.info{background:#1c354d;border-color:#36648c;color:#9dd7ff}
+
+
+/* Public, hosted SPY/QQQ charts + independent sentiment chart. */
+.market-prices{margin-top:20px}
+.extras-header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 0 14px;flex-wrap:wrap}
+.extras-header h2{font-size:20px;margin-top:4px}
+.extras-header p{font-size:12px;max-width:780px;margin-top:4px}
+.market-chart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.market-price-panel{margin:0;padding:20px 18px 12px;min-width:0}
+.market-chart-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}
+.market-chart-heading h3{margin-top:3px}
+.tv-frame{height:390px;min-height:390px;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#111827}
+.tradingview-widget-copyright{height:32px!important;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}
+.tradingview-widget-copyright a,.provider-note a{color:#9bcfff;text-decoration:underline;text-underline-offset:2px}
+.provider-note{font-size:11px;color:var(--sub);margin-top:9px;line-height:1.6}
+.fear-panel{margin-top:20px}
+.fear-head{align-items:center}
+.fear-current{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.fear-score{font-size:40px;font-weight:800;line-height:1;color:var(--yellow);min-width:60px;text-align:right}
+.fear-zone{font-size:13px;font-weight:800;color:var(--muted)}
+.fear-date{font-size:11px;color:var(--sub)}
+.fear-toolbar{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.fear-toolbar .subtle{font-size:11px}
+#fear-history-svg{width:100%;height:auto;max-height:275px;display:block}
+.fear-message{color:var(--muted);font-size:12px;text-align:center;margin:3px 0 8px}
+.fear-message:empty{display:none}
+.fear-band-key{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:11px;color:var(--muted);margin-top:10px}
+.fear-swatch{display:inline-block;width:9px;height:9px;border-radius:100%;margin-right:5px}
+.fear-extreme{background:#ee5d73}.fear-fear{background:#ef986b}.fear-neutral{background:#c6c1a9}.fear-greed{background:#6bd9a1}.fear-high{background:#20ad81}
+@media(max-width:900px){.market-chart-grid{grid-template-columns:1fr}.tv-frame{height:420px}}
+@media(max-width:550px){.market-price-panel{padding:14px}.tv-frame{height:335px;min-height:335px}.fear-panel{padding:17px}.fear-current{width:100%}.fear-score{text-align:left}.fear-band-key{gap:7px 10px;font-size:10px}}
