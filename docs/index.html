@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=scoringguide15-20261122">
+  <link rel="stylesheet" href="styles.css?v=backtest20m-20261122">
 </head>
 <body>
   <div class="shell">
@@ -95,7 +95,19 @@
         </div>
         <p class="provider-note">Charts by <a href="https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/" target="_blank" rel="noopener noreferrer">TradingView</a>. Price data can be delayed or use Cboe-derived U.S. quotes; they may not match Thinkorswim tick-for-tick. These charts update independently of the dashboard's end-of-day scoring. Moving-average labels use BULLISH when the daily close is greater than or equal to its SMA, otherwise BEARISH. Moving-average and RSI(14) values use unadjusted SPY/QQQ end-of-day closes and can differ slightly from TradingView or Thinkorswim. RSI overbought/oversold thresholds describe momentum, not automatic trading signals. The five individual moving-average BULLISH/BEARISH readings are informational only. The original SPY/QQQ Trend indicator is scored: BEARISH when close is below the 200D SMA; BULLISH when close is above 50D and 50D is above 200D; otherwise CAUTION. RSI contributes one separate momentum point. The price charts and Fear &amp; Greed remain external, informational visuals.</p>
       </section>
-      <section class="chartpanel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Bearish signals over time</h2><p>Observed bearish points out of 15; dates follow market trading sessions (weekends and holidays omitted).</p><p class="chart-range" id="chart-range">Awaiting date range</p></div><div class="seg"><button id="hist30" class="active" type="button" title="Last 30 trading sessions">30 Sessions</button><button id="hist90" type="button" title="Last 90 trading sessions">90 Sessions</button></div></div><svg id="history-svg" viewBox="0 0 960 245" role="img" aria-label="Historical SP500 and Nasdaq bearish signal scores"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="subtle">Equal spacing represents consecutive trading sessions, not calendar days. Partial scores are marked.</span></div></section>
+      <section class="chartpanel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Bearish signals over time</h2><p>Observed bearish points out of 15; dates follow market trading sessions (weekends and holidays omitted).</p><p class="chart-range" id="chart-range">Awaiting date range</p></div><div class="seg history-controls"><button id="hist30" class="active" type="button" title="Last 30 trading sessions">30 Sessions</button><button id="hist90" type="button" title="Last 90 trading sessions">90 Sessions</button><button id="histYear" type="button" title="Past 365 calendar days">1 Year</button><button id="hist20m" type="button" title="Past 20 calendar months">20 Months</button></div></div><svg id="history-svg" viewBox="0 0 960 245" role="img" aria-label="Historical SP500 and Nasdaq bearish signal scores"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="subtle">Equal spacing represents consecutive trading sessions, not calendar days. Partial scores are marked.</span></div></section>
+      <section class="chartpanel backtest-panel" aria-label="Historical score threshold research">
+        <div class="panel-head"><div><div class="eyebrow">EXPERIMENTAL HISTORICAL RESEARCH</div>
+          <h2>Risk-On threshold study · 0–4 vs 0–5</h2>
+          <p>Number of sessions with a complete 15/15 score at or below each threshold. Your live classification remains <strong>0–4 Risk-On</strong>.</p>
+          <p class="chart-range" id="backtest-date-range">Awaiting reconstructed history</p>
+        </div></div>
+        <div class="backtest-grid">
+          <div><h3>Past 365 calendar days</h3><div id="year-sp-backtest" class="backtest-card">Awaiting data</div><div id="year-nd-backtest" class="backtest-card">Awaiting data</div></div>
+          <div><h3>Past 20 calendar months</h3><div id="twenty_months-sp-backtest" class="backtest-card">Awaiting data</div><div id="twenty_months-nd-backtest" class="backtest-card">Awaiting data</div></div>
+        </div>
+        <p class="provider-note">Reconstructed from EOD market history; not a stored record of past live dashboard outputs. Sessions with any missing scored indicator are <strong>excluded</strong> from threshold counts, not treated as bullish. Five-session forward price returns use subsequent ETF closing prices, overlap, exclude pending sessions, and do not account for dividends, costs or slippage. Historical constituent breadth uses <strong>current members</strong> and may introduce survivorship bias. Research only—not a validated strategy or an independently sourced backtest.</p>
+      </section>
       <!-- Separate independent market-sentiment index; does not affect either score. -->
       <section class="chartpanel fear-panel" aria-label="Independent Fear and Greed Index history">
         <div class="panel-head fear-head">
@@ -117,7 +129,7 @@
     </main>
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>Refresh scheduled after the US market close · Version 0.1</span></footer>
   </div>
-  <script src="app.js?v=trendrestore15-20261122" defer></script>
+  <script src="app.js?v=backtest20m-20261122" defer></script>
   <script src="market-extras.js?v=charts-fear-ytd-20261122" defer></script>
 </body>
 </html>

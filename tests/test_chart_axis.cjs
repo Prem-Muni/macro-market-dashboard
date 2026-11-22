@@ -83,7 +83,11 @@ assert(html.indexOf('REGIME HISTORY')<html.indexOf('Fear &amp; Greed Index'));
 for(const ticker of ['spy','qqq'])for(const n of [5,20,50,100,200])assert(html.includes(`id="${ticker}-ma${n}"`));
 console.log('PASS: SPY/QQQ SMA values, EOD dates, N/A handling, and swapped chart order');
 
-assert(html.includes('Prior 14-point model:')) ;
+assert(html.includes('Original 14-point model:')) ;
+assert(html.includes('ORIGINAL TREND + RSI SCORED'));
+assert(html.includes('SMA comparisons are informational only'));
+assert(!html.includes('5-SMA composite contributes'));
+assert(!html.includes('5-SMA ALIGNMENT + RSI SCORED'));
 assert(html.includes('15-point bearish scores'));
 console.log('PASS: 15-point model labels and legacy reference visible');
 
@@ -91,3 +95,32 @@ assert(!html.includes("Observed bearish points out of 14"));
 assert(html.includes("Observed bearish points out of 15"));
 assert(html.includes("not included in the 15-point score"));
 console.log("PASS: no stale 14-point captions");
+// 20-month and 365-calendar-day chart ranges and historical research cards.
+Element.prototype.append=function(...nodes){for(const n of nodes)this.appendChild(n)};
+const datesLong=[];
+for(let d=new Date('2024-10-01T00:00:00Z');d<=new Date('2026-11-20T00:00:00Z');d.setUTCDate(d.getUTCDate()+1))
+ if(d.getUTCDay()!==0&&d.getUTCDay()!==6)datesLong.push(d.toISOString().slice(0,10));
+const backHistory=datesLong.map((date,i)=>({date,sp:i%15,nd:i%14,sp_available:15,nd_available:15}));
+context.longHistory=backHistory;
+vm.runInContext("snapshot={markets:{sp500:{score:{total:15}}}};horizon='all';plot(longHistory)",context);
+assert(nodes['chart-range'].textContent.includes(`${backHistory.length} trading sessions`));
+assert(textNodes().map(x=>x.textContent).includes(fmt(datesLong.at(-1))));
+vm.runInContext("horizon='year';plot(longHistory)",context);
+const yearCount=Number(nodes['chart-range'].textContent.match(/^(\d+)/)[1]);
+assert(yearCount>=250&&yearCount<=270);
+assert.strictEqual(vlines().length,7);
+for(const id of ['histYear','hist20m']) assert(html.includes(`id="${id}"`));
+const sample=(days,comp)=>({complete_days:comp,incomplete_days:days-comp,
+ zero_to_four:{days:15,forward5_observations:12,forward5_mean_pct:1.27,forward5_positive_pct:58.3},
+ exactly_five:{days:8,forward5_observations:7,forward5_mean_pct:-0.3,forward5_positive_pct:42.9},
+ zero_to_five:{days:23,forward5_observations:19,forward5_mean_pct:0.7,forward5_positive_pct:52.6}});
+const p={start:'2025-03-20',end:'2026-11-20',sessions:420,
+ markets:{sp:sample(420,400),nd:sample(420,399)}};
+const bp={backtest:{year:{...p,start:'2025-11-20',sessions:252},twenty_months:p}};
+context.testBacktest=bp;
+vm.runInContext('renderBacktest(testBacktest)',context);
+assert(nodes['year-sp-backtest'].children.length===3);
+assert(nodes['twenty_months-nd-backtest'].children.length===3);
+assert(nodes['backtest-date-range'].textContent.includes('2025-03-20'));
+assert(nodes['year-sp-backtest'].children[1].children[2].children[0].textContent==='23');
+console.log('PASS: 365d/20-month chart history, actual session ticks and backtest cards');

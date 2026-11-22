@@ -11,11 +11,11 @@ import pandas as pd
 
 S = {"bull":"BULLISH", "bear":"BEARISH", "warn":"CAUTION", "na":"N/A"}
 SHARED = ["oil", "usd", "tnx", "credit", "copper", "vix_curve"]
-SP = ["vix", "sp_def", "sp_xle", "sp_smh", "sp_ma_alignment", "sp_rsi14", "rsp_spy", "iwm_spy", "sp_breadth1d"]
-ND = ["vxn", "nd_def", "nd_xle", "nd_smh", "nd_ma_alignment", "nd_rsi14", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
+SP = ["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "sp_rsi14", "rsp_spy", "iwm_spy", "sp_breadth1d"]
+ND = ["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "nd_rsi14", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
 LABELS = {
  "vix":"VIX", "vxn":"VXN", "oil":"Crude Oil", "usd":"US Dollar", "tnx":"10Y Yield", "credit":"Credit HYG/IEF", "copper":"Copper", "vix_curve":"VIX Curve",
- "sp_ma_alignment":"SPY MA Alignment", "sp_rsi14":"SPY RSI (14)", "nd_ma_alignment":"QQQ MA Alignment", "nd_rsi14":"QQQ RSI (14)",
+ "sp_rsi14":"SPY RSI (14)", "nd_rsi14":"QQQ RSI (14)",
  "sp_def":"Defensives/SPY", "sp_xle":"XLE/SPY", "sp_smh":"SMH/SPY", "spy_trend":"SPY Trend", "rsp_spy":"RSP/SPY", "iwm_spy":"IWM/SPY", "sp_breadth1d":"S&P Breadth 1D", "sp_breadth5d":"S&P Breadth 5D", "sp_breadth200":"S&P Breadth 200D",
  "nd_def":"Defensives/QQQ", "nd_xle":"XLE/QQQ", "nd_smh":"SMH/QQQ", "qqq_trend":"QQQ Trend", "qqqe_qqq":"QQQE/QQQ", "iwm_qqq":"IWM/QQQ", "nd_breadth1d":"Nasdaq Breadth 1D", "nd_breadth5d":"Nasdaq Breadth 5D",
 }
@@ -115,9 +115,9 @@ def build_frames(prices: pd.DataFrame, extra: pd.DataFrame | None = None):
     f["hyg_r"],f["ief_r"] = pct("HYG",1),pct("IEF",1)
     f["basket_1"],f["basket_10"] = basket1,basket10
     f["spy_1"],f["spy_10"],f["qqq_1"],f["qqq_10"],f["xle_10"] = pct("SPY",1),pct("SPY",10),pct("QQQ",1),pct("QQQ",10),pct("XLE",10)
-    # Daily simple moving averages and Wilder RSI. Their new score signals
-    # replace the old one-point trend measure (MA alignment) and add one point
-    # for RSI. Do not score each MA separately.
+    # Daily simple moving averages and Wilder RSI. All five SMA rows are
+    # informational; the original 50D/200D trend signal is scored once,
+    # plus one RSI point. Individual MA rows do not score separately.
     for symbol, close_series in (("spy", spy), ("qqq", qqq)):
         for days in (5, 20, 50, 100, 200):
             f[f"{symbol}_ma{days}"] = ma(close_series, days)
@@ -195,21 +195,9 @@ def build_day(f: pd.DataFrame, pos: int, sources:dict | None=None):
             if c>ma50 and ma50>ma200: return "bull","BULLISH",None,"Above 50D SMA; 50D above 200D"
             return "warn","CAUTION",None,"Mixed trend"
         condition(key,[bench.upper(),f"{bench}_ma50",f"{bench}_ma200"],trend,bench.upper())
-    # A single trend vote from all five MAs prevents five heavily correlated
-    # price-vs-average observations from crowding out macro/credit/breadth.
-    # For each SMA, closing price >= average is bullish (user-selected rule).
-    # When ANY SMA is missing, the composite is N/A, never assumed bullish.
-    for key, bench in (("sp_ma_alignment", "spy"), ("nd_ma_alignment", "qqq")):
-        periods=(5,20,50,100,200)
-        def alignment(*vals):
-            close=vals[0]
-            levels=vals[1:]
-            below=[n for n,level in zip(periods,levels) if close<level]
-            n=len(below)
-            st="bear" if n>=3 else "warn" if n==2 else "bull"
-            note=f"Close below {n}/5 SMAs" + (f" ({', '.join(str(d)+'D' for d in below)})" if below else "") + "; equality counts bullish"
-            return st,S[st],n,note
-        condition(key,[bench.upper()]+[f"{bench}_ma{n}" for n in periods],alignment,bench.upper()+" EOD close")
+    # The old SPY Trend / QQQ Trend indicator above remains the scored trend
+    # signal. Each 5/20/50/100/200 day MA is displayed separately as context
+    # (close >= SMA is BULLISH) and NEVER contributes an extra score point.
     # 45-55 is an intentionally neutral momentum buffer around RSI's 50
     # centreline; these are research thresholds, not 30/70 reversal signals.
     for key,bench in (("sp_rsi14","spy"),("nd_rsi14","qqq")):
@@ -310,7 +298,52 @@ def swing_from_bounds(score: dict, prev_score: dict | None, confirmation: dict, 
     return next(iter(outcomes)) if len(outcomes)==1 else "N/A"
 
 
-def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=None, history_days=100):
+def historical_backtest(records: list[dict], frame: pd.DataFrame, end_date: pd.Timestamp, months: int = 20) -> dict:
+    """Descriptive exploratory analysis; signals are computed using only data through each date.
+
+    Requires all 15 scored inputs on a session. Uses 5 subsequent observed
+    trading-session closes for forward price change, never future information
+    in the day-of-signal score. Overlapping windows are NOT independent trades.
+    """
+    def one_window(begin: pd.Timestamp) -> dict:
+        sub = [r for r in records if pd.Timestamp(r["date"]) >= begin]
+        answer = {"start": begin.strftime("%Y-%m-%d"),
+                  "end": end_date.strftime("%Y-%m-%d"),
+                  "sessions": len(sub), "markets": {}}
+        for market, symbol in (("sp", "SPY"), ("nd", "QQQ")):
+            complete = [r for r in sub if r[market]["complete"]]
+            groups = {"zero_to_four": [], "exactly_five": [], "zero_to_five": []}
+            for rec in complete:
+                bearish = rec[market]["bearish"]
+                if bearish <= 4: groups["zero_to_four"].append(rec)
+                if bearish == 5: groups["exactly_five"].append(rec)
+                if bearish <= 5: groups["zero_to_five"].append(rec)
+            def desc(items):
+                returns = []
+                for rec in items:
+                    loc = frame.index.get_loc(pd.Timestamp(rec["date"]))
+                    if not isinstance(loc, int) or loc + 5 >= len(frame):
+                        continue
+                    start_close = safe(frame[symbol].iloc[loc]); end_close = safe(frame[symbol].iloc[loc+5])
+                    if start_close is None or start_close <= 0 or end_close is None: continue
+                    returns.append((end_close / start_close - 1) * 100)
+                return {"days": len(items), "forward5_observations": len(returns),
+                        "forward5_mean_pct": round(sum(returns)/len(returns), 3) if returns else None,
+                        "forward5_positive_pct": round(100*sum(x>0 for x in returns)/len(returns), 1) if returns else None}
+            answer["markets"][market] = {
+                "complete_days": len(complete),
+                "incomplete_days": len(sub)-len(complete),
+                "zero_to_four": desc(groups["zero_to_four"]),
+                "exactly_five": desc(groups["exactly_five"]),
+                "zero_to_five": desc(groups["zero_to_five"]),
+            }
+        return answer
+    # Time windows measured backwards from the latest completed EOD session.
+    return {"year": one_window(end_date-pd.Timedelta(days=365)),
+            "twenty_months": one_window(end_date-pd.DateOffset(months=months))}
+
+
+def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=None, history_days=100, history_months=20):
     f=build_frames(prices,extra)
     if "SPY" not in f or "QQQ" not in f: raise ValueError("SPY and QQQ historical prices required")
     dates=f.index[f["SPY"].notna() & f["QQQ"].notna()]
@@ -320,11 +353,16 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     indexpos=f.index.get_loc(d)
     records=[]
     # More days retained so 5D analytics compare the same available inputs.
-    # Keep the original 14-point model for comparison, including its original
-    # 50D/200D trend signal. It does not affect the new 15-point totals.
+    # Keep original 14-point baseline (identical signals minus the new RSI
+    # point) for comparison; the 15-point model uses the original trend rule.
     old_sp=["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "rsp_spy", "iwm_spy", "sp_breadth1d"]
     old_nd=["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
-    for pos in range(max(0,indexpos-history_days-8),indexpos+1):
+    # Reconstruct each historical session from EOD input series. The price
+    # loader fetches 3 years for ~200-session warm-up ahead of 20-month window.
+    first_date = pd.Timestamp(d) - pd.DateOffset(months=history_months)
+    history_start = int(f.index.searchsorted(first_date))
+    # Keep eight prior sessions to preserve any last-5D comparisons.
+    for pos in range(max(0,history_start-8),indexpos+1):
         day,sigs=build_day(f,pos,sources)
         records.append({"date":day,"signals":sigs,
                         "sp":score_of(sigs,SHARED+SP),"nd":score_of(sigs,SHARED+ND),
@@ -363,13 +401,13 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     latest["nd_confirmation"]=confirmation(volnd,brnd,pricend)
     def swing(index):
         prev_score=records[-6][index] if len(records)>5 else None
-        trend_key="sp_ma_alignment" if index=="sp" else "nd_ma_alignment"
+        trend_key="spy_trend" if index=="sp" else "qqq_trend"
         return swing_from_bounds(latest[index],prev_score,
             latest[index+"_confirmation"],latest["signals"][trend_key].state)
     latest["sp_swing"]=swing("sp")
     latest["nd_swing"]=swing("nd")
-    # Derived ETF averages and RSI remain visible as detailed price context.
-    # Their two composite signals ARE included in this experimental model.
+    # All five ETF SMA rows remain informational; original 50D/200D Trend
+    # and RSI14 are the two scored technical signals.
     def ma_context(symbol):
         close=safe(frow.get(symbol.upper()))
         averages={}
@@ -395,5 +433,9 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     latest["sp"]=prune_sc(latest["sp"]); latest["nd"]=prune_sc(latest["nd"])
     legacy_sp=prune_sc(latest["sp_legacy"])
     legacy_nd=prune_sc(latest["nd_legacy"])
-    history=[{"date":r["date"],"sp":r["sp"]["bearish"],"sp_available":r["sp"]["available"],"nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"]} for r in records[-90:]]
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v1-ma-composite-rsi", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"moving_averages":moving_averages,"history":history,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point model. Old trend point replaced by 5-SMA composite; one RSI point added. The legacy 14-point score is reported separately for comparison. Thresholds unvalidated."}}
+    historical_records=[r for r in records if pd.Timestamp(r["date"]) >= first_date]
+    history=[{"date":r["date"], "sp":r["sp"]["bearish"],"sp_available":r["sp"]["available"],
+              "sp_max":r["sp"]["possible_max"], "nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"],
+              "nd_max":r["nd"]["possible_max"]} for r in historical_records]
+    backtest=historical_backtest(historical_records,f,pd.Timestamp(d),history_months)
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v2-original-trend-rsi", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point model; Risk-On threshold unchanged at 0–4. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score ≤4/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."}}

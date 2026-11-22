@@ -56,7 +56,7 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(old['markets']['sp500']['score']['total'],15)
         self.assertEqual(old['markets']['nasdaq100']['score']['total'],15)
 
-    def test_moving_averages_exact_and_scored_as_one_composite(self):
+    def test_moving_averages_exact_and_informational_only(self):
         price,extra=self.make(True)
         result=analyze(price,extra)
         for sym in ('spy','qqq'):
@@ -73,10 +73,10 @@ class EngineTests(unittest.TestCase):
                 self.assertEqual(point['state'],'BULLISH' if close >= expected else 'BEARISH')
         self.assertEqual(result['markets']['sp500']['score']['total'],15)
         self.assertEqual(result['markets']['nasdaq100']['score']['total'],15)
-        self.assertIn('sp_ma_alignment',result['order']['sp500'])
-        self.assertIn('nd_ma_alignment',result['order']['nasdaq100'])
-        self.assertNotIn('spy_trend',result['order']['sp500'])
-        self.assertNotIn('qqq_trend',result['order']['nasdaq100'])
+        self.assertIn('spy_trend',result['order']['sp500'])
+        self.assertIn('qqq_trend',result['order']['nasdaq100'])
+        self.assertNotIn('sp_ma_alignment',result['order']['sp500'])
+        self.assertNotIn('nd_ma_alignment',result['order']['nasdaq100'])
 
     def test_equal_to_sma_is_bullish_below_is_bearish(self):
         price,extra=self.make(True)
@@ -121,7 +121,7 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(wilder_rsi(pd.Series(range(30)),14).iloc[-1],100.0)
         self.assertEqual(wilder_rsi(pd.Series(range(30,0,-1)),14).iloc[-1],0.0)
 
-    def test_rsi_and_100d_sma_contribute_through_two_signals(self):
+    def test_rsi_scored_and_100d_sma_informational(self):
         price,extra=self.make(True)
         result=analyze(price,extra)
         for sym in ('spy','qqq'):
@@ -176,7 +176,7 @@ class EngineTests(unittest.TestCase):
         price,extra=self.make(True)
         res=analyze(price,extra)
         self.assertIsNotNone(res['markets']['sp500']['momentum']['d5'])
-        self.assertEqual(len(res['history']),90)
+        self.assertGreater(len(res['history']),90)
 
 if __name__=='__main__':unittest.main()
 
@@ -218,7 +218,7 @@ class PartialDataDecisionTests(unittest.TestCase):
 
 
 class NewTechnicalScoringTests(unittest.TestCase):
-    def test_legacy_score_preserved_and_new_score_one_point_larger(self):
+    def test_original_14point_model_is_new_model_minus_rsi(self):
         base=EngineTests()
         price,extra=base.make(True)
         result=analyze(price,extra)
@@ -228,25 +228,54 @@ class NewTechnicalScoringTests(unittest.TestCase):
             self.assertEqual((new['total'],old['total']),(15,14))
             self.assertEqual(new['available'],15)
             self.assertEqual(old['available'],14)
-        self.assertNotIn('spy_trend',result['order']['sp500'])
-        self.assertNotIn('qqq_trend',result['order']['nasdaq100'])
+            rsi_key='sp_rsi14' if market=='sp500' else 'nd_rsi14'
+            rsi_bear=result['signals'][rsi_key]['state']=='bear'
+            self.assertEqual(new['bearish'], old['bearish']+int(rsi_bear))
+        self.assertIn('spy_trend',result['order']['sp500'])
+        self.assertIn('qqq_trend',result['order']['nasdaq100'])
         self.assertTrue(all(0<=row['sp']<=15 and 0<=row['nd']<=15 for row in result['history']))
 
-    def test_ma_alignment_bearish_at_three_below_and_equality_bullish(self):
-        base=EngineTests()
-        price,extra=base.make(True)
-        # At flat prices, all SMAs are equal to close -> 0 below -> bullish.
-        price['SPY']=500.0
-        result=analyze(price,extra)
-        self.assertEqual(result['signals']['sp_ma_alignment']['state'],'bull')
-        self.assertEqual(result['signals']['sp_ma_alignment']['value'],0)
-        # Recent fall makes close below all MAs (>=3 of 5).
-        price.iloc[-1,price.columns.get_loc('SPY')]=499.999
-        result=analyze(price,extra)
-        self.assertEqual(result['signals']['sp_ma_alignment']['state'],'bear')
-        self.assertEqual(result['signals']['sp_ma_alignment']['value'],5)
-        self.assertEqual(result['signals']['sp_rsi14']['state'],'bear')
-        self.assertEqual(result['markets']['sp500']['score']['total'],15)
+    def test_original_trend_bearish_bullish_and_caution(self):
+        from engine import build_day, build_frames
+        price,extra=EngineTests().make(True)
+        f=build_frames(price,extra)
+        row=len(f)-1
+        # Bearish whenever close < 200-day SMA, even if 50-day SMA is lower.
+        f.iloc[row,f.columns.get_loc('SPY')]=99.0
+        f.iloc[row,f.columns.get_loc('spy_ma50')]=97.0
+        f.iloc[row,f.columns.get_loc('spy_ma200')]=100.0
+        _,signals=build_day(f,row)
+        self.assertEqual(signals['spy_trend'].state,'bear')
+        # Bullish only when close > 50D > 200D.
+        f.iloc[row,f.columns.get_loc('SPY')]=105.0
+        f.iloc[row,f.columns.get_loc('spy_ma50')]=103.0
+        _,signals=build_day(f,row)
+        self.assertEqual(signals['spy_trend'].state,'bull')
+        # CAUTION when above 200D but not a bullish trend.
+        f.iloc[row,f.columns.get_loc('SPY')]=101.0
+        f.iloc[row,f.columns.get_loc('spy_ma50')]=103.0
+        _,signals=build_day(f,row)
+        self.assertEqual(signals['spy_trend'].state,'warn')
+        # Exact equality at 200D is caution under original Trend rule.
+        f.iloc[row,f.columns.get_loc('SPY')]=100.0
+        _,signals=build_day(f,row)
+        self.assertEqual(signals['spy_trend'].state,'warn')
+
+    def test_shorter_sma_changes_do_not_change_score(self):
+        from engine import build_day, build_frames, score_of
+        price,extra=EngineTests().make(True)
+        f=build_frames(price,extra)
+        row=len(f)-1
+        _,before=build_day(f,row)
+        a=score_of(before,SHARED+SP)
+        # Extreme changes to 5D, 20D, 100D must not influence score.
+        for period in (5,20,100):
+            f.iloc[row,f.columns.get_loc('spy_ma'+str(period))]=0.01
+        _,after=build_day(f,row)
+        b=score_of(after,SHARED+SP)
+        self.assertEqual((a['bearish'],a['possible_max']), (b['bearish'],b['possible_max']))
+        self.assertNotIn('sp_ma_alignment',after)
+        self.assertEqual(after['spy_trend'].state,before['spy_trend'].state)
 
     def test_rsi_thresholds_score_one_point_only(self):
         from engine import build_day,build_frames
@@ -268,12 +297,11 @@ class NewTechnicalScoringTests(unittest.TestCase):
         self.assertEqual(signals['sp_rsi14'].state,'bull')
         self.assertEqual(sum(k.endswith('rsi14') for k in SP),1)
 
-    def test_missing_sma_fails_closed(self):
-        base=EngineTests()
-        price,extra=base.make(True)
+    def test_missing_200day_trend_fails_closed(self):
+        price,extra=EngineTests().make(True)
         result=analyze(price.tail(100),extra.tail(100))
-        self.assertEqual(result['signals']['sp_ma_alignment']['state'],'na')
-        self.assertEqual(result['signals']['nd_ma_alignment']['state'],'na')
+        self.assertEqual(result['signals']['spy_trend']['state'],'na')
+        self.assertEqual(result['signals']['qqq_trend']['state'],'na')
         self.assertEqual(result['markets']['sp500']['score']['missing'],1)
         self.assertEqual(result['markets']['nasdaq100']['score']['missing'],1)
 

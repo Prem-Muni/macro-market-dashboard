@@ -13,7 +13,7 @@ function summary(prefix,model){
  $(prefix+'-score').textContent=scoreFormat(s);
  $(prefix+'-coverage').textContent=`${s.available}/${s.total} signals available${s.complete?'':' · score range'}`;
  const base=$(prefix+'-baseline');
- if(base)base.textContent=model.legacy_14?`Previous website model: ${scoreFormat(model.legacy_14)} (reference only)`:'Previous website model: —';
+ if(base)base.textContent=model.legacy_14?`Original 14-point model: ${scoreFormat(model.legacy_14)} (reference only)`:'Original 14-point model: —';
  const status=$(prefix+'-regime');status.textContent=s.regime;status.className='regime '+stateClass(s.regime);
  $(prefix+'-meter').style.width=((s.bearish/s.total)*100).toFixed(1)+'%';
  const tr=$(prefix+'-trend');tr.textContent=m.state;tr.className=tone(m.state);
@@ -47,7 +47,10 @@ const sessionDate=s=>{
 };
 function plot(history){
  const svg=$('history-svg');svg.replaceChildren();
- const data=(history||[]).slice(-horizon);
+ const all=history||[];
+ const data=horizon===30||horizon===90?all.slice(-horizon):
+  horizon==='year'&&all.length?all.filter(r=>Date.parse(r.date+'T00:00:00Z')>=Date.parse(all.at(-1).date+'T00:00:00Z')-365*86400000):
+  all;
  const W=960,H=245,left=45,right=26,top=20,bottom=46;
  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
  const el=(tag,attrs={},parent=svg)=>{
@@ -74,7 +77,7 @@ function plot(history){
  }
  // Seven evenly spaced labels for 30/90 sessions; each is the ACTUAL date
  // from the record at that chart X position—not a fabricated calendar tick.
- const spacing=horizon===30?5:15;
+ const spacing=Math.max(1,Math.ceil((data.length-1)/6));
  const ticks=[];
  for(let i=0;i<data.length;i+=spacing)ticks.push(i);
  if(ticks[ticks.length-1]!==data.length-1){
@@ -107,7 +110,43 @@ function plot(history){
  }
 }
 
-// EOD SMA and RSI context; the engine scores a five-SMA composite and RSI once each.
+
+function renderBacktest(data){
+ const periods=data.backtest||{};
+ const pretty=(v,suffix='')=>v==null?'—':`${Number(v).toFixed(1)}${suffix}`;
+ for(const [key,p] of [['year',periods.year],['twenty_months',periods.twenty_months]]){
+  for(const [market,label] of [['sp','SPY'],['nd','QQQ']]){
+   const target=$(key+'-'+market+'-backtest');
+   if(!target)continue;
+   if(!p||!p.markets||!p.markets[market]){
+    target.textContent='Awaiting historical backtest data from an EOD refresh';continue;
+   }
+   const a=p.markets[market];
+   const f=(g)=>a.complete_days>0?(a[g]?.days??'—'):'—';
+   const fmt=g=>{const r=a[g]||{};return r.forward5_observations?`${pretty(r.forward5_mean_pct,'%')} avg · ${pretty(r.forward5_positive_pct,'%')} positive (n=${r.forward5_observations})`:'No verified forward observations';};
+   target.replaceChildren();
+   const summary=document.createElement('div');summary.className='backtest-coverage';
+   summary.textContent=`${label} · ${a.complete_days}/${p.sessions} complete sessions · ${a.incomplete_days} excluded`;
+   target.appendChild(summary);
+   const stats=document.createElement('div');stats.className='backtest-stats';
+   for(const [title,value] of [['0–4 points',f('zero_to_four')],['Exactly 5',f('exactly_five')],['0–5 points',f('zero_to_five')]]){
+    const e=document.createElement('div');e.className='backtest-stat';
+    const b=document.createElement('strong');b.textContent=String(value);
+    const small=document.createElement('span');small.textContent=title;
+    e.append(b,small);stats.appendChild(e);
+   }
+   target.appendChild(stats);
+   const perf=document.createElement('p');perf.className='backtest-perf';
+   perf.textContent=`Next 5 sessions after 0–4: ${fmt('zero_to_four')} · after exactly 5: ${fmt('exactly_five')}`;
+   target.appendChild(perf);
+  }
+ }
+ const details=$('backtest-date-range');
+ if(details&&periods.twenty_months){const p=periods.twenty_months;details.textContent=`Historical window: ${p.start} to ${p.end} · ${p.sessions} observed sessions`;}
+}
+
+// EOD SMA and RSI context; all five SMA comparisons are informational.
+// The original 50D/200D trend signal and RSI14 are scored once each.
 function renderMovingAverages(data){
  const all=data.moving_averages||{};
  for(const sym of ['spy','qqq']){
@@ -157,14 +196,23 @@ function render(data){
  renderMovingAverages(data);
  $('coverage-note').textContent=data.explanation?.partial||'';
  const all=data.markets.sp500.score.complete && data.markets.nasdaq100.score.complete;
- $('warning').textContent=all?'EXPERIMENTAL 15-point model (not yet mirrored in Thinkorswim). Validate data and thresholds before trading.':'EXPERIMENTAL 15-point model: PARTIAL FEEDS. Missing inputs are not bullish; scores can be ranges. Thinkorswim still uses the older 14-point model.';
+ $('warning').textContent=all?'EXPERIMENTAL 15-point model: original SPY/QQQ trend restored; RSI adds one point. SMA rows informational. Thinkorswim remains 14-point.':'EXPERIMENTAL 15-point model: PARTIAL FEEDS. Original trend restored; RSI adds one point, individual SMAs informational. Missing inputs are not bullish; Thinkorswim remains 14-point.';
  $('diagnostics').textContent=JSON.stringify({sources:data.sources,warnings:data.warnings},null,2);
  plot(data.history);
+ renderBacktest(data);
 }
 async function load(){
  try{const res=await fetch('data/latest.json?refresh='+Date.now(),{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);const data=await res.json();render(data)}
  catch(err){$('warning').textContent='Unable to read the latest published JSON: '+err.message; $('status-dot').className='status-dot warn';}
 }
 $('refresh').addEventListener('click',load);
-for(const n of [30,90])$('hist'+n).addEventListener('click',()=>{horizon=n; $('hist30').classList.toggle('active',n===30);$('hist90').classList.toggle('active',n===90);if(snapshot)plot(snapshot.history)});
+for(const mode of [30,90,'year','all']){
+ const id=mode==='year'?'histYear':mode==='all'?'hist20m':'hist'+mode;
+ $(id).addEventListener('click',()=>{
+  horizon=mode;
+  for(const [n,other] of [[30,'hist30'],[90,'hist90'],['year','histYear'],['all','hist20m']])
+   $(other).classList.toggle('active',mode===n);
+  if(snapshot)plot(snapshot.history);
+ });
+}
 load();

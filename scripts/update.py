@@ -28,6 +28,10 @@ SYMBOLS={
 FALLBACKS={"USD":"UUP", "TNX":"^TNX"}
 CBOE={k:f"https://cdn.cboe.com/api/global/us_indices/daily_prices/{k}_History.csv" for k in ("VIX","VXN","VIX3M")}
 EXTRA_COLUMNS={"SPX_BREADTH200","NDX_ADV","NDX_DECL"}
+# Twenty months of evaluated signals plus 200+ trading-session lookback.
+# Use an explicit historical start: yfinance does not document 3y/20mo periods.
+HISTORY_START=(pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
+               -pd.DateOffset(months=34)).strftime("%Y-%m-%d")
 
 def download_yahoo():
     import yfinance as yf
@@ -40,7 +44,7 @@ def download_yahoo():
         batch=names[ix:ix+5]
         tickers=[SYMBOLS[k] for k in batch]
         try:
-            data=yf.download(tickers=tickers,period="20mo",interval="1d",auto_adjust=False,threads=False,
+            data=yf.download(tickers=tickers,start=HISTORY_START,interval="1d",auto_adjust=False,threads=False,
                              group_by="ticker",progress=False,timeout=25)
         except Exception as exc:
             errors.append(f"Yahoo batch {tickers}: {exc}")
@@ -60,7 +64,7 @@ def download_yahoo():
     for key,alt in FALLBACKS.items():
         if key in series and len(series[key])>20: continue
         try:
-            data=yf.download(alt,period="20mo",interval="1d",auto_adjust=False,threads=False,progress=False,timeout=25)
+            data=yf.download(alt,start=HISTORY_START,interval="1d",auto_adjust=False,threads=False,progress=False,timeout=25)
             vals=data["Close"]
             if isinstance(vals,pd.DataFrame): vals=vals.iloc[:,0]
             vals=pd.to_numeric(vals,errors="coerce").dropna()
@@ -173,14 +177,14 @@ def main():
             errors.append(f"Estimated breadth not available: {type(exc).__name__}: {str(exc)[:120]}")
     # SPY session determines the website's EOD date; prevent a partial current-day candle.
     # Workflow scheduled after close; manual runs during market hours may include incomplete bars.
-    result=analyze(df,extra,sources)
+    result=analyze(df,extra,sources,history_months=20)
     result["sources"]={k:{"provider":v,"latest_session":prices[k].dropna().index.max().strftime("%Y-%m-%d")}
                        for k,v in sources.items() if k in prices and not prices[k].dropna().empty}
     for key in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL"):
         if key in sources:
             last_date=(extra[key].dropna().index.max().strftime("%Y-%m-%d") if extra is not None and key in extra and not extra[key].dropna().empty else result["session"])
             result["sources"][key] = {"provider": sources[key], "latest_session": last_date}
-    result["warnings"]=(errors[:12] + ["Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.", "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+    result["warnings"]=(errors[:12] + ["Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.", "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.", "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
                  "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."])
     OUT.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
     print(f"Wrote {OUT}: {result['session']} | SP {result['markets']['sp500']['score']['available']}/{result['markets']['sp500']['score']['total']}, "

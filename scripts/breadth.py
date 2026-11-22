@@ -109,7 +109,8 @@ def acquire_closes(tickers: list[str], downloader: Callable | None = None, batch
             break
         batch = tickers[ix:ix + batch_size]
         try:
-            frame = downloader(tickers=batch, period="18mo", interval="1d",
+            frame = downloader(tickers=batch, start=(pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
+                                      -pd.DateOffset(months=34)).strftime("%Y-%m-%d"), interval="1d",
                                group_by="ticker", auto_adjust=True,
                                progress=False, threads=4, timeout=25)
             for ticker in batch:
@@ -170,14 +171,18 @@ def calculate_breadth(sessions: pd.DatetimeIndex, membership: dict[str, list[str
             continue
         if idx == "SP500":
             # Fixed denominator across sessions avoids false day-to-day breadth swings.
+            daily_coverage = frame[eligible].notna() & ma[eligible].notna()
+            enough = daily_coverage.sum(axis=1) >= min_fraction * len(eligible)
+            # Keep a fixed denominator and reject dates with inadequate coverage;
+            # historical missing stock data must not turn into bearish breadth.
             ratio_series = frame[eligible].gt(ma[eligible]).sum(axis=1).div(len(eligible)).mul(100)
-            ratio_series.iloc[:199] = float("nan")
-            output["SPX_BREADTH200"] = ratio_series
+            output["SPX_BREADTH200"] = ratio_series.where(enough)
         else:
             eligible_delta = delta[eligible]
-            output["NDX_ADV"] = eligible_delta.gt(0).sum(axis=1).astype(float)
-            output["NDX_DECL"] = eligible_delta.lt(0).sum(axis=1).astype(float)
-            output.loc[dates[:1], ["NDX_ADV", "NDX_DECL"]] = float("nan")
+            daily_coverage = frame[eligible].notna() & frame[eligible].shift(1).notna()
+            enough = daily_coverage.sum(axis=1) >= min_fraction * len(eligible)
+            output["NDX_ADV"] = eligible_delta.gt(0).sum(axis=1).astype(float).where(enough)
+            output["NDX_DECL"] = eligible_delta.lt(0).sum(axis=1).astype(float).where(enough)
     return output, coverage, messages
 
 
