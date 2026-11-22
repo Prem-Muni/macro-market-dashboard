@@ -14,6 +14,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 from engine import analyze
+from breadth import derive_breadth
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/"docs"/"data"
@@ -145,12 +146,40 @@ def main():
     # Crucial: use ONLY common SPY/QQQ equity sessions. Futures can have
     # separate Sunday bars; those must not count as extra daily lookback bars.
     df=df.loc[df["SPY"].notna() & df["QQQ"].notna()]
+    # Optional constituent-derived breadth from current index membership and ETF
+    # session-aligned historical closes. Estimate only; no official index feed.
+    licensed_cols = set(extra.columns) if extra is not None else set()
+    if os.environ.get("DISABLE_EXPERIMENTAL_BREADTH", "0") != "1":
+        try:
+            estimate, coverage, breadth_errors = derive_breadth(df.index)
+            errors.extend(breadth_errors)
+            if estimate is not None:
+                # Licensed supplements, if present, always take precedence.
+                if extra is None:
+                    extra = estimate
+                else:
+                    extra = extra.combine_first(estimate)
+                for source_col, index_name in (("SPX_BREADTH200", "SP500"),
+                                                ("NDX_ADV", "NDX100"), ("NDX_DECL", "NDX100")):
+                    if extra[source_col].notna().any():
+                        # Existing authorized supplemental observations win over estimates.
+                        has_authorized = (source_col in licensed_cols)
+                        if has_authorized:
+                            sources[source_col] = "User-provided supplemental breadth series (verify license)"
+                        elif estimate[source_col].notna().any():
+                            sources[source_col] = (f"EXPERIMENTAL constituent estimate; current Wikipedia membership; "
+                                                   f"unofficial adjusted stock closes; {coverage.get(index_name, 0)}% coverage")
+        except Exception as exc:
+            errors.append(f"Estimated breadth not available: {type(exc).__name__}: {str(exc)[:120]}")
     # SPY session determines the website's EOD date; prevent a partial current-day candle.
     # Workflow scheduled after close; manual runs during market hours may include incomplete bars.
     result=analyze(df,extra,sources)
     result["sources"]={k:{"provider":v,"latest_session":prices[k].dropna().index.max().strftime("%Y-%m-%d")}
                        for k,v in sources.items() if k in prices and not prices[k].dropna().empty}
-    result["warnings"]=(errors[:12] + ["Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+    for key in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL"):
+        if key in sources:
+            result["sources"][key] = {"provider": sources[key], "latest_session": result["session"]}
+    result["warnings"]=(errors[:12] + ["Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.", "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
                  "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."])
     OUT.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
     print(f"Wrote {OUT}: {result['session']} | SP {result['markets']['sp500']['score']['available']}/15, "

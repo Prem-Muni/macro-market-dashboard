@@ -1,3 +1,48 @@
+# Breadth Upgrade — experimental, automatic constituent estimates
+
+**What has changed:** After the normal ETF/macro data download, the daily workflow now attempts to
+retrieve current constituent lists for the S&P 500 and Nasdaq-100 from public Wikipedia tables,
+then their adjusted stock-price histories using the unofficial Yahoo Finance/yfinance interface.
+When >=95% of the members have complete and suitable history, the updater derives:
+
+* S&P breadth: **percentage of covered constituents above their own 200-session SMA**.
+  The existing 1D/5D breadth and 200D level labels use that single estimated series.
+* Nasdaq breadth: count of covered Nasdaq-100 securities closing up or down compared
+  with the previous session, which feeds the existing 1D and 5D rules.
+
+**It is not an official Nasdaq/SPX market breadth feed.** The public-market symbols, latest
+membership, price-adjustment choices, and data gaps can differ from Thinkorswim.
+The inputs are *estimates* and labeled as such in the website; missing or incomplete
+observations stay `N/A`.  The history is recomputed with **today's** constituent list,
+so it has survivorship bias and is **not suitable for historical backtesting**.
+
+This feature requires about 200+ trading sessions of history for hundreds of stocks.
+It is intentionally conservative: if fewer than 95% have suitable history, the
+website **does not substitute a partial sample**. Free provider rate limits or Wikipedia
+HTML changes can make these estimates unavailable; the daily site still deploys
+and the original scores' missing-data safeguards remain intact. Put/call data is still `N/A`.
+
+**Free hosting versus market-data rights:** GitHub Pages/Actions can be free for a
+public repository, but a quote being publicly downloadable does not grant publication
+rights. Check Yahoo/Wikipedia terms and permitted redistribution before making
+constituent-derived readings public. For strictly licensed data, connect your own
+provider using the existing supplemental CSV mechanism. Provided authorized
+supplemental values **take priority** over derived estimates.
+
+**To turn off the experimental download:** Add a repository Actions variable
+`DISABLE_EXPERIMENTAL_BREADTH` with value `1`, or set the workflow step's
+environment variable accordingly (see `scripts/update.py`). Without it, the
+feature is enabled by default.
+
+**How to deploy this upgrade without losing the live data:** Copy only the files
+from the *patch ZIP* into the **root** of the existing GitHub Desktop clone.
+Overwriting `scripts/update.py`, `scripts/engine.py`, `docs/app.js`, `requirements.txt`
+and `README.md` is intentional. The patch does **not** include `docs/data/latest.json`.
+Commit, push, then run the workflow manually once to verify that the broader
+unofficial data fetches are permitted and sufficiently complete.
+
+---
+
 # Macro Decision Dashboard — SP500 + Nasdaq-100 (automatic website starter)
 
 **A deployable personal-research website, not a copy of a Thinkorswim feed.**

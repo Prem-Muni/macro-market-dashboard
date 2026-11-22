@@ -24,7 +24,9 @@ function signals(container,keys){
   const sig=snapshot.signals?.[key]||{state:'na',label:'N/A',note:'No market data'};
   const row=document.createElement('div'); row.className='signal';
   const val=sig.value==null?'':Number(sig.value).toFixed(2)+(key.includes('breadth')?'':'');
-  row.innerHTML=`<div><div class="signal-title">${esc(snapshot.names?.[key]||key)}</div><div class="signal-note">${esc(sig.note||sig.source||'')}</div></div><div class="signal-right"><span class="regime ${stateClass(sig.state)}">${esc(sig.label||'N/A')}</span>${val?`<span class="signal-val">${esc(val)}${(key==='sp_breadth200'||key==='nd_breadth1d')?'%':key.includes('breadth')?' pp':''}</span>`:''}</div>`;
+  const isEstimated = /EXPERIMENTAL/i.test(sig.source || '');
+  const detail = (sig.note || sig.source || '') + (isEstimated ? ' · ESTIMATED (constituent-derived)' : '');
+  row.innerHTML=`<div><div class="signal-title">${esc(snapshot.names?.[key]||key)}</div><div class="signal-note">${esc(detail)}</div></div><div class="signal-right"><span class="regime ${stateClass(sig.state)}">${esc(sig.label||'N/A')}</span>${val?`<span class="signal-val">${esc(val)}${(key==='sp_breadth200'||key==='nd_breadth1d')?'%':key.includes('breadth')?' pp':''}</span>`:''}</div>`;
   root.appendChild(row);
  }
 }
