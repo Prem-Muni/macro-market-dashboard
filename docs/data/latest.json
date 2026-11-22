@@ -1,0 +1,9 @@
+{
+  "session": null,
+  "generated_at": null,
+  "mode": "NOT YET INITIALIZED",
+  "markets": {},
+  "signals": {},
+  "history": [],
+  "explanation": {"missing": "Run the GitHub Actions updater to fetch the first real daily data snapshot."}
+}

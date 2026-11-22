@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
+  <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="identity"><div class="mark">M<span>·</span>D</div><div><div class="eyebrow">DAILY MARKET INTELLIGENCE</div><h1>Macro Decision <span>Dashboard</span></h1></div></div>
+      <div class="topactions"><span class="status-dot" id="status-dot"></span><span id="latest-run">Awaiting first update</span><button id="refresh" type="button" title="Reload the latest published data">↻ Refresh</button></div>
+    </header>
+    <div class="info-line" id="warning">A research dashboard, not a trading signal. Data and scores are indicative; verify against Thinkorswim before acting.</div>
+    <main>
+      <div class="section-intro"><div><div class="eyebrow">MARKET REGIME</div><h2>Two markets. One decision framework.</h2><p>Separate 15-point bearish scores, five-session trends, and confirmation. Missing feeds are excluded—not treated as bullish.</p></div><div class="session-box"><div class="eyebrow">LATEST PRICED SESSION</div><strong id="session">—</strong><small id="feed-state">No market snapshot yet</small></div></div>
+      <section class="market-grid" aria-label="Market summary">
+        <article class="market-card" id="sp-card"><div class="market-head"><div><div class="eyebrow">S&P 500</div><h3>Broad Market</h3></div><span class="tiny-pill">SPY BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="sp-score">—/15</div><div class="detail-caption" id="sp-coverage">Waiting for feeds</div></div><div class="regime neutral" id="sp-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="sp-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="sp-trend">—</b><small id="sp-delta">—</small></div><div><span>Market Confirmation</span><b id="sp-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="sp-swing">—</b><small>Requires complete data</small></div></div></article>
+        <article class="market-card" id="nd-card"><div class="market-head"><div><div class="eyebrow">NASDAQ-100</div><h3>Growth & Technology</h3></div><span class="tiny-pill">QQQ BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="nd-score">—/15</div><div class="detail-caption" id="nd-coverage">Waiting for feeds</div></div><div class="regime neutral" id="nd-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="nd-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="nd-trend">—</b><small id="nd-delta">—</small></div><div><span>Market Confirmation</span><b id="nd-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="nd-swing">—</b><small>Requires complete data</small></div></div></article>
+      </section>
+      <section class="chartpanel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Bearish signals over time</h2><p>Observed bearish points out of 15; compare data coverage before interpreting changes.</p></div><div class="seg"><button id="hist30" class="active" type="button">30D</button><button id="hist90" type="button">90D</button></div></div><svg id="history-svg" viewBox="0 0 960 230" role="img" aria-label="Historical SP500 and Nasdaq bearish signal scores"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="subtle">Incomplete sessions are still partial scores.</span></div></section>
+      <div class="columns">
+        <section class="signals-panel"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC</div><h2>S&P 500 internals</h2></div><span class="capsule">SPY</span></div><div id="sp-signals" class="signal-list"></div></section>
+        <section class="signals-panel"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC</div><h2>Nasdaq-100 internals</h2></div><span class="capsule">QQQ</span></div><div id="nd-signals" class="signal-list"></div></section>
+      </div>
+      <section class="signals-panel shared"><div class="panel-head"><div><div class="eyebrow">SHARED BY BOTH MARKET SCORES</div><h2>Macro signals</h2></div><span class="capsule">6 SIGNALS</span></div><div id="shared-signals" class="signal-list double"></div></section>
+      <section class="disclaimer"><h3>Reading the dashboard responsibly</h3><p id="coverage-note">Specialized index breadth and put/call feeds require separate authorized data sources. An incomplete 15-point score can be a range, not a definitive RISK-ON / CAUTION / RISK-OFF classification.</p><p>The website recalculates daily-bar approximations of the Thinkorswim model. It is not a broker feed, a backtested strategy, or an instruction to trade. Futures and ETF proxies can differ from Thinkorswim settlements. Provider availability and data display rights vary.</p><details><summary>Data source diagnostics</summary><pre id="diagnostics">Awaiting first update.</pre></details></section>
+    </main>
+    <footer><span>Macro Decision Dashboard · Personal research build</span><span>Refresh scheduled after the US market close · Version 0.1</span></footer>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>

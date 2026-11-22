@@ -1,0 +1,939 @@
+# ============================================================
+# DUAL MARKET DECISION DASHBOARD - S&P 500 + NASDAQ-100
+# Based on user's last-working 16-point SPY study (21 Nov 2026)
+#
+# FIVE SECTIONS (individual colored labels):
+#   1 SP500 SCORE / 5D TREND / CONFIRMATION / SWING ENV
+#   2 SPY-specific internals (VIX, SPX P/C, SPY leadership/breadth)
+#   3 Shared macro (oil, USD, TNX, credit, copper, VIX curve)
+#   4 NASDAQ SCORE / 5D TREND / CONFIRMATION / SWING ENV
+#   5 Nasdaq internals (VXN, PCND, QQQ leadership, NDX A/D breadth)
+#
+# EACH SCORE HAS 15 POINTS FOR DIRECT COMPARISON:
+# SP500: original 16 scored signals minus VXN (moved to Nasdaq).
+# Nasdaq: same six shared macro signals + nine Nasdaq-specific signals.
+# Shared macro is displayed ONLY ONCE, but used by BOTH scores.
+# Red +1; yellow/green 0. Missing data never counts as bullish.
+# Both 0-4 RISK-ON, 5-7 CAUTION, 8-15 RISK-OFF.
+#
+# IMPORTANT DIFFERENCE: SP500 breadth uses changes in $SPXA200R
+# (percentage of SPX above 200D SMA). Nasdaq breadth uses Nasdaq-100
+# ADVANCERS/DECLINERS ($ADVND/$DECLND) and a 5D smoothed trend.
+# A Nasdaq-100 $NDXA200R Thinkorswim quote was NOT verified.
+#
+# For five SECTION GROUPS with colored individual labels, Thinkorswim
+# needs row-ownership headers between groups; this creates extra
+# physical rows and labels may still wrap depending on chart width.
+# It cannot guarantee exactly five screen rows with individually
+# colored labels. Use SPY 1Y 1D chart for score momentum.
+# ============================================================
+
+declare upper;
+
+input vixBullMax = 16.0;
+input vixBearMin = 20.0;
+input vxnBullMax = 20.0;
+input vxnBearMin = 25.0;
+input pcrThreshold = 1.00;
+input pcrExtreme = 1.35;
+input defLookbackDays = 10;
+input xleLookbackDays = 10;
+input smhEmaLength = 20;
+input smhRatioMaLen = 15;
+
+# Relative/price-health inputs (each red condition = 1 bearish point per applicable index)
+input spyTrendFastLen = 50;
+input spyTrendSlowLen = 200;
+input breadth200BullMin = 60.0;
+input breadth200BearMax = 40.0;
+input relativeStrengthDays = 10;  # RSP/SPY and IWM/SPY ratio moving average
+input relativeNeutralBandPct = 0.25;  # CAUTION if ratio is within +/-0.25% of 10D SMA
+input vixCurveBullMax = 0.90;
+input vixCurveBearMin = 1.00;
+input vix3mSymbol = "VIX3M";
+
+# Daily regime MOMENTUM / confirmation settings.
+input scoreTrendDays = 5;          # 5 daily candles = ~one trading week
+input scoreTrendMinChange = 2;     # 2+ point move = meaningful shift
+input breadth1DMinPP = 1.0;       # 1D move of >=1 percentage point = directional
+input breadthChangeMinPP = 2.0;    # 5D move of >=2 percentage points = directional
+input breadthFeedFraction = yes;   # 0.50 feed quote means 50% of SPX above 200D MA
+input showSwingEnvironment = yes;  # descriptive, not an automatic trade signal
+input showSignalSectionHeader = yes; # dedicated row separators between 5 sections
+input ndBreadthNeutralBand = 5.0; # NDX advancer share <45% bearish, >55% bullish
+input ndBreadth5DMinPP = 5.0;     # 5-session avg advancer share shift vs prior 5 sessions
+input ndPCRThreshold = 1.00;      # initial NASDAQ-100 P/C threshold; calibrate separately
+input ndPCRExtreme = 1.35;        # contrarian yellow washout alert
+
+
+DefineGlobalColor("BullBright", CreateColor(0, 230, 118));
+DefineGlobalColor("BearBright", CreateColor(255, 60, 60));
+DefineGlobalColor("WarnBright", CreateColor(255, 215, 0));
+DefineGlobalColor("InfoBlue", CreateColor(0, 190, 240));
+DefineGlobalColor("NeutralGray", CreateColor(130, 130, 130));
+
+# Fixed SPY reference for macro divergences; works on either a SPY or QQQ chart.
+def mktC = close("SPY", period = AggregationPeriod.DAY);
+def mktP = mktC[1];
+def mktPct = if !IsNaN(mktC) and !IsNaN(mktP) and mktP != 0
+             then (mktC - mktP) / mktP else Double.NaN;
+
+# S&P 500 volatility: VIX
+def vixVal = close("VIX", period = AggregationPeriod.DAY);
+def vixValid = !IsNaN(vixVal);
+def vixBear = if !vixValid then 0 else if vixVal > vixBearMin then 1 else 0;
+def vixNeut = if !vixValid then 0 else if vixVal >= vixBullMax and vixVal <= vixBearMin then 1 else 0;
+
+# Nasdaq-100 volatility: VXN
+def vxnVal = close("VXN:CGI", period = AggregationPeriod.DAY);
+def vxnValid = !IsNaN(vxnVal);
+def vxnBear = if !vxnValid then 0 else if vxnVal > vxnBearMin then 1 else 0;
+def vxnNeut = if !vxnValid then 0 else if vxnVal >= vxnBullMax and vxnVal <= vxnBearMin then 1 else 0;
+
+# 3. Oil vs chart: directional divergences
+# Oil up = bearish; Oil down = bullish, including same-direction divergences.
+def clC = close("/CL", period = AggregationPeriod.DAY);
+def clChg = clC - clC[1];
+def clValid = !IsNaN(clChg) and !IsNaN(mktPct);
+def clBear = if !clValid then 0 else if clChg > 0 then 1 else 0;
+def clBull = if !clValid then 0 else if clChg < 0 then 1 else 0;
+def clBearDiv = if !clValid then 0 else if clChg > 0 and mktPct > 0 then 1 else 0;
+def clBullDiv = if !clValid then 0 else if clChg < 0 and mktPct < 0 then 1 else 0;
+
+# 4. Dollar: /DX, fallback UUP
+def dxC = close("/DX", period = AggregationPeriod.DAY);
+def uupC = close("UUP", period = AggregationPeriod.DAY);
+def dxRaw = dxC - dxC[1];
+def uupRaw = uupC - uupC[1];
+def dxChg = if !IsNaN(dxRaw) then dxRaw else uupRaw;
+def dxValid = !IsNaN(dxChg) and !IsNaN(mktPct);
+# USD direction sets the bearish point, including same-direction divergences.
+def dxBear = if !dxValid then 0 else if dxChg > 0 then 1 else 0;
+def dxBull = if !dxValid then 0 else if dxChg < 0 then 1 else 0;
+def dxBearDiv = if !dxValid then 0 else if dxChg > 0 and mktPct > 0 then 1 else 0;
+def dxBullDiv = if !dxValid then 0 else if dxChg < 0 and mktPct < 0 then 1 else 0;
+
+# 5. Ten-year Treasury yield: corrected thinkorswim symbol
+def tnxC = close("TNX:CGI", period = AggregationPeriod.DAY);
+def tnxChg = tnxC - tnxC[1];
+def tnxValid = !IsNaN(tnxChg) and !IsNaN(mktPct);
+# Yield direction sets the bearish point, including same-direction divergences.
+def tnxBear = if !tnxValid then 0 else if tnxChg > 0 then 1 else 0;
+def tnxBull = if !tnxValid then 0 else if tnxChg < 0 then 1 else 0;
+def tnxBearDiv = if !tnxValid then 0 else if tnxChg > 0 and mktPct > 0 then 1 else 0;
+def tnxBullDiv = if !tnxValid then 0 else if tnxChg < 0 and mktPct < 0 then 1 else 0;
+
+# 6. Credit: HYG vs IEF
+def hygC = close("HYG", period = AggregationPeriod.DAY);
+def iefC = close("IEF", period = AggregationPeriod.DAY);
+def hygPct = if !IsNaN(hygC) and !IsNaN(hygC[1]) and hygC[1] != 0
+             then (hygC - hygC[1]) / hygC[1] else Double.NaN;
+def iefPct = if !IsNaN(iefC) and !IsNaN(iefC[1]) and iefC[1] != 0
+             then (iefC - iefC[1]) / iefC[1] else Double.NaN;
+def creditValid = !IsNaN(hygPct) and !IsNaN(iefPct);
+def creditBear = if !creditValid then 0 else if hygPct < iefPct then 1 else 0;
+
+# 7. Copper
+def hgC = close("/HG", period = AggregationPeriod.DAY);
+def hgChg = hgC - hgC[1];
+def hgValid = !IsNaN(hgChg);
+def hgBear = if !hgValid then 0 else if hgChg < 0 then 1 else 0;
+
+# ONE S&P 500 BREADTH SERIES FOR ALL THREE S&P LABELS
+# $SPXA200R = fraction of S&P 500 stocks above their OWN 200-day SMA.
+# The feed in this installation quotes 0.462 for 46.2%; convert to 0-100.
+# All three breadth labels now use exactly this normalized series.
+# 1D and 5D: changes in PERCENTAGE POINTS (pp); 200D: current LEVEL.
+def breadth200Raw = close("$SPXA200R", period = AggregationPeriod.DAY);
+def breadth200Val = if breadthFeedFraction then breadth200Raw * 100 else breadth200Raw;
+def breadth200Valid = !IsNaN(breadth200Val) and breadth200Val >= 0 and breadth200Val <= 100;
+def breadth200Bull = if !breadth200Valid then 0 else if breadth200Val >= breadth200BullMin then 1 else 0;
+def breadth200Bear = if !breadth200Valid then 0 else if breadth200Val < breadth200BearMax then 1 else 0;
+
+# 1D breadth direction = daily CHANGE in percentage above the 200D SMA.
+# Separate neutral band filters small daily shifts near zero.
+def breadth200Prev1 = breadth200Val[1];
+def breadthValid = GetAggregationPeriod() == AggregationPeriod.DAY and
+                   breadth200Valid and !IsNaN(breadth200Prev1) and
+                   breadth200Prev1 >= 0 and breadth200Prev1 <= 100;
+def breadth1DDeltaPP = if breadthValid then breadth200Val - breadth200Prev1 else Double.NaN;
+def breadthBear = if !breadthValid then 0 else if breadth1DDeltaPP <= -breadth1DMinPP then 1 else 0;
+def breadthBull = if !breadthValid then 0 else if breadth1DDeltaPP >= breadth1DMinPP then 1 else 0;
+
+# SPX put/call (S&P specific)
+def pcrVal = close("$PCSP", period = AggregationPeriod.DAY);
+def pcrValid = !IsNaN(pcrVal);
+def pcrBear = if !pcrValid then 0 else if pcrVal > pcrThreshold then 1 else 0;
+def pcrStretch = if !pcrValid then 0 else if pcrVal >= pcrExtreme then 1 else 0;
+
+# 10. Defensive rotation: 1D caution and 10D relative trend
+def spyC = close("SPY", period = AggregationPeriod.DAY);
+def xlpC = close("XLP", period = AggregationPeriod.DAY);
+def xlvC = close("XLV", period = AggregationPeriod.DAY);
+def xluC = close("XLU", period = AggregationPeriod.DAY);
+def spy1D = if !IsNaN(spyC) and !IsNaN(spyC[1]) and spyC[1] != 0 then (spyC - spyC[1]) / spyC[1] else Double.NaN;
+def xlp1D = if !IsNaN(xlpC) and !IsNaN(xlpC[1]) and xlpC[1] != 0 then (xlpC - xlpC[1]) / xlpC[1] else Double.NaN;
+def xlv1D = if !IsNaN(xlvC) and !IsNaN(xlvC[1]) and xlvC[1] != 0 then (xlvC - xlvC[1]) / xlvC[1] else Double.NaN;
+def xlu1D = if !IsNaN(xluC) and !IsNaN(xluC[1]) and xluC[1] != 0 then (xluC - xluC[1]) / xluC[1] else Double.NaN;
+def defAvg1D = (xlp1D + xlv1D + xlu1D) / 3;
+
+def xlpOld = GetValue(xlpC, defLookbackDays);
+def xlvOld = GetValue(xlvC, defLookbackDays);
+def xluOld = GetValue(xluC, defLookbackDays);
+def spyOld = GetValue(spyC, defLookbackDays);
+def xlpTrend = if !IsNaN(xlpC) and !IsNaN(xlpOld) and xlpOld != 0 then (xlpC - xlpOld) / xlpOld else Double.NaN;
+def xlvTrend = if !IsNaN(xlvC) and !IsNaN(xlvOld) and xlvOld != 0 then (xlvC - xlvOld) / xlvOld else Double.NaN;
+def xluTrend = if !IsNaN(xluC) and !IsNaN(xluOld) and xluOld != 0 then (xluC - xluOld) / xluOld else Double.NaN;
+def spyTrend = if !IsNaN(spyC) and !IsNaN(spyOld) and spyOld != 0 then (spyC - spyOld) / spyOld else Double.NaN;
+def defAvgTrend = (xlpTrend + xlvTrend + xluTrend) / 3;
+def defValid = !IsNaN(defAvg1D) and !IsNaN(spy1D) and !IsNaN(defAvgTrend) and !IsNaN(spyTrend);
+def defDayCaution = if !defValid then 0 else if defAvg1D > spy1D then 1 else 0;
+def defTrendBear = if !defValid then 0 else if defAvgTrend > spyTrend then 1 else 0;
+
+# 11. Energy relative leadership: XLE vs SPY
+def xleC = close("XLE", period = AggregationPeriod.DAY);
+def xleOld = GetValue(xleC, xleLookbackDays);
+def spyOldXle = GetValue(spyC, xleLookbackDays);
+def xleTrendPct = if !IsNaN(xleC) and !IsNaN(xleOld) and xleOld != 0 then (xleC - xleOld) / xleOld else Double.NaN;
+def spyTrendPct = if !IsNaN(spyC) and !IsNaN(spyOldXle) and spyOldXle != 0 then (spyC - spyOldXle) / spyOldXle else Double.NaN;
+def xleValid = !IsNaN(xleTrendPct) and !IsNaN(spyTrendPct);
+def xleBear = if !xleValid then 0 else if xleTrendPct > spyTrendPct then 1 else 0;
+
+# 12. Semiconductors: SMH vs SPY
+def smhD = close("SMH", period = AggregationPeriod.DAY);
+def smhEma20 = ExpAverage(smhD, smhEmaLength);
+def spyEma20 = ExpAverage(spyC, smhEmaLength);
+def smhRatio = if !IsNaN(smhD) and !IsNaN(spyC) and spyC != 0 then smhD / spyC else Double.NaN;
+def smhRatioMa = Average(smhRatio, smhRatioMaLen);
+def smhValid = !IsNaN(smhD) and !IsNaN(spyC) and !IsNaN(smhEma20) and !IsNaN(spyEma20) and !IsNaN(smhRatioMa);
+def smhBearDiv = if !smhValid then 0 else if smhD < smhEma20 and spyC >= spyEma20 then 1 else 0;
+def smhBearTrend = if !smhValid then 0 else if smhD < smhEma20 and spyC < spyEma20 then 1 else 0;
+def smhLagging = if !smhValid then 0 else if smhD >= smhEma20 and smhRatio < smhRatioMa then 1 else 0;
+def smhBull = if !smhValid then 0 else if smhD >= smhEma20 and smhRatio >= smhRatioMa then 1 else 0;
+def smhAnyBear = if smhBearDiv == 1 or smhBearTrend == 1 then 1 else 0;
+
+# ============================================================
+# S&P 500 ADDITIONAL METRICS: price trend, leadership, VIX curve
+# Uses SPY as the fixed market benchmark on any chart.
+# ============================================================
+
+# 13. SPY trend health: green if SPY > SMA50 > SMA200;
+# red if SPY < SMA200; otherwise yellow.
+def spySma50 = Average(spyC, spyTrendFastLen);
+def spySma200 = Average(spyC, spyTrendSlowLen);
+def spyHealthValid = !IsNaN(spyC) and !IsNaN(spySma50) and !IsNaN(spySma200);
+def spyHealthBull = if !spyHealthValid then 0 else if spyC > spySma50 and spySma50 > spySma200 then 1 else 0;
+def spyHealthBear = if !spyHealthValid then 0 else if spyC < spySma200 then 1 else 0;
+
+# 14. Long-term breadth was defined above in section 8.
+# It is DISPLAY-ONLY; unlike BREADTH 1D, it does not change the score.
+
+# 15. Equal-weight leadership: RSP/SPY relative to its 10-day SMA.
+# Compare today's RSP/SPY ratio against the average of the last 10 daily ratios.
+# Neutral band avoids flipping on tiny differences around the average.
+def rspC = close("RSP", period = AggregationPeriod.DAY);
+def rspRel = if !IsNaN(rspC) and !IsNaN(spyC) and spyC > 0
+             then rspC / spyC else Double.NaN;
+def rspRelMa10 = Average(rspRel, relativeStrengthDays);
+def rspRelDiffPct = if !IsNaN(rspRel) and !IsNaN(rspRelMa10) and rspRelMa10 > 0
+                    then 100 * (rspRel / rspRelMa10 - 1)
+                    else Double.NaN;
+def rspValid = !IsNaN(rspRelDiffPct);
+def rspBull = if !rspValid then 0 else if rspRelDiffPct > relativeNeutralBandPct then 1 else 0;
+def rspBear = if !rspValid then 0 else if rspRelDiffPct < -relativeNeutralBandPct then 1 else 0;
+
+# 16. VIX term structure: VIX / VIX3M (30-day / 3-month).
+# VIX3M fallback uses CGI suffix where available.
+def vix3mMain = close(symbol = vix3mSymbol, period = AggregationPeriod.DAY);
+def vix3mAlt = close("VIX3M:CGI", period = AggregationPeriod.DAY);
+def vix3mVal = if !IsNaN(vix3mMain) then vix3mMain else vix3mAlt;
+def vixCurve = if vixValid and !IsNaN(vix3mVal) and vix3mVal > 0
+               then vixVal / vix3mVal else Double.NaN;
+def vixCurveValid = !IsNaN(vixCurve);
+def vixCurveBull = if !vixCurveValid then 0 else if vixCurve < vixCurveBullMax then 1 else 0;
+def vixCurveBear = if !vixCurveValid then 0 else if vixCurve > vixCurveBearMin then 1 else 0;
+
+# 17. Small-cap leadership: IWM/SPY relative to its 10-day SMA.
+def iwmC = close("IWM", period = AggregationPeriod.DAY);
+def iwmRel = if !IsNaN(iwmC) and !IsNaN(spyC) and spyC > 0
+             then iwmC / spyC else Double.NaN;
+def iwmRelMa10 = Average(iwmRel, relativeStrengthDays);
+def iwmRelDiffPct = if !IsNaN(iwmRel) and !IsNaN(iwmRelMa10) and iwmRelMa10 > 0
+                    then 100 * (iwmRel / iwmRelMa10 - 1)
+                    else Double.NaN;
+def iwmValid = !IsNaN(iwmRelDiffPct);
+def iwmBull = if !iwmValid then 0 else if iwmRelDiffPct > relativeNeutralBandPct then 1 else 0;
+def iwmBear = if !iwmValid then 0 else if iwmRelDiffPct < -relativeNeutralBandPct then 1 else 0;
+
+
+# ============================================================
+# NASDAQ-100-SPECIFIC INDICATORS
+# ============================================================
+
+def qqqC = close("QQQ", period = AggregationPeriod.DAY);
+def qqqP = qqqC[1];
+def qqqPct = if !IsNaN(qqqC) and !IsNaN(qqqP) and qqqP > 0
+             then (qqqC - qqqP) / qqqP else Double.NaN;
+
+# NDX-specific put/call ratio (NASDAQ-100 component options, not all NASDAQ stocks)
+def ndPcrVal = close("$PCND", period = AggregationPeriod.DAY);
+def ndPcrValid = !IsNaN(ndPcrVal);
+def ndPcrBear = if !ndPcrValid then 0 else if ndPcrVal > ndPCRThreshold then 1 else 0;
+def ndPcrStretch = if !ndPcrValid then 0 else if ndPcrVal >= ndPCRExtreme then 1 else 0;
+
+# Nasdaq-100 *daily advancing issues* / *declining issues*, not % > 200D SMA.
+# Share of advancers = ADV/(ADV+DECL) x 100.
+def ndAdv = close("$ADVND", period = AggregationPeriod.DAY);
+def ndDec = close("$DECLND", period = AggregationPeriod.DAY);
+def ndBreadthShare = if !IsNaN(ndAdv) and !IsNaN(ndDec) and ndAdv >= 0 and ndDec >= 0 and ndAdv + ndDec > 0
+                     then 100 * ndAdv / (ndAdv + ndDec) else Double.NaN;
+def ndBreadthValid = GetAggregationPeriod() == AggregationPeriod.DAY and !IsNaN(ndBreadthShare);
+def ndBreadthBear = if !ndBreadthValid then 0 else if ndBreadthShare < 50 - ndBreadthNeutralBand then 1 else 0;
+def ndBreadthBull = if !ndBreadthValid then 0 else if ndBreadthShare > 50 + ndBreadthNeutralBand then 1 else 0;
+
+# Difference between most recent 5-session average of advancing share and
+# previous five-session average. This is *not* Nasdaq stocks above 200D SMA.
+def ndBreadth5Avg = Average(ndBreadthShare, scoreTrendDays);
+def ndBreadth5Prev = GetValue(ndBreadth5Avg, scoreTrendDays);
+def ndBreadth5Valid = GetAggregationPeriod() == AggregationPeriod.DAY and
+                      !IsNaN(ndBreadth5Avg) and !IsNaN(ndBreadth5Prev);
+def ndBreadth5Delta = if ndBreadth5Valid then ndBreadth5Avg - ndBreadth5Prev else Double.NaN;
+def ndBreadth5Up = ndBreadth5Valid and ndBreadth5Delta >= ndBreadth5DMinPP;
+def ndBreadth5Down = ndBreadth5Valid and ndBreadth5Delta <= -ndBreadth5DMinPP;
+
+# Nasdaq-100 defensive rotation: XLP/XLV/XLU average vs QQQ, 10 trading days.
+def ndQQQOldDef = GetValue(qqqC, defLookbackDays);
+def ndQQQDefTrend = if !IsNaN(qqqC) and !IsNaN(ndQQQOldDef) and ndQQQOldDef > 0
+                    then (qqqC - ndQQQOldDef) / ndQQQOldDef else Double.NaN;
+def ndDefValid = !IsNaN(defAvg1D) and !IsNaN(defAvgTrend) and !IsNaN(qqqPct) and !IsNaN(ndQQQDefTrend);
+def ndDefDayCaution = if !ndDefValid then 0 else if defAvg1D > qqqPct then 1 else 0;
+def ndDefBear = if !ndDefValid then 0 else if defAvgTrend > ndQQQDefTrend then 1 else 0;
+
+# Nasdaq-100 energy leadership: XLE vs QQQ, 10 trading days.
+def ndQQQOldXLE = GetValue(qqqC, xleLookbackDays);
+def ndQQQXLETrend = if !IsNaN(qqqC) and !IsNaN(ndQQQOldXLE) and ndQQQOldXLE > 0
+                    then (qqqC - ndQQQOldXLE) / ndQQQOldXLE else Double.NaN;
+def ndXLEValid = !IsNaN(xleTrendPct) and !IsNaN(ndQQQXLETrend);
+def ndXLEBear = if !ndXLEValid then 0 else if xleTrendPct > ndQQQXLETrend then 1 else 0;
+
+# Semiconductor price health / relative breakdown: SMH vs QQQ.
+def ndQQQEma20 = ExpAverage(qqqC, smhEmaLength);
+def ndSMHRatio = if !IsNaN(smhD) and !IsNaN(qqqC) and qqqC > 0
+                 then smhD / qqqC else Double.NaN;
+def ndSMHRatioMA = Average(ndSMHRatio, smhRatioMaLen);
+def ndSMHValid = !IsNaN(smhD) and !IsNaN(qqqC) and !IsNaN(smhEma20) and
+                 !IsNaN(ndQQQEma20) and !IsNaN(ndSMHRatioMA);
+def ndSMHBearDiv = if !ndSMHValid then 0 else if smhD < smhEma20 and qqqC >= ndQQQEma20 then 1 else 0;
+def ndSMHBearTrend = if !ndSMHValid then 0 else if smhD < smhEma20 and qqqC < ndQQQEma20 then 1 else 0;
+def ndSMHLagging = if !ndSMHValid then 0 else if smhD >= smhEma20 and ndSMHRatio < ndSMHRatioMA then 1 else 0;
+def ndSMHBull = if !ndSMHValid then 0 else if smhD >= smhEma20 and ndSMHRatio >= ndSMHRatioMA then 1 else 0;
+def ndSMHBear = if ndSMHBearDiv == 1 or ndSMHBearTrend == 1 then 1 else 0;
+
+# Nasdaq-100 absolute trend: QQQ vs 50D / 200D SMA.
+def ndQQQSma50 = Average(qqqC, spyTrendFastLen);
+def ndQQQSma200 = Average(qqqC, spyTrendSlowLen);
+def ndQQQHealthValid = !IsNaN(qqqC) and !IsNaN(ndQQQSma50) and !IsNaN(ndQQQSma200);
+def ndQQQHealthBull = if !ndQQQHealthValid then 0 else if qqqC > ndQQQSma50 and ndQQQSma50 > ndQQQSma200 then 1 else 0;
+def ndQQQHealthBear = if !ndQQQHealthValid then 0 else if qqqC < ndQQQSma200 then 1 else 0;
+
+# Equal-weight Nasdaq-100 ETF / cap-weighted QQQ, 10-day SMA + neutral band.
+def qqqeC = close("QQQE", period = AggregationPeriod.DAY);
+def ndEqualRatio = if !IsNaN(qqqeC) and !IsNaN(qqqC) and qqqC > 0
+                   then qqqeC / qqqC else Double.NaN;
+def ndEqualMA = Average(ndEqualRatio, relativeStrengthDays);
+def ndEqualDiffPct = if !IsNaN(ndEqualRatio) and !IsNaN(ndEqualMA) and ndEqualMA > 0
+                     then 100 * (ndEqualRatio / ndEqualMA - 1) else Double.NaN;
+def ndEqualValid = !IsNaN(ndEqualDiffPct);
+def ndEqualBull = if !ndEqualValid then 0 else if ndEqualDiffPct > relativeNeutralBandPct then 1 else 0;
+def ndEqualBear = if !ndEqualValid then 0 else if ndEqualDiffPct < -relativeNeutralBandPct then 1 else 0;
+
+# IWM vs QQQ relative to its 10-day moving-average ratio.
+def ndIWMRatio = if !IsNaN(iwmC) and !IsNaN(qqqC) and qqqC > 0
+                then iwmC / qqqC else Double.NaN;
+def ndIWMMA = Average(ndIWMRatio, relativeStrengthDays);
+def ndIWMDiffPct = if !IsNaN(ndIWMRatio) and !IsNaN(ndIWMMA) and ndIWMMA > 0
+                   then 100 * (ndIWMRatio / ndIWMMA - 1) else Double.NaN;
+def ndIWMValid = !IsNaN(ndIWMDiffPct);
+def ndIWMBull = if !ndIWMValid then 0 else if ndIWMDiffPct > relativeNeutralBandPct then 1 else 0;
+def ndIWMBear = if !ndIWMValid then 0 else if ndIWMDiffPct < -relativeNeutralBandPct then 1 else 0;
+
+# ============================================================
+# TWO 15-POINT RISK SCORES
+# SHARED: OIL, USD, TNX, CREDIT, COPPER, VIX CURVE (6)
+# S&P ONLY: VIX, SPX P/C, DEF, XLE, SMH, SPY TREND,
+#           RSP/SPY, IWM/SPY, SPX BREADTH 1D (9)
+# NASDAQ ONLY: VXN, NDX P/C, DEF/QQQ, XLE/QQQ, SMH/QQQ,
+#              QQQ TREND, QQQE/QQQ, IWM/QQQ, NDX A/D 1D (9)
+# ============================================================
+
+def sharedBear = clBear + dxBear + tnxBear + creditBear + hgBear + vixCurveBear;
+def bearCount = sharedBear + vixBear + pcrBear + defTrendBear + xleBear +
+                smhAnyBear + spyHealthBear + rspBear + iwmBear + breadthBear;
+def ndBearCount = sharedBear + vxnBear + ndPcrBear + ndDefBear + ndXLEBear +
+                  ndSMHBear + ndQQQHealthBear + ndEqualBear + ndIWMBear + ndBreadthBear;
+
+def validCount =
+    (if vixValid then 1 else 0) +
+    (if clValid then 1 else 0) +
+    (if dxValid then 1 else 0) +
+    (if tnxValid then 1 else 0) +
+    (if creditValid then 1 else 0) +
+    (if hgValid then 1 else 0) +
+    (if breadthValid then 1 else 0) +
+    (if pcrValid then 1 else 0) +
+    (if defValid then 1 else 0) +
+    (if xleValid then 1 else 0) +
+    (if smhValid then 1 else 0) +
+    (if spyHealthValid then 1 else 0) +
+    (if rspValid then 1 else 0) +
+    (if vixCurveValid then 1 else 0) +
+    (if iwmValid then 1 else 0);
+
+def ndValidCount =
+    (if vxnValid then 1 else 0) +
+    (if clValid then 1 else 0) +
+    (if dxValid then 1 else 0) +
+    (if tnxValid then 1 else 0) +
+    (if creditValid then 1 else 0) +
+    (if hgValid then 1 else 0) +
+    (if ndBreadthValid then 1 else 0) +
+    (if ndPcrValid then 1 else 0) +
+    (if ndDefValid then 1 else 0) +
+    (if ndXLEValid then 1 else 0) +
+    (if ndSMHValid then 1 else 0) +
+    (if ndQQQHealthValid then 1 else 0) +
+    (if ndEqualValid then 1 else 0) +
+    (if vixCurveValid then 1 else 0) +
+    (if ndIWMValid then 1 else 0);
+
+# Fingerprint prevents false score trends when the set of available feeds changes.
+# Keep a separate 15-bit availability mask for each index.
+def momDailyChart = GetAggregationPeriod() == AggregationPeriod.DAY;
+def momDataMask =
+    (if vixValid then 1 else 0) +
+    (if clValid then 2 else 0) +
+    (if dxValid then 4 else 0) +
+    (if tnxValid then 8 else 0) +
+    (if creditValid then 16 else 0) +
+    (if hgValid then 32 else 0) +
+    (if breadthValid then 64 else 0) +
+    (if pcrValid then 128 else 0) +
+    (if defValid then 256 else 0) +
+    (if xleValid then 512 else 0) +
+    (if smhValid then 1024 else 0) +
+    (if spyHealthValid then 2048 else 0) +
+    (if rspValid then 4096 else 0) +
+    (if vixCurveValid then 8192 else 0) +
+    (if iwmValid then 16384 else 0);
+
+def ndDataMask =
+    (if vxnValid then 1 else 0) +
+    (if clValid then 2 else 0) +
+    (if dxValid then 4 else 0) +
+    (if tnxValid then 8 else 0) +
+    (if creditValid then 16 else 0) +
+    (if hgValid then 32 else 0) +
+    (if ndBreadthValid then 64 else 0) +
+    (if ndPcrValid then 128 else 0) +
+    (if ndDefValid then 256 else 0) +
+    (if ndXLEValid then 512 else 0) +
+    (if ndSMHValid then 1024 else 0) +
+    (if ndQQQHealthValid then 2048 else 0) +
+    (if ndEqualValid then 4096 else 0) +
+    (if vixCurveValid then 8192 else 0) +
+    (if ndIWMValid then 16384 else 0);
+
+def momOneValid = momDailyChart and !IsNaN(bearCount[1]) and momDataMask == momDataMask[1];
+def momFiveValid = momDailyChart and !IsNaN(GetValue(bearCount, scoreTrendDays)) and
+                    momDataMask == GetValue(momDataMask, scoreTrendDays);
+def momChange1 = if momOneValid then bearCount - bearCount[1] else Double.NaN;
+def momChange5 = if momFiveValid then bearCount - GetValue(bearCount, scoreTrendDays) else Double.NaN;
+def momImproving = momFiveValid and momChange5 <= -scoreTrendMinChange;
+def momDeteriorating = momFiveValid and momChange5 >= scoreTrendMinChange;
+
+def ndOneValid = momDailyChart and !IsNaN(ndBearCount[1]) and ndDataMask == ndDataMask[1];
+def ndFiveValid = momDailyChart and !IsNaN(GetValue(ndBearCount, scoreTrendDays)) and
+                  ndDataMask == GetValue(ndDataMask, scoreTrendDays);
+def ndChange1 = if ndOneValid then ndBearCount - ndBearCount[1] else Double.NaN;
+def ndChange5 = if ndFiveValid then ndBearCount - GetValue(ndBearCount, scoreTrendDays) else Double.NaN;
+def ndImproving = ndFiveValid and ndChange5 <= -scoreTrendMinChange;
+def ndDeteriorating = ndFiveValid and ndChange5 >= scoreTrendMinChange;
+
+# SPY 1D/5D breadth (percentage-point change of % above 200D SMA).
+def momB200Past = GetValue(breadth200Val, scoreTrendDays);
+def momBreadthValid = momDailyChart and breadth200Valid and !IsNaN(momB200Past) and
+                      momB200Past >= 0 and momB200Past <= 100;
+def momBreadth200Delta = if momBreadthValid then breadth200Val - momB200Past else Double.NaN;
+def momBreadthUp = momBreadthValid and momBreadth200Delta >= breadthChangeMinPP;
+def momBreadthDown = momBreadthValid and momBreadth200Delta <= -breadthChangeMinPP;
+
+# CONFIRMATION: four categories in each index, but VOL and PRICE follow
+# that index; shared CREDIT; BREADTH uses that index's own method.
+# S&P VOL = VIX falling 5 days (VXN removed from S&P).
+# NASDAQ VOL = VXN falling 5 days.
+def recVolValid = momDailyChart and vixValid and !IsNaN(GetValue(vixVal, scoreTrendDays));
+def recVolUp = recVolValid and vixVal < GetValue(vixVal, scoreTrendDays);
+def ndRecVolValid = momDailyChart and vxnValid and !IsNaN(GetValue(vxnVal, scoreTrendDays));
+def ndRecVolUp = ndRecVolValid and vxnVal < GetValue(vxnVal, scoreTrendDays);
+
+def recCreditRel = if !IsNaN(hygC) and !IsNaN(iefC) and iefC > 0 then hygC / iefC else Double.NaN;
+def recCreditPast = GetValue(recCreditRel, scoreTrendDays);
+def recCreditValid = momDailyChart and !IsNaN(recCreditRel) and !IsNaN(recCreditPast) and recCreditPast > 0;
+def recCreditUp = recCreditValid and recCreditRel > recCreditPast;
+
+def recBreadthValid = momBreadthValid;
+def recBreadthUp = recBreadthValid and momBreadthUp;
+def ndRecBreadthValid = ndBreadth5Valid;
+def ndRecBreadthUp = ndRecBreadthValid and ndBreadth5Up;
+
+def recPricePast = GetValue(spyC, scoreTrendDays);
+def recPriceValid = momDailyChart and !IsNaN(spyC) and !IsNaN(recPricePast) and recPricePast > 0;
+def recPriceUp = recPriceValid and spyC > recPricePast;
+def ndPricePast = GetValue(qqqC, scoreTrendDays);
+def ndPriceValid = momDailyChart and !IsNaN(qqqC) and !IsNaN(ndPricePast) and ndPricePast > 0;
+def ndPriceUp = ndPriceValid and qqqC > ndPricePast;
+
+def recValidCount =
+    (if recVolValid then 1 else 0) + (if recCreditValid then 1 else 0) +
+    (if recBreadthValid then 1 else 0) + (if recPriceValid then 1 else 0);
+def recUpCount =
+    (if recVolUp then 1 else 0) + (if recCreditUp then 1 else 0) +
+    (if recBreadthUp then 1 else 0) + (if recPriceUp then 1 else 0);
+def recAllValid = recValidCount == 4;
+
+def ndRecValidCount =
+    (if ndRecVolValid then 1 else 0) + (if recCreditValid then 1 else 0) +
+    (if ndRecBreadthValid then 1 else 0) + (if ndPriceValid then 1 else 0);
+def ndRecUpCount =
+    (if ndRecVolUp then 1 else 0) + (if recCreditUp then 1 else 0) +
+    (if ndRecBreadthUp then 1 else 0) + (if ndPriceUp then 1 else 0);
+def ndRecAllValid = ndRecValidCount == 4;
+
+# Swing environment is descriptive, NOT an automatic trade recommendation.
+def envValid = momFiveValid and recAllValid and validCount == 15;
+def envSupportive = envValid and bearCount <= 4 and !momDeteriorating and recUpCount >= 3 and spyHealthBear == 0;
+def envEarly = envValid and bearCount >= 8 and momImproving and recUpCount >= 2;
+def envDefensive = envValid and bearCount >= 8 and !envEarly;
+def envDeteriorating = envValid and bearCount >= 5 and bearCount <= 7 and momDeteriorating;
+
+def ndEnvValid = ndFiveValid and ndRecAllValid and ndValidCount == 15;
+def ndEnvSupportive = ndEnvValid and ndBearCount <= 4 and !ndDeteriorating and ndRecUpCount >= 3 and ndQQQHealthBear == 0;
+def ndEnvEarly = ndEnvValid and ndBearCount >= 8 and ndImproving and ndRecUpCount >= 2;
+def ndEnvDefensive = ndEnvValid and ndBearCount >= 8 and !ndEnvEarly;
+def ndEnvDeteriorating = ndEnvValid and ndBearCount >= 5 and ndBearCount <= 7 and ndDeteriorating;
+
+# ============================================================
+# SECTION ORDER: SP500 summary / SP500 internals / shared macro
+#                NASDAQ summary / NASDAQ internals
+# ============================================================
+AddLabel(showSignalSectionHeader, "S&P 500 SUMMARY", GlobalColor("NeutralGray"),
+    location = Location.TOP_LEFT, size = FontSize.SMALL, "row ownership" = yes);
+
+AddLabel(yes,
+    "SP500 SCORE: " + bearCount + "/15 | " +
+    (if bearCount >= 8 then "RISK-OFF"
+     else if bearCount >= 5 then "CAUTION"
+     else if validCount < 15 then "DATA INCOMPLETE"
+     else "RISK-ON") +
+    (if validCount < 15 then " | DATA " + validCount + "/15" else ""),
+    if bearCount >= 8 then GlobalColor("BearBright")
+    else if bearCount >= 5 then GlobalColor("WarnBright")
+    else if validCount < 15 then GlobalColor("InfoBlue")
+    else GlobalColor("BullBright"),
+    location = Location.TOP_LEFT,
+    size = FontSize.SMALL,
+    "row ownership" = no);
+
+AddLabel(yes,
+    if !momDailyChart then "SP500 TREND: USE 1D CHART"
+    else if !momFiveValid then "SP500 TREND: N/A"
+    else "SP500 TREND: 1D " +
+         (if !momOneValid then "N/A"
+          else (if momChange1 > 0 then "+" else "") + AsText(Round(momChange1, 0))) +
+         " | " + scoreTrendDays + "D " +
+         (if momChange5 > 0 then "+" else "") + AsText(Round(momChange5, 0)) +
+         " | " + (if momImproving then "IMPROVING"
+                  else if momDeteriorating then "DETERIORATING"
+                  else "STABLE"),
+    if !momFiveValid then GlobalColor("NeutralGray")
+    else if momImproving then GlobalColor("BullBright")
+    else if momDeteriorating then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"),
+    location = Location.TOP_LEFT,
+    size = FontSize.SMALL,
+    "row ownership" = no);
+
+AddLabel(yes,
+    if !momDailyChart then "SP500 CONF: USE 1D CHART"
+    else if !recAllValid then "SP500 CONF: N/A (" + recValidCount + "/4 FEEDS)"
+    else "SP500 CONF " + scoreTrendDays + "D: " + recUpCount + "/4 " +
+         (if recUpCount >= 3 then "BROAD"
+          else if recUpCount == 2 then "PARTIAL"
+          else "LIMITED"),
+    if !recAllValid then GlobalColor("NeutralGray")
+    else if recUpCount >= 3 then GlobalColor("BullBright")
+    else if recUpCount == 2 then GlobalColor("WarnBright")
+    else GlobalColor("BearBright"));
+
+AddLabel(showSwingEnvironment,
+    if !momDailyChart then "SP500 SWING: USE 1D CHART"
+    else if !envValid then "SP500 SWING: N/A (CHECK DATA)"
+    else if envSupportive then "SP500 SWING: BULLISH"
+    else if envEarly then "SP500 SWING: EARLY IMPROVEMENT"
+    else if envDeteriorating then "SP500 SWING: DETERIORATING"
+    else if envDefensive then "SP500 SWING: BEARISH"
+    else "SP500 SWING: SELECTIVE",
+    if !envValid then GlobalColor("NeutralGray")
+    else if envSupportive then GlobalColor("BullBright")
+    else if envDefensive or envDeteriorating then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(showSignalSectionHeader, "SP500 INTERNALS", GlobalColor("NeutralGray"),
+    location = Location.TOP_LEFT, size = FontSize.SMALL, "row ownership" = yes);
+
+AddLabel(yes,
+    if !vixValid then "VIX: N/A"
+    else "VIX: " + (if vixBear == 1 then "BEARISH" else if vixNeut == 1 then "CAUTION" else "BULLISH") +
+         " (" + AsText(Round(vixVal, 2)) + ")",
+    if !vixValid then GlobalColor("NeutralGray")
+    else if vixBear == 1 then GlobalColor("BearBright")
+    else if vixNeut == 1 then GlobalColor("WarnBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !pcrValid then "SPX P/C: N/A"
+    else "SPX P/C: " +
+         (if pcrStretch == 1 then "CAUTION/WASHOUT"
+          else if pcrBear == 1 then "BEARISH"
+          else "BULLISH") +
+         " (" + AsText(Round(pcrVal, 2)) + ")",
+    if !pcrValid then GlobalColor("NeutralGray")
+    else if pcrStretch == 1 then GlobalColor("WarnBright")
+    else if pcrBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !defValid then "DEFENSIVES: N/A"
+    else if defTrendBear == 1 then "DEFENSIVES: BEARISH (" + defLookbackDays + "D)"
+    else if defDayCaution == 1 then "DEFENSIVES: CAUTION (1D)"
+    else "DEFENSIVES: BULLISH",
+    if !defValid then GlobalColor("NeutralGray")
+    else if defTrendBear == 1 then GlobalColor("BearBright")
+    else if defDayCaution == 1 then GlobalColor("WarnBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !xleValid then "XLE/SPY: N/A"
+    else if xleBear == 1 then "XLE/SPY: BEARISH (" + xleLookbackDays + "D)"
+    else "XLE/SPY: BULLISH (" + xleLookbackDays + "D)",
+    if !xleValid then GlobalColor("NeutralGray")
+    else if xleBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !smhValid then "SMH/SPY: N/A"
+    else if smhBearDiv == 1 then "SMH/SPY: BEARISH DIV"
+    else if smhBearTrend == 1 then "SMH/SPY: BEARISH"
+    else if smhLagging == 1 then "SMH/SPY: CAUTION (LAGGING)"
+    else if smhBull == 1 then "SMH/SPY: BULLISH"
+    else "SMH/SPY: NEUTRAL",
+    if !smhValid then GlobalColor("NeutralGray")
+    else if smhAnyBear == 1 then GlobalColor("BearBright")
+    else if smhLagging == 1 then GlobalColor("WarnBright")
+    else if smhBull == 1 then GlobalColor("BullBright")
+    else GlobalColor("NeutralGray"));
+
+AddLabel(yes,
+    if !spyHealthValid then "SPY TREND: N/A"
+    else if spyHealthBull == 1 then "SPY TREND: BULLISH (50/200D)"
+    else if spyHealthBear == 1 then "SPY TREND: BEARISH (<200D)"
+    else "SPY TREND: CAUTION",
+    if !spyHealthValid then GlobalColor("NeutralGray")
+    else if spyHealthBull == 1 then GlobalColor("BullBright")
+    else if spyHealthBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !rspValid then "RSP/SPY 10D: N/A"
+    else if rspBull == 1 then "RSP/SPY 10D: BULLISH"
+    else if rspBear == 1 then "RSP/SPY 10D: BEARISH"
+    else "RSP/SPY 10D: CAUTION",
+    if !rspValid then GlobalColor("NeutralGray")
+    else if rspBull == 1 then GlobalColor("BullBright")
+    else if rspBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !iwmValid then "IWM/SPY 10D: N/A"
+    else if iwmBull == 1 then "IWM/SPY 10D: BULLISH"
+    else if iwmBear == 1 then "IWM/SPY 10D: BEARISH"
+    else "IWM/SPY 10D: CAUTION",
+    if !iwmValid then GlobalColor("NeutralGray")
+    else if iwmBull == 1 then GlobalColor("BullBright")
+    else if iwmBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !momDailyChart then "BREADTH 1D: USE 1D CHART"
+    else if !breadthValid then "BREADTH 1D: N/A"
+    else if breadthBear == 1 then "BREADTH 1D: CONTRACTING"
+    else if breadthBull == 1 then "BREADTH 1D: EXPANDING"
+    else "BREADTH 1D: STABLE",
+    if !breadthValid then GlobalColor("NeutralGray")
+    else if breadthBear == 1 then GlobalColor("BearBright")
+    else if breadthBull == 1 then GlobalColor("BullBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !momDailyChart then "BREADTH 5D: USE 1D CHART"
+    else if !momBreadthValid then "BREADTH 5D: N/A"
+    else if momBreadthUp then "BREADTH 5D: EXPANDING"
+    else if momBreadthDown then "BREADTH 5D: CONTRACTING"
+    else "BREADTH 5D: STABLE",
+    if !momBreadthValid then GlobalColor("NeutralGray")
+    else if momBreadthUp then GlobalColor("BullBright")
+    else if momBreadthDown then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !breadth200Valid then "BREADTH 200D: N/A"
+    else "BREADTH 200D: " +
+         (if breadth200Bull == 1 then "BULLISH"
+          else if breadth200Bear == 1 then "BEARISH"
+          else "CAUTION") +
+         " (" + AsText(Round(breadth200Val, 1)) + "%)",
+    if !breadth200Valid then GlobalColor("NeutralGray")
+    else if breadth200Bull == 1 then GlobalColor("BullBright")
+    else if breadth200Bear == 1 then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(showSignalSectionHeader, "SHARED MACRO (SPY-ANCHORED DIV)", GlobalColor("NeutralGray"),
+    location = Location.TOP_LEFT, size = FontSize.SMALL, "row ownership" = yes);
+
+AddLabel(yes,
+    if !clValid then "OIL/SPY: N/A"
+    else if clBearDiv == 1 then "OIL/SPY: BEARISH DIV"
+    else if clBullDiv == 1 then "OIL/SPY: BULLISH DIV"
+    else if clBear == 1 then "OIL/SPY: BEARISH"
+    else if clBull == 1 then "OIL/SPY: BULLISH"
+    else "OIL/SPY: CAUTION (FLAT)",
+    if !clValid then GlobalColor("NeutralGray")
+    else if clBear == 1 then GlobalColor("BearBright")
+    else if clBull == 1 then GlobalColor("BullBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !dxValid then "USD/SPY: N/A"
+    else if dxBearDiv == 1 then "USD/SPY: BEARISH DIV"
+    else if dxBullDiv == 1 then "USD/SPY: BULLISH DIV"
+    else if dxBear == 1 then "USD/SPY: BEARISH"
+    else if dxBull == 1 then "USD/SPY: BULLISH"
+    else "USD/SPY: CAUTION (FLAT)",
+    if !dxValid then GlobalColor("NeutralGray")
+    else if dxBear == 1 then GlobalColor("BearBright")
+    else if dxBull == 1 then GlobalColor("BullBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !tnxValid then "TNX/SPY: N/A"
+    else if tnxBearDiv == 1 then "TNX/SPY: BEARISH DIV"
+    else if tnxBullDiv == 1 then "TNX/SPY: BULLISH DIV"
+    else if tnxBear == 1 then "TNX/SPY: BEARISH"
+    else if tnxBull == 1 then "TNX/SPY: BULLISH"
+    else "TNX/SPY: CAUTION (FLAT)",
+    if !tnxValid then GlobalColor("NeutralGray")
+    else if tnxBear == 1 then GlobalColor("BearBright")
+    else if tnxBull == 1 then GlobalColor("BullBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !creditValid then "CREDIT: N/A"
+    else if creditBear == 1 then "CREDIT: BEARISH"
+    else "CREDIT: BULLISH",
+    if !creditValid then GlobalColor("NeutralGray")
+    else if creditBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !hgValid then "COPPER: N/A"
+    else if hgBear == 1 then "COPPER: BEARISH"
+    else "COPPER: BULLISH",
+    if !hgValid then GlobalColor("NeutralGray")
+    else if hgBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !vixCurveValid then "VIX CURVE: N/A"
+    else if vixCurveBear == 1 then "VIX CURVE: BACKWARDATION"
+    else if vixCurveBull == 1 then "VIX CURVE: CONTANGO"
+    else if vixCurve < 1.00 then "VIX CURVE: SHALLOW CONTANGO"
+    else "VIX CURVE: FLAT",
+    if !vixCurveValid then GlobalColor("NeutralGray")
+    else if vixCurveBull == 1 then GlobalColor("BullBright")
+    else if vixCurveBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(showSignalSectionHeader, "NASDAQ-100 SUMMARY", GlobalColor("NeutralGray"),
+    location = Location.TOP_LEFT, size = FontSize.SMALL, "row ownership" = yes);
+
+
+# NASDAQ SCORE (15 possible bearish signals)
+AddLabel(yes,
+    "NASDAQ SCORE: " + ndBearCount + "/15 | " +
+    (if ndBearCount >= 8 then "RISK-OFF"
+     else if ndBearCount >= 5 then "CAUTION"
+     else if ndValidCount < 15 then "DATA INCOMPLETE"
+     else "RISK-ON") +
+    (if ndValidCount < 15 then " | DATA " + ndValidCount + "/15" else ""),
+    if ndBearCount >= 8 then GlobalColor("BearBright")
+    else if ndBearCount >= 5 then GlobalColor("WarnBright")
+    else if ndValidCount < 15 then GlobalColor("InfoBlue")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !momDailyChart then "NASDAQ TREND: USE 1D"
+    else if !ndFiveValid then "NASDAQ TREND: N/A"
+    else "NASDAQ TREND: 1D " +
+        (if !ndOneValid then "N/A" else (if ndChange1 > 0 then "+" else "") + AsText(Round(ndChange1, 0))) +
+        " | " + scoreTrendDays + "D " +
+        (if ndChange5 > 0 then "+" else "") + AsText(Round(ndChange5, 0)) +
+        " | " + (if ndImproving then "IMPROVING" else if ndDeteriorating then "DETERIORATING" else "STABLE"),
+    if !ndFiveValid then GlobalColor("NeutralGray")
+    else if ndImproving then GlobalColor("BullBright")
+    else if ndDeteriorating then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !momDailyChart then "NASDAQ CONF: USE 1D"
+    else if !ndRecAllValid then "NASDAQ CONF: N/A (" + ndRecValidCount + "/4 FEEDS)"
+    else "NASDAQ CONF " + scoreTrendDays + "D: " + ndRecUpCount + "/4 " +
+         (if ndRecUpCount >= 3 then "BROAD"
+          else if ndRecUpCount == 2 then "PARTIAL" else "LIMITED"),
+    if !ndRecAllValid then GlobalColor("NeutralGray")
+    else if ndRecUpCount >= 3 then GlobalColor("BullBright")
+    else if ndRecUpCount == 2 then GlobalColor("WarnBright")
+    else GlobalColor("BearBright"));
+
+AddLabel(showSwingEnvironment,
+    if !momDailyChart then "NASDAQ SWING: USE 1D"
+    else if !ndEnvValid then "NASDAQ SWING: N/A"
+    else if ndEnvSupportive then "NASDAQ SWING: BULLISH"
+    else if ndEnvEarly then "NASDAQ SWING: EARLY IMPROVEMENT"
+    else if ndEnvDeteriorating then "NASDAQ SWING: DETERIORATING"
+    else if ndEnvDefensive then "NASDAQ SWING: BEARISH"
+    else "NASDAQ SWING: SELECTIVE",
+    if !ndEnvValid then GlobalColor("NeutralGray")
+    else if ndEnvSupportive then GlobalColor("BullBright")
+    else if ndEnvDefensive or ndEnvDeteriorating then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+
+AddLabel(showSignalSectionHeader, "NASDAQ-100 INTERNALS", GlobalColor("NeutralGray"),
+    location = Location.TOP_LEFT, size = FontSize.SMALL, "row ownership" = yes);
+
+
+# NASDAQ 100 INTERNALS: VXN MOVED OUT OF THE SPY SECTION
+AddLabel(yes,
+    if !vxnValid then "VXN: N/A"
+    else "VXN: " + (if vxnBear == 1 then "BEARISH" else if vxnNeut == 1 then "CAUTION" else "BULLISH") +
+         " (" + AsText(Round(vxnVal, 2)) + ")",
+    if !vxnValid then GlobalColor("NeutralGray")
+    else if vxnBear == 1 then GlobalColor("BearBright")
+    else if vxnNeut == 1 then GlobalColor("WarnBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !ndPcrValid then "NDX P/C: N/A"
+    else "NDX P/C: " +
+         (if ndPcrStretch == 1 then "CAUTION/WASHOUT"
+          else if ndPcrBear == 1 then "BEARISH" else "BULLISH") +
+         " (" + AsText(Round(ndPcrVal, 2)) + ")",
+    if !ndPcrValid then GlobalColor("NeutralGray")
+    else if ndPcrStretch == 1 then GlobalColor("WarnBright")
+    else if ndPcrBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !ndDefValid then "DEF/QQQ: N/A"
+    else if ndDefBear == 1 then "DEF/QQQ: BEARISH (" + defLookbackDays + "D)"
+    else if ndDefDayCaution == 1 then "DEF/QQQ: CAUTION (1D)"
+    else "DEF/QQQ: BULLISH",
+    if !ndDefValid then GlobalColor("NeutralGray")
+    else if ndDefBear == 1 then GlobalColor("BearBright")
+    else if ndDefDayCaution == 1 then GlobalColor("WarnBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !ndXLEValid then "XLE/QQQ: N/A"
+    else if ndXLEBear == 1 then "XLE/QQQ: BEARISH (" + xleLookbackDays + "D)"
+    else "XLE/QQQ: BULLISH (" + xleLookbackDays + "D)",
+    if !ndXLEValid then GlobalColor("NeutralGray")
+    else if ndXLEBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("BullBright"));
+
+AddLabel(yes,
+    if !ndSMHValid then "SMH/QQQ: N/A"
+    else if ndSMHBearDiv == 1 then "SMH/QQQ: BEARISH DIV"
+    else if ndSMHBearTrend == 1 then "SMH/QQQ: BEARISH"
+    else if ndSMHLagging == 1 then "SMH/QQQ: CAUTION"
+    else if ndSMHBull == 1 then "SMH/QQQ: BULLISH"
+    else "SMH/QQQ: NEUTRAL",
+    if !ndSMHValid then GlobalColor("NeutralGray")
+    else if ndSMHBear == 1 then GlobalColor("BearBright")
+    else if ndSMHLagging == 1 then GlobalColor("WarnBright")
+    else if ndSMHBull == 1 then GlobalColor("BullBright")
+    else GlobalColor("NeutralGray"));
+
+AddLabel(yes,
+    if !ndQQQHealthValid then "QQQ TREND: N/A"
+    else if ndQQQHealthBull == 1 then "QQQ TREND: BULLISH (50/200D)"
+    else if ndQQQHealthBear == 1 then "QQQ TREND: BEARISH (<200D)"
+    else "QQQ TREND: CAUTION",
+    if !ndQQQHealthValid then GlobalColor("NeutralGray")
+    else if ndQQQHealthBull == 1 then GlobalColor("BullBright")
+    else if ndQQQHealthBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !ndEqualValid then "QQQE/QQQ 10D: N/A"
+    else if ndEqualBull == 1 then "QQQE/QQQ 10D: BULLISH"
+    else if ndEqualBear == 1 then "QQQE/QQQ 10D: BEARISH"
+    else "QQQE/QQQ 10D: CAUTION",
+    if !ndEqualValid then GlobalColor("NeutralGray")
+    else if ndEqualBull == 1 then GlobalColor("BullBright")
+    else if ndEqualBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+AddLabel(yes,
+    if !ndIWMValid then "IWM/QQQ 10D: N/A"
+    else if ndIWMBull == 1 then "IWM/QQQ 10D: BULLISH"
+    else if ndIWMBear == 1 then "IWM/QQQ 10D: BEARISH"
+    else "IWM/QQQ 10D: CAUTION",
+    if !ndIWMValid then GlobalColor("NeutralGray")
+    else if ndIWMBull == 1 then GlobalColor("BullBright")
+    else if ndIWMBear == 1 then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
+
+# NDX BREADTH 1D: ADVANCERS / (ADVANCERS + DECLINERS) - NOT 200D MA.
+AddLabel(yes,
+    if !momDailyChart then "NDX BREADTH 1D: USE 1D"
+    else if !ndBreadthValid then "NDX BREADTH 1D: N/A"
+    else if ndBreadthBear == 1 then "NDX BREADTH 1D: CONTRACTING"
+    else if ndBreadthBull == 1 then "NDX BREADTH 1D: EXPANDING"
+    else "NDX BREADTH 1D: STABLE",
+    if !ndBreadthValid then GlobalColor("NeutralGray")
+    else if ndBreadthBear == 1 then GlobalColor("BearBright")
+    else if ndBreadthBull == 1 then GlobalColor("BullBright")
+    else GlobalColor("WarnBright"));
+
+# NDX BREADTH 5D: change in 5-session avg advancer share vs PRIOR 5 sessions.
+AddLabel(yes,
+    if !momDailyChart then "NDX BREADTH 5D: USE 1D"
+    else if !ndBreadth5Valid then "NDX BREADTH 5D: N/A"
+    else if ndBreadth5Up then "NDX BREADTH 5D: EXPANDING"
+    else if ndBreadth5Down then "NDX BREADTH 5D: CONTRACTING"
+    else "NDX BREADTH 5D: STABLE",
+    if !ndBreadth5Valid then GlobalColor("NeutralGray")
+    else if ndBreadth5Up then GlobalColor("BullBright")
+    else if ndBreadth5Down then GlobalColor("BearBright")
+    else GlobalColor("WarnBright"));
