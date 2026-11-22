@@ -3,3 +3,9 @@
 /* Reference links do not feed data into the dashboard or alter the score. */
 .data-link { display:inline-block; margin-top:5px; color:#8fbce3; font-size:0.78rem; text-decoration:underline; text-underline-offset:3px; }
 .data-link:hover { color:#c2e5ff; }
+
+/* Exact trading-session date labels and selection controls */
+.chart-range{color:#acc5df!important;font-size:11px!important;margin-top:5px!important}.seg button{white-space:nowrap}.chartpanel .panel-head{flex-wrap:wrap;gap:14px}#history-svg{overflow:visible}.chart-legend{margin-top:4px}@media(max-width:600px){.seg button{font-size:11px;padding:6px 8px}}
+
+/* Informational-only index constituent P/C readings use blue, never score colors. */
+.regime.info{background:#1c354d;border-color:#36648c;color:#9dd7ff}

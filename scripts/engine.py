@@ -11,16 +11,14 @@ import pandas as pd
 
 S = {"bull":"BULLISH", "bear":"BEARISH", "warn":"CAUTION", "na":"N/A"}
 SHARED = ["oil", "usd", "tnx", "credit", "copper", "vix_curve"]
-SP = ["vix", "spx_pc", "sp_def", "sp_xle", "sp_smh", "spy_trend", "rsp_spy", "iwm_spy", "sp_breadth1d"]
-ND = ["vxn", "ndx_pc", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
+SP = ["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "rsp_spy", "iwm_spy", "sp_breadth1d"]
+ND = ["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
 LABELS = {
  "vix":"VIX", "vxn":"VXN", "oil":"Crude Oil", "usd":"US Dollar", "tnx":"10Y Yield", "credit":"Credit HYG/IEF", "copper":"Copper", "vix_curve":"VIX Curve",
- "spx_pc":"SPX Put/Call", "sp_def":"Defensives/SPY", "sp_xle":"XLE/SPY", "sp_smh":"SMH/SPY", "spy_trend":"SPY Trend", "rsp_spy":"RSP/SPY", "iwm_spy":"IWM/SPY", "sp_breadth1d":"S&P Breadth 1D", "sp_breadth5d":"S&P Breadth 5D", "sp_breadth200":"S&P Breadth 200D",
- "ndx_pc":"NDX Put/Call", "nd_def":"Defensives/QQQ", "nd_xle":"XLE/QQQ", "nd_smh":"SMH/QQQ", "qqq_trend":"QQQ Trend", "qqqe_qqq":"QQQE/QQQ", "iwm_qqq":"IWM/QQQ", "nd_breadth1d":"Nasdaq Breadth 1D", "nd_breadth5d":"Nasdaq Breadth 5D",
+ "sp_def":"Defensives/SPY", "sp_xle":"XLE/SPY", "sp_smh":"SMH/SPY", "spy_trend":"SPY Trend", "rsp_spy":"RSP/SPY", "iwm_spy":"IWM/SPY", "sp_breadth1d":"S&P Breadth 1D", "sp_breadth5d":"S&P Breadth 5D", "sp_breadth200":"S&P Breadth 200D",
+ "nd_def":"Defensives/QQQ", "nd_xle":"XLE/QQQ", "nd_smh":"SMH/QQQ", "qqq_trend":"QQQ Trend", "qqqe_qqq":"QQQE/QQQ", "iwm_qqq":"IWM/QQQ", "nd_breadth1d":"Nasdaq Breadth 1D", "nd_breadth5d":"Nasdaq Breadth 5D",
 }
 DEPENDENCIES = {
- "spx_pc":"Thinkorswim $PCSP requires an independently licensed/authorized data feed",
- "ndx_pc":"Thinkorswim $PCND requires an independently licensed/authorized data feed",
  "sp_breadth1d":"Thinkorswim $SPXA200R history requires an independent constituent breadth feed",
  "sp_breadth5d":"Thinkorswim $SPXA200R history requires an independent constituent breadth feed",
  "sp_breadth200":"Thinkorswim $SPXA200R history requires an independent constituent breadth feed",
@@ -130,13 +128,6 @@ def build_day(f: pd.DataFrame, pos: int, sources:dict | None=None):
         label="BACKWARDATION" if x>1.0 else "CONTANGO" if x<0.90 else "FLAT" if x==1 else "SHALLOW CONTANGO"
         return st,label,x,"VIX / VIX3M implied-volatility ratio"
     condition("vix_curve",["vix_curve_ratio"],curve,src("VIX3M"))
-    # put/call 1.35+: yellow washout label BUT bearish +1 in the underlying script
-    for key,col in (("spx_pc","SPX_PCR"),("ndx_pc","NDX_PCR")):
-        def pc(x):
-            return ("wash" if x>=1.35 else "bear" if x>1.00 else "bull",
-                    "WASHOUT?" if x>=1.35 else "BEARISH" if x>1.00 else "BULLISH",
-                    x,"Washout is yellow but contributes a bearish point")
-        condition(key,[col],pc,src(col))
     for key,bench in (("sp_def","spy"),("nd_def","qqq")):
         def defensive(d10,b10,d1,b1):
             if d10>b10: return "bear","BEARISH",None,"Defensives lead on 10D"
@@ -189,6 +180,7 @@ def score_of(signals, keys):
     valid=[k for k in keys if signals[k].state!="na"]
     bears=sum(signals[k].state in ("bear","wash") for k in valid)
     missing=len(keys)-len(valid)
+    # Initial 14-point cutoffs preserve existing integer score bands; validate empirically.
     def regime(n): return "RISK-ON" if n<=4 else "CAUTION" if n<=7 else "RISK-OFF"
     low,high=regime(bears),regime(bears+missing)
     return {"bearish":bears,"possible_max":bears+missing,"total":len(keys),"available":len(valid),"missing":missing,"regime":low if low==high else "INCOMPLETE","complete":missing==0,"available_keys":valid}
@@ -294,4 +286,4 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     def prune_sc(x): return {k:v for k,v in x.items() if k!="available_keys"}
     latest["sp"]=prune_sc(latest["sp"]); latest["nd"]=prune_sc(latest["nd"])
     history=[{"date":r["date"],"sp":r["sp"]["bearish"],"sp_available":r["sp"]["available"],"nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"]} for r in records[-90:]]
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"history":history,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Index-specific put/call feeds require authorized public-display rights or a separately licensed source. Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly."}}
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"14-point-v3-clean-axis-fix", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"history":history,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"14 scored indicators per market."}}

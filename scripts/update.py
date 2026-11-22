@@ -27,7 +27,7 @@ SYMBOLS={
 }
 FALLBACKS={"USD":"UUP", "TNX":"^TNX"}
 CBOE={k:f"https://cdn.cboe.com/api/global/us_indices/daily_prices/{k}_History.csv" for k in ("VIX","VXN","VIX3M")}
-EXTRA_COLUMNS={"SPX_PCR","NDX_PCR","SPX_BREADTH200","NDX_ADV","NDX_DECL"}
+EXTRA_COLUMNS={"SPX_BREADTH200","NDX_ADV","NDX_DECL"}
 
 def download_yahoo():
     import yfinance as yf
@@ -96,7 +96,7 @@ def official_cboe():
 def load_extra():
     """Optional supplemental CSV, furnished by a licensed/authorized data provider.
 
-    Valid input: date,SPX_PCR,NDX_PCR,SPX_BREADTH200,NDX_ADV,NDX_DECL
+    Valid input: date,SPX_BREADTH200,NDX_ADV,NDX_DECL
     SPX_BREADTH200 is in units 0..100 (e.g. 46.2, NOT 0.462).
     """
     frames=[]; errors=[]
@@ -178,12 +178,13 @@ def main():
                        for k,v in sources.items() if k in prices and not prices[k].dropna().empty}
     for key in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL"):
         if key in sources:
-            result["sources"][key] = {"provider": sources[key], "latest_session": result["session"]}
+            last_date=(extra[key].dropna().index.max().strftime("%Y-%m-%d") if extra is not None and key in extra and not extra[key].dropna().empty else result["session"])
+            result["sources"][key] = {"provider": sources[key], "latest_session": last_date}
     result["warnings"]=(errors[:12] + ["Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.", "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
                  "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."])
     OUT.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
-    print(f"Wrote {OUT}: {result['session']} | SP {result['markets']['sp500']['score']['available']}/15, "
-          f"ND {result['markets']['nasdaq100']['score']['available']}/15")
+    print(f"Wrote {OUT}: {result['session']} | SP {result['markets']['sp500']['score']['available']}/14, "
+          f"ND {result['markets']['nasdaq100']['score']['available']}/14")
     for err in errors[:8]:print("WARNING:",err[:160])
 
 if __name__=="__main__":
