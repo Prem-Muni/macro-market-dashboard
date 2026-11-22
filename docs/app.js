@@ -187,7 +187,7 @@ function groupScore(data,keys){
   const state=sig[key]?.state;
   if(!['bear','bull','warn','wash'].includes(state))continue;
   available++;
-  if(state==='bear')bearish++;
+  if(state==='bear'||state==='wash')bearish++;
  }
  return {bearish,available,total:keys.length,max:bearish+keys.length-available};
 }
@@ -358,6 +358,59 @@ function renderSignalChanges(data){
  }
 }
 
+// The companion module reads already-published EOD score/history records only.
+// No synthetic previous score, intraday inference, or new scoring rule.
+function renderMarketIntelligence(data){
+ const mi=window.MarketIntel;
+ if(!mi)return;
+ const a=mi.scoredHistory(data,'sp'),b=mi.scoredHistory(data,'nd');
+ const changeLabel=r=>{
+  if(!r)return 'Previous EOD → latest EOD: history unavailable';
+  const delta=r.delta.min===r.delta.max?`${r.delta.min>0?'+':''}${r.delta.min}`:
+    `${r.delta.min>0?'+':''}${r.delta.min}…${r.delta.max>0?'+':''}${r.delta.max}`;
+  const word={improving:'IMPROVING',deteriorating:'DETERIORATING',unchanged:'UNCHANGED',uncertain:'DIRECTION UNCERTAIN'}[r.direction];
+  return `${mi.formatDate(r.from)} ${mi.scoreRange(r.previous)} → ${mi.formatDate(r.to)} ${mi.scoreRange(r.today)} · ${delta} · ${word}`;
+ };
+ for(const [key,r] of [['sp',a],['nd',b]]){
+  const scoreEl=$(key+'-daily-compare');scoreEl.textContent=changeLabel(r);
+  scoreEl.dataset.tone=r?.direction==='improving'?'bull':r?.direction==='deteriorating'?'bear':r?.direction==='uncertain'?'warn':'neutral';
+ }
+ $('intel-date').textContent=a&&b&&a.from===b.from&&a.to===b.to?`${a.from} → ${a.to}`:'Matching session data required';
+ const explainTransition=(r)=>{
+  if(!r)return 'History unavailable';
+  if(r.transition==='uncertain')return `${r.previousRegime} → ${r.currentRegime} · uncertain`;
+  if(r.transition==='unchanged')return `${r.currentRegime} · unchanged`;
+  return `${r.previousRegime} → ${r.currentRegime}`;
+ };
+ $('intel-sp-transition').textContent=explainTransition(a);
+ $('intel-nd-transition').textContent=explainTransition(b);
+ const transitions=[a?.transition,b?.transition];
+ const anyChanged=transitions.some(t=>t==='risk_increased'||t==='risk_eased');
+ const anyUncertain=transitions.includes('uncertain')||!a||!b;
+ const anyWorse=transitions.includes('risk_increased');
+ const anyBetter=transitions.includes('risk_eased');
+ const header=anyChanged?'Risk regime transition detected':anyUncertain?'Regime transition uncertain':'No regime transition';
+ $('intel-transition-title').textContent=header;
+ $('intel-transition').dataset.tone=anyWorse?'bear':anyBetter?'bull':anyUncertain?'warn':'neutral';
+ $('intel-transition-note').textContent=anyUncertain?
+  'At least one transition cannot be classified confidently; unavailable inputs are never treated as bullish.':
+  anyChanged?'A confirmed change in the published Risk-On / Caution / Risk-Off classification.':'Both benchmarks retained their prior risk regime.';
+ const diff=mi.divergence(a,b);
+ $('intel-divergence-title').textContent=diff.headline;
+ $('intel-divergence-note').textContent=diff.detail;
+ $('intel-divergence').dataset.tone=diff.kind==='diverging'||diff.kind==='split'?'warn':'neutral';
+ for(const key of ['sp','nd']){
+  const q=mi.quality(data,key),score=$(`intel-${key}-quality`),bar=$(`intel-${key}-quality-bar`),note=$(`intel-${key}-quality-note`);
+  score.textContent=q?`${q.available}/${q.total}`:'—/15';
+  bar.style.width=q?`${(q.available/q.total*100).toFixed(1)}%`:'0%';
+  bar.dataset.tone=q?.missing?'warn':'bull';
+  if(!q){note.textContent='Coverage unavailable';continue;}
+  const sourceText=q.estimated.length?`${q.estimated.length} marked estimated`: 'No sources explicitly marked estimated';
+  note.textContent=`${q.missing} missing · ${sourceText}${q.unspecified.length?` · ${q.unspecified.length} without source tag`:''}${q.mismatch?' · CHECK COVERAGE MISMATCH':''}`;
+  if(q.mismatch)note.classList.add('quality-mismatch');else note.classList.remove('quality-mismatch');
+ }
+}
+
 function render(data){
  snapshot=data;
  $('session').textContent=data.session||'—';
@@ -369,6 +422,7 @@ function render(data){
  renderDecisionBrief(data);
  renderSignalChanges(data);
  renderScoreBreakdown(data);
+ renderMarketIntelligence(data);
  signals('sp-signals',data.order.sp500);signals('nd-signals',data.order.nasdaq100);signals('shared-signals',data.order.shared);
  renderMovingAverages(data);
  $('coverage-note').textContent=data.explanation?.partial||'';

@@ -391,3 +391,37 @@ html{scroll-behavior:smooth}
 .context-chart-grid .fear-message:empty{display:none}
 @media(max-width:1040px){.context-chart-grid{grid-template-columns:1fr}.context-chart-grid>.chartpanel{padding:20px 22px}.context-chart-grid .panel-head{flex-wrap:wrap}}
 @media(max-width:720px){.changes-grid{grid-template-columns:1fr}.session-changes{padding:14px}.context-chart-grid>.chartpanel{padding:15px}.context-chart-grid .panel-head h2{font-size:18px}}
+
+/* Market Intelligence & Risk Transitions (presentation-only, EOD scoped). */
+.score-daily-compare{margin:10px 0 3px;padding:8px 10px;border:1px solid #34495d;background:rgba(9,21,37,.48);border-radius:8px;color:#c1d5e8;font-size:10px;line-height:1.55;font-weight:750;font-variant-numeric:tabular-nums;max-width:370px}
+.score-daily-compare[data-tone="bull"]{color:#77eac0;border-color:rgba(67,192,143,.5)}
+.score-daily-compare[data-tone="bear"]{color:#ff9eac;border-color:rgba(230,101,114,.48)}
+.score-daily-compare[data-tone="warn"]{color:#f1d285;border-color:rgba(213,170,88,.45)}
+.market-intelligence{margin:17px 0;padding:19px 20px;border:1px solid #35506d;border-radius:15px;background:linear-gradient(120deg,#142235,#101924)}
+.intel-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:15px;flex-wrap:wrap}
+.intel-head h2{margin:4px 0 4px;font-size:19px;color:#f0f7ff}
+.intel-head p{margin:0;line-height:1.6;font-size:11px;color:#9cb2c9}
+.intel-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.intel-card{min-width:0;padding:15px;border:1px solid #2f465e;border-radius:11px;background:rgba(9,18,31,.54)}
+.intel-kicker{font-size:9px;letter-spacing:1px;font-weight:800;color:#9dbbd2}
+.intel-card h3{font-size:15px;line-height:1.4;margin:8px 0 9px;color:#e7f2fc}
+.intel-card p{margin:9px 0 0;font-size:10.5px;line-height:1.6;color:#9fb1c7}
+.intel-card[data-tone="bull"]{border-color:#346d59}
+.intel-card[data-tone="bear"]{border-color:#84505b}
+.intel-card[data-tone="warn"]{border-color:#786640}
+.intel-pair{display:flex;flex-direction:column;gap:8px}
+.intel-pair>div{display:grid;grid-template-columns:38px minmax(0,1fr);gap:8px;align-items:baseline;border-bottom:1px solid #263a4e;padding-bottom:7px}
+.intel-pair span{font-size:11px;font-weight:800;color:#83add2}
+.intel-pair strong{font-size:11px;line-height:1.5;color:#d8e9f8}
+.intel-quality-row{margin-top:12px}
+.intel-quality-row>span{display:flex;justify-content:space-between;font-size:11px;color:#c1d5e5;gap:8px}
+.intel-quality-row strong{color:#eaf4fb;font-variant-numeric:tabular-nums}
+.intel-quality-row small{display:block;color:#9eb1c5;font-size:10px;line-height:1.5;margin-top:4px}
+.intel-quality-track{height:5px;margin:7px 0 4px;background:#34465c;border-radius:99px;overflow:hidden}
+.intel-quality-track>div{height:100%;width:0;border-radius:99px;background:#65d3ae;transition:width .2s}
+.intel-quality-track>div[data-tone="warn"]{background:#e8bc68}
+.intel-disclaimer{font-size:9.5px!important;color:#859bb4!important}
+.quality-mismatch{color:#ffb2bb!important;font-weight:800}
+@media(max-width:1100px){.intel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.intel-data-quality{grid-column:1/-1}}
+@media(max-width:650px){.market-intelligence{padding:15px}.intel-grid{grid-template-columns:1fr}.intel-data-quality{grid-column:auto}.score-daily-compare{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.intel-quality-track>div{transition:none}}
