@@ -15,6 +15,8 @@ function summary(prefix,model){
  const base=$(prefix+'-baseline');
  if(base)base.textContent=model.legacy_14?`Original 14-point model: ${scoreFormat(model.legacy_14)} (reference only)`:'Original 14-point model: —';
  const status=$(prefix+'-regime');status.textContent=s.regime;status.className='regime '+stateClass(s.regime);
+ const card=$(prefix+'-card');if(card)card.dataset.regime=s.regime||'INCOMPLETE';
+ const score=$(prefix+'-score');if(score)score.setAttribute('aria-label',`${prefix==='sp'?'S&P 500':'Nasdaq-100'}: ${scoreFormat(s)} bearish conditions, ${s.regime}`);
  $(prefix+'-meter').style.width=((s.bearish/s.total)*100).toFixed(1)+'%';
  const tr=$(prefix+'-trend');tr.textContent=m.state;tr.className=tone(m.state);
  $(prefix+'-delta').textContent=`1D ${rangeText(m.d1_range)} · 5D ${rangeText(m.d5_range)}${m.partial?' · bounded':''}`;
@@ -154,6 +156,27 @@ function renderMovingAverages(data){
   marker.style.opacity=validRsi?'1':'0';
  }
 }
+function renderDecisionBrief(data){
+ const sp=data.markets?.sp500,nd=data.markets?.nasdaq100;
+ if(!sp||!nd)return;
+ const regimes=[sp.score?.regime||'INCOMPLETE',nd.score?.regime||'INCOMPLETE'];
+ let headline;
+ if(regimes.every(x=>x==='RISK-ON'))headline='Both benchmarks are in Risk-On';
+ else if(regimes.every(x=>x==='RISK-OFF'))headline='Both benchmarks are in Risk-Off';
+ else if(regimes.every(x=>x==='CAUTION'))headline='Both benchmarks are in Caution';
+ else if(regimes.includes('INCOMPLETE'))headline='Mixed coverage — review missing data';
+ else headline=`Mixed regimes · SPY ${regimes[0]} · QQQ ${regimes[1]}`;
+ const el=$('brief-title');el.textContent=headline;
+ el.className=regimes.every(x=>x==='RISK-ON')?'brief-good':regimes.every(x=>x==='RISK-OFF')?'brief-bad':'brief-caution';
+ $('brief-detail').textContent='Regime is a model classification, not a forecast. Cross-check momentum and confirmation before interpreting it.';
+ for(const [id,market] of [['brief-sp-momentum',sp],['brief-qqq-momentum',nd]]){
+  const node=$(id),label=market.momentum?.state||'UNKNOWN';
+  node.textContent=label;node.className=tone(label);
+ }
+ const sc=sp.confirmation||{},nc=nd.confirmation||{};
+ const fmt=c=>c.confirmed!=null&&c.total!=null&&Number.isFinite(Number(c.confirmed))&&Number.isFinite(Number(c.total))?`${c.confirmed}/${c.total}`:'—';
+ $('brief-confirm').textContent=`SPY ${fmt(sc)} · QQQ ${fmt(nc)}`;
+}
 function render(data){
  snapshot=data;
  $('session').textContent=data.session||'—';
@@ -162,6 +185,7 @@ function render(data){
  $('status-dot').className='status-dot '+(data.generated_at?'good':'warn');
  if(!data.markets?.sp500 || !data.markets?.nasdaq100){$('warning').textContent='The website is installed, but no market update has run. Open GitHub → Actions → Refresh EOD dashboard → Run workflow.';return;}
  summary('sp',data.markets.sp500); summary('nd',data.markets.nasdaq100);
+ renderDecisionBrief(data);
  signals('sp-signals',data.order.sp500);signals('nd-signals',data.order.nasdaq100);signals('shared-signals',data.order.shared);
  renderMovingAverages(data);
  $('coverage-note').textContent=data.explanation?.partial||'';

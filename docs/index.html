@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=research-move-20261122">
+  <link rel="stylesheet" href="styles.css?v=visual-refresh-20261122">
 </head>
 <body>
   <div class="shell">
@@ -21,10 +21,23 @@
     </nav>
     <div class="info-line" id="warning">A research dashboard, not a trading signal. Data and scores are indicative; verify against Thinkorswim before acting.</div>
     <main>
-      <div class="section-intro"><div><div class="eyebrow">MARKET REGIME</div><h2>Two markets. One decision framework.</h2><p>Separate experimental 15-point bearish scores using the original 50D/200D trend rule plus RSI, five-session trends, and market confirmation.</p></div><div class="session-box"><div class="eyebrow">LATEST PRICED SESSION</div><strong id="session">—</strong><small id="feed-state">No market snapshot yet</small></div></div>
+      <div class="section-intro"><div><div class="eyebrow">DAILY DECISION DESK</div><h2>Market posture at a glance.</h2><p>Two independent 15-point bearish scores. Compare risk regime, five-session momentum and confirmation before reviewing the charts.</p><a class="mini-reference" href="threshold-logic.html">Why SPY and QQQ use different thresholds <span aria-hidden="true">↗</span></a></div><div class="session-box"><div class="eyebrow">LATEST PRICED SESSION</div><strong id="session">—</strong><small id="feed-state">No market snapshot yet</small></div></div>
       <section class="market-grid" aria-label="Market summary">
-        <article class="market-card" id="sp-card"><div class="market-head"><div><div class="eyebrow">S&P 500</div><h3>Broad Market</h3></div><span class="tiny-pill">SPY BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="sp-score">—/15</div><div class="detail-caption" id="sp-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="sp-baseline">Original 14-point model: —</div></div><div class="regime neutral" id="sp-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="sp-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="sp-trend">—</b><small id="sp-delta">—</small></div><div><span>Market Confirmation</span><b id="sp-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="sp-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
-        <article class="market-card" id="nd-card"><div class="market-head"><div><div class="eyebrow">NASDAQ-100</div><h3>Growth & Technology</h3></div><span class="tiny-pill">QQQ BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="nd-score">—/15</div><div class="detail-caption" id="nd-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="nd-baseline">Original 14-point model: —</div><div id="nd-borderline" class="detail-caption threshold-borderline" hidden>Score 5 · Risk-On, borderline cautious</div></div><div class="regime neutral" id="nd-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="nd-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="nd-trend">—</b><small id="nd-delta">—</small></div><div><span>Market Confirmation</span><b id="nd-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="nd-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
+        <article class="market-card" id="sp-card"><div class="market-head"><div><div class="eyebrow">S&P 500 · SPY</div><h3>Broad Market</h3></div><span class="tiny-pill">SPY BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="sp-score" aria-live="polite">—/15</div><div class="detail-caption" id="sp-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="sp-baseline">Original 14-point model: —</div></div><div class="regime neutral" id="sp-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="sp-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="sp-trend">—</b><small id="sp-delta">—</small></div><div><span>Market Confirmation</span><b id="sp-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="sp-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
+        <article class="market-card" id="nd-card"><div class="market-head"><div><div class="eyebrow">NASDAQ-100 · QQQ</div><h3>Growth & Technology</h3></div><span class="tiny-pill">QQQ BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="nd-score" aria-live="polite">—/15</div><div class="detail-caption" id="nd-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="nd-baseline">Original 14-point model: —</div><div id="nd-borderline" class="detail-caption threshold-borderline" hidden>Score 5 · Risk-On, borderline cautious</div></div><div class="regime neutral" id="nd-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="nd-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="nd-trend">—</b><small id="nd-delta">—</small></div><div><span>Market Confirmation</span><b id="nd-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="nd-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
+      </section>
+      <section class="decision-brief" aria-label="Compact market summary">
+        <div class="decision-brief-intro">
+          <div class="eyebrow">AT A GLANCE</div>
+          <h2 id="brief-title">Waiting for the latest market snapshot</h2>
+          <p id="brief-detail">Summary uses the same published end-of-day market data as the two scorecards.</p>
+        </div>
+        <div class="decision-brief-stats">
+          <div class="decision-stat"><span class="decision-stat-label">SPY · 5D momentum</span><strong id="brief-sp-momentum">—</strong></div>
+          <div class="decision-stat"><span class="decision-stat-label">QQQ · 5D momentum</span><strong id="brief-qqq-momentum">—</strong></div>
+          <div class="decision-stat"><span class="decision-stat-label">Confirmations improving</span><strong id="brief-confirm">—</strong></div>
+        </div>
+        <a class="decision-brief-link" href="#market-indicators">Review the contributing signals <span aria-hidden="true">↓</span></a>
       </section>
       <!-- Hosted charts separate; individual EOD SMAs are informational. The original 50D/200D trend and RSI14 are scored. -->
       <section class="market-prices" aria-label="SPY and QQQ daily price history and moving averages">
@@ -110,16 +123,16 @@
         <div class="fear-band-key"><span><i class="fear-swatch fear-extreme"></i>Extreme Fear · 0–20</span><span><i class="fear-swatch fear-fear"></i>Fear · 21–40</span><span><i class="fear-swatch fear-neutral"></i>Neutral · 41–60</span><span><i class="fear-swatch fear-greed"></i>Greed · 61–80</span><span><i class="fear-swatch fear-high"></i>Extreme Greed · 81–100</span></div>
         <p class="provider-note">Source: <a href="https://feargreedchart.com/" target="_blank" rel="noopener noreferrer">FearGreedChart.com</a> (<a href="https://feargreedchart.com/methodology" target="_blank" rel="noopener noreferrer">methodology</a>). Free public API, refreshed by its provider; values are not the CNN Fear &amp; Greed Index. <a href="https://www.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener noreferrer">View CNN's separate index</a>.</p>
       </section>
-      <div class="columns">
+      <div class="columns" id="market-indicators">
         <section class="signals-panel"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC</div><h2>S&P 500 internals</h2></div><span class="capsule">SPY</span></div><div id="sp-signals" class="signal-list"></div></section>
         <section class="signals-panel"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC</div><h2>Nasdaq-100 internals</h2></div><span class="capsule">QQQ</span></div><div id="nd-signals" class="signal-list"></div></section>
       </div>
       <section class="signals-panel shared"><div class="panel-head"><div><div class="eyebrow">SHARED BY BOTH MARKET SCORES</div><h2>Macro signals</h2></div><span class="capsule">6 SIGNALS</span></div><div id="shared-signals" class="signal-list double"></div></section>
       <section class="disclaimer"><h3>Reading the dashboard responsibly</h3><p id="coverage-note">Specialized index breadth data may require separate authorized data sources. An incomplete 15-point score can be a range, not a definitive RISK-ON / CAUTION / RISK-OFF classification.</p><p>The website uses the original Thinkorswim-style 50D/200D trend point plus a separate RSI(14) point in an experimental 15-point model. The original 14-point score remains visible for comparison. Five individual SMA comparisons are informational only. Thinkorswim itself is not updated by this package. It is not a broker feed, a backtested strategy, or an instruction to trade. Futures and ETF proxies can differ from Thinkorswim settlements. Provider availability and data display rights vary.</p><details><summary>Data source diagnostics</summary><pre id="diagnostics">Awaiting first update.</pre></details></section>
     </main>
-    <footer><span>Macro Decision Dashboard · Personal research build</span><span>Refresh scheduled after the US market close · Version 0.1</span></footer>
+    <footer><span>Macro Decision Dashboard · Personal research build</span><span>15-point experimental model · Updated EOD · <a href="threshold-logic.html">Model record</a></span></footer>
   </div>
-  <script src="app.js?v=research-move-20261122" defer></script>
+  <script src="app.js?v=visual-refresh-20261122" defer></script>
   <script src="market-extras.js?v=charts-fear-ytd-20261122" defer></script>
 </body>
 </html>
