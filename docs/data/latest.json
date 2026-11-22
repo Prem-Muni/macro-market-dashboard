@@ -1,6 +1,6 @@
 {
   "session": "2026-11-20",
-  "generated_at": "2026-11-22T03:00:10.200253+00:00",
+  "generated_at": "2026-11-22T03:14:17.614050+00:00",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
@@ -18,6 +18,14 @@
         "d1": -1,
         "d5": 4,
         "state": "DETERIORATING",
+        "d1_range": [
+          -2,
+          0
+        ],
+        "d5_range": [
+          3,
+          5
+        ],
         "partial": true
       },
       "confirmation": {
@@ -31,7 +39,7 @@
           "price": false
         }
       },
-      "swing": "N/A"
+      "swing": "BEARISH"
     },
     "nasdaq100": {
       "score": {
@@ -46,7 +54,15 @@
       "momentum": {
         "d1": 1,
         "d5": 1,
-        "state": "STABLE",
+        "state": "UNCERTAIN",
+        "d1_range": [
+          0,
+          2
+        ],
+        "d5_range": [
+          0,
+          2
+        ],
         "partial": true
       },
       "confirmation": {
@@ -60,7 +76,7 @@
           "price": false
         }
       },
-      "swing": "N/A"
+      "swing": "BEARISH"
     }
   },
   "signals": {
@@ -951,7 +967,7 @@
     "nd_breadth5d": "Nasdaq Breadth 5D"
   },
   "explanation": {
-    "missing": "Put/call feeds still require an authorized source. Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
+    "missing": "Index-specific put/call feeds require authorized public-display rights or a separately licensed source. Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
     "partial": "Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.",
     "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly."
   },
