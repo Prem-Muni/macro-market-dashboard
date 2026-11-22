@@ -1,7 +1,7 @@
 {
   "session": "2026-11-20",
-  "generated_at": "2026-11-22T06:13:32.987863+00:00",
-  "model_version": "15-point-v2-original-trend-rsi",
+  "generated_at": "2026-11-22T06:31:39.381308+00:00",
+  "model_version": "15-point-v3-qqq-5-borderline-risk-on",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
@@ -5356,6 +5356,24 @@
     }
   },
   "history_window_months": 20,
+  "risk_policy": {
+    "sp500": {
+      "risk_on_max": 4,
+      "caution_min": 5,
+      "caution_max": 8,
+      "risk_off_min": 9
+    },
+    "nasdaq100": {
+      "risk_on_max": 5,
+      "caution_min": 6,
+      "caution_max": 8,
+      "risk_off_min": 9,
+      "borderline_score": 5,
+      "borderline_note": "Score 5 is Risk-On by policy but borderline cautious."
+    },
+    "decision_date": "2026-11-22",
+    "evidence_through": "2026-11-20"
+  },
   "order": {
     "shared": [
       "oil",
@@ -5424,7 +5442,7 @@
     "missing": "Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
     "partial": "Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.",
     "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly.",
-    "model": "Experimental 15-point model; Risk-On threshold unchanged at 0\u20134. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score \u22644/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."
+    "model": "Experimental 15-point model: S&P 500 Risk-On 0\u20134; Nasdaq-100 Risk-On 0\u20135, with QQQ score 5 borderline cautious. Both Risk-Off at 9+. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score \u22644/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."
   },
   "sources": {
     "SPY": {
