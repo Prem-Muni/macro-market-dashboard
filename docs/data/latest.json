@@ -1,6 +1,6 @@
 {
   "session": "2026-11-20",
-  "generated_at": "2026-11-22T21:37:36.972644+00:00",
+  "generated_at": "2026-11-22T22:07:31.051431+00:00",
   "model_version": "15-point-v3-qqq-5-borderline-risk-on",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -287,6 +287,100 @@
       "value": -32.142,
       "note": "Change in average advancing share between adjacent 5D windows; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+    }
+  },
+  "signal_changes": {
+    "from_session": "2026-11-19",
+    "to_session": "2026-11-20",
+    "groups": {
+      "shared": {
+        "new_bearish": [
+          {
+            "key": "oil",
+            "label": "Crude Oil",
+            "before": "BULLISH DIV",
+            "after": "BEARISH",
+            "kind": "new_bearish"
+          }
+        ],
+        "eased": [
+          {
+            "key": "usd",
+            "label": "US Dollar",
+            "before": "BEARISH",
+            "after": "BULLISH DIV",
+            "kind": "eased"
+          }
+        ],
+        "other": [],
+        "compared": 6,
+        "skipped": 0,
+        "total": 6
+      },
+      "sp": {
+        "new_bearish": [],
+        "eased": [
+          {
+            "key": "iwm_spy",
+            "label": "IWM/SPY",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          }
+        ],
+        "other": [],
+        "compared": 9,
+        "skipped": 0,
+        "total": 9
+      },
+      "nd": {
+        "new_bearish": [
+          {
+            "key": "nd_def",
+            "label": "Defensives/QQQ",
+            "before": "CAUTION",
+            "after": "BEARISH",
+            "kind": "new_bearish"
+          },
+          {
+            "key": "nd_xle",
+            "label": "XLE/QQQ",
+            "before": "BULLISH",
+            "after": "BEARISH",
+            "kind": "new_bearish"
+          }
+        ],
+        "eased": [
+          {
+            "key": "iwm_qqq",
+            "label": "IWM/QQQ",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          }
+        ],
+        "other": [
+          {
+            "key": "qqqe_qqq",
+            "label": "QQQE/QQQ",
+            "before": "CAUTION",
+            "after": "BULLISH",
+            "kind": "other"
+          }
+        ],
+        "compared": 9,
+        "skipped": 0,
+        "total": 9
+      }
+    },
+    "by_key": {
+      "oil": "new_bearish",
+      "usd": "eased",
+      "iwm_spy": "eased",
+      "nd_def": "new_bearish",
+      "nd_xle": "new_bearish",
+      "qqqe_qqq": "other",
+      "iwm_qqq": "eased"
     }
   },
   "moving_averages": {
