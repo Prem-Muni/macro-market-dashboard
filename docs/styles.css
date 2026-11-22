@@ -204,3 +204,13 @@
 .threshold-footer-link{display:inline-block;color:#97d7ff;font-size:12px;margin:10px 0;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:850px){.threshold-policy-grid,.threshold-explainer{grid-template-columns:1fr}}
 @media(max-width:550px){.threshold-intro{padding:22px 19px}.threshold-policy-card{padding:18px}.threshold-section h2{font-size:19px}}
+
+/* Dashboard decisions first; historical research belongs to Scoring Logic. */
+.research-link-inline{font-size:.78rem;color:#a8bdd4;margin:8px 0 18px}
+.research-link-inline a{color:#9acfff;text-decoration:underline;text-underline-offset:3px}
+.research-section{scroll-margin-top:24px}
+.research-disclosure{padding:17px 18px}
+.research-disclosure summary{font-size:.95rem}
+.research-disclosure .chartpanel{margin-top:16px;overflow:hidden}
+.research-disclosure .backtest-grid{min-width:0}
+@media(max-width:750px){.research-disclosure{padding:13px}.research-disclosure .chartpanel{padding:14px}}

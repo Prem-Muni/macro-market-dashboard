@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Why the Macro Decision Dashboard uses SPY Risk-On 0–4 and QQQ Risk-On 0–5, with historical research, limitations, and model rules.">
 <title>Scoring Logic | Macro Decision Dashboard</title>
-<link rel="stylesheet" href="styles.css?v=threshold-logic-20261122">
+<link rel="stylesheet" href="styles.css?v=research-move-20261122">
 </head>
 <body>
 <div class="shell">
@@ -92,12 +92,39 @@
     <p><b>Earlier vs later 10 months:</b> the QQQ score-5 improving group had 8 sessions in each half; its medians were +0.8% and +2.0%, while the stable group shifted from +0.4% to −0.4%. The splits share the same historical dataset and are not independent validation.</p>
   </details>
  </section>
- <section class="threshold-section">
-   <div class="eyebrow">ROLLING RESEARCH</div><h2>Latest dashboard backtest</h2>
-   <p>The frozen tables above capture the original decision. This section reads the <b>current</b> reconstructed historical results from the same daily JSON file as the dashboard, so you can revisit the logic as new sessions accumulate.</p>
-   <p class="threshold-status" id="threshold-asof" role="status">Checking the latest published research snapshot…</p>
-   <div id="threshold-live-data" class="threshold-dynamic"></div>
-   <a class="threshold-footer-link" href="index.html">See the full live backtest and QQQ risk-validation panels on the Dashboard</a>
+ <section class="threshold-section research-section" id="rolling-research">
+   <div class="eyebrow">ROLLING RESEARCH · UPDATED FROM EOD DATA</div>
+   <h2>Threshold backtests and QQQ score-5 validation</h2>
+   <p>The full historical research lives here—not on the daily Dashboard. Use these figures to revisit your SPY 0–4 and QQQ 0–5 policy, while keeping the dated decision snapshot above for comparison.</p>
+   <p class="threshold-status" id="research-snapshot-status" role="status">Loading latest published EOD research…</p>
+   <details class="threshold-evidence research-disclosure" open>
+     <summary>Risk-On threshold study · 365 days and 20 months</summary>
+<section class="chartpanel backtest-panel" aria-label="Historical score threshold research">
+        <div class="panel-head"><div><div class="eyebrow">EXPERIMENTAL HISTORICAL RESEARCH</div>
+          <h2>Risk-On threshold study · 0–4 vs 0–5 + trend filter</h2>
+          <p>Compare score 0–4 with exactly 5, then split score-5 sessions by the previous five-session bearish-score trend. The current live rule is <strong>SPY 0–4 Risk-On</strong> and <strong>QQQ 0–5 Risk-On</strong>. QQQ score 5 is a borderline cautious Risk-On classification; all historical cohorts remain available for comparison.</p>
+          <p class="chart-range" id="backtest-date-range">Awaiting reconstructed history</p>
+        </div></div>
+        <div class="backtest-grid">
+          <div><h3>Past 365 calendar days</h3><div id="year-sp-backtest" class="backtest-card">Awaiting data</div><div id="year-nd-backtest" class="backtest-card">Awaiting data</div></div>
+          <div><h3>Past 20 calendar months</h3><div id="twenty_months-sp-backtest" class="backtest-card">Awaiting data</div><div id="twenty_months-nd-backtest" class="backtest-card">Awaiting data</div></div>
+        </div>
+        <p class="provider-note">Reconstructed from EOD market history; not a stored record of past live dashboard outputs. Sessions with any missing scored indicator are <strong>excluded</strong> from threshold counts, not treated as bullish. Five-session forward price returns use subsequent ETF closing prices, overlap, exclude pending sessions, and do not account for dividends, costs or slippage. Historical constituent breadth uses <strong>current members</strong> and may introduce survivorship bias. The score-5 trend split requires complete 15/15 scores today and five trading sessions earlier; the five-session forward-return windows overlap. Worst subsequent close is based on daily closes, not intraday lows. Research only—not a validated strategy or an independently sourced backtest.</p>
+      </section>
+   </details>
+   <details class="threshold-evidence research-disclosure">
+     <summary>QQQ score 5 · return dispersion, drawdowns and stability</summary>
+<section class="chartpanel risk-validation-panel" aria-label="QQQ score five risk and stability research">
+        <div class="panel-head"><div><div class="eyebrow">QQQ · ADDITIONAL RISK VALIDATION</div>
+          <h2>QQQ score 5 · ongoing risk validation</h2>
+          <p>Compare median subsequent returns, return dispersion, worst drawdowns at daily closes, and the earlier/later halves of the 20-month sample. The QQQ 0–5 policy is a discretionary choice; these results show its limitations. This is historical research, not a trading signal.</p>
+        </div></div>
+        <h3>Past 365 calendar days</h3><div id="qqq-risk-year" class="risk-validation-content">Awaiting completed EOD research data</div>
+        <h3>Past 20 calendar months</h3><div id="qqq-risk-20m" class="risk-validation-content">Awaiting completed EOD research data</div>
+        <h3>Stability over time · first 10 months vs last 10 months</h3><div id="qqq-risk-halves" class="risk-validation-content">Awaiting completed EOD research data</div>
+        <p class="provider-note">Only sessions with complete 15/15 scores count. Future returns are based on the next five closing prices (no intraday lows), exclude pending windows, and overlap unless specifically labeled non-overlapping. Standard deviation is the sample standard deviation of subsequent five-session returns, not annualized volatility. The worst subsequent daily close is measured against the signal close, not as a portfolio drawdown. Historical constituent breadth uses current members and may introduce survivorship bias. Historical price returns omit dividends, transaction costs and slippage. Dividing the same 20 months into two halves is a stability check, not an out-of-sample backtest. Live thresholds: SPY 0–4 Risk-On; QQQ 0–5 Risk-On (score 5 borderline cautious).</p>
+      </section>
+   </details>
  </section>
  <section class="threshold-section">
    <h2>How to interpret the decision responsibly</h2>
@@ -107,6 +134,6 @@
 </main>
 <footer><span>Macro Decision Dashboard · Personal research build</span><span>Decision record · Nov 22, 2026</span></footer>
 </div>
-<script src="threshold-logic.js?v=threshold-logic-20261122" defer></script>
+<script src="threshold-logic.js?v=research-move-20261122" defer></script>
 </body>
 </html>
