@@ -20,6 +20,10 @@ function summary(prefix,model){
  $(prefix+'-delta').textContent=`1D ${rangeText(m.d1_range)} · 5D ${rangeText(m.d5_range)}${m.partial?' · bounded':''}`;
  $(prefix+'-confirm').textContent=c.available===c.total?`${c.confirmed}/${c.total} IMPROVING`:`${c.confirmed}/${c.available} improving · ${c.available}/${c.total} checked`;
  const sw=$(prefix+'-swing');sw.textContent=model.swing;sw.className=tone(model.swing);
+ if(prefix==='nd'){
+  const borderline=$('nd-borderline');
+  if(borderline) borderline.hidden=!(s.complete && s.bearish===5 && s.regime==='RISK-ON');
+ }
 }
 function signals(container,keys){
  const root=$(container);root.innerHTML='';
@@ -162,7 +166,7 @@ function renderBacktest(data){
     const selective=a.zero_to_four_plus_five_improving;
     if(selective){
      const combined=document.createElement('p');combined.className='score5-combined';
-     combined.textContent=`Selective Risk-On (0–4 OR 5 + IMPROVING): ${selective.days} sessions · ${selective.forward5_observations?`${pretty(selective.forward5_mean_pct,'%')} next-5D avg · ${pretty(selective.forward5_positive_pct,'%')} positive (n=${selective.forward5_observations})`:'no completed forward windows'}. Compare with the existing 0–4 result above. Research only; live thresholds are unchanged.`;
+     combined.textContent=`Selective Risk-On (0–4 OR 5 + IMPROVING): ${selective.days} sessions · ${selective.forward5_observations?`${pretty(selective.forward5_mean_pct,'%')} next-5D avg · ${pretty(selective.forward5_positive_pct,'%')} positive (n=${selective.forward5_observations})`:'no completed forward windows'}. Compare with the 0–4 reference cohort above. This is a diagnostic subset, not the live QQQ 0–5 policy.`;
      section.appendChild(combined);
     }
     if(groups.unavailable?.days){const note=document.createElement('p');note.className='score5-note';note.textContent=`${groups.unavailable.days} additional score-5 sessions lack a complete five-session trend comparison and are not included above.`;section.appendChild(note);}
@@ -288,7 +292,7 @@ function render(data){
  renderMovingAverages(data);
  $('coverage-note').textContent=data.explanation?.partial||'';
  const all=data.markets.sp500.score.complete && data.markets.nasdaq100.score.complete;
- $('warning').textContent=all?'EXPERIMENTAL 15-point model: original SPY/QQQ trend restored; RSI adds one point. SMA rows informational. Thinkorswim remains 14-point.':'EXPERIMENTAL 15-point model: PARTIAL FEEDS. Original trend restored; RSI adds one point, individual SMAs informational. Missing inputs are not bullish; Thinkorswim remains 14-point.';
+ $('warning').textContent=all?'EXPERIMENTAL 15-point model: SPY Risk-On 0–4; QQQ Risk-On 0–5 (score 5 borderline cautious). RSI scored; five SMA rows informational. Thinkorswim remains 14-point.':'EXPERIMENTAL 15-point model: PARTIAL FEEDS. SPY Risk-On 0–4; QQQ Risk-On 0–5 (5 borderline cautious). Missing inputs are not bullish; Thinkorswim remains 14-point.';
  $('diagnostics').textContent=JSON.stringify({sources:data.sources,warnings:data.warnings},null,2);
  plot(data.history);
  renderBacktest(data);

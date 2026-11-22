@@ -160,3 +160,47 @@
 .risk-stability-card strong{display:block;font-size:.88rem;margin-bottom:7px}
 .risk-stability-card .risk-table{min-width:560px}
 @media(max-width:800px){.risk-stability-grid{grid-template-columns:1fr}}
+
+
+/* Scoring Logic · index-specific threshold decision record */
+.threshold-borderline{color:#eec684!important;font-weight:700;margin-top:6px}
+.threshold-main{padding-top:25px}
+.threshold-intro{border:1px solid #34506a;background:radial-gradient(circle at 92% 12%,rgba(49,94,133,.28),transparent 43%),linear-gradient(130deg,#15243a,#101827);border-radius:17px;padding:27px 31px}
+.threshold-intro h2{font-size:clamp(25px,3vw,34px);line-height:1.18;margin:7px 0 12px;letter-spacing:-.6px}
+.threshold-intro p{max-width:840px;font-size:13px;line-height:1.75}
+.threshold-intro .threshold-meta{font-size:11px;color:#a9c1d8;margin-top:12px}
+.threshold-policy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:21px}
+.threshold-policy-card{background:#121e2f;border:1px solid #2c425c;border-top:3px solid #5cbb98;border-radius:13px;padding:23px}
+.threshold-policy-card.qqq{border-top-color:#e4bd79}
+.threshold-policy-card h3{font-size:19px;margin:0 0 6px;color:#edf6ff}
+.threshold-policy-card strong{display:block;font-size:35px;letter-spacing:-1px;margin:9px 0;color:#dcfff0}
+.threshold-policy-card.qqq strong{color:#e9e6b8}
+.threshold-policy-card p{font-size:12px;line-height:1.75;margin:7px 0;color:#b5c5d7}
+.threshold-bands{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
+.threshold-bands span{font-size:11px;border:1px solid #3a5266;border-radius:50px;padding:5px 9px;color:#d2e9f5;background:#1b2b41}
+.threshold-bands .on{border-color:#387f66;color:#8fe1b7}
+.threshold-bands .borderline{border-color:#9d8344;color:#f3d594}
+.threshold-bands .off{border-color:#904452;color:#f7a2a9}
+.threshold-section{margin-top:31px}
+.threshold-section h2{font-size:22px;margin:0 0 12px}
+.threshold-section h3{font-size:15px;margin:0 0 9px;color:#e4f3ff}
+.threshold-section p{font-size:12px;line-height:1.8;color:#b1c3d9;margin:8px 0}
+.threshold-explainer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.threshold-explainer article{background:#121e2e;border:1px solid #2a3f56;border-radius:12px;padding:18px}
+.threshold-explainer strong{font-size:13px;color:#e9f5ff}
+.threshold-explainer p{font-size:12px;line-height:1.7}
+.threshold-evidence{border:1px solid #2e425b;background:#111b2b;border-radius:13px;padding:19px 20px;margin:15px 0}
+.threshold-evidence summary{font-size:14px;font-weight:750;color:#dbefff;cursor:pointer}
+.threshold-evidence[open] summary{padding-bottom:15px;border-bottom:1px solid #283a53}
+.threshold-compare{width:100%;border-collapse:collapse;font-size:12px;margin:15px 0;min-width:560px}
+.threshold-compare th,.threshold-compare td{padding:11px 12px;border-bottom:1px solid #2b3b50;text-align:right;white-space:nowrap}
+.threshold-compare th:first-child,.threshold-compare td:first-child{text-align:left}
+.threshold-compare th{background:#1c2e45;color:#b8d5ec}
+.threshold-table-scroll{overflow:auto;max-width:100%}
+.threshold-disclaimer{border-left:3px solid #d5b475;background:#1d2937;padding:13px 17px;border-radius:4px 10px 10px 4px;margin-top:17px}
+.threshold-disclaimer p{margin:0}
+.threshold-status{font-size:11px;color:#a2c5df;line-height:1.6}
+.threshold-dynamic{margin-top:12px}
+.threshold-footer-link{display:inline-block;color:#97d7ff;font-size:12px;margin:10px 0;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:850px){.threshold-policy-grid,.threshold-explainer{grid-template-columns:1fr}}
+@media(max-width:550px){.threshold-intro{padding:22px 19px}.threshold-policy-card{padding:18px}.threshold-section h2{font-size:19px}}

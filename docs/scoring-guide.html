@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Definitions and exact bearish scoring thresholds for every signal in the 15-point Macro Decision Dashboard.">
   <title>Scoring Guide | Macro Decision Dashboard</title>
-  <link rel="stylesheet" href="styles.css?v=scoringguide15-20261122">
+  <link rel="stylesheet" href="styles.css?v=threshold-logic-20261122">
 </head>
 <body>
  <div class="shell">
@@ -17,6 +17,7 @@
   <nav class="site-tabs" aria-label="Dashboard navigation">
    <a class="site-tab" href="index.html"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
    <a class="site-tab active" href="scoring-guide.html" aria-current="page"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">15 signals</span></a>
+   <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
   </nav>
   <main class="guide-main">
    <section class="guide-hero" aria-labelledby="guide-title">
@@ -29,11 +30,11 @@
    </section>
 
    <section class="guide-section" id="score" aria-labelledby="score-title">
-    <div class="section-head"><div><span class="eyebrow">HOW TO READ IT</span><h2 id="score-title">How the bearish score works</h2><p>Research thresholds used by the current website engine. They are not backtested trading recommendations.</p></div></div>
+    <div class="section-head"><div><span class="eyebrow">HOW TO READ IT</span><h2 id="score-title">How the bearish score works</h2><p>The live 15-point website uses SPY Risk-On 0–4 and QQQ Risk-On 0–5. QQQ 5 is borderline cautious; these are research-policy thresholds, not validated trading recommendations.</p></div></div>
     <div class="guide-regimes">
-      <div class="guide-regime guide-on"><span class="regime bull">RISK-ON</span><strong>0–4 <small>/ 15</small></strong><p>Few selected conditions are bearish.</p></div>
-      <div class="guide-regime guide-caution"><span class="regime warn">CAUTION</span><strong>5–8 <small>/ 15</small></strong><p>Mixed evidence; conditions are less favorable.</p></div>
-      <div class="guide-regime guide-off"><span class="regime bear">RISK-OFF</span><strong>9–15 <small>/ 15</small></strong><p>Many selected risk indicators are bearish.</p></div>
+      <div class="guide-regime guide-on"><span class="regime bull">SPY · RISK-ON</span><strong>0–4 <small>/ 15</small></strong><p>SPY CAUTION 5–8 · RISK-OFF 9–15.</p></div>
+      <div class="guide-regime guide-on"><span class="regime bull">QQQ · RISK-ON</span><strong>0–5 <small>/ 15</small></strong><p>QQQ score 5 is <strong>borderline cautious</strong>. QQQ CAUTION 6–8 · RISK-OFF 9–15.</p></div>
+      <div class="guide-regime guide-caution"><span class="regime warn">POLICY RATIONALE</span><strong>15 <small>signals</small></strong><p>Different Risk-On thresholds, same scoring indicators. <a href="threshold-logic.html">Read the decision record and historical evidence</a>.</p></div>
     </div>
     <div class="guide-insight-grid">
       <div class="guide-note"><h3>+1 or 0—not a weighted average</h3><p>Each scored signal contributes <strong>1 bearish point</strong> only in its BEARISH state. BULLISH, CAUTION, FLAT, LAGGING and STABLE each contribute <strong>0</strong>. Some non-scored rows can be red without changing the total.</p></div>

@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=qqq-risk-robustness-20261122">
+  <link rel="stylesheet" href="styles.css?v=threshold-logic-20261122">
 </head>
 <body>
   <div class="shell">
@@ -17,13 +17,14 @@
     <nav class="site-tabs" aria-label="Dashboard navigation">
       <a class="site-tab active" href="index.html" aria-current="page"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
       <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">15 signals</span></a>
+      <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
     </nav>
     <div class="info-line" id="warning">A research dashboard, not a trading signal. Data and scores are indicative; verify against Thinkorswim before acting.</div>
     <main>
       <div class="section-intro"><div><div class="eyebrow">MARKET REGIME</div><h2>Two markets. One decision framework.</h2><p>Separate experimental 15-point bearish scores using the original 50D/200D trend rule plus RSI, five-session trends, and market confirmation.</p></div><div class="session-box"><div class="eyebrow">LATEST PRICED SESSION</div><strong id="session">—</strong><small id="feed-state">No market snapshot yet</small></div></div>
       <section class="market-grid" aria-label="Market summary">
         <article class="market-card" id="sp-card"><div class="market-head"><div><div class="eyebrow">S&P 500</div><h3>Broad Market</h3></div><span class="tiny-pill">SPY BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="sp-score">—/15</div><div class="detail-caption" id="sp-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="sp-baseline">Original 14-point model: —</div></div><div class="regime neutral" id="sp-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="sp-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="sp-trend">—</b><small id="sp-delta">—</small></div><div><span>Market Confirmation</span><b id="sp-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="sp-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
-        <article class="market-card" id="nd-card"><div class="market-head"><div><div class="eyebrow">NASDAQ-100</div><h3>Growth & Technology</h3></div><span class="tiny-pill">QQQ BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="nd-score">—/15</div><div class="detail-caption" id="nd-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="nd-baseline">Original 14-point model: —</div></div><div class="regime neutral" id="nd-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="nd-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="nd-trend">—</b><small id="nd-delta">—</small></div><div><span>Market Confirmation</span><b id="nd-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="nd-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
+        <article class="market-card" id="nd-card"><div class="market-head"><div><div class="eyebrow">NASDAQ-100</div><h3>Growth & Technology</h3></div><span class="tiny-pill">QQQ BENCHMARK</span></div><div class="score-zone"><div><div class="score" id="nd-score">—/15</div><div class="detail-caption" id="nd-coverage">Waiting for feeds</div><div class="detail-caption baseline-reference" id="nd-baseline">Original 14-point model: —</div><div id="nd-borderline" class="detail-caption threshold-borderline" hidden>Score 5 · Risk-On, borderline cautious</div></div><div class="regime neutral" id="nd-regime">NOT AVAILABLE</div></div><div class="risk-meter"><div id="nd-meter"></div></div><div class="stats"><div><span>5D Score Trend</span><b id="nd-trend">—</b><small id="nd-delta">—</small></div><div><span>Market Confirmation</span><b id="nd-confirm">—</b><small>Vol · Credit · Breadth · Price</small></div><div><span>Swing Environment</span><b id="nd-swing">—</b><small>Evaluated only when classification is certain</small></div></div></article>
       </section>
       <!-- Hosted charts separate; individual EOD SMAs are informational. The original 50D/200D trend and RSI14 are scored. -->
       <section class="market-prices" aria-label="SPY and QQQ daily price history and moving averages">
@@ -99,7 +100,7 @@
       <section class="chartpanel backtest-panel" aria-label="Historical score threshold research">
         <div class="panel-head"><div><div class="eyebrow">EXPERIMENTAL HISTORICAL RESEARCH</div>
           <h2>Risk-On threshold study · 0–4 vs 0–5 + trend filter</h2>
-          <p>Compare score 0–4 with exactly 5, then split score-5 sessions by the previous five-session bearish-score trend. Both live classifications remain <strong>0–4 Risk-On</strong> while we test whether QQQ should include 5.</p>
+          <p>Compare score 0–4 with exactly 5, then split score-5 sessions by the previous five-session bearish-score trend. The current live rule is <strong>SPY 0–4 Risk-On</strong> and <strong>QQQ 0–5 Risk-On</strong>. QQQ score 5 is a borderline cautious Risk-On classification; all historical cohorts remain available for comparison.</p>
           <p class="chart-range" id="backtest-date-range">Awaiting reconstructed history</p>
         </div></div>
         <div class="backtest-grid">
@@ -110,13 +111,13 @@
       </section>
       <section class="chartpanel risk-validation-panel" aria-label="QQQ score five risk and stability research">
         <div class="panel-head"><div><div class="eyebrow">QQQ · ADDITIONAL RISK VALIDATION</div>
-          <h2>Does a QQQ score of 5 deserve Risk-On?</h2>
-          <p>Compare median subsequent returns, return dispersion, worst drawdowns at daily closes, and the earlier/later halves of the 20-month sample. This is historical research, not a trading signal.</p>
+          <h2>QQQ score 5 · ongoing risk validation</h2>
+          <p>Compare median subsequent returns, return dispersion, worst drawdowns at daily closes, and the earlier/later halves of the 20-month sample. The QQQ 0–5 policy is a discretionary choice; these results show its limitations. This is historical research, not a trading signal.</p>
         </div></div>
         <h3>Past 365 calendar days</h3><div id="qqq-risk-year" class="risk-validation-content">Awaiting completed EOD research data</div>
         <h3>Past 20 calendar months</h3><div id="qqq-risk-20m" class="risk-validation-content">Awaiting completed EOD research data</div>
         <h3>Stability over time · first 10 months vs last 10 months</h3><div id="qqq-risk-halves" class="risk-validation-content">Awaiting completed EOD research data</div>
-        <p class="provider-note">Only sessions with complete 15/15 scores count. Future returns are based on the next five closing prices (no intraday lows), exclude pending windows, and overlap unless specifically labeled non-overlapping. Standard deviation is the sample standard deviation of subsequent five-session returns, not annualized volatility. The worst subsequent daily close is measured against the signal close, not as a portfolio drawdown. Historical constituent breadth uses current members and may introduce survivorship bias. Historical price returns omit dividends, transaction costs and slippage. Dividing the same 20 months into two halves is a stability check, not an out-of-sample backtest. Both live Risk-On thresholds remain 0–4.</p>
+        <p class="provider-note">Only sessions with complete 15/15 scores count. Future returns are based on the next five closing prices (no intraday lows), exclude pending windows, and overlap unless specifically labeled non-overlapping. Standard deviation is the sample standard deviation of subsequent five-session returns, not annualized volatility. The worst subsequent daily close is measured against the signal close, not as a portfolio drawdown. Historical constituent breadth uses current members and may introduce survivorship bias. Historical price returns omit dividends, transaction costs and slippage. Dividing the same 20 months into two halves is a stability check, not an out-of-sample backtest. Live thresholds: SPY 0–4 Risk-On; QQQ 0–5 Risk-On (score 5 borderline cautious).</p>
       </section>
       <!-- Separate independent market-sentiment index; does not affect either score. -->
       <section class="chartpanel fear-panel" aria-label="Independent Fear and Greed Index history">
@@ -139,7 +140,7 @@
     </main>
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>Refresh scheduled after the US market close · Version 0.1</span></footer>
   </div>
-  <script src="app.js?v=qqq-risk-robustness-20261122" defer></script>
+  <script src="app.js?v=threshold-logic-20261122" defer></script>
   <script src="market-extras.js?v=charts-fear-ytd-20261122" defer></script>
 </body>
 </html>

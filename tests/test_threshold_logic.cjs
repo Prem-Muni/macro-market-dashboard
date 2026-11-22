@@ -1,0 +1,14 @@
+const fs=require('node:fs');const assert=require('node:assert/strict');const path=require('node:path');
+const root=path.join(__dirname,'..');
+const index=fs.readFileSync(path.join(root,'docs','index.html'),'utf8');
+const guide=fs.readFileSync(path.join(root,'docs','scoring-guide.html'),'utf8');
+const page=fs.readFileSync(path.join(root,'docs','threshold-logic.html'),'utf8');
+const js=fs.readFileSync(path.join(root,'docs','threshold-logic.js'),'utf8');
+const app=fs.readFileSync(path.join(root,'docs','app.js'),'utf8');
+for(const html of [index,guide,page])assert.match(html,/href="threshold-logic\.html"/);
+assert.match(page,/QQQ.*?0–5 \/ 15/s);assert.match(page,/SPY.*?0–4 \/ 15/s);
+assert.match(page,/borderline cautious/i);
+assert.match(page,/2026-11-20|November 20, 2026/i);
+assert.match(js,/fetch\('data\/latest\.json/);
+assert.match(app,/nd-borderline/);
+console.log('Threshold reference navigation and display checks passed');

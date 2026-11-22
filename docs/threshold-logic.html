@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Why the Macro Decision Dashboard uses SPY Risk-On 0–4 and QQQ Risk-On 0–5, with historical research, limitations, and model rules.">
+<title>Scoring Logic | Macro Decision Dashboard</title>
+<link rel="stylesheet" href="styles.css?v=threshold-logic-20261122">
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+ <div class="identity"><div class="mark">M<span>·</span>D</div><div><div class="eyebrow">DAILY MARKET INTELLIGENCE</div><h1>Macro Decision <span>Dashboard</span></h1></div></div>
+ <div class="topactions"><span class="capsule">MODEL DECISION RECORD · 15 POINTS</span></div>
+</header>
+<nav class="site-tabs" aria-label="Dashboard navigation">
+ <a class="site-tab" href="index.html"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
+ <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">15 signals</span></a>
+ <a class="site-tab active" href="threshold-logic.html" aria-current="page"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
+</nav>
+<main class="threshold-main">
+ <section class="threshold-intro">
+ <div class="eyebrow">WHY THE THRESHOLDS DIFFER</div>
+ <h2>Same 15 indicators. Two Risk-On cutoffs.</h2>
+ <p>This page records <strong>what the model does, why the threshold was chosen, and what the historical evidence actually showed</strong>. It is intended as a durable reference for future reviews and anyone with whom the dashboard is shared.</p>
+ <p>Each scored bearish condition contributes one point. A lower score means fewer selected risk conditions. Risk-On is a <em>market-regime label</em>, not a prediction, a guarantee, or a direct buy instruction.</p>
+ <div class="threshold-meta">Decision recorded November 22, 2026 · Evidence available through November 20, 2026 · Experimental 15-point model</div>
+ </section>
+ <section class="threshold-policy-grid" aria-label="Current risk thresholds">
+   <article class="threshold-policy-card">
+    <div class="eyebrow">S&amp;P 500 · SPY PROXY</div><h3>Stricter Risk-On rule</h3><strong>0–4 / 15</strong>
+    <div class="threshold-bands"><span class="on">0–4 · RISK-ON</span><span>5–8 · CAUTION</span><span class="off">9–15 · RISK-OFF</span></div>
+    <p><b>Why:</b> SPY score 5 historically performed materially worse than its 0–4 sessions in the reconstructed sample, with notably lower positive five-session outcomes. We keep score 5 in CAUTION.</p>
+   </article>
+   <article class="threshold-policy-card qqq">
+    <div class="eyebrow">NASDAQ-100 · QQQ PROXY</div><h3>Broader Risk-On rule</h3><strong>0–5 / 15</strong>
+    <div class="threshold-bands"><span class="on">0–4 · RISK-ON</span><span class="borderline">5 · RISK-ON, BORDERLINE CAUTIOUS</span><span>6–8 · CAUTION</span><span class="off">9–15 · RISK-OFF</span></div>
+    <p><b>Why:</b> QQQ's growth-heavy, concentrated composition makes its swings different from SPY's. Score-5 outcomes were generally less unfavorable than SPY's, although still weaker than QQQ 0–4. We deliberately allow <b>5 as a borderline Risk-On policy choice</b>, not a fully confirmed bullish signal.</p>
+   </article>
+ </section>
+ <section class="threshold-section">
+ <div class="eyebrow">DECISION RATIONALE</div><h2>Why we made this distinction</h2>
+ <div class="threshold-explainer">
+  <article><strong>1 · Both use the same scoring framework</strong><p>Six shared macro indicators plus nine index-specific indicators. We do <em>not</em> add or remove indicators for QQQ; only the Risk-On classification boundary differs.</p></article>
+  <article><strong>2 · A score of 5 is not “strong bullish”</strong><p>In QQQ it is classified Risk-On for usability, but explicitly labeled <b>borderline cautious</b>. We still consider five-day trend, breadth, volatility, and market confirmation before making decisions.</p></article>
+  <article><strong>3 · This is a judgment call, not proof</strong><p>Reconstructed 20-month results do <em>not</em> show that QQQ 0–5 improves the 0–4 baseline. We accept the extra uncertainty as a chosen, more permissive growth-market threshold and will revisit it as new data accumulates.</p></article>
+ </div>
+ <p>QQQ tracks roughly 100 large non-financial Nasdaq-listed companies and is <strong>technology- and growth-heavy, not exclusively technology stocks</strong>. Its higher historical volatility is context for the policy choice, but volatility by itself is not evidence that adding score 5 improves subsequent returns.</p>
+ </section>
+ <section class="threshold-section">
+  <div class="eyebrow">FROZEN DECISION SNAPSHOT</div><h2>What the historical study showed</h2>
+  <p>These are the specific observations available when the policy was chosen. They are intentionally preserved so the reasoning does not silently change when the rolling historical study updates.</p>
+  <details class="threshold-evidence" open><summary>SPY · Why Risk-On stops at 4</summary>
+   <div class="threshold-table-scroll"><table class="threshold-compare"><thead><tr><th>Historical window</th><th>Score group</th><th>Days</th><th>Mean next 5D</th><th>Positive next 5D</th></tr></thead><tbody>
+   <tr><td>Past 365 calendar days</td><td>0–4</td><td>87</td><td>+0.3%</td><td>62.1%</td></tr>
+   <tr><td>Past 365 calendar days</td><td>Exactly 5</td><td>45</td><td>−0.2%</td><td>37.8%</td></tr>
+   <tr><td>Past 20 calendar months</td><td>0–4</td><td>159</td><td>+0.4%</td><td>65.4%</td></tr>
+   <tr><td>Past 20 calendar months</td><td>Exactly 5</td><td>73</td><td>+0.1%</td><td>50.7%</td></tr>
+   </tbody></table></div>
+   <p>SPY score 5 had weaker returns and hit rates in both windows, especially over the most recent 365 days. This is the basis for keeping 5–8 in CAUTION.</p>
+  </details>
+  <details class="threshold-evidence" open><summary>QQQ · Why score 5 is allowed, but only borderline</summary>
+   <div class="threshold-table-scroll"><table class="threshold-compare"><thead><tr><th>Historical window</th><th>Score group</th><th>Days</th><th>Mean next 5D</th><th>Positive next 5D</th></tr></thead><tbody>
+    <tr><td>Past 365 calendar days</td><td>0–4</td><td>69</td><td>+0.4%</td><td>56.5%</td></tr>
+    <tr><td>Past 365 calendar days</td><td>Exactly 5</td><td>46</td><td>+0.1%</td><td>50.0%</td></tr>
+    <tr><td>Past 20 calendar months</td><td>0–4</td><td>138</td><td>+0.5%</td><td>60.9%</td></tr>
+    <tr><td>Past 20 calendar months</td><td>Exactly 5</td><td>72</td><td>+0.4%</td><td>55.6%</td></tr>
+   </tbody></table></div>
+   <p>QQQ score 5 remained positive on average over 20 months but underperformed QQQ scores 0–4. The threshold is intentionally permissive, with the borderline qualifier retaining this warning.</p>
+  </details>
+  <details class="threshold-evidence"><summary>QQQ · Detailed risk and trend breakdown</summary>
+    <p>The November 20 snapshot included these five-session return statistics. “Worst 5D” is the most negative <em>end-to-end</em> return, while “worst subsequent close” is measured against the signal-day close, not against an intraday low.</p>
+    <h3>Past 365 calendar days</h3>
+    <div class="threshold-table-scroll"><table class="threshold-compare"><thead><tr><th>Score / 5D trend</th><th>Days</th><th>Median</th><th>Mean</th><th>Std dev.</th><th>10th pct.</th><th>Worst 5D</th><th>Worst close</th><th>Positive</th></tr></thead><tbody>
+    <tr><td>0–4</td><td>69</td><td>+0.5%</td><td>+0.4%</td><td>2.5%</td><td>−3.1%</td><td>−5.1%</td><td>−6.5%</td><td>56.5%</td></tr>
+    <tr><td>Exactly 5</td><td>46</td><td>−0.1%</td><td>+0.1%</td><td>2.5%</td><td>−3.3%</td><td>−5.0%</td><td>−5.6%</td><td>50.0%</td></tr>
+    <tr><td>5 + improving</td><td>9</td><td>+1.1%</td><td>+1.5%</td><td>3.0%</td><td>−1.6%</td><td>−1.7%</td><td>−3.2%</td><td>55.6%</td></tr>
+    <tr><td>5 + stable</td><td>33</td><td>−0.4%</td><td>−0.4%</td><td>2.3%</td><td>−3.5%</td><td>−5.0%</td><td>−5.6%</td><td>45.5%</td></tr>
+    <tr><td>5 + deteriorating</td><td>4</td><td>+1.9%</td><td>+1.5%</td><td>1.7%</td><td>−0.1%</td><td>−0.9%</td><td>−2.0%</td><td>75.0%</td></tr>
+    </tbody></table></div>
+    <h3>Past 20 calendar months</h3>
+    <div class="threshold-table-scroll"><table class="threshold-compare"><thead><tr><th>Score / 5D trend</th><th>Days</th><th>Median</th><th>Mean</th><th>Std dev.</th><th>10th pct.</th><th>Worst 5D</th><th>Worst close</th><th>Positive</th></tr></thead><tbody>
+    <tr><td>0–4</td><td>138</td><td>+0.7%</td><td>+0.5%</td><td>2.1%</td><td>−2.3%</td><td>−5.1%</td><td>−6.5%</td><td>60.9%</td></tr>
+    <tr><td>Exactly 5</td><td>72</td><td>+0.5%</td><td>+0.4%</td><td>2.4%</td><td>−3.1%</td><td>−5.0%</td><td>−5.6%</td><td>55.6%</td></tr>
+    <tr><td>5 + improving</td><td>16</td><td>+1.4%</td><td>+1.0%</td><td>2.9%</td><td>−2.4%</td><td>−4.2%</td><td>−5.0%</td><td>56.2%</td></tr>
+    <tr><td>5 + stable</td><td>45</td><td>+0.2%</td><td>0.0%</td><td>2.2%</td><td>−3.3%</td><td>−5.0%</td><td>−5.6%</td><td>53.3%</td></tr>
+    <tr><td>5 + deteriorating</td><td>11</td><td>+1.1%</td><td>+1.3%</td><td>2.0%</td><td>−0.9%</td><td>−1.1%</td><td>−2.5%</td><td>63.6%</td></tr>
+    </tbody></table></div>
+    <p><b>Five-day score-trend rule:</b> Improving means the bearish score fell by at least 2 points; stable means a change of −1 to +1; deteriorating means it rose by at least 2 points. Reconstructed group sizes are small.</p>
+    <p><b>Non-overlapping sensitivity check for 5 + improving:</b> 365-day sample: 7 windows, −0.8% median, 42.9% positive. Twenty-month sample: 13 windows, −0.2% median, 46.2% positive. These weaker results are a reason <em>not</em> to claim score 5 was proven bullish.</p>
+    <p><b>Earlier vs later 10 months:</b> the QQQ score-5 improving group had 8 sessions in each half; its medians were +0.8% and +2.0%, while the stable group shifted from +0.4% to −0.4%. The splits share the same historical dataset and are not independent validation.</p>
+  </details>
+ </section>
+ <section class="threshold-section">
+   <div class="eyebrow">ROLLING RESEARCH</div><h2>Latest dashboard backtest</h2>
+   <p>The frozen tables above capture the original decision. This section reads the <b>current</b> reconstructed historical results from the same daily JSON file as the dashboard, so you can revisit the logic as new sessions accumulate.</p>
+   <p class="threshold-status" id="threshold-asof" role="status">Checking the latest published research snapshot…</p>
+   <div id="threshold-live-data" class="threshold-dynamic"></div>
+   <a class="threshold-footer-link" href="index.html">See the full live backtest and QQQ risk-validation panels on the Dashboard</a>
+ </section>
+ <section class="threshold-section">
+   <h2>How to interpret the decision responsibly</h2>
+   <div class="threshold-disclaimer"><p><b>Important:</b> This is a discretionary classification based on preliminary, reconstructed daily-bar research—not proof that QQQ score 5 provides an advantage. Five-session return windows overlap; the sample is short; historical breadth is estimated using today's constituents (survivorship bias); prices omit dividends, slippage, and costs. Selecting a cutoff after looking at the data also introduces selection bias. Risk-On does not mean risk-free, and the separate <b>Swing Environment</b> label may disagree because it applies additional conditions. Reassess with more periods and genuine out-of-sample data.</p></div>
+ </section>
+ <div class="guide-bottom"><div><div class="eyebrow">MODEL DOCUMENTATION</div><h2>Need the individual indicator rules?</h2><p>Visit the Scoring Guide for the exact +1 bearish conditions of the six macro and nine market-specific indicators, or return to the Dashboard to review today's observations.</p></div><a class="guide-return" href="scoring-guide.html">Open Scoring Guide</a></div>
+</main>
+<footer><span>Macro Decision Dashboard · Personal research build</span><span>Decision record · Nov 22, 2026</span></footer>
+</div>
+<script src="threshold-logic.js?v=threshold-logic-20261122" defer></script>
+</body>
+</html>
