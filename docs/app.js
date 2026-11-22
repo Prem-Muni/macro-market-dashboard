@@ -139,6 +139,35 @@ function renderBacktest(data){
    const perf=document.createElement('p');perf.className='backtest-perf';
    perf.textContent=`Next 5 sessions after 0–4: ${fmt('zero_to_four')} · after exactly 5: ${fmt('exactly_five')}`;
    target.appendChild(perf);
+   // Conditional test of the QQQ 0–5 hypothesis, with SPY as a comparison.
+   const groups=a.score_five_trend;
+   if(groups){
+    const section=document.createElement('div');section.className='score5-conditional';
+    const heading=document.createElement('h4');heading.textContent='When the score is exactly 5 — five-session trend';section.appendChild(heading);
+    const lead=document.createElement('p');lead.className='score5-note';lead.textContent='IMPROVING = bearish points fell ≥2 in five sessions · STABLE = change −1 to +1 · DETERIORATING = rose ≥2. The day five sessions earlier must also have a complete score.';section.appendChild(lead);
+    const grid=document.createElement('div');grid.className='score5-grid';
+    for(const [name,label] of [['improving','IMPROVING'],['stable','STABLE'],['deteriorating','DETERIORATING']]){
+     const g=groups[name]||{};
+     const card=document.createElement('div');card.className='score5-item '+name;
+     const h=document.createElement('div');h.className='score5-label';h.textContent=label;card.appendChild(h);
+     const count=document.createElement('strong');count.textContent=`${g.days??'—'} sessions`;card.appendChild(count);
+     const desc=document.createElement('p');
+     if(g.forward5_observations){
+      desc.textContent=`Next 5D: ${pretty(g.forward5_mean_pct,'%')} avg · ${pretty(g.forward5_positive_pct,'%')} positive (n=${g.forward5_observations})`;
+      const risk=document.createElement('p');risk.className='score5-risk';risk.textContent=`Worst subsequent daily close: ${pretty(g.forward5_worst_close_mean_pct,'%')} avg · ${pretty(g.forward5_below_minus2_pct,'%')} fell ≥2% below signal close`;card.appendChild(desc,risk);
+     }else{desc.textContent='No completed five-session forward window';card.appendChild(desc);}
+     grid.appendChild(card);
+    }
+    section.appendChild(grid);
+    const selective=a.zero_to_four_plus_five_improving;
+    if(selective){
+     const combined=document.createElement('p');combined.className='score5-combined';
+     combined.textContent=`Selective Risk-On (0–4 OR 5 + IMPROVING): ${selective.days} sessions · ${selective.forward5_observations?`${pretty(selective.forward5_mean_pct,'%')} next-5D avg · ${pretty(selective.forward5_positive_pct,'%')} positive (n=${selective.forward5_observations})`:'no completed forward windows'}. Compare with the existing 0–4 result above. Research only; live thresholds are unchanged.`;
+     section.appendChild(combined);
+    }
+    if(groups.unavailable?.days){const note=document.createElement('p');note.className='score5-note';note.textContent=`${groups.unavailable.days} additional score-5 sessions lack a complete five-session trend comparison and are not included above.`;section.appendChild(note);}
+    target.appendChild(section);
+   }
   }
  }
  const details=$('backtest-date-range');

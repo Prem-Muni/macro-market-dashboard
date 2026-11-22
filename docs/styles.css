@@ -127,3 +127,19 @@
 @media(max-width:480px){.backtest-stats{gap:5px}.backtest-stat{padding:7px}.backtest-stat strong{font-size:1.2rem}}
 
 .history-controls{max-width:100%;flex-wrap:wrap}
+
+/* Score-five conditional five-session-score-trend research panel */
+.score5-conditional{border-top:1px solid rgba(130,156,186,.24);margin-top:13px;padding-top:13px}
+.score5-conditional h4{font-size:.88rem;color:#e6f2ff;margin:0 0 5px}
+.score5-note{font-size:.72rem;line-height:1.55;color:#9babbe;margin:0 0 11px}
+.score5-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.score5-item{border:1px solid rgba(130,156,186,.18);border-radius:9px;padding:9px 8px;min-width:0;background:#0e192a}
+.score5-label{font-size:.69rem;font-weight:800;letter-spacing:.5px;color:#a9c7df}
+.score5-item.improving .score5-label{color:#61d6a5}
+.score5-item.deteriorating .score5-label{color:#f08092}
+.score5-item strong{display:block;margin:6px 0 5px;font-size:1rem;color:#eaf2ff}
+.score5-item p{font-size:.69rem;line-height:1.55;margin:5px 0;color:#b0c2d7}
+.score5-item .score5-risk{color:#91a3b8}
+@media(max-width:1100px){.score5-grid{grid-template-columns:1fr}}
+
+.score5-combined{font-size:.74rem;font-weight:650;line-height:1.6;color:#bad7f5;border-left:3px solid #79bafb;padding:7px 10px;background:rgba(72,134,200,.07);border-radius:2px 7px 7px 2px;margin:12px 0 7px}

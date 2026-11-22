@@ -124,3 +124,24 @@ assert(nodes['twenty_months-nd-backtest'].children.length===3);
 assert(nodes['backtest-date-range'].textContent.includes('2025-03-20'));
 assert(nodes['year-sp-backtest'].children[1].children[2].children[0].textContent==='23');
 console.log('PASS: 365d/20-month chart history, actual session ticks and backtest cards');
+
+// Score 5 conditional study renders only when refreshed JSON provides it.
+const cond=(days,mean,pos,worst,drop)=>({days,forward5_observations:days,
+ forward5_mean_pct:mean,forward5_positive_pct:pos,
+ forward5_worst_close_mean_pct:worst,forward5_below_minus2_pct:drop});
+for(const market of ['sp','nd']){
+ bp.backtest.year.markets[market].score_five_trend={improving:cond(6,1.2,83.3,-0.5,0),stable:cond(8,0.3,62.5,-1.4,12.5),deteriorating:cond(5,-0.8,20,-3.2,60),unavailable:cond(1,null,null,null,null)};
+ bp.backtest.twenty_months.markets[market].score_five_trend=bp.backtest.year.markets[market].score_five_trend;
+ bp.backtest.year.markets[market].zero_to_four_plus_five_improving=cond(21,0.8,71.4,-1.1,8.5);
+ bp.backtest.twenty_months.markets[market].zero_to_four_plus_five_improving=cond(21,0.8,71.4,-1.1,8.5);
+}
+vm.runInContext('renderBacktest(testBacktest)',context);
+assert(nodes['year-nd-backtest'].children.length===4);
+const condPanel=nodes['year-nd-backtest'].children[3];
+assert(condPanel.children[0].textContent.includes('score is exactly 5'));
+assert(condPanel.children[2].children.length===3);
+assert(condPanel.children[2].children[0].children[1].textContent==='6 sessions');
+assert(condPanel.children[2].children[0].children[2].textContent.includes('83.3% positive'));
+console.log('PASS: exact-score-five trend groups, counts, risk and return descriptions');
+
+assert(condPanel.children.some(x=>x.className==='score5-combined' && x.textContent.includes('Selective Risk-On')));

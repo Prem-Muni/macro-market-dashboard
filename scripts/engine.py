@@ -299,48 +299,83 @@ def swing_from_bounds(score: dict, prev_score: dict | None, confirmation: dict, 
 
 
 def historical_backtest(records: list[dict], frame: pd.DataFrame, end_date: pd.Timestamp, months: int = 20) -> dict:
-    """Descriptive exploratory analysis; signals are computed using only data through each date.
+    """Descriptive post-signal return study, no look-ahead in indicator state.
 
-    Requires all 15 scored inputs on a session. Uses 5 subsequent observed
-    trading-session closes for forward price change, never future information
-    in the day-of-signal score. Overlapping windows are NOT independent trades.
+    For 'exactly 5' sessions, classify the 5-session SCORE change (not ETF
+    price momentum): improving <=-2, stable -1..+1, deteriorating >=+2.
+    Both score endpoints MUST have complete coverage. A full t+5 close is
+    required to record a forward return; incomplete futures are never imputed.
+    Historic constituent universe and overlapping observations are caveats.
     """
+    locs = {pd.Timestamp(d): i for i, d in enumerate(frame.index)}
+    rec_by_date = {pd.Timestamp(r['date']): r for r in records}
+    ordered_dates = list(frame.index)
+
+    def stat(items, symbol):
+        r5, r1, adverse = [], [], []
+        for rec in items:
+            loc = locs.get(pd.Timestamp(rec['date']))
+            if loc is None: continue
+            initial = safe(frame[symbol].iloc[loc])
+            if initial is None or initial <= 0: continue
+            if loc+1 < len(frame):
+                p1 = safe(frame[symbol].iloc[loc+1])
+                if p1 is not None: r1.append((p1/initial-1)*100)
+            if loc+5 >= len(frame): continue
+            next_closes = [safe(x) for x in frame[symbol].iloc[loc+1:loc+6]]
+            if any(x is None or x <= 0 for x in next_closes): continue
+            r5.append((next_closes[-1]/initial-1)*100)
+            # Worst of the subsequent five daily closes relative to signal close.
+            # This is a close-only adverse excursion, not an intraday drawdown.
+            adverse.append(min(0.0, min((x/initial-1)*100 for x in next_closes)))
+        n = len(r5)
+        return {
+            'days': len(items),
+            'forward1_observations':len(r1),
+            'forward1_mean_pct':round(sum(r1)/len(r1),3) if r1 else None,
+            'forward5_observations':n,
+            'forward5_mean_pct':round(sum(r5)/n,3) if n else None,
+            'forward5_positive_pct':round(100*sum(x>0 for x in r5)/n,1) if n else None,
+            'forward5_worst_close_mean_pct':round(sum(adverse)/n,3) if n else None,
+            'forward5_below_minus2_pct':round(100*sum(x<=-2 for x in adverse)/n,1) if n else None,
+        }
+
+    def classify_score5_trend(rec, market):
+        loc = locs.get(pd.Timestamp(rec['date']))
+        if loc is None or loc < 5: return 'unavailable'
+        earlier = rec_by_date.get(pd.Timestamp(ordered_dates[loc-5]))
+        if not earlier or not earlier[market]['complete']: return 'unavailable'
+        delta = rec[market]['bearish'] - earlier[market]['bearish']
+        return 'improving' if delta <= -2 else 'deteriorating' if delta >= 2 else 'stable'
+
     def one_window(begin: pd.Timestamp) -> dict:
-        sub = [r for r in records if pd.Timestamp(r["date"]) >= begin]
-        answer = {"start": begin.strftime("%Y-%m-%d"),
-                  "end": end_date.strftime("%Y-%m-%d"),
-                  "sessions": len(sub), "markets": {}}
-        for market, symbol in (("sp", "SPY"), ("nd", "QQQ")):
-            complete = [r for r in sub if r[market]["complete"]]
-            groups = {"zero_to_four": [], "exactly_five": [], "zero_to_five": []}
+        sub = [r for r in records if pd.Timestamp(r['date']) >= begin and pd.Timestamp(r['date']) <= end_date]
+        answer = {'start': begin.strftime('%Y-%m-%d'),
+                  'end': end_date.strftime('%Y-%m-%d'),
+                  'sessions': len(sub), 'markets': {}}
+        for market,symbol in [('sp','SPY'),('nd','QQQ')]:
+            complete = [r for r in sub if r[market]['complete']]
+            groups = {'zero_to_four':[], 'exactly_five':[], 'zero_to_five':[]}
+            trend_groups={'improving':[], 'stable':[], 'deteriorating':[], 'unavailable':[]}
             for rec in complete:
-                bearish = rec[market]["bearish"]
-                if bearish <= 4: groups["zero_to_four"].append(rec)
-                if bearish == 5: groups["exactly_five"].append(rec)
-                if bearish <= 5: groups["zero_to_five"].append(rec)
-            def desc(items):
-                returns = []
-                for rec in items:
-                    loc = frame.index.get_loc(pd.Timestamp(rec["date"]))
-                    if not isinstance(loc, int) or loc + 5 >= len(frame):
-                        continue
-                    start_close = safe(frame[symbol].iloc[loc]); end_close = safe(frame[symbol].iloc[loc+5])
-                    if start_close is None or start_close <= 0 or end_close is None: continue
-                    returns.append((end_close / start_close - 1) * 100)
-                return {"days": len(items), "forward5_observations": len(returns),
-                        "forward5_mean_pct": round(sum(returns)/len(returns), 3) if returns else None,
-                        "forward5_positive_pct": round(100*sum(x>0 for x in returns)/len(returns), 1) if returns else None}
-            answer["markets"][market] = {
-                "complete_days": len(complete),
-                "incomplete_days": len(sub)-len(complete),
-                "zero_to_four": desc(groups["zero_to_four"]),
-                "exactly_five": desc(groups["exactly_five"]),
-                "zero_to_five": desc(groups["zero_to_five"]),
+                score = rec[market]['bearish']
+                if score <= 4: groups['zero_to_four'].append(rec)
+                if score == 5:
+                    groups['exactly_five'].append(rec)
+                    trend_groups[classify_score5_trend(rec,market)].append(rec)
+                if score <= 5: groups['zero_to_five'].append(rec)
+            answer['markets'][market] = {
+                'complete_days':len(complete),'incomplete_days':len(sub)-len(complete),
+                **{k: stat(items,symbol) for k,items in groups.items()},
+                'score_five_trend':{k:stat(items,symbol) for k,items in trend_groups.items()},
+                # Proposed selective rule, RESEARCH ONLY: Risk-On if 0–4,
+                # or exactly 5 only when 5-session bearish score improves >=2.
+                'zero_to_four_plus_five_improving':stat(groups['zero_to_four']+trend_groups['improving'],symbol),
+                'trend_rule':'5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating',
             }
         return answer
-    # Time windows measured backwards from the latest completed EOD session.
-    return {"year": one_window(end_date-pd.Timedelta(days=365)),
-            "twenty_months": one_window(end_date-pd.DateOffset(months=months))}
+    return {'year':one_window(end_date-pd.Timedelta(days=365)),
+            'twenty_months':one_window(end_date-pd.DateOffset(months=months))}
 
 
 def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=None, history_days=100, history_months=20):
@@ -437,5 +472,5 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     history=[{"date":r["date"], "sp":r["sp"]["bearish"],"sp_available":r["sp"]["available"],
               "sp_max":r["sp"]["possible_max"], "nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"],
               "nd_max":r["nd"]["possible_max"]} for r in historical_records]
-    backtest=historical_backtest(historical_records,f,pd.Timestamp(d),history_months)
+    backtest=historical_backtest(records,f,pd.Timestamp(d),history_months)  # include 8 warm-up sessions for score-trend classification
     return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v2-original-trend-rsi", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point model; Risk-On threshold unchanged at 0–4. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score ≤4/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."}}
