@@ -66,3 +66,39 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(len(res['history']),90)
 
 if __name__=='__main__':unittest.main()
+
+# Additional regression cases for conservative score-range decisions.
+class PartialDataDecisionTests(unittest.TestCase):
+    def test_uncertain_vs_certain_momentum(self):
+        from engine import score_momentum_bounds
+        before={'bearish':6,'possible_max':7}
+        now={'bearish':10,'possible_max':11}
+        r=score_momentum_bounds(now,before)
+        self.assertEqual(r['min'],3)
+        self.assertEqual(r['max'],5)
+        self.assertEqual(r['state'],'DETERIORATING')
+        r=score_momentum_bounds({'bearish':10,'possible_max':11},
+                                 {'bearish':9,'possible_max':10})
+        self.assertEqual(r['state'],'UNCERTAIN')
+
+    def test_high_bearish_incomplete_still_classified_bearish(self):
+        from engine import swing_from_bounds
+        now={'bearish':10,'possible_max':11}
+        prev={'bearish':6,'possible_max':7}
+        conf={'confirmed':0,'available':4,'total':4}
+        self.assertEqual(swing_from_bounds(now,prev,conf,'bear'),'BEARISH')
+
+    def test_early_improvement_uncertain_is_not_claimed(self):
+        from engine import swing_from_bounds
+        now={'bearish':9,'possible_max':10}
+        prev={'bearish':10,'possible_max':11}
+        conf={'confirmed':3,'available':4,'total':4}
+        # Some feasible inputs are improving enough and others are not.
+        self.assertEqual(swing_from_bounds(now,prev,conf,'bear'),'N/A')
+
+    def test_full_data_rule_unchanged(self):
+        from engine import swing_from_bounds
+        good={'bearish':3,'possible_max':3}
+        prev={'bearish':3,'possible_max':3}
+        conf={'confirmed':4,'available':4,'total':4}
+        self.assertEqual(swing_from_bounds(good,prev,conf,'bull'),'BULLISH')

@@ -194,6 +194,51 @@ def score_of(signals, keys):
     return {"bearish":bears,"possible_max":bears+missing,"total":len(keys),"available":len(valid),"missing":missing,"regime":low if low==high else "INCOMPLETE","complete":missing==0,"available_keys":valid}
 
 
+def score_momentum_bounds(today: dict, previous: dict | None, threshold=2):
+    """Conservative trend classification across EVERY missing-signal outcome.
+
+    A missing indicator can be either 0 or 1 at either date. A point estimate is
+    retained for display/backward compatibility but never used to assert a regime.
+    """
+    if previous is None:
+        return {"observed":None,"min":None,"max":None,"state":"N/A"}
+    observed=today["bearish"]-previous["bearish"]
+    lo=today["bearish"]-previous["possible_max"]
+    hi=today["possible_max"]-previous["bearish"]
+    def classify(n):
+        return "IMPROVING" if n<=-threshold else "DETERIORATING" if n>=threshold else "STABLE"
+    labels={classify(n) for n in range(lo,hi+1)}
+    return {"observed":observed,"min":lo,"max":hi,
+            "state":next(iter(labels)) if len(labels)==1 else "UNCERTAIN"}
+
+
+def swing_from_bounds(score: dict, prev_score: dict | None, confirmation: dict, trend_state: str):
+    """Show a Swing Environment only if all feasible missing-input states agree."""
+    if prev_score is None or confirmation['available']==0 or trend_state == 'na':
+        return "N/A"
+    # Confirmation unknowns can be true or false; never treat unavailable as 0.
+    confirmed=confirmation['confirmed']
+    unknown=confirmation['total']-confirmation['available']
+    def swing_one(points, change, confirms, is_beartrend):
+        if points<=4 and change<2 and confirms>=3 and not is_beartrend:
+            return "BULLISH"
+        if points>=8 and change<=-2 and confirms>=2:
+            return "EARLY IMPROVEMENT"
+        if points>=8:
+            return "BEARISH"
+        if 5<=points<=7 and change>=2:
+            return "DETERIORATING"
+        return "SELECTIVE"
+    outcomes=set()
+    # The current index trend is known or missing; missing returns N/A above.
+    beartrend = trend_state == 'bear'
+    for current in range(score['bearish'],score['possible_max']+1):
+        for earlier in range(prev_score['bearish'],prev_score['possible_max']+1):
+            for conf in range(confirmed,confirmed+unknown+1):
+                outcomes.add(swing_one(current,current-earlier,conf,beartrend))
+    return next(iter(outcomes)) if len(outcomes)==1 else "N/A"
+
+
 def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=None, history_days=100):
     f=build_frames(prices,extra)
     if "SPY" not in f or "QQQ" not in f: raise ValueError("SPY and QQQ historical prices required")
@@ -210,14 +255,13 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     latest=records[-1]
     def momentum(index):
         today=latest[index]
-        def change(days):
-            if len(records)<=days: return None
-            before=records[-1-days][index]
-            if before["available_keys"]!=today["available_keys"]: return None
-            return today["bearish"]-before["bearish"]
-        d1,d5=change(1),change(5)
-        state="N/A" if d5 is None else "IMPROVING" if d5<=-2 else "DETERIORATING" if d5>=2 else "STABLE"
-        return {"d1":d1,"d5":d5,"state":state,"partial":not today["complete"]}
+        previous1=records[-2][index] if len(records)>1 else None
+        previous5=records[-6][index] if len(records)>5 else None
+        a=score_momentum_bounds(today,previous1)
+        b=score_momentum_bounds(today,previous5)
+        return {"d1":a['observed'],"d5":b['observed'],"state":b['state'],
+                "d1_range":[a['min'],a['max']],"d5_range":[b['min'],b['max']],
+                "partial":not today['complete'] or (previous5 is not None and not previous5['complete'])}
     latest["sp_momentum"]=momentum("sp")
     latest["nd_momentum"]=momentum("nd")
     # Same 4 category recovery confirmations as the thinkScript. Unavailable remains UNKNOWN.
@@ -240,18 +284,14 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     latest["sp_confirmation"]=confirmation(volsp,brsp,pricesp)
     latest["nd_confirmation"]=confirmation(volnd,brnd,pricend)
     def swing(index):
-        sc=latest[index]; mom=latest[index+"_momentum"]; conf=latest[index+"_confirmation"]
-        if not sc["complete"] or mom["d5"] is None or conf["available"]!=4: return "N/A"
-        beartrend=latest["signals"]["spy_trend" if index=="sp" else "qqq_trend"].state=="bear"
-        if sc["bearish"]<=4 and mom["d5"]<2 and conf["confirmed"]>=3 and not beartrend: return "BULLISH"
-        if sc["bearish"]>=8 and mom["d5"]<=-2 and conf["confirmed"]>=2: return "EARLY IMPROVEMENT"
-        if sc["bearish"]>=8: return "BEARISH"
-        if 5<=sc["bearish"]<=7 and mom["d5"]>=2: return "DETERIORATING"
-        return "SELECTIVE"
+        prev_score=records[-6][index] if len(records)>5 else None
+        trend_key="spy_trend" if index=="sp" else "qqq_trend"
+        return swing_from_bounds(latest[index],prev_score,
+            latest[index+"_confirmation"],latest["signals"][trend_key].state)
     latest["sp_swing"]=swing("sp")
     latest["nd_swing"]=swing("nd")
     latest["signals"]={k:v.json() for k,v in latest["signals"].items()}
     def prune_sc(x): return {k:v for k,v in x.items() if k!="available_keys"}
     latest["sp"]=prune_sc(latest["sp"]); latest["nd"]=prune_sc(latest["nd"])
     history=[{"date":r["date"],"sp":r["sp"]["bearish"],"sp_available":r["sp"]["available"],"nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"]} for r in records[-90:]]
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"history":history,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Put/call feeds still require an authorized source. Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly."}}
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"history":history,"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Index-specific put/call feeds require authorized public-display rights or a separately licensed source. Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly."}}

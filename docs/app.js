@@ -6,6 +6,7 @@ const tone=s=>(s==='IMPROVING'||s==='BULLISH'?'goodtext':s==='DETERIORATING'||s=
 const num=(x,dp=1)=>x==null?'—':Number(x).toFixed(dp);
 const scoreFormat=s=>s.complete?`${s.bearish}/15`:`${s.bearish}–${s.possible_max}/15`;
 const plus=n=>n==null?'—':`${n>0?'+':''}${n}`;
+const rangeText=r=>!Array.isArray(r)||r[0]==null?'—':r[0]===r[1]?plus(r[0]):`${plus(r[0])}…${plus(r[1])}`;
 let snapshot=null,horizon=30;
 function summary(prefix,model){
  const s=model.score,m=model.momentum,c=model.confirmation;
@@ -14,8 +15,8 @@ function summary(prefix,model){
  const status=$(prefix+'-regime');status.textContent=s.regime;status.className='regime '+stateClass(s.regime);
  $(prefix+'-meter').style.width=((s.bearish/15)*100).toFixed(1)+'%';
  const tr=$(prefix+'-trend');tr.textContent=m.state;tr.className=tone(m.state);
- $(prefix+'-delta').textContent=`1D ${plus(m.d1)} · 5D ${plus(m.d5)}${m.partial?' · partial':''}`;
- $(prefix+'-confirm').textContent=`${c.confirmed}/${c.available} available`;
+ $(prefix+'-delta').textContent=`1D ${rangeText(m.d1_range)} · 5D ${rangeText(m.d5_range)}${m.partial?' · bounded':''}`;
+ $(prefix+'-confirm').textContent=c.available===c.total?`${c.confirmed}/${c.total} IMPROVING`:`${c.confirmed}/${c.available} improving · ${c.available}/${c.total} checked`;
  const sw=$(prefix+'-swing');sw.textContent=model.swing;sw.className=tone(model.swing);
 }
 function signals(container,keys){
@@ -23,10 +24,14 @@ function signals(container,keys){
  for(const key of keys){
   const sig=snapshot.signals?.[key]||{state:'na',label:'N/A',note:'No market data'};
   const row=document.createElement('div'); row.className='signal';
-  const val=sig.value==null?'':Number(sig.value).toFixed(2)+(key.includes('breadth')?'':'');
+  const isRelative=['rsp_spy','iwm_spy','qqqe_qqq','iwm_qqq'].includes(key);
+  const val=sig.value==null?'':(isRelative&&sig.value>0?'+':'')+Number(sig.value).toFixed(2);
   const isEstimated = /EXPERIMENTAL/i.test(sig.source || '');
   const detail = (sig.note || sig.source || '') + (isEstimated ? ' · ESTIMATED (constituent-derived)' : '');
-  row.innerHTML=`<div><div class="signal-title">${esc(snapshot.names?.[key]||key)}</div><div class="signal-note">${esc(detail)}</div></div><div class="signal-right"><span class="regime ${stateClass(sig.state)}">${esc(sig.label||'N/A')}</span>${val?`<span class="signal-val">${esc(val)}${(key==='sp_breadth200'||key==='nd_breadth1d')?'%':key.includes('breadth')?' pp':''}</span>`:''}</div>`;
+  const suffix = isRelative?'%':(key==='sp_breadth200'||key==='nd_breadth1d')?'%':key.includes('breadth')?' pp':'';
+  const sourceLink = key==='spx_pc'?'https://www.cboe.com/markets/us/options/market-statistics/daily':key==='ndx_pc'?'https://www.obelion.net/options/NDX/put-call-ratio':null;
+  const link = sig.state==='na'&&sourceLink?`<a href="${sourceLink}" target="_blank" rel="noopener noreferrer" class="data-link">View reference source ↗</a>`:'';
+  row.innerHTML=`<div><div class="signal-title">${esc(snapshot.names?.[key]||key)}</div><div class="signal-note">${esc(detail)}</div>${link}</div><div class="signal-right"><span class="regime ${stateClass(sig.state)}">${esc(sig.label||'N/A')}</span>${val?`<span class="signal-val">${esc(val)}${suffix}</span>`:''}</div>`;
   root.appendChild(row);
  }
 }
