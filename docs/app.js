@@ -20,6 +20,8 @@ function summary(prefix,model){
  $(prefix+'-meter').style.width=((s.bearish/s.total)*100).toFixed(1)+'%';
  const tr=$(prefix+'-trend');tr.textContent=m.state;tr.className=tone(m.state);
  $(prefix+'-delta').textContent=`1D ${rangeText(m.d1_range)} · 5D ${rangeText(m.d5_range)}${m.partial?' · bounded':''}`;
+ const explanation=m.state==='STABLE'?'STABLE = change of −1, 0 or +1 bearish points over 5 sessions; prices may still move.':m.state==='IMPROVING'?'IMPROVING = bearish score fell by at least 2 points in 5 sessions.':m.state==='DETERIORATING'?'DETERIORATING = bearish score rose by at least 2 points in 5 sessions.':'5D trend is uncertain until historical scored inputs are available.';
+ const guide=$(prefix+'-trend-guide');if(guide)guide.textContent=explanation;
  $(prefix+'-confirm').textContent=c.available===c.total?`${c.confirmed}/${c.total} IMPROVING`:`${c.confirmed}/${c.available} improving · ${c.available}/${c.total} checked`;
  const sw=$(prefix+'-swing');sw.textContent=model.swing;sw.className=tone(model.swing);
  if(prefix==='nd'){
@@ -156,6 +158,41 @@ function renderMovingAverages(data){
   marker.style.opacity=validRsi?'1':'0';
  }
 }
+// Match the Python engine's six shared keys and nine scored index keys.
+// Informational breadth 5D/200D rows are deliberately excluded.
+const SCORE_KEYS={
+ shared:['oil','usd','tnx','credit','copper','vix_curve'],
+ sp:['vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','rsp_spy','iwm_spy','sp_breadth1d'],
+ nd:['vxn','nd_def','nd_xle','nd_smh','qqq_trend','nd_rsi14','qqqe_qqq','iwm_qqq','nd_breadth1d']
+};
+function groupScore(data,keys){
+ const sig=data.signals||{};
+ let bearish=0,available=0;
+ for(const key of keys){
+  const state=sig[key]?.state;
+  if(!['bear','bull','warn','wash'].includes(state))continue;
+  available++;
+  if(state==='bear')bearish++;
+ }
+ return {bearish,available,total:keys.length,max:bearish+keys.length-available};
+}
+function groupScoreLabel(s){return s.available===s.total?`${s.bearish}/${s.total}`:`${s.bearish}–${s.max}/${s.total}`;}
+function renderScoreBreakdown(data){
+ const shared=groupScore(data,SCORE_KEYS.shared);
+ $('shared-subscore').textContent=groupScoreLabel(shared)+' bearish';
+ $('shared-breakdown-equation').textContent=`${shared.available}/6 shared macro signals available · Included in both market totals.`;
+ for(const [prefix,market] of [['sp','sp500'],['nd','nasdaq100']]){
+  const local=groupScore(data,SCORE_KEYS[prefix]);
+  const score=data.markets?.[market]?.score;
+  const total=score?scoreFormat(score):'—/15';
+  $(prefix+'-index-subscore').textContent=groupScoreLabel(local)+' bearish';
+  $(prefix+'-breakdown-equation').textContent=`${groupScoreLabel(local)} index-specific + ${groupScoreLabel(shared)} shared macro = ${total} total bearish points`;
+  // This is only a display check: the backend remains the authority on scoring.
+  // Where complete, flag an unexpected discrepancy rather than hiding it.
+  if(score?.complete&&local.available===9&&shared.available===6&&local.bearish+shared.bearish!==score.bearish)
+   $(prefix+'-breakdown-equation').textContent+=' · VERIFY SCORE DATA';
+ }
+}
 function renderDecisionBrief(data){
  const sp=data.markets?.sp500,nd=data.markets?.nasdaq100;
  if(!sp||!nd)return;
@@ -166,17 +203,35 @@ function renderDecisionBrief(data){
  else if(regimes.every(x=>x==='CAUTION'))headline='Both benchmarks are in Caution';
  else if(regimes.includes('INCOMPLETE'))headline='Mixed coverage — review missing data';
  else headline=`Mixed regimes · SPY ${regimes[0]} · QQQ ${regimes[1]}`;
- const el=$('brief-title');el.textContent=headline;
- el.className=regimes.every(x=>x==='RISK-ON')?'brief-good':regimes.every(x=>x==='RISK-OFF')?'brief-bad':'brief-caution';
- $('brief-detail').textContent='Regime is a model classification, not a forecast. Cross-check momentum and confirmation before interpreting it.';
- for(const [id,market] of [['brief-sp-momentum',sp],['brief-qqq-momentum',nd]]){
-  const node=$(id),label=market.momentum?.state||'UNKNOWN';
-  node.textContent=label;node.className=tone(label);
- }
- const sc=sp.confirmation||{},nc=nd.confirmation||{};
- const fmt=c=>c.confirmed!=null&&c.total!=null&&Number.isFinite(Number(c.confirmed))&&Number.isFinite(Number(c.total))?`${c.confirmed}/${c.total}`:'—';
- $('brief-confirm').textContent=`SPY ${fmt(sc)} · QQQ ${fmt(nc)}`;
+ const title=$('brief-title');title.textContent=headline;
+ title.className=regimes.every(x=>x==='RISK-ON')?'brief-good':regimes.every(x=>x==='RISK-OFF')?'brief-bad':'brief-caution';
+ const state=k=>data.signals?.[k]?.state||'na';
+ const tile=(name,label,note,kind)=>{
+  $('brief-'+name).textContent=label;
+  $('brief-'+name+'-note').textContent=note;
+  $('brief-'+name+'-tile').dataset.tone=kind;
+ };
+ const combined=(a,b)=>a==='bear'&&b==='bear'?'both':a==='bear'||b==='bear'?'one':a==='na'||b==='na'?'missing':'none';
+ const vol=combined(state('vix'),state('vxn'));
+ tile('volatility',vol==='both'?'BOTH BEARISH':vol==='one'?'ONE BEARISH':vol==='none'?'NO JOINT WARNING':'DATA INCOMPLETE',
+ vol==='both'?'Both volatility gauges meet bearish thresholds':vol==='one'?'VIX/VXN signals disagree':vol==='none'?'Neither volatility gauge is bearish':'VIX or VXN reading unavailable',vol==='both'?'bear':vol==='one'?'warn':vol==='none'?'bull':'na');
+ const breadth=combined(state('sp_breadth1d'),state('nd_breadth1d'));
+ tile('breadth',breadth==='both'?'BOTH BEARISH':breadth==='one'?'ONE BEARISH':breadth==='none'?'NO JOINT WARNING':'DATA INCOMPLETE',
+ breadth==='both'?'Both one-day breadth indicators bearish':breadth==='one'?'Breadth weakness differs by market':breadth==='none'?'Neither one-day breadth indicator bearish':'One or both breadth readings unavailable',breadth==='both'?'bear':breadth==='one'?'warn':breadth==='none'?'bull':'na');
+ const credit=state('credit');
+ tile('credit',credit==='bear'?'BEARISH':credit==='bull'?'BULLISH':credit==='warn'?'CAUTION':'DATA INCOMPLETE',
+ credit==='bear'?'HYG underperforming IEF in the model':credit==='bull'?'Credit comparison not bearish':credit==='warn'?'Credit signal is mixed':'HYG/IEF reading unavailable',credit);
+ const concerns=[];
+ if(vol==='both')concerns.push('volatility signals bearish in both markets');
+ if(breadth==='both')concerns.push('one-day breadth bearish in both markets');
+ if(credit==='bear')concerns.push('credit weakness');
+ if(combined(state('sp_def'),state('nd_def'))==='both')concerns.push('defensive-sector leadership');
+ if(combined(state('spy_trend'),state('qqq_trend'))==='both')concerns.push('both ETFs below their 200-day averages');
+ const clause=concerns.length?`Key conditions: ${concerns.slice(0,4).join('; ')}.`:'Review the individual indicator rows to understand the current risk drivers.';
+ const trendNote=sp.momentum?.state==='STABLE'||nd.momentum?.state==='STABLE'? ' STABLE describes the score change, not flat market prices.':'';
+ $('brief-detail').textContent=clause+' '+`SPY 5D trend: ${sp.momentum?.state||'unknown'}; QQQ: ${nd.momentum?.state||'unknown'}.`+trendNote;
 }
+
 function render(data){
  snapshot=data;
  $('session').textContent=data.session||'—';
@@ -186,6 +241,7 @@ function render(data){
  if(!data.markets?.sp500 || !data.markets?.nasdaq100){$('warning').textContent='The website is installed, but no market update has run. Open GitHub → Actions → Refresh EOD dashboard → Run workflow.';return;}
  summary('sp',data.markets.sp500); summary('nd',data.markets.nasdaq100);
  renderDecisionBrief(data);
+ renderScoreBreakdown(data);
  signals('sp-signals',data.order.sp500);signals('nd-signals',data.order.nasdaq100);signals('shared-signals',data.order.shared);
  renderMovingAverages(data);
  $('coverage-note').textContent=data.explanation?.partial||'';
