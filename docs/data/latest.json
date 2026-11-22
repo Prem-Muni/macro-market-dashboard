@@ -1,12 +1,21 @@
 {
   "session": "2026-11-20",
-  "generated_at": "2026-11-22T04:36:12.943780+00:00",
-  "model_version": "14-point-v3-clean-axis-fix",
+  "generated_at": "2026-11-22T05:04:32.070440+00:00",
+  "model_version": "15-point-v1-ma-composite-rsi",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
     "sp500": {
       "score": {
+        "bearish": 11,
+        "possible_max": 11,
+        "total": 15,
+        "available": 15,
+        "missing": 0,
+        "regime": "RISK-OFF",
+        "complete": true
+      },
+      "legacy_14": {
         "bearish": 10,
         "possible_max": 10,
         "total": 14,
@@ -44,6 +53,15 @@
     },
     "nasdaq100": {
       "score": {
+        "bearish": 11,
+        "possible_max": 11,
+        "total": 15,
+        "available": 15,
+        "missing": 0,
+        "regime": "RISK-OFF",
+        "complete": true
+      },
+      "legacy_14": {
         "bearish": 10,
         "possible_max": 10,
         "total": 14,
@@ -193,6 +211,34 @@
       "note": "Below 200D SMA",
       "source": "QQQ"
     },
+    "sp_ma_alignment": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": 5.0,
+      "note": "Close below 5/5 SMAs (5D, 20D, 50D, 100D, 200D); equality counts bullish",
+      "source": "SPY EOD close"
+    },
+    "nd_ma_alignment": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": 5.0,
+      "note": "Close below 5/5 SMAs (5D, 20D, 50D, 100D, 200D); equality counts bullish",
+      "source": "QQQ EOD close"
+    },
+    "sp_rsi14": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": 24.908,
+      "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+      "source": "SPY EOD close"
+    },
+    "nd_rsi14": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": 26.632,
+      "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+      "source": "QQQ EOD close"
+    },
     "rsp_spy": {
       "state": "bull",
       "label": "BULLISH",
@@ -257,636 +303,712 @@
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     }
   },
+  "moving_averages": {
+    "spy": {
+      "symbol": "SPY",
+      "as_of": "2026-11-20",
+      "close": 689.81,
+      "averages": {
+        "5": {
+          "value": 721.654,
+          "distance_pct": -4.41,
+          "state": "BEARISH"
+        },
+        "20": {
+          "value": 747.807,
+          "distance_pct": -7.76,
+          "state": "BEARISH"
+        },
+        "50": {
+          "value": 760.18,
+          "distance_pct": -9.26,
+          "state": "BEARISH"
+        },
+        "100": {
+          "value": 759.398,
+          "distance_pct": -9.16,
+          "state": "BEARISH"
+        },
+        "200": {
+          "value": 732.755,
+          "distance_pct": -5.86,
+          "state": "BEARISH"
+        }
+      },
+      "rsi": {
+        "period": 14,
+        "value": 24.91,
+        "state": "OVERSOLD"
+      }
+    },
+    "qqq": {
+      "symbol": "QQQ",
+      "as_of": "2026-11-20",
+      "close": 608.45,
+      "averages": {
+        "5": {
+          "value": 646.34,
+          "distance_pct": -5.86,
+          "state": "BEARISH"
+        },
+        "20": {
+          "value": 678.531,
+          "distance_pct": -10.33,
+          "state": "BEARISH"
+        },
+        "50": {
+          "value": 710.957,
+          "distance_pct": -14.42,
+          "state": "BEARISH"
+        },
+        "100": {
+          "value": 710.682,
+          "distance_pct": -14.39,
+          "state": "BEARISH"
+        },
+        "200": {
+          "value": 683.061,
+          "distance_pct": -10.92,
+          "state": "BEARISH"
+        }
+      },
+      "rsi": {
+        "period": 14,
+        "value": 26.63,
+        "state": "OVERSOLD"
+      }
+    }
+  },
   "history": [
     {
       "date": "2026-07-17",
-      "sp": 7,
-      "sp_available": 14,
-      "nd": 9,
-      "nd_available": 14
+      "sp": 8,
+      "sp_available": 15,
+      "nd": 11,
+      "nd_available": 15
     },
     {
       "date": "2026-07-20",
-      "sp": 7,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp": 8,
+      "sp_available": 15,
+      "nd": 10,
+      "nd_available": 15
     },
     {
       "date": "2026-07-21",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-07-22",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 9,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-07-23",
-      "sp": 8,
-      "sp_available": 14,
-      "nd": 10,
-      "nd_available": 14
+      "sp": 10,
+      "sp_available": 15,
+      "nd": 12,
+      "nd_available": 15
     },
     {
       "date": "2026-07-24",
-      "sp": 5,
-      "sp_available": 14,
-      "nd": 6,
-      "nd_available": 14
+      "sp": 6,
+      "sp_available": 15,
+      "nd": 8,
+      "nd_available": 15
     },
     {
       "date": "2026-07-27",
-      "sp": 5,
-      "sp_available": 14,
-      "nd": 6,
-      "nd_available": 14
+      "sp": 6,
+      "sp_available": 15,
+      "nd": 8,
+      "nd_available": 15
     },
     {
       "date": "2026-07-28",
-      "sp": 5,
-      "sp_available": 14,
-      "nd": 6,
-      "nd_available": 14
+      "sp": 6,
+      "sp_available": 15,
+      "nd": 8,
+      "nd_available": 15
     },
     {
       "date": "2026-07-29",
-      "sp": 8,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp": 10,
+      "sp_available": 15,
+      "nd": 10,
+      "nd_available": 15
     },
     {
       "date": "2026-07-30",
       "sp": 4,
-      "sp_available": 14,
-      "nd": 5,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 6,
+      "nd_available": 15
     },
     {
       "date": "2026-07-31",
       "sp": 8,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 8,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-03",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-04",
       "sp": 3,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-05",
       "sp": 3,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-06",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 7,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-07",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-10",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-11",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-12",
       "sp": 3,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-13",
       "sp": 2,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 3,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-14",
       "sp": 3,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 2,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-17",
       "sp": 4,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-18",
       "sp": 7,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 8,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-19",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-20",
       "sp": 8,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 8,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-21",
       "sp": 4,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-24",
       "sp": 6,
-      "sp_available": 14,
-      "nd": 6,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 7,
+      "nd_available": 15
     },
     {
       "date": "2026-08-25",
       "sp": 5,
-      "sp_available": 14,
-      "nd": 4,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 5,
+      "nd_available": 15
     },
     {
       "date": "2026-08-26",
       "sp": 7,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-27",
       "sp": 8,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-28",
       "sp": 8,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 9,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-08-31",
       "sp": 8,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 8,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-01",
       "sp": 10,
-      "sp_available": 14,
-      "nd": 11,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 12,
+      "nd_available": 15
     },
     {
       "date": "2026-09-02",
       "sp": 7,
-      "sp_available": 14,
-      "nd": 7,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 8,
+      "nd_available": 15
     },
     {
       "date": "2026-09-03",
       "sp": 4,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-04",
       "sp": 8,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 7,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-08",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-09",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-10",
-      "sp": 9,
-      "sp_available": 14,
-      "nd": 9,
-      "nd_available": 14
+      "sp": 11,
+      "sp_available": 15,
+      "nd": 10,
+      "nd_available": 15
     },
     {
       "date": "2026-09-11",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-14",
       "sp": 8,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 9,
+      "nd_available": 15
     },
     {
       "date": "2026-09-15",
-      "sp": 9,
-      "sp_available": 14,
-      "nd": 9,
-      "nd_available": 14
+      "sp": 11,
+      "sp_available": 15,
+      "nd": 11,
+      "nd_available": 15
     },
     {
       "date": "2026-09-16",
-      "sp": 6,
-      "sp_available": 14,
-      "nd": 5,
-      "nd_available": 14
+      "sp": 8,
+      "sp_available": 15,
+      "nd": 7,
+      "nd_available": 15
     },
     {
       "date": "2026-09-17",
       "sp": 3,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 3,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-18",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-21",
       "sp": 4,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-22",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-23",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-24",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-25",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-28",
       "sp": 7,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 7,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-29",
       "sp": 7,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-09-30",
-      "sp": 7,
-      "sp_available": 14,
+      "sp": 8,
+      "sp_available": 15,
       "nd": 7,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-01",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-02",
       "sp": 2,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 3,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-05",
       "sp": 4,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-06",
       "sp": 4,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-07",
       "sp": 7,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-08",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-09",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-12",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-13",
       "sp": 7,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 7,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-14",
       "sp": 8,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 9,
+      "nd_available": 15
     },
     {
       "date": "2026-10-15",
       "sp": 7,
-      "sp_available": 14,
-      "nd": 6,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 7,
+      "nd_available": 15
     },
     {
       "date": "2026-10-16",
-      "sp": 7,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp": 9,
+      "sp_available": 15,
+      "nd": 10,
+      "nd_available": 15
     },
     {
       "date": "2026-10-19",
-      "sp": 8,
-      "sp_available": 14,
-      "nd": 7,
-      "nd_available": 14
+      "sp": 9,
+      "sp_available": 15,
+      "nd": 9,
+      "nd_available": 15
     },
     {
       "date": "2026-10-20",
       "sp": 4,
-      "sp_available": 14,
-      "nd": 5,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 7,
+      "nd_available": 15
     },
     {
       "date": "2026-10-21",
       "sp": 6,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 6,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-22",
-      "sp": 6,
-      "sp_available": 14,
-      "nd": 7,
-      "nd_available": 14
+      "sp": 7,
+      "sp_available": 15,
+      "nd": 9,
+      "nd_available": 15
     },
     {
       "date": "2026-10-23",
-      "sp": 7,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp": 9,
+      "sp_available": 15,
+      "nd": 10,
+      "nd_available": 15
     },
     {
       "date": "2026-10-26",
-      "sp": 4,
-      "sp_available": 14,
-      "nd": 5,
-      "nd_available": 14
+      "sp": 5,
+      "sp_available": 15,
+      "nd": 7,
+      "nd_available": 15
     },
     {
       "date": "2026-10-27",
       "sp": 5,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 5,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-28",
       "sp": 4,
-      "sp_available": 14,
+      "sp_available": 15,
       "nd": 4,
-      "nd_available": 14
+      "nd_available": 15
     },
     {
       "date": "2026-10-29",
       "sp": 5,
-      "sp_available": 14,
-      "nd": 6,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 8,
+      "nd_available": 15
     },
     {
       "date": "2026-10-30",
-      "sp": 7,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp": 9,
+      "sp_available": 15,
+      "nd": 10,
+      "nd_available": 15
     },
     {
       "date": "2026-11-02",
-      "sp": 5,
-      "sp_available": 14,
-      "nd": 5,
-      "nd_available": 14
+      "sp": 7,
+      "sp_available": 15,
+      "nd": 7,
+      "nd_available": 15
     },
     {
       "date": "2026-11-03",
-      "sp": 8,
-      "sp_available": 14,
-      "nd": 7,
-      "nd_available": 14
+      "sp": 10,
+      "sp_available": 15,
+      "nd": 9,
+      "nd_available": 15
     },
     {
       "date": "2026-11-04",
       "sp": 2,
-      "sp_available": 14,
-      "nd": 3,
-      "nd_available": 14
+      "sp_available": 15,
+      "nd": 5,
+      "nd_available": 15
     },
     {
       "date": "2026-11-05",
-      "sp": 9,
-      "sp_available": 14,
-      "nd": 10,
-      "nd_available": 14
+      "sp": 11,
+      "sp_available": 15,
+      "nd": 11,
+      "nd_available": 15
     },
     {
       "date": "2026-11-06",
-      "sp": 9,
-      "sp_available": 14,
-      "nd": 10,
-      "nd_available": 14
+      "sp": 11,
+      "sp_available": 15,
+      "nd": 11,
+      "nd_available": 15
     },
     {
       "date": "2026-11-09",
-      "sp": 3,
-      "sp_available": 14,
-      "nd": 5,
-      "nd_available": 14
+      "sp": 4,
+      "sp_available": 15,
+      "nd": 6,
+      "nd_available": 15
     },
     {
       "date": "2026-11-10",
-      "sp": 6,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp": 8,
+      "sp_available": 15,
+      "nd": 9,
+      "nd_available": 15
     },
     {
       "date": "2026-11-11",
-      "sp": 5,
-      "sp_available": 14,
-      "nd": 6,
-      "nd_available": 14
+      "sp": 6,
+      "sp_available": 15,
+      "nd": 7,
+      "nd_available": 15
     },
     {
       "date": "2026-11-12",
-      "sp": 9,
-      "sp_available": 14,
-      "nd": 10,
-      "nd_available": 14
+      "sp": 10,
+      "sp_available": 15,
+      "nd": 11,
+      "nd_available": 15
     },
     {
       "date": "2026-11-13",
-      "sp": 6,
-      "sp_available": 14,
-      "nd": 9,
-      "nd_available": 14
+      "sp": 7,
+      "sp_available": 15,
+      "nd": 10,
+      "nd_available": 15
     },
     {
       "date": "2026-11-16",
-      "sp": 8,
-      "sp_available": 14,
-      "nd": 8,
-      "nd_available": 14
+      "sp": 10,
+      "sp_available": 15,
+      "nd": 9,
+      "nd_available": 15
     },
     {
       "date": "2026-11-17",
-      "sp": 9,
-      "sp_available": 14,
-      "nd": 10,
-      "nd_available": 14
+      "sp": 11,
+      "sp_available": 15,
+      "nd": 11,
+      "nd_available": 15
     },
     {
       "date": "2026-11-18",
-      "sp": 9,
-      "sp_available": 14,
-      "nd": 11,
-      "nd_available": 14
+      "sp": 10,
+      "sp_available": 15,
+      "nd": 12,
+      "nd_available": 15
     },
     {
       "date": "2026-11-19",
-      "sp": 11,
-      "sp_available": 14,
-      "nd": 9,
-      "nd_available": 14
+      "sp": 12,
+      "sp_available": 15,
+      "nd": 10,
+      "nd_available": 15
     },
     {
       "date": "2026-11-20",
-      "sp": 10,
-      "sp_available": 14,
-      "nd": 10,
-      "nd_available": 14
+      "sp": 11,
+      "sp_available": 15,
+      "nd": 11,
+      "nd_available": 15
     }
   ],
   "order": {
@@ -903,7 +1025,8 @@
       "sp_def",
       "sp_xle",
       "sp_smh",
-      "spy_trend",
+      "sp_ma_alignment",
+      "sp_rsi14",
       "rsp_spy",
       "iwm_spy",
       "sp_breadth1d",
@@ -915,7 +1038,8 @@
       "nd_def",
       "nd_xle",
       "nd_smh",
-      "qqq_trend",
+      "nd_ma_alignment",
+      "nd_rsi14",
       "qqqe_qqq",
       "iwm_qqq",
       "nd_breadth1d",
@@ -931,6 +1055,10 @@
     "credit": "Credit HYG/IEF",
     "copper": "Copper",
     "vix_curve": "VIX Curve",
+    "sp_ma_alignment": "SPY MA Alignment",
+    "sp_rsi14": "SPY RSI (14)",
+    "nd_ma_alignment": "QQQ MA Alignment",
+    "nd_rsi14": "QQQ RSI (14)",
     "sp_def": "Defensives/SPY",
     "sp_xle": "XLE/SPY",
     "sp_smh": "SMH/SPY",
@@ -953,7 +1081,7 @@
     "missing": "Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
     "partial": "Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.",
     "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly.",
-    "model": "14 scored indicators per market."
+    "model": "Experimental 15-point model. Old trend point replaced by 5-SMA composite; one RSI point added. The legacy 14-point score is reported separately for comparison. Thresholds unvalidated."
   },
   "sources": {
     "SPY": {
