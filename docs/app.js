@@ -41,7 +41,13 @@ function signals(container,keys){
   const isEstimated = /EXPERIMENTAL/i.test(sig.source || '');
   const detail = (sig.note || sig.source || '') + (isEstimated ? ' · ESTIMATED (constituent-derived)' : '');
   const suffix = isRelative?'%':(key==='sp_breadth200'||key==='nd_breadth1d')?'%':key.includes('breadth')?' pp':'';
-  row.innerHTML=`<div><div class="signal-title">${esc(snapshot.names?.[key]||key)}</div><div class="signal-note">${esc(detail)}</div></div><div class="signal-right"><span class="regime ${stateClass(sig.state)}">${esc(sig.label||'N/A')}</span>${val?`<span class="signal-val">${esc(val)}${suffix}</span>`:''}</div>`;
+  const change=snapshot.signal_changes?.by_key?.[key];
+  if(change==='new_bearish')row.classList.add('signal-new-bearish');
+  else if(change==='eased')row.classList.add('signal-eased');
+  const changeBadge=change==='new_bearish'?'<span class="signal-change-tag changed-negative">NEW BEARISH</span>':
+    change==='eased'?'<span class="signal-change-tag changed-positive">EASED</span>':
+    change==='other'?'<span class="signal-change-tag changed-neutral">STATE CHANGED</span>':'';
+  row.innerHTML=`<div><div class="signal-title">${esc(snapshot.names?.[key]||key)} ${changeBadge}</div><div class="signal-note">${esc(detail)}</div></div><div class="signal-right"><span class="regime ${stateClass(sig.state)}">${esc(sig.label||'N/A')}</span>${val?`<span class="signal-val">${esc(val)}${suffix}</span>`:''}</div>`;
   root.appendChild(row);
  }
 }
@@ -59,7 +65,7 @@ function plot(history){
  const data=horizon===30||horizon===90?all.slice(-horizon):
   horizon==='year'&&all.length?all.filter(r=>Date.parse(r.date+'T00:00:00Z')>=Date.parse(all.at(-1).date+'T00:00:00Z')-365*86400000):
   all;
- const W=960,H=245,left=45,right=26,top=20,bottom=46;
+ const W=Math.max(430,Math.min(960,Math.round(svg.getBoundingClientRect().width||620))),H=270,left=42,right=20,top=20,bottom=50;
  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
  const el=(tag,attrs={},parent=svg)=>{
   const e=document.createElementNS('http://www.w3.org/2000/svg',tag);
@@ -76,9 +82,16 @@ function plot(history){
  svg.setAttribute('aria-label',`S&P 500 and Nasdaq-100 bearish scores, last ${data.length} trading sessions, out of ${maxPts}`);
  const yticks=[...new Set([0,5,10,maxPts].filter(v=>v<=maxPts))].sort((a,b)=>a-b);
  for(const v of yticks){
-  el('line',{x1:left,x2:W-right,y1:y(v),y2:y(v),stroke:'#2b394b','stroke-width':1});
+  if(v!==5)el('line',{x1:left,x2:W-right,y1:y(v),y2:y(v),stroke:'#2b394b','stroke-width':1});
   const t=el('text',{x:13,y:y(v)+4,fill:'#8092ac','font-size':11}); t.textContent=String(v);
  }
+  // A 5-point marker means SPY has reached CAUTION, while QQQ is
+  // still Risk-On (borderline). Risk-Off for either benchmark begins at 9.
+  el('line',{x1:left,x2:W-right,y1:y(5),y2:y(5),stroke:'#eac66e',
+             'stroke-width':1.8,'stroke-dasharray':'7 5',opacity:0.96});
+  const thresholdLabel=el('text',{x:W-right-4,y:y(5)-7,'text-anchor':'end',
+                fill:'#f1d68d','font-size':11,'font-weight':700});
+  thresholdLabel.textContent='5/15 · SPY ceiling / QQQ borderline';
  if(data.length<2){
   const t=el('text',{x:W/2,y:105,'text-anchor':'middle',fill:'#8092ac','font-size':15});
   t.textContent='History will appear after additional data updates';return;
@@ -113,7 +126,9 @@ function plot(history){
    const partial=Number(row[k+'_available'])<maxPts;
    const dot=el('circle',{cx:x(i),cy:y(v),r:partial?3:2.2,fill:color,opacity:partial?0.45:0.95});
    const tip=el('title',{},dot);
-   tip.textContent=`${market} · ${row.date} · ${v}/${maxPts} bearish points${partial?' (partial coverage)':''}`;
+   const limit=k==='sp'?4:5;
+   const regime=partial?'INCOMPLETE':v<=limit?'RISK-ON':v<=8?'CAUTION':'RISK-OFF';
+   tip.textContent=`${market} · ${row.date} · ${v}/${maxPts} bearish points · ${regime}${k==='nd' && v===5 && !partial?' (borderline cautious)':''}${partial?' (partial coverage)':''}`;
   });
  }
 }
@@ -232,15 +247,127 @@ function renderDecisionBrief(data){
  $('brief-detail').textContent=clause+' '+`SPY 5D trend: ${sp.momentum?.state||'unknown'}; QQQ: ${nd.momentum?.state||'unknown'}.`+trendNote;
 }
 
+// EOD freshness is measured against expected U.S. stock-market sessions,
+// not the age of the hosted live charts. NYSE regular holidays are excluded.
+const utcDay=(year,month,day)=>new Date(Date.UTC(year,month-1,day));
+const dayString=d=>d.toISOString().slice(0,10);
+const weekday=d=>d.getUTCDay();
+const offsetDay=(d,days)=>new Date(d.getTime()+days*86400000);
+function observedFixedHoliday(y,m,d){
+ const date=utcDay(y,m,d),w=weekday(date);
+ return dayString(offsetDay(date,w===6?-1:w===0?1:0));
+}
+function nthWeekday(y,m,w,n){
+ const first=utcDay(y,m,1);return dayString(utcDay(y,m,1+(w-weekday(first)+7)%7+7*(n-1)));
+}
+function lastWeekday(y,m,w){
+ const last=utcDay(y,m+1,0);return dayString(offsetDay(last,-((weekday(last)-w+7)%7)));
+}
+function easterSunday(y){
+ // Gregorian computus, used only for the NYSE Good Friday closure.
+ const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,
+ f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,
+ i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k+7)%7,
+ m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),
+ day=(h+l-7*m+114)%31+1;
+ return utcDay(y,month,day);
+}
+function nyseHolidays(year){
+ const holidays=new Set();
+ for(const y of [year-1,year,year+1]){
+  for(const [m,d] of [[1,1],[6,19],[7,4],[12,25]])holidays.add(observedFixedHoliday(y,m,d));
+  holidays.add(nthWeekday(y,1,1,3)); // MLK
+  holidays.add(nthWeekday(y,2,1,3)); // Presidents
+  holidays.add(dayString(offsetDay(easterSunday(y),-2))); // Good Friday
+  holidays.add(lastWeekday(y,5,1)); // Memorial
+  holidays.add(nthWeekday(y,9,1,1)); // Labor
+  holidays.add(nthWeekday(y,11,4,4)); // Thanksgiving
+ }
+ return holidays;
+}
+function nyseSession(date,holidays){
+ return ![0,6].includes(weekday(date)) && !holidays.has(dayString(date));
+}
+function eodStatus(session, now=new Date()){
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(session||''))return {kind:'unknown',text:'Session date unavailable',lag:null};
+ const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'}).formatToParts(now).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
+ const today=utcDay(Number(parts.year),Number(parts.month),Number(parts.day));
+ const hour=Number(parts.hour);
+ const holidays=nyseHolidays(today.getUTCFullYear());
+ // Before 8pm New York time a completed session may not yet have refreshed.
+ let expected=nyseSession(today,holidays)&&hour>=20?today:offsetDay(today,-1);
+ while(!nyseSession(expected,holidays))expected=offsetDay(expected,-1);
+ const observed=utcDay(...session.split('-').map(Number));
+ if(!Number.isFinite(observed.getTime()))return {kind:'unknown',text:'Invalid session date',lag:null};
+ let lag=0,walk=offsetDay(observed,1);
+ while(walk<=expected && lag<100){if(nyseSession(walk,holidays))lag++;walk=offsetDay(walk,1);}
+ if(observed>expected||lag===0)return {kind:'current',text:'Current completed EOD session',lag:0};
+ if(lag===1)return {kind:'pending',text:'One market session behind',lag};
+ return {kind:'stale',text:`${lag} market sessions behind`,lag};
+}
+function renderFreshness(data){
+ const status=eodStatus(data.session),pill=$('freshness-pill'),alert=$('freshness-alert');
+ pill.className='freshness-pill status-'+status.kind;
+ pill.textContent=status.text;
+ $('feed-state').textContent=data.session?'NYSE EOD session · prices / scores':'No market snapshot yet';
+ $('status-dot').className='status-dot '+(status.kind==='current'?'good':'warn');
+ if(status.kind==='pending'||status.kind==='stale'){
+  alert.hidden=false;
+  alert.textContent=`DATA FRESHNESS: The latest scored session is ${data.session} (${status.text.toLowerCase()}). Verify the GitHub Actions refresh before relying on the scores. TradingView and Fear & Greed update independently.`;
+ }else if(status.kind==='unknown'){
+  alert.hidden=false;alert.textContent='DATA FRESHNESS: Missing or invalid completed market session. Verify the EOD workflow.';
+ }else{alert.hidden=true;alert.textContent='';}
+}
+function renderSignalChanges(data){
+ const changes=data.signal_changes,holder=$('changes-grid');
+ if(!changes?.groups || !changes.from_session){
+  $('changes-date').textContent='New EOD run required';
+  holder.innerHTML='<div class="changes-placeholder">Signal-by-signal comparison is not in this snapshot yet. Run the upgraded EOD workflow once to populate it.</div>';
+  return;
+ }
+ $('changes-date').textContent=`${changes.from_session} → ${changes.to_session}`;
+ $('changes-caption').textContent='Scored signal-state changes compared with the immediately preceding completed EOD session.';
+ const named=[['shared','Shared macro'],['sp','SPY-specific'],['nd','QQQ-specific']];
+ holder.replaceChildren();
+ for(const [key,title] of named){
+  const group=changes.groups[key]||{};
+  const bad=group.new_bearish||[],good=group.eased||[],others=group.other||[];
+  const rows=[...bad,...good,...others];
+  const card=document.createElement('article');card.className='change-card';
+  const headline=document.createElement('div');headline.className='change-card-heading';
+  headline.innerHTML=`<strong>${esc(title)}</strong><span>${bad.length?`<b class="change-bear-count">${bad.length} new bearish</b>`:''}${good.length?`<b class="change-eased-count">${good.length} eased</b>`:''}</span>`;
+  card.appendChild(headline);
+  if(rows.length){
+   const list=document.createElement('ul');list.className='change-list';
+   rows.slice(0,3).forEach(item=>{
+    const li=document.createElement('li');li.className='change-list-item';
+    li.innerHTML=`<span class="change-dot ${item.kind==='new_bearish'?'dot-bear':item.kind==='eased'?'dot-good':'dot-neutral'}"></span><span>${esc(item.label)} <small>${esc(item.before)} → ${esc(item.after)}</small></span>`;
+    list.appendChild(li);
+   });
+   card.appendChild(list);
+   if(rows.length>3){
+    const details=document.createElement('details');details.className='changes-more';
+    const summary=document.createElement('summary');summary.textContent=`Show ${rows.length-3} more changes`;
+    const more=document.createElement('ul');more.className='change-list';
+    rows.slice(3).forEach(item=>{const li=document.createElement('li');li.textContent=`${item.label}: ${item.before} → ${item.after}`;more.appendChild(li);});
+    details.append(summary,more);card.appendChild(details);
+   }
+  }else{const no=document.createElement('p');no.className='change-empty';no.textContent='No scored signal-state changes.';card.appendChild(no);}
+  if(group.skipped){const note=document.createElement('small');note.className='change-missing';note.textContent=`${group.skipped} signals excluded due to unavailable data`;card.appendChild(note);}
+  holder.appendChild(card);
+ }
+}
+
 function render(data){
  snapshot=data;
  $('session').textContent=data.session||'—';
- $('feed-state').textContent=data.session?'End-of-day snapshot':'Not yet initialized';
+ renderFreshness(data);
  $('latest-run').textContent=data.generated_at?`Updated ${new Date(data.generated_at).toLocaleString()}`:'Awaiting first update';
- $('status-dot').className='status-dot '+(data.generated_at?'good':'warn');
+ // Freshness badge and dot reflect the latest expected NYSE EOD session.
  if(!data.markets?.sp500 || !data.markets?.nasdaq100){$('warning').textContent='The website is installed, but no market update has run. Open GitHub → Actions → Refresh EOD dashboard → Run workflow.';return;}
  summary('sp',data.markets.sp500); summary('nd',data.markets.nasdaq100);
  renderDecisionBrief(data);
+ renderSignalChanges(data);
  renderScoreBreakdown(data);
  signals('sp-signals',data.order.sp500);signals('nd-signals',data.order.nasdaq100);signals('shared-signals',data.order.shared);
  renderMovingAverages(data);
@@ -265,3 +392,7 @@ for(const mode of [30,90,'year','all']){
  });
 }
 load();
+
+// Re-evaluate freshness when returning to a tab after a market close.
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&snapshot)renderFreshness(snapshot);});
+window.addEventListener('resize',()=>{if(snapshot)plot(snapshot.history);});

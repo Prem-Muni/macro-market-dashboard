@@ -30,7 +30,7 @@
     const data=history.filter(d => safeDate(d.date)>=start);
     if (data.length < 2) { $('fear-message').textContent = 'Not enough recent index history to plot.'; return; }
     $('fear-message').textContent = '';
-    const W=960,H=245,left=48,right=24,top=16,bottom=42;
+    const W=Math.max(430,Math.min(960,Math.round(svg.getBoundingClientRect().width||620))),H=270,left=38,right=14,top=20,bottom=50;
     svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
     svg.setAttribute('aria-label',`Fear & Greed Index from ${data[0].date} to ${last.date}; latest value ${last.score}/100 (${zone(last.score)})`);
     const t0=safeDate(data[0].date),t1=safeDate(data[data.length-1].date);
@@ -93,5 +93,11 @@
       console.warn('Fear & Greed chart unavailable:',err);
     }
   }
+  // Reflow SVG coordinates when the two-column layout changes size.
+  let previousWidth=0;
+  window.addEventListener('resize',()=>{
+    const width=Math.round(svg.getBoundingClientRect().width||0);
+    if(width&&Math.abs(width-previousWidth)>20){previousWidth=width;render();}
+  });
   load();
 })();

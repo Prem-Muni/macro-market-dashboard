@@ -452,6 +452,42 @@ def historical_backtest(records: list[dict], frame: pd.DataFrame, end_date: pd.T
             'twenty_months': one_window(end_date - pd.DateOffset(months=months), True)}
 
 
+def scored_signal_changes(previous: dict, current: dict, from_session: str, to_session: str) -> dict:
+    """Compare *two complete session builds*; never infer signal flips from total scores.
+
+    Only scored keys participate. Missing states are skipped (not 'improved').
+    States counted as bearish follow score_of() exactly, including wash.
+    """
+    groups={"shared": SHARED, "sp": SP, "nd": ND}
+    output={"from_session": from_session, "to_session": to_session,
+            "groups": {}, "by_key": {}}
+    for group,keys in groups.items():
+        new_bearish, eased, other=[],[],[]
+        compared=0; skipped=0
+        for key in keys:
+            before=previous.get(key); after=current.get(key)
+            prev_state=getattr(before,"state",None)
+            next_state=getattr(after,"state",None)
+            if prev_state not in ("bear","bull","warn","wash") or next_state not in ("bear","bull","warn","wash"):
+                skipped+=1
+                continue
+            compared+=1
+            if prev_state == next_state:
+                continue
+            was_bear=prev_state in ("bear","wash")
+            now_bear=next_state in ("bear","wash")
+            if now_bear and not was_bear: kind="new_bearish";target=new_bearish
+            elif was_bear and not now_bear: kind="eased";target=eased
+            else: kind="other";target=other
+            row={"key":key,"label":LABELS.get(key,key),"before":getattr(before,"label",prev_state),
+                 "after":getattr(after,"label",next_state),"kind":kind}
+            target.append(row)
+            output["by_key"][key]=kind
+        output["groups"][group]={"new_bearish":new_bearish,"eased":eased,"other":other,
+                                  "compared":compared,"skipped":skipped,"total":len(keys)}
+    return output
+
+
 def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=None, history_days=100, history_months=20):
     f=build_frames(prices,extra)
     if "SPY" not in f or "QQQ" not in f: raise ValueError("SPY and QQQ historical prices required")
@@ -537,6 +573,10 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
                 "rsi": {"period":14, "value":round(rsi,2) if rsi is not None else None,
                         "state":rsi_label}}
     moving_averages={"spy":ma_context("spy"), "qqq":ma_context("qqq")}
+    # Compare reconstructed completed EOD signal states, never a partially
+    # cached website JSON. This field has no effect on risk scoring or backtests.
+    signal_changes = (scored_signal_changes(records[-2]["signals"],latest["signals"],
+                     records[-2]["date"],latest["date"]) if len(records)>1 else None)
     latest["signals"]={k:v.json() for k,v in latest["signals"].items()}
     def prune_sc(x): return {k:v for k,v in x.items() if k!="available_keys"}
     latest["sp"]=prune_sc(latest["sp"]); latest["nd"]=prune_sc(latest["nd"])
@@ -547,7 +587,7 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
               "sp_max":r["sp"]["possible_max"], "nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"],
               "nd_max":r["nd"]["possible_max"]} for r in historical_records]
     backtest=historical_backtest(records,f,pd.Timestamp(d),history_months)  # include 8 warm-up sessions for score-trend classification
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v3-qqq-5-borderline-risk-on", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v3-qqq-5-borderline-risk-on", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"signal_changes":signal_changes,"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,
             "risk_policy":{"sp500":{"risk_on_max":4,"caution_min":5,"caution_max":8,"risk_off_min":9},
                            "nasdaq100":{"risk_on_max":5,"caution_min":6,"caution_max":8,"risk_off_min":9,
                                         "borderline_score":5,"borderline_note":"Score 5 is Risk-On by policy but borderline cautious."},
