@@ -1,6 +1,6 @@
 {
   "session": "2026-11-23",
-  "generated_at": "2026-11-23T23:15:16.921595+00:00",
+  "generated_at": "2026-11-23T23:38:37.338830+00:00",
   "model_version": "15-point-v3-qqq-5-borderline-risk-on",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -5672,5 +5672,158 @@
     "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
     "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
     "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
-  ]
+  ],
+  "market_insights_history": {
+    "version": 1,
+    "entries": [
+      {
+        "session": "2026-11-23",
+        "previous_session": "2026-11-20",
+        "model": "15-point experimental",
+        "spy": {
+          "previous_close": 689.81,
+          "close": 722.29,
+          "price_change_pct": 4.70854,
+          "score": 10,
+          "available": 15,
+          "total": 15,
+          "regime": "RISK-OFF",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "sp_breadth1d"
+          ],
+          "trend_5d": "STABLE",
+          "five_day_delta_range": [
+            1,
+            1
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": -1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "unchanged",
+          "price_risk_status": "divergence",
+          "price_risk_label": "Strong rally \u00b7 Risk-Off persists"
+        },
+        "qqq": {
+          "previous_close": 608.45,
+          "close": 651.03,
+          "price_change_pct": 6.99811,
+          "score": 11,
+          "available": 15,
+          "total": 15,
+          "regime": "RISK-OFF",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "nd_breadth1d"
+          ],
+          "trend_5d": "DETERIORATING",
+          "five_day_delta_range": [
+            2,
+            2
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": 0,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "unchanged",
+          "price_risk_status": "divergence",
+          "price_risk_label": "Strong rally \u00b7 Risk-Off persists"
+        },
+        "signal_changes": {
+          "status": "complete",
+          "groups": {
+            "shared": {
+              "new_bearish": [
+                {
+                  "label": "US Dollar",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH DIV"
+                },
+                {
+                  "label": "10Y Yield",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH DIV"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "Crude Oil",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "Credit HYG/IEF",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "Copper",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                }
+              ],
+              "other": []
+            },
+            "sp": {
+              "new_bearish": [
+                {
+                  "label": "IWM/SPY",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "S&P Breadth 1D",
+                  "before": "CONTRACTING",
+                  "after": "EXPANDING"
+                }
+              ],
+              "other": [
+                {
+                  "label": "RSP/SPY",
+                  "before": "BULLISH",
+                  "after": "CAUTION"
+                }
+              ]
+            },
+            "nd": {
+              "new_bearish": [
+                {
+                  "label": "QQQE/QQQ",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                },
+                {
+                  "label": "IWM/QQQ",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "Nasdaq Breadth 1D",
+                  "before": "CONTRACTING",
+                  "after": "EXPANDING"
+                }
+              ],
+              "other": []
+            }
+          }
+        },
+        "spy_qqq_divergence": "none"
+      }
+    ]
+  }
 }
