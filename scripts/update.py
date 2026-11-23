@@ -15,6 +15,7 @@ import pandas as pd
 import requests
 from engine import analyze
 from breadth import derive_breadth
+from price_risk import build_price_moves
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/"docs"/"data"
@@ -178,6 +179,9 @@ def main():
     # SPY session determines the website's EOD date; prevent a partial current-day candle.
     # Workflow scheduled after close; manual runs during market hours may include incomplete bars.
     result=analyze(df,extra,sources,history_months=20)
+    # Add EOD price context from the SAME SPY/QQQ sessions as the risk engine.
+    # This does not alter any scored inputs, regimes, or past returns.
+    result["price_moves"] = build_price_moves(df, result["session"])
     result["sources"]={k:{"provider":v,"latest_session":prices[k].dropna().index.max().strftime("%Y-%m-%d")}
                        for k,v in sources.items() if k in prices and not prices[k].dropna().empty}
     for key in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL"):

@@ -425,3 +425,25 @@ html{scroll-behavior:smooth}
 @media(max-width:1100px){.intel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.intel-data-quality{grid-column:1/-1}}
 @media(max-width:650px){.market-intelligence{padding:15px}.intel-grid{grid-template-columns:1fr}.intel-data-quality{grid-column:auto}.score-daily-compare{max-width:100%}}
 @media(prefers-reduced-motion:reduce){.intel-quality-track>div{transition:none}}
+
+/* Price vs. Risk Divergence — EOD only, part of Market Intelligence. */
+.price-risk-panel{margin-bottom:16px;padding:15px;border:1px solid #36516d;border-radius:12px;background:linear-gradient(125deg,rgba(22,38,56,.80),rgba(9,21,37,.64))}
+.price-risk-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:13px}
+.price-risk-heading h3{font-size:17px;line-height:1.35;margin:7px 0 5px;color:#f1f8ff}
+.price-risk-heading p{color:#9db5ca;font-size:11px;line-height:1.6;margin:0;max-width:680px}
+.price-risk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.price-risk-card{min-width:0;border:1px solid #2d455d;border-radius:11px;padding:14px;background:rgba(7,16,30,.65)}
+.price-risk-card[data-tone="warn"]{border-color:rgba(242,179,95,.67);background:linear-gradient(140deg,rgba(89,62,31,.28),rgba(7,16,30,.66))}
+.price-risk-card[data-tone="watch"]{border-color:rgba(235,202,109,.43)}
+.price-risk-card[data-tone="aligned"]{border-color:rgba(76,196,154,.36)}
+.price-risk-card[data-tone="uncertain"]{border-color:rgba(225,183,92,.36)}
+.price-risk-card-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.price-risk-card-top span{font-size:11px;color:#9bc1dd;font-weight:800}
+.price-risk-card-top strong{font-size:25px;line-height:1;font-variant-numeric:tabular-nums;color:#dceeff}
+.price-risk-card[data-tone="warn"] .price-risk-card-top strong{color:#f4cd8c}
+.price-risk-card[data-tone="aligned"] .price-risk-card-top strong{color:#7fe6c3}
+.price-risk-card h4{font-size:14px;line-height:1.4;margin:12px 0 5px;color:#eef6ff}
+.price-risk-card p{color:#b3c5d7;font-size:11px;line-height:1.65;margin:0 0 9px}
+.price-risk-evidence{font-size:10px;line-height:1.6;color:#90b4cf;border-top:1px solid #2c4158;padding-top:9px;font-variant-numeric:tabular-nums}
+.price-risk-footnote{font-size:10px!important;line-height:1.6!important;color:#9eb4ca!important;margin:12px 0 0!important}
+@media(max-width:670px){.price-risk-panel{padding:12px}.price-risk-grid{grid-template-columns:1fr}.price-risk-heading h3{font-size:15px}.price-risk-card-top strong{font-size:23px}}

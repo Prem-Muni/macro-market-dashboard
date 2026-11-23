@@ -358,12 +358,37 @@ function renderSignalChanges(data){
  }
 }
 
+// Price and risk must share both dates, provider EOD close and complete score history.
+// Never infer a return from charts, 5-day score changes or a stale snapshot.
+function renderPriceRisk(data,spHistory,ndHistory){
+ const api=window.PriceRisk,mi=window.MarketIntel;
+ if(!api||!mi)return;
+ const sp=api.evaluate(data,'sp',spHistory),nd=api.evaluate(data,'nd',ndHistory);
+ const overall=api.summary(sp,nd),headline=$('price-risk-headline');
+ headline.textContent=overall.headline;
+ $('price-risk-summary').textContent=overall.detail;
+ $('price-risk-panel')?.setAttribute('data-tone',overall.tone);
+ const matched=sp.from&&sp.to&&sp.from===nd.from&&sp.to===nd.to;
+ $('price-risk-dates').textContent=matched?`${sp.from} → ${sp.to}`:'Matching EOD sessions required';
+ for(const [market,r] of [['sp',sp],['nd',nd]]){
+  const card=$('price-risk-'+market);
+  card.dataset.tone=r.kind==='divergence'?'warn':r.kind==='watch'?'watch':r.kind==='aligned'?'aligned':r.kind==='uncertain'?'uncertain':'neutral';
+  $('price-risk-'+market+'-change').textContent=api.pctText(r.price);
+  $('price-risk-'+market+'-title').textContent=r.headline;
+  $('price-risk-'+market+'-detail').textContent=r.detail;
+  $('price-risk-'+market+'-evidence').textContent=r.from&&r.to&&r.previousClose&&r.close?
+   `${mi.formatDate(r.from)} ${api.closeText(r.previousClose)} → ${mi.formatDate(r.to)} ${api.closeText(r.close)} · ${r.scoreLine||'Score coverage incomplete'}`:
+   'Matched previous/current EOD prices not available';
+ }
+}
+
 // The companion module reads already-published EOD score/history records only.
 // No synthetic previous score, intraday inference, or new scoring rule.
 function renderMarketIntelligence(data){
  const mi=window.MarketIntel;
  if(!mi)return;
  const a=mi.scoredHistory(data,'sp'),b=mi.scoredHistory(data,'nd');
+ renderPriceRisk(data,a,b);
  const changeLabel=r=>{
   if(!r)return 'Previous EOD → latest EOD: history unavailable';
   const delta=r.delta.min===r.delta.max?`${r.delta.min>0?'+':''}${r.delta.min}`:

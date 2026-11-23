@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=intelligence-20261122a">
+  <link rel="stylesheet" href="styles.css?v=price-risk-20261123a">
 </head>
 <body>
   <div class="shell">
@@ -29,6 +29,14 @@
       </section>
       <section class="market-intelligence" id="market-intelligence" aria-label="Market intelligence, risk transitions and data quality">
         <div class="intel-head"><div><div class="eyebrow">MARKET INTELLIGENCE</div><h2>Daily risk transitions</h2><p>Previous completed EOD session versus the latest scored session. Lower bearish scores mean improving conditions.</p></div><span class="tiny-pill" id="intel-date">Awaiting paired sessions</span></div>
+        <section class="price-risk-panel" id="price-risk-panel" aria-label="Price versus risk divergence for completed market sessions">
+          <div class="price-risk-heading"><div><div class="eyebrow">PRICE ↔ RISK · COMPLETED EOD ONLY</div><h3 id="price-risk-headline">Awaiting price/risk comparison</h3><p id="price-risk-summary">Price moves and bearish scores must refer to the same completed market sessions.</p></div><span class="tiny-pill" id="price-risk-dates">Awaiting matched sessions</span></div>
+          <div class="price-risk-grid">
+            <article class="price-risk-card" id="price-risk-sp" data-tone="neutral"><div class="price-risk-card-top"><span>SPY · S&amp;P 500</span><strong id="price-risk-sp-change">—</strong></div><h4 id="price-risk-sp-title">Awaiting EOD data</h4><p id="price-risk-sp-detail">A ≥2% daily move is compared with the 15-point risk regime.</p><div class="price-risk-evidence" id="price-risk-sp-evidence">Price and score comparison pending</div></article>
+            <article class="price-risk-card" id="price-risk-nd" data-tone="neutral"><div class="price-risk-card-top"><span>QQQ · Nasdaq-100</span><strong id="price-risk-nd-change">—</strong></div><h4 id="price-risk-nd-title">Awaiting EOD data</h4><p id="price-risk-nd-detail">A ≥2% daily move is compared with the 15-point risk regime.</p><div class="price-risk-evidence" id="price-risk-nd-evidence">Price and score comparison pending</div></article>
+          </div>
+          <p class="price-risk-footnote">Alert rule: ≥+2% price move while Risk-Off, or ≤−2% while Risk-On. A move in Caution is marked for review. These are previous-close-to-latest-close comparisons—not intraday notifications or trading recommendations. This alert does not change either risk score or the Thinkorswim study.</p>
+        </section>
         <div class="intel-grid">
           <article class="intel-card" id="intel-transition" data-tone="neutral"><div class="intel-kicker">RISK REGIME TRANSITIONS</div><h3 id="intel-transition-title">Awaiting score history</h3><div class="intel-pair"><div><span>SPY</span><strong id="intel-sp-transition">—</strong></div><div><span>QQQ</span><strong id="intel-nd-transition">—</strong></div></div><p id="intel-transition-note">A regime change is reported only when both days classify unambiguously.</p></article>
           <article class="intel-card" id="intel-divergence" data-tone="neutral"><div class="intel-kicker">SPY / QQQ DIVERGENCE</div><h3 id="intel-divergence-title">Awaiting score history</h3><p id="intel-divergence-note">Shows opposite day-over-day risk moves or differences in today's risk regimes.</p></article>
@@ -149,7 +157,8 @@
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>15-point experimental model · Updated EOD · <a href="threshold-logic.html">Model record</a></span></footer>
   </div>
   <script src="market-intelligence.js?v=intelligence-20261122a" defer></script>
-  <script src="app.js?v=intelligence-20261122a" defer></script>
+  <script src="price-risk.js?v=price-risk-20261123a" defer></script>
+  <script src="app.js?v=price-risk-20261123a" defer></script>
   <script src="market-extras.js?v=context-20261122b" defer></script>
 </body>
 </html>
