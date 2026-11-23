@@ -1,6 +1,6 @@
 {
   "session": "2026-11-23",
-  "generated_at": "2026-11-23T21:14:55.405759+00:00",
+  "generated_at": "2026-11-23T23:15:16.921595+00:00",
   "model_version": "15-point-v3-qqq-5-borderline-risk-on",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -102,14 +102,14 @@
     "vix": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 26.95,
+      "value": 26.62,
       "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
     },
     "vxn": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 36.71,
+      "value": 36.31,
       "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
     },
@@ -151,7 +151,7 @@
     "vix_curve": {
       "state": "bear",
       "label": "BACKWARDATION",
-      "value": 1.047,
+      "value": 1.044,
       "note": "VIX / VIX3M implied-volatility ratio",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
     },
@@ -214,7 +214,7 @@
     "sp_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 41.6,
+      "value": 41.512,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "SPY EOD close"
     },
@@ -228,14 +228,14 @@
     "rsp_spy": {
       "state": "warn",
       "label": "CAUTION",
-      "value": -0.1,
+      "value": -0.077,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "RSP/SPY"
     },
     "iwm_spy": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -0.525,
+      "value": -0.497,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/SPY"
     },
@@ -420,37 +420,37 @@
     "spy": {
       "symbol": "SPY",
       "as_of": "2026-11-23",
-      "close": 722.51,
+      "close": 722.29,
       "averages": {
         "5": {
-          "value": 718.166,
-          "distance_pct": 0.6,
+          "value": 718.122,
+          "distance_pct": 0.58,
           "state": "BULLISH"
         },
         "20": {
-          "value": 745.664,
-          "distance_pct": -3.11,
+          "value": 745.653,
+          "distance_pct": -3.13,
           "state": "BEARISH"
         },
         "50": {
-          "value": 759.412,
-          "distance_pct": -4.86,
+          "value": 759.408,
+          "distance_pct": -4.89,
           "state": "BEARISH"
         },
         "100": {
-          "value": 759.175,
-          "distance_pct": -4.83,
+          "value": 759.173,
+          "distance_pct": -4.86,
           "state": "BEARISH"
         },
         "200": {
-          "value": 732.915,
-          "distance_pct": -1.42,
+          "value": 732.914,
+          "distance_pct": -1.45,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 41.6,
+        "value": 41.51,
         "state": "NEUTRAL"
       }
     },
@@ -5561,6 +5561,21 @@
     "partial": "Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.",
     "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly.",
     "model": "Experimental 15-point model: S&P 500 Risk-On 0\u20134; Nasdaq-100 Risk-On 0\u20135, with QQQ score 5 borderline cautious. Both Risk-Off at 9+. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score \u22644/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."
+  },
+  "price_moves": {
+    "session": "2026-11-23",
+    "previous_session": "2026-11-20",
+    "status": "complete",
+    "spy": {
+      "previous_close": 689.809998,
+      "close": 722.289978,
+      "change_pct": 4.70854
+    },
+    "qqq": {
+      "previous_close": 608.450012,
+      "close": 651.030029,
+      "change_pct": 6.99811
+    }
   },
   "sources": {
     "SPY": {
