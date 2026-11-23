@@ -16,6 +16,7 @@ import requests
 from engine import analyze
 from breadth import derive_breadth
 from price_risk import build_price_moves
+from insights_history import merge_daily_archive
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/"docs"/"data"
@@ -190,7 +191,17 @@ def main():
             result["sources"][key] = {"provider": sources[key], "latest_session": last_date}
     result["warnings"]=(errors[:12] + ["Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.", "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.", "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
                  "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."])
-    OUT.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
+    # GitHub's existing workflow commits only docs/data/latest.json, so preserve
+    # the append-only insight journal inside this file (no workflow edits needed).
+    # Do not reconstruct earlier alerts from historical data.
+    prior=json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
+    result["market_insights_history"] = merge_daily_archive(prior, result)
+    temporary=OUT.with_name("latest.json.tmp")
+    try:
+        temporary.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
+        temporary.replace(OUT)
+    finally:
+        temporary.unlink(missing_ok=True)
     print(f"Wrote {OUT}: {result['session']} | SP {result['markets']['sp500']['score']['available']}/{result['markets']['sp500']['score']['total']}, "
           f"ND {result['markets']['nasdaq100']['score']['available']}/{result['markets']['nasdaq100']['score']['total']}")
     for err in errors[:8]:print("WARNING:",err[:160])

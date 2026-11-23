@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Saved daily SPY and QQQ scores, close-to-close price changes, price-risk alerts, and market signal changes.">
+  <title>Market Insights History | Macro Decision Dashboard</title>
+  <link rel="stylesheet" href="styles.css?v=price-risk-20261123a">
+  <link rel="stylesheet" href="insights-history.css?v=insights-history-v1">
+  <script src="insights-history.js?v=insights-history-v1" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="identity"><div class="mark">M<span>·</span>D</div><div><div class="eyebrow">DAILY MARKET INTELLIGENCE</div><h1>Macro Decision <span>Dashboard</span></h1></div></div>
+      <div class="topactions"><span class="status-dot" id="history-dot"></span><span id="history-updated">Reading archive…</span><button id="refresh" type="button">↻ Refresh</button></div>
+    </header>
+    <nav class="site-tabs" aria-label="Dashboard navigation">
+      <a class="site-tab" href="index.html"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
+      <a class="site-tab active" href="insights-history.html" aria-current="page"><span class="tab-icon" aria-hidden="true">▤</span> Insights History</a>
+      <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">15 signals</span></a>
+      <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
+    </nav>
+    <main class="journal-main">
+      <div class="journal-title-row">
+        <div>
+          <div class="eyebrow">PERMANENT EOD JOURNAL · EXPERIMENTAL MODEL</div>
+          <h2>Market Insights History</h2>
+          <p>Review completed trading sessions side by side. Track how prices move relative to the 15-point risk model, how bearish scores evolve, and which signals changed.</p>
+        </div>
+        <a class="journal-back" href="index.html">← Today's dashboard</a>
+      </div>
+      <p class="journal-policy" role="note">Automatically recorded after eligible end-of-day refreshes. <strong>This is an observed-session archive</strong>, not a reconstruction of previously unrecorded alerts. No live intraday data or independent Fear &amp; Greed series is included.</p>
+      <section class="journal-stats" aria-label="Archive statistics">
+        <div class="journal-stat"><span>Sessions saved</span><strong id="j-count">—</strong><small id="j-date-range">Starts with first EOD refresh</small></div>
+        <div class="journal-stat"><span>Latest saved EOD</span><strong id="j-last">—</strong><small id="j-last-note">Not yet available</small></div>
+        <div class="journal-stat"><span>Price/risk divergence days</span><strong id="j-alerts">—</strong><small>Days when SPY or QQQ triggered a mismatch</small></div>
+      </section>
+      <section class="journal-panel" aria-label="Risk-score trend of saved sessions">
+        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3>SPY and QQQ bearish scores</h3><p>Logged 15-point scores only; past sessions are never imputed.</p></div><div class="journal-key"><span><i class="j-key-dot spy"></i>SPY</span><span><i class="j-key-dot qqq"></i>QQQ</span></div></div>
+        <svg id="j-score-chart" role="img" viewBox="0 0 900 230" aria-label="SPY and QQQ saved bearish scores over completed daily sessions"></svg>
+        <p class="j-chart-note">Scores reflect the daily saved snapshot. The faint guides show 5/15 and 9/15; Risk-Off begins at 9/15 for both markets.</p>
+      </section>
+      <section class="journal-panel" aria-label="Historical daily insights">
+        <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">DAILY RECORDS</div><h3>Historical market log</h3><p>Lower bearish scores indicate improvement. A positive daily score change means deterioration.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export visible CSV</button></div>
+        <div class="journal-filters">
+          <fieldset class="journal-filter-group"><legend>Sessions</legend><div class="journal-segments" id="j-range"><button class="selected" data-range="30" type="button">30</button><button data-range="90" type="button">90</button><button data-range="all" type="button">All</button></div></fieldset>
+          <label class="journal-select">Market <select id="j-market"><option value="both">Both ETFs</option><option value="spy">SPY only</option><option value="qqq">QQQ only</option></select></label>
+          <label class="journal-check"><input id="j-alert-only" type="checkbox"> Divergence alerts only</label>
+          <span id="j-matches" class="journal-matches" role="status">Loading…</span>
+        </div>
+        <div class="journal-table-wrap">
+          <table class="journal-table"><thead><tr><th scope="col">Session</th><th scope="col">ETF</th><th scope="col">Close</th><th scope="col">Day change</th><th scope="col">Bearish score</th><th scope="col">1D score Δ</th><th scope="col">Regime</th><th scope="col">Price / Risk</th><th scope="col">Signals</th></tr></thead><tbody id="j-rows"><tr><td colspan="9" class="journal-empty">Loading saved market insights…</td></tr></tbody></table>
+        </div>
+        <p id="j-message" class="journal-message" role="status">Loading history from the latest published snapshot…</p>
+      </section>
+      <section class="journal-footnotes"><h3>How to use this archive</h3><p>Each dated row captures SPY or QQQ's completed close, day-over-day ETF price change, daily bearish score, daily change in bearish points, risk regime, 5-day trend, data coverage and matching price/risk alert. Select <strong>Signals</strong> to inspect the same-session changes available in the engine's snapshot.</p><p>Scores use the website's experimental 15-point model; Thinkorswim remains a separate 14-point reference. Constituent-derived breadth may be estimated, and observations are not proof of predictive accuracy. <strong>Archive persistence:</strong> data is stored in <code>docs/data/latest.json</code> and included in the existing GitHub Actions snapshot commit. Download a CSV periodically for a personal backup.</p></section>
+    </main>
+    <footer><span>Macro Decision Dashboard · Personal research build</span><span>Saved EOD observations · <a href="index.html">Dashboard</a></span></footer>
+  </div>
+</body>
+</html>
