@@ -447,3 +447,17 @@ html{scroll-behavior:smooth}
 .price-risk-evidence{font-size:10px;line-height:1.6;color:#90b4cf;border-top:1px solid #2c4158;padding-top:9px;font-variant-numeric:tabular-nums}
 .price-risk-footnote{font-size:10px!important;line-height:1.6!important;color:#9eb4ca!important;margin:12px 0 0!important}
 @media(max-width:670px){.price-risk-panel{padding:12px}.price-risk-grid{grid-template-columns:1fr}.price-risk-heading h3{font-size:15px}.price-risk-card-top strong{font-size:23px}}
+
+/* Daily MACD 12/26/9: informational, no scoring impact */
+.macd-strip{border-top:1px solid #2c4058;padding-top:15px;margin-top:15px}
+.macd-caption{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;font-size:.81rem;color:#e0e9f3}
+.macd-caption span{font-size:.67rem;letter-spacing:.045em;color:#91a8c1;text-align:right}
+.macd-readings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.macd-readings>div{padding:10px 9px;border-radius:8px;border:1px solid #2a3e53;background:rgba(7,17,30,.38);min-width:0}
+.macd-readings span{display:block;color:#91a8c1;font-size:.7rem;margin-bottom:6px}
+.macd-readings strong{font-variant-numeric:tabular-nums;font-size:clamp(.88rem,1.15vw,1.04rem);overflow-wrap:anywhere;color:#e8f0f8}
+.macd-status{margin-top:9px;font-size:.76rem;line-height:1.45}
+.macd-positive{color:#6bd9ae!important}
+.macd-negative{color:#fa8e98!important}
+.macd-neutral{color:#97abc0!important}
+@media(max-width:380px){.macd-readings{gap:5px}.macd-readings>div{padding:9px 6px}.macd-caption{flex-wrap:wrap}}

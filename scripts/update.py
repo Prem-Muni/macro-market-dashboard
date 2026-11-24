@@ -17,6 +17,8 @@ from engine import analyze
 from breadth import derive_breadth
 from price_risk import build_price_moves
 from insights_history import merge_daily_archive
+from daily_macd import calculate_daily_macd
+from zoneinfo import ZoneInfo
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/"docs"/"data"
@@ -183,12 +185,24 @@ def main():
     # Add EOD price context from the SAME SPY/QQQ sessions as the risk engine.
     # This does not alter any scored inputs, regimes, or past returns.
     result["price_moves"] = build_price_moves(df, result["session"])
+    # Closing-price MACD(12,26,9): informational only; do not modify analyze(),
+    # signal counts, regime cutoffs, or the original Thinkorswim study.
+    result["daily_macd"] = calculate_daily_macd(df, result["session"])
     result["sources"]={k:{"provider":v,"latest_session":prices[k].dropna().index.max().strftime("%Y-%m-%d")}
                        for k,v in sources.items() if k in prices and not prices[k].dropna().empty}
     for key in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL"):
         if key in sources:
             last_date=(extra[key].dropna().index.max().strftime("%Y-%m-%d") if extra is not None and key in extra and not extra[key].dropna().empty else result["session"])
             result["sources"][key] = {"provider": sources[key], "latest_session": last_date}
+    # GitHub workflow success does not guarantee vendors have published today's EOD bar.
+    # This warning is informational, including on exchange holidays; never invent data.
+    central_now = datetime.now(ZoneInfo("America/Chicago"))
+    if central_now.weekday() < 5 and (central_now.hour, central_now.minute) >= (15, 15) and result["session"] < central_now.date().isoformat():
+        message = (f"EOD provider lag / possible exchange holiday: latest priced session "
+                   f"{result['session']} vs calendar date {central_now.date().isoformat()}. "
+                   "A 4:15pm Central backup refresh is also scheduled on weekdays.")
+        errors.insert(0, message)
+        print("::warning::" + message)
     result["warnings"]=(errors[:12] + ["Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.", "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.", "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
                  "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."])
     # GitHub's existing workflow commits only docs/data/latest.json, so preserve

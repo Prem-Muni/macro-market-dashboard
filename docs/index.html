@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=price-risk-20261123a">
+  <link rel="stylesheet" href="styles.css?v=macd-20261124a">
 </head>
 <body>
   <div class="shell">
@@ -96,6 +96,15 @@
                 <div class="rsi-track" aria-hidden="true"><div id="spy-rsi14-marker" class="rsi-marker" style="left:50%"></div></div>
                 <div class="rsi-scale"><span>0</span><span>30 · Oversold</span><span>70 · Overbought</span><span>100</span></div>
               </div>
+              <div class="macd-strip" aria-label="SPY daily MACD 12, 26, 9; informational only">
+                <div class="macd-caption"><strong>MACD (12, 26, 9) · Daily</strong><span>NOT SCORED · latest completed close</span></div>
+                <div class="macd-readings">
+                  <div><span>MACD</span><strong id="spy-macd-line">—</strong></div>
+                  <div><span>Signal</span><strong id="spy-macd-signal">—</strong></div>
+                  <div><span>Histogram</span><strong id="spy-macd-histogram">—</strong></div>
+                </div>
+                <div class="macd-status" id="spy-macd-status">Awaiting EOD data</div>
+              </div>
             </div>
 
           </article>
@@ -126,11 +135,20 @@
                 <div class="rsi-track" aria-hidden="true"><div id="qqq-rsi14-marker" class="rsi-marker" style="left:50%"></div></div>
                 <div class="rsi-scale"><span>0</span><span>30 · Oversold</span><span>70 · Overbought</span><span>100</span></div>
               </div>
+              <div class="macd-strip" aria-label="QQQ daily MACD 12, 26, 9; informational only">
+                <div class="macd-caption"><strong>MACD (12, 26, 9) · Daily</strong><span>NOT SCORED · latest completed close</span></div>
+                <div class="macd-readings">
+                  <div><span>MACD</span><strong id="qqq-macd-line">—</strong></div>
+                  <div><span>Signal</span><strong id="qqq-macd-signal">—</strong></div>
+                  <div><span>Histogram</span><strong id="qqq-macd-histogram">—</strong></div>
+                </div>
+                <div class="macd-status" id="qqq-macd-status">Awaiting EOD data</div>
+              </div>
             </div>
 
           </article>
         </div>
-        <p class="provider-note">Charts by <a href="https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/" target="_blank" rel="noopener noreferrer">TradingView</a>. Price data can be delayed or use Cboe-derived U.S. quotes; they may not match Thinkorswim tick-for-tick. These charts update independently of the dashboard's end-of-day scoring. Moving-average labels use BULLISH when the daily close is greater than or equal to its SMA, otherwise BEARISH. Moving-average and RSI(14) values use unadjusted SPY/QQQ end-of-day closes and can differ slightly from TradingView or Thinkorswim. RSI overbought/oversold thresholds describe momentum, not automatic trading signals. The five individual moving-average BULLISH/BEARISH readings are informational only. The original SPY/QQQ Trend indicator is scored: BEARISH when close is below the 200D SMA; BULLISH when close is above 50D and 50D is above 200D; otherwise CAUTION. RSI contributes one separate momentum point. The price charts and Fear &amp; Greed remain external, informational visuals.</p>
+        <p class="provider-note">Charts by <a href="https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/" target="_blank" rel="noopener noreferrer">TradingView</a>. Price data can be delayed or use Cboe-derived U.S. quotes; they may not match Thinkorswim tick-for-tick. These charts update independently of the dashboard's end-of-day scoring. Moving-average labels use BULLISH when the daily close is greater than or equal to its SMA, otherwise BEARISH. Moving-average and RSI(14) values use unadjusted SPY/QQQ end-of-day closes and can differ slightly from TradingView or Thinkorswim. RSI overbought/oversold thresholds describe momentum, not automatic trading signals. The five individual moving-average readings and MACD(12,26,9) are informational only. The original SPY/QQQ Trend indicator is scored: BEARISH when close is below the 200D SMA; BULLISH when close is above 50D and 50D is above 200D; otherwise CAUTION. RSI contributes one separate momentum point. The price charts and Fear &amp; Greed remain external, informational visuals.</p>
       </section>
       <div class="context-chart-grid" aria-label="Historical market risk and sentiment side by side">
       <section class="chartpanel history-panel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Bearish signals over time</h2><p>Historical bearish points out of 15, one observation per market session.</p><p class="threshold-policy-inline">SPY Risk-On: 0–4 · QQQ Risk-On: 0–5 (5 is borderline cautious)</p><p class="chart-range" id="chart-range">Awaiting date range</p></div><div class="seg history-controls"><button id="hist30" class="active" type="button" title="Last 30 trading sessions">30 Sessions</button><button id="hist90" type="button" title="Last 90 trading sessions">90 Sessions</button><button id="histYear" type="button" title="Past 365 calendar days">1 Year</button><button id="hist20m" type="button" title="Past 20 calendar months">20 Months</button></div></div><svg id="history-svg" viewBox="0 0 620 270" role="img" aria-label="Historical SP500 and Nasdaq bearish signal scores with a 5-point reference line"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="chart-threshold-key">- - - 5/15 reference · SPY ceiling / QQQ borderline</span></div><p class="chart-footnote">Equal spacing represents consecutive trading sessions. A score of 5 is <strong>not</strong> the Risk-Off boundary: Risk-Off starts at 9 for both markets. Partial scores are marked.</p></section>
@@ -159,7 +177,7 @@
   </div>
   <script src="market-intelligence.js?v=intelligence-20261122a" defer></script>
   <script src="price-risk.js?v=price-risk-20261123a" defer></script>
-  <script src="app.js?v=price-risk-20261123a" defer></script>
+  <script src="app.js?v=macd-20261124a" defer></script>
   <script src="market-extras.js?v=context-20261122b" defer></script>
 </body>
 </html>

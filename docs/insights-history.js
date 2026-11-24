@@ -47,12 +47,12 @@
     return '"'+s.replace(/"/g,'""')+'"';
   }
   function toCSV(rows){
-    const head=['Session','Record origin','Source note','Previous session','ETF','Previous close','Close','Price change %','Bearish points','Points available','Total points','Previous bearish points','1D score delta','Risk regime','Previous risk regime','Risk transition','5D score trend','5D score delta low','5D score delta high','Confirmations improving','Confirmations checked','Confirmation categories','Swing environment','Price/risk alert','Price/risk detail','Estimated signal count','Estimated signal names','Shared new bearish','Shared eased','Index new bearish','Index eased','SPY vs QQQ status','RSI (14)','Volatility index','Volatility value'];
+    const head=['Session','Record origin','Source note','Previous session','ETF','Previous close','Close','Price change %','Bearish points','Points available','Total points','Previous bearish points','1D score delta','Risk regime','Previous risk regime','Risk transition','5D score trend','5D score delta low','5D score delta high','Confirmations improving','Confirmations checked','Confirmation categories','Swing environment','Price/risk alert','Price/risk detail','Estimated signal count','Estimated signal names','Shared new bearish','Shared eased','Index new bearish','Index eased','SPY vs QQQ status','RSI (14)','Volatility index','Volatility value','MACD 12-26','MACD signal 9','MACD histogram','MACD relation','MACD crossover'];
     const list=[head];
     for(const row of rows){
       const d=row.detail,c=row.changes?.groups||{},g=c[row.symbol==='spy'?'sp':'nd']||{},shared=c.shared||{};
       const labels=v=>Array.isArray(v)?v.map(x=>x.label||'').join('; '):'';
-      list.push([row.session,row.recordSource,row.sourceNote,row.previous_session,row.symbol.toUpperCase(),d.previous_close,d.close,d.price_change_pct,d.score,d.available,d.total,d.previous_score,d.score_delta_1d,d.regime,d.previous_regime,d.risk_transition,d.trend_5d,d.five_day_delta_range?.[0],d.five_day_delta_range?.[1],d.confirmation?.confirmed,d.confirmation?.available,d.confirmation?.total,d.swing,d.price_risk_status,d.price_risk_label,d.estimated_count,(d.estimated_signals||[]).join('; '),labels(shared.new_bearish),labels(shared.eased),labels(g.new_bearish),labels(g.eased),row.marketDivergence,d.baseline_context?.rsi14,d.baseline_context?.volatility_index?.name,d.baseline_context?.volatility_index?.value]);
+      list.push([row.session,row.recordSource,row.sourceNote,row.previous_session,row.symbol.toUpperCase(),d.previous_close,d.close,d.price_change_pct,d.score,d.available,d.total,d.previous_score,d.score_delta_1d,d.regime,d.previous_regime,d.risk_transition,d.trend_5d,d.five_day_delta_range?.[0],d.five_day_delta_range?.[1],d.confirmation?.confirmed,d.confirmation?.available,d.confirmation?.total,d.swing,d.price_risk_status,d.price_risk_label,d.estimated_count,(d.estimated_signals||[]).join('; '),labels(shared.new_bearish),labels(shared.eased),labels(g.new_bearish),labels(g.eased),row.marketDivergence,d.baseline_context?.rsi14,d.baseline_context?.volatility_index?.name,d.baseline_context?.volatility_index?.value,d.macd_info?.macd,d.macd_info?.signal,d.macd_info?.histogram,d.macd_info?.relation,d.macd_info?.crossover]);
     }
     return '\uFEFF'+list.map(items=>items.map(csvField).join(',')).join('\r\n')+'\r\n';
   }
@@ -101,6 +101,7 @@
     small('p',`${row.symbol.toUpperCase()} ${money(d.previous_close)} → ${money(d.close)} (${signed(d.price_change_pct,'%')})`,'',card1);
     small('p',`Bearish points: ${text(d.previous_score)} → ${text(d.score)} / ${text(d.total)}. 5D trend: ${text(d.trend_5d)}.`,'',card1);
     small('p',`Risk: ${text(d.previous_regime)} → ${text(d.regime)}. Swing: ${text(d.swing)}.`,'',card1);
+    if(d.macd_info){const m=d.macd_info;small('p',`Daily MACD (12,26,9) · NOT SCORED: line ${text(m.macd)} · signal ${text(m.signal)} · histogram ${text(m.histogram)} · ${text(m.relation)}${m.crossover&&m.crossover!=='none'?' · '+text(m.crossover)+' crossover':''}.`,'',card1);}
     const conf=d.confirmation||{};
     small('p',`Market confirmation: ${text(conf.confirmed)}/${text(conf.total)} improving · ${text(conf.available)}/${text(conf.total)} checked.`,'',card1);
     const card2=make('div','journal-detail',cards);

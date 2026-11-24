@@ -173,6 +173,26 @@ function renderMovingAverages(data){
   marker.style.opacity=validRsi?'1':'0';
  }
 }
+// Informational-only daily MACD. Never adds a scoring signal.
+function renderDailyMACD(data){
+ const all=data.daily_macd||{};
+ for(const sym of ['spy','qqq']){
+  const entry=all[sym]||{};
+  const ready=entry.status==='complete' && entry.as_of===data.session &&
+    [entry.macd,entry.signal,entry.histogram].every(v=>v!=null && Number.isFinite(Number(v)));
+  const val=(x)=>ready?Number(x).toFixed(3):'—';
+  $(sym+'-macd-line').textContent=val(entry.macd);
+  $(sym+'-macd-signal').textContent=val(entry.signal);
+  const hist=$(sym+'-macd-histogram');hist.textContent=val(entry.histogram);
+  const status=$(sym+'-macd-status');
+  if(!ready){status.textContent='MACD not available for this completed session';status.className='macd-status macd-neutral';hist.className='';continue;}
+  const crossover=entry.crossover==='bullish'?' · Bullish crossover':entry.crossover==='bearish'?' · Bearish crossover':'';
+  const relation=entry.relation==='above'?'MACD above signal':entry.relation==='below'?'MACD below signal':'MACD equals signal';
+  status.textContent=relation+crossover+' · Information only';
+  status.className='macd-status '+(entry.relation==='above'?'macd-positive':entry.relation==='below'?'macd-negative':'macd-neutral');
+  hist.className=entry.histogram>0?'macd-positive':entry.histogram<0?'macd-negative':'macd-neutral';
+ }
+}
 // Match the Python engine's six shared keys and nine scored index keys.
 // Informational breadth 5D/200D rows are deliberately excluded.
 const SCORE_KEYS={
@@ -450,9 +470,10 @@ function render(data){
  renderMarketIntelligence(data);
  signals('sp-signals',data.order.sp500);signals('nd-signals',data.order.nasdaq100);signals('shared-signals',data.order.shared);
  renderMovingAverages(data);
+ renderDailyMACD(data);
  $('coverage-note').textContent=data.explanation?.partial||'';
  const all=data.markets.sp500.score.complete && data.markets.nasdaq100.score.complete;
- $('warning').textContent=all?'EXPERIMENTAL 15-point model: SPY Risk-On 0–4; QQQ Risk-On 0–5 (score 5 borderline cautious). RSI scored; five SMA rows informational. Thinkorswim remains 14-point.':'EXPERIMENTAL 15-point model: PARTIAL FEEDS. SPY Risk-On 0–4; QQQ Risk-On 0–5 (5 borderline cautious). Missing inputs are not bullish; Thinkorswim remains 14-point.';
+ $('warning').textContent=all?'EXPERIMENTAL 15-point model: SPY Risk-On 0–4; QQQ Risk-On 0–5 (score 5 borderline cautious). RSI scored; five SMA rows + daily MACD informational. Thinkorswim remains 14-point.':'EXPERIMENTAL 15-point model: PARTIAL FEEDS. SPY Risk-On 0–4; QQQ Risk-On 0–5 (5 borderline cautious). Missing inputs are not bullish; Thinkorswim remains 14-point.';
  $('diagnostics').textContent=JSON.stringify({sources:data.sources,warnings:data.warnings},null,2);
  plot(data.history);
 }

@@ -2,8 +2,13 @@ name: Refresh EOD dashboard
 
 on:
   schedule:
-    # 23:30 UTC = 6:30pm EST / 7:30pm EDT, weekdays (after US close).
-    - cron: '30 23 * * 1-5'
+    # Primary: 3:15pm Central, 15 minutes after the regular US equity close.
+    - cron: '15 15 * * 1-5'
+      timezone: 'America/Chicago'
+    # Backup: 4:15pm Central, if a provider has not finalized daily bars at 3:15.
+    # Re-running the updater updates today's existing archive record, never duplicates it.
+    - cron: '15 16 * * 1-5'
+      timezone: 'America/Chicago'
   workflow_dispatch:
 
 permissions:

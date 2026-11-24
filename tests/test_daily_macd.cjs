@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict'),path=require('path');
+const nodes={};
+function node(id){return nodes[id]??={textContent:'',className:'',style:{},classList:{toggle(){},add(){},remove(){}},addEventListener(){},setAttribute(){}};}
+const document={getElementById:node,addEventListener(){},createElementNS(){return node('unused')},createElement(){return node('unused')}};
+const context=vm.createContext({document,window:{addEventListener(){}},fetch:async()=>{throw Error('synthetic test only')},console,Date,Number,String,Object,Array,Set});
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../docs/app.js'),'utf8'),context);
+context.synthetic={session:'2026-11-24',daily_macd:{spy:{as_of:'2026-11-24',status:'complete',macd:-1.23456,signal:-2.12345,histogram:0.88889,relation:'above',crossover:'bullish'},qqq:{as_of:'2026-11-24',status:'complete',macd:-3.23456,signal:-2.12345,histogram:-1.11111,relation:'below',crossover:'none'}}};
+vm.runInContext('renderDailyMACD(synthetic)',context);
+assert.equal(nodes['spy-macd-line'].textContent,'-1.235');
+assert.equal(nodes['spy-macd-signal'].textContent,'-2.123');
+assert.equal(nodes['spy-macd-histogram'].textContent,'0.889');
+assert.match(nodes['spy-macd-status'].textContent,/Bullish crossover/);
+assert.match(nodes['spy-macd-status'].textContent,/Information only/);
+assert.match(nodes['qqq-macd-status'].textContent,/below signal/);
+context.synthetic={session:'2026-11-25',daily_macd:{spy:{as_of:'2026-11-24',status:'complete',macd:1,signal:.9,histogram:.1,relation:'above'},qqq:{status:'unavailable'}}};
+vm.runInContext('renderDailyMACD(synthetic)',context);
+assert.equal(nodes['spy-macd-line'].textContent,'—');
+assert.equal(nodes['qqq-macd-line'].textContent,'—');
+console.log('MACD rendering tests passed (aligned, crossover, stale, unavailable)');

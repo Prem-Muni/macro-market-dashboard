@@ -157,7 +157,14 @@ def make_daily_entry(result: dict) -> dict | None:
         else:
             alert = "none"
             alert_title = "No price/risk alert"
+        macd = (result.get("daily_macd") or {}).get(sym) or {}
+        macd_snapshot = None
+        if (macd.get("status") == "complete" and macd.get("as_of") == session and
+            all(_number(macd.get(f)) for f in ("macd", "signal", "histogram"))):
+            macd_snapshot = {name: macd.get(name) for name in
+                             ("macd", "signal", "histogram", "relation", "crossover")}
         out[sym] = {
+            "macd_info": macd_snapshot,  # informational only, no scoring
             "previous_close": round(p, 4), "close": round(c, 4), "price_change_pct": round(pct, 5),
             **now, "previous_score": prevscore, "score_delta_1d": delta,
             "previous_regime": prevregime, "risk_transition":
