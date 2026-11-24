@@ -48,19 +48,22 @@ class InsightsHistoryTests(unittest.TestCase):
         self.assertEqual(row['spy']['estimated_count'], 1)
         self.assertEqual(row['signal_changes']['groups']['sp']['eased'][0]['label'], 'S&P Breadth 1D')
 
-    def test_first_run_creates_one_record_without_backfilling(self):
+    def test_first_run_adds_approved_friday_baseline_and_current_record(self):
         fresh=synthetic_snapshot()
         archive=merge_daily_archive({},fresh)
-        self.assertEqual(len(archive['entries']),1)
-        self.assertEqual(archive['entries'][0]['session'],fresh['session'])
+        self.assertEqual(len(archive['entries']),2)
+        self.assertEqual(archive['entries'][0]['session'],'2026-11-20')
+        self.assertTrue(archive['entries'][0]['baseline'])
+        self.assertEqual(archive['entries'][1]['session'],fresh['session'])
 
     def test_repeat_same_session_replaces_only_latest(self):
         day=synthetic_snapshot()
         first=merge_daily_archive({},day)
         day['markets']['sp500']['momentum']['state']='IMPROVING'
         fixed=merge_daily_archive({'market_insights_history':first},day)
-        self.assertEqual(len(fixed['entries']),1)
-        self.assertEqual(fixed['entries'][0]['spy']['trend_5d'],'IMPROVING')
+        self.assertEqual(len(fixed['entries']),2)
+        self.assertEqual(fixed['entries'][0]['session'],'2026-11-20')
+        self.assertEqual(fixed['entries'][1]['spy']['trend_5d'],'IMPROVING')
 
     def test_existing_day_is_never_rewritten_by_older_run(self):
         day=synthetic_snapshot()

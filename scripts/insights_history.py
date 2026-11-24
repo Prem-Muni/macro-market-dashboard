@@ -1,8 +1,8 @@
-"""Append-only, completed-EOD market intelligence journal embedded in latest.json.
+"""Completed-EOD insight journal embedded in latest.json.
 
-The existing GitHub workflow commits ONLY docs/data/latest.json. Keeping the journal
-inside this same file gives it durable Git history without changing the deployment job.
-No past alerts are reconstructed or fabricated from historical scores.
+The existing GitHub workflow commits ONLY docs/data/latest.json. Existing daily
+entries remain stable; one user-authorized 2026-11-20 baseline is inserted from
+contemporaneous screenshots if missing. No unseen historic alerts are inferred.
 """
 from __future__ import annotations
 
@@ -10,6 +10,8 @@ import math
 import re
 from datetime import date
 from typing import Any
+
+from friday_baseline import FRIDAY_BASELINE_SESSION, friday_baseline_entry
 
 VERSION = 1
 ALERT_PCT = 2.0
@@ -183,10 +185,11 @@ def make_daily_entry(result: dict) -> dict | None:
 
 
 def merge_daily_archive(previous: dict, fresh: dict) -> dict:
-    """Retain all previously saved EOD records; add or update today's record only.
+    """Preserve saved EOD records; add known Friday baseline and today's record.
 
-    Repeated runs for one completed session replace that day's record. Older sessions
-    already archived are immutable (no retrospective reconstruction/overwriting).
+    A Friday snapshot backfill is added once when missing, without touching
+    existing Friday or subsequent records. Repeated live-session EOD runs can
+    replace only that day's last saved observation.
     """
     old = previous.get("market_insights_history")
     if old is None:
@@ -198,6 +201,13 @@ def merge_daily_archive(previous: dict, fresh: dict) -> dict:
         dates = [row.get("session") for row in entries if isinstance(row, dict)]
         if len(dates) != len(entries) or any(not _valid_date(day) for day in dates) or dates != sorted(set(dates)):
             raise ValueError("Existing saved history is malformed; refusing to overwrite it")
+    # User-authorized one-time Friday EOD screenshot baseline.  Insert only if
+    # that session is missing, even when later (e.g. Monday) rows are already saved.
+    # Never overwrite a genuinely captured Friday record, and never fabricate
+    # the unavailable Thursday ETF closes or a Friday price/risk signal.
+    if not any(row["session"] == FRIDAY_BASELINE_SESSION for row in entries):
+        entries.append(friday_baseline_entry())
+        entries.sort(key=lambda row: row["session"])
     new = make_daily_entry(fresh)
     if new is not None:
         if not entries or new["session"] > entries[-1]["session"]:

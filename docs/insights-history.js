@@ -35,7 +35,7 @@
       for(const sym of selected){
         if(alertsOnly&&day[sym].price_risk_status!=='divergence')continue;
         rows.push({session:day.session,previous_session:day.previous_session,symbol:sym,detail:day[sym],changes:day.signal_changes,
-          marketDivergence:day.spy_qqq_divergence});
+          marketDivergence:day.spy_qqq_divergence,recordSource:day.record_source||"automatic_eod",sourceNote:day.source_note||"",baseline:day.baseline===true});
       }
     }
     return rows;
@@ -47,12 +47,12 @@
     return '"'+s.replace(/"/g,'""')+'"';
   }
   function toCSV(rows){
-    const head=['Session','Previous session','ETF','Previous close','Close','Price change %','Bearish points','Points available','Total points','Previous bearish points','1D score delta','Risk regime','Previous risk regime','Risk transition','5D score trend','5D score delta low','5D score delta high','Confirmations improving','Confirmations checked','Confirmation categories','Swing environment','Price/risk alert','Price/risk detail','Estimated signal count','Estimated signal names','Shared new bearish','Shared eased','Index new bearish','Index eased','SPY vs QQQ status'];
+    const head=['Session','Record origin','Source note','Previous session','ETF','Previous close','Close','Price change %','Bearish points','Points available','Total points','Previous bearish points','1D score delta','Risk regime','Previous risk regime','Risk transition','5D score trend','5D score delta low','5D score delta high','Confirmations improving','Confirmations checked','Confirmation categories','Swing environment','Price/risk alert','Price/risk detail','Estimated signal count','Estimated signal names','Shared new bearish','Shared eased','Index new bearish','Index eased','SPY vs QQQ status','RSI (14)','Volatility index','Volatility value'];
     const list=[head];
     for(const row of rows){
       const d=row.detail,c=row.changes?.groups||{},g=c[row.symbol==='spy'?'sp':'nd']||{},shared=c.shared||{};
       const labels=v=>Array.isArray(v)?v.map(x=>x.label||'').join('; '):'';
-      list.push([row.session,row.previous_session,row.symbol.toUpperCase(),d.previous_close,d.close,d.price_change_pct,d.score,d.available,d.total,d.previous_score,d.score_delta_1d,d.regime,d.previous_regime,d.risk_transition,d.trend_5d,d.five_day_delta_range?.[0],d.five_day_delta_range?.[1],d.confirmation?.confirmed,d.confirmation?.available,d.confirmation?.total,d.swing,d.price_risk_status,d.price_risk_label,d.estimated_count,(d.estimated_signals||[]).join('; '),labels(shared.new_bearish),labels(shared.eased),labels(g.new_bearish),labels(g.eased),row.marketDivergence]);
+      list.push([row.session,row.recordSource,row.sourceNote,row.previous_session,row.symbol.toUpperCase(),d.previous_close,d.close,d.price_change_pct,d.score,d.available,d.total,d.previous_score,d.score_delta_1d,d.regime,d.previous_regime,d.risk_transition,d.trend_5d,d.five_day_delta_range?.[0],d.five_day_delta_range?.[1],d.confirmation?.confirmed,d.confirmation?.available,d.confirmation?.total,d.swing,d.price_risk_status,d.price_risk_label,d.estimated_count,(d.estimated_signals||[]).join('; '),labels(shared.new_bearish),labels(shared.eased),labels(g.new_bearish),labels(g.eased),row.marketDivergence,d.baseline_context?.rsi14,d.baseline_context?.volatility_index?.name,d.baseline_context?.volatility_index?.value]);
     }
     return '\uFEFF'+list.map(items=>items.map(csvField).join(',')).join('\r\n')+'\r\n';
   }
@@ -90,7 +90,14 @@
     const cards=make('div','journal-detail-grid',td);
     const d=row.detail;
     const card1=make('div','journal-detail',cards);
-    small('h4','Recorded market context','',card1);
+    small('h4',row.baseline?'Screenshot baseline · Nov 20, 2026':'Recorded market context','',card1);
+    if(row.baseline)small('p',row.sourceNote,'journal-baseline-note',card1);
+    if(d.baseline_context){
+      const x=d.baseline_context;
+      small('p',`Captured ${x.volatility_index?.name||'Volatility'}: ${text(x.volatility_index?.value)} · RSI(14): ${text(x.rsi14)} · Index-specific bearish: ${text(x.index_specific_bearish)}/9 · Shared macro bearish: ${text(x.shared_macro_bearish)}/6.`,'',card1);
+      const b=x.breadth_1d;
+      if(b)small('p',`Breadth 1D: ${text(b.state)} (${text(b.value)} ${text(b.units)}).`,'',card1);
+    }
     small('p',`${row.symbol.toUpperCase()} ${money(d.previous_close)} → ${money(d.close)} (${signed(d.price_change_pct,'%')})`,'',card1);
     small('p',`Bearish points: ${text(d.previous_score)} → ${text(d.score)} / ${text(d.total)}. 5D trend: ${text(d.trend_5d)}.`,'',card1);
     small('p',`Risk: ${text(d.previous_regime)} → ${text(d.regime)}. Swing: ${text(d.swing)}.`,'',card1);
@@ -105,7 +112,8 @@
     const groups=cs?.status==='complete'?cs.groups||{}:{};
     const combined=groups.shared||{},index=groups[row.symbol==='spy'?'sp':'nd']||{};
     const card3=make('div','journal-detail',cards);
-    if(cs?.status==='complete'){
+    if(cs?.status==='complete'||cs?.status==='partial'){
+      if(cs.status==='partial')small('p','Partial transcription: '+text(cs.note||'Some changes were not visible.'),'journal-muted',card3);
       listChanges(card3,'Shared macro · new bearish',combined.new_bearish,'negative');
       listChanges(card3,'Shared macro · eased',combined.eased,'positive');
     }else{
@@ -113,7 +121,7 @@
       small('p','Unavailable for these matched sessions','',card3);
     }
     const card4=make('div','journal-detail',cards);
-    if(cs?.status==='complete'){
+    if(cs?.status==='complete'||cs?.status==='partial'){
       listChanges(card4,`${row.symbol.toUpperCase()} · new bearish`,index.new_bearish,'negative');
       listChanges(card4,`${row.symbol.toUpperCase()} · eased`,index.eased,'positive');
       const others=[...(combined.other||[]),...(index.other||[])];
@@ -135,7 +143,9 @@
     }
     for(const row of rows){
       const d=row.detail,tr=make('tr','',target);
-      const date=make('td','journal-date',tr);small('strong',dateLabel(row.session),'',date);small('span',`Prior: ${dateLabel(row.previous_session)}`,'journal-muted',date);
+      const date=make('td','journal-date',tr);small('strong',dateLabel(row.session),'',date);
+      if(row.baseline)small('span','BASELINE · screenshot','journal-baseline-flag',date);
+      small('span',`Prior scored: ${dateLabel(row.previous_session)}`,'journal-muted',date);
       small('td',row.symbol.toUpperCase(),'journal-market',tr);
       const price=make('td','',tr);small('strong',money(d.close),'',price);small('span',`Prior ${money(d.previous_close)}`,'journal-muted',price);
       const change=make('td','',tr);small('span',signed(d.price_change_pct,'%'),'journal-percent '+(d.price_change_pct>0?'journal-up':d.price_change_pct<0?'journal-down':'journal-neutral'),change);
@@ -143,7 +153,7 @@
       const delta=make('td','',tr);small('strong',signed(d.score_delta_1d),'journal-percent '+(d.score_delta_1d<0?'journal-up':d.score_delta_1d>0?'journal-down':'journal-neutral'),delta);
       if(d.score_delta_1d==null)small('span','Not confirmed','journal-muted',delta);
       const regime=make('td','',tr);pill(d.regime,d.regime.toLowerCase(),regime);
-      const alert=make('td','journal-alert',tr);pill(d.price_risk_status==='none'?'No alert':d.price_risk_status==='divergence'?'DIVERGENCE':d.price_risk_status.toUpperCase(),d.price_risk_status,alert);
+      const alert=make('td','journal-alert',tr);pill(row.baseline?'BASELINE':d.price_risk_status==='none'?'No alert':d.price_risk_status==='divergence'?'DIVERGENCE':d.price_risk_status.toUpperCase(),row.baseline?'baseline':d.price_risk_status,alert);
       small('span',d.price_risk_label,'',alert);
       const signals=make('td','journal-sig',tr);
       const btn=make('button','',signals);btn.type='button';btn.textContent='View details';btn.setAttribute('aria-expanded','false');
@@ -194,7 +204,7 @@
     renderTable(rows);
     chart(chartRows(entries,options));
     $('j-message').textContent=entries.length?
-      'Showing saved completed-EOD observations. Export visible CSV to keep a separate backup. The page refreshes its archive from the latest published JSON.':
+      'Showing saved completed-EOD observations. November 20 is a labeled, user-screenshot baseline; subsequent sessions are automatically recorded. Export visible CSV to keep a separate backup.':
       'No journal entries yet. After the upgraded EOD updater completes and commits its first eligible market session, this page will populate automatically. Historical chart points are not retroactively converted into saved alerts.';
   }
   function setStatus(msg,ok){$('history-updated').textContent=msg;$('history-dot').className='status-dot '+(ok?'good':'warn');}
