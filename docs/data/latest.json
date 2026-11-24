@@ -1,6 +1,6 @@
 {
   "session": "2026-11-23",
-  "generated_at": "2026-11-24T03:30:11.421481+00:00",
+  "generated_at": "2026-11-24T07:00:45.596152+00:00",
   "model_version": "15-point-v3-qqq-5-borderline-risk-on",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -5628,15 +5628,15 @@
     },
     "OIL": {
       "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
-      "latest_session": "2026-11-23"
+      "latest_session": "2026-11-24"
     },
     "COPPER": {
       "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
-      "latest_session": "2026-11-23"
+      "latest_session": "2026-11-24"
     },
     "USD": {
       "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
-      "latest_session": "2026-11-23"
+      "latest_session": "2026-11-24"
     },
     "TNX": {
       "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
