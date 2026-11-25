@@ -24,7 +24,7 @@ function summary(prefix,model){
  const r=healthRange(s),regime=regimeHealth(s);
  const status=$(prefix+'-regime');status.textContent=regime;status.className='regime '+stateClass(regime);
  const card=$(prefix+'-card');if(card)card.dataset.regime=regime;
- const score=$(prefix+'-score');if(score)score.setAttribute('aria-label',`${prefix==='sp'?'S&P 500':'Nasdaq-100'} Market Health: ${scoreFormat(s)} (includes neutral, non-bearish signals), ${regime}`);
+ const score=$(prefix+'-score');if(score)score.setAttribute('aria-label',`${prefix==='sp'?'S&P 500':'Nasdaq-100'} Market Health: ${scoreFormat(s)} (health points may include neutral states), ${regime}`);
  $(prefix+'-meter').style.width=((r.min/r.total)*100).toFixed(1)+'%';
  const tr=$(prefix+'-trend');tr.textContent=m.state;tr.className=tone(m.state);
  $(prefix+'-delta').textContent=`1D ${rangeText(invertedRange(m.d1_range))} · 5D ${rangeText(invertedRange(m.d5_range))}${m.partial?' · bounded':''}`;
@@ -176,9 +176,11 @@ function renderMovingAverages(data){
   const validRsi=Number.isFinite(rsi) && rsi>=0 && rsi<=100;
   $(sym+'-rsi14').textContent=validRsi?rsi.toFixed(2):'—';
   const state=$(sym+'-rsi14-state');
-  // Recompute classification from the number so old cached labels cannot drift.
-  state.textContent=!validRsi?'Not available':rsi>=70?'Overbought':rsi<=30?'Oversold':'Neutral';
-  state.className='rsi-state '+(!validRsi?'':rsi>=70?'rsi-overbought':rsi<=30?'rsi-oversold':'rsi-neutral');
+  // This badge is the RSI SCORING state. The separate 30/70 chart bands
+  // represent conventional overbought/oversold context, not the scoring rule.
+  state.textContent=!validRsi?'Not available':rsi<45?'Scored bearish':rsi>55?'Scored bullish':'Scored neutral';
+  state.className='rsi-state '+(!validRsi?'':rsi<45?'rsi-scored-bear':rsi>55?'rsi-scored-bull':'rsi-scored-neutral');
+  state.title=validRsi?(rsi>=70?'Conventional RSI: overbought':rsi<=30?'Conventional RSI: oversold':'Conventional RSI: in the 30–70 band'):'RSI unavailable';
   const marker=$(sym+'-rsi14-marker');
   marker.style.left=validRsi?`${rsi}%`:'50%';
   marker.style.opacity=validRsi?'1':'0';
@@ -224,15 +226,20 @@ function groupScore(data,keys){
 }
 function groupScoreLabel(s){const min=s.available-s.bearish,max=s.total-s.bearish;return min===max?`${min}/${s.total}`:`${min}–${max}/${s.total}`;}
 function renderScoreBreakdown(data){
+ const asOf=(typeof data?.session==='string' && /^\d{4}-\d{2}-\d{2}$/.test(data.session))
+   ? new Date(data.session+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}) : 'Session unavailable';
+ for(const id of ['sp-breakdown-date','nd-breakdown-date','shared-breakdown-date']){
+   const node=$(id);if(node)node.textContent='As of '+asOf+' · completed EOD';
+ }
  const shared=groupScore(data,SCORE_KEYS.shared);
- $('shared-subscore').textContent=groupScoreLabel(shared)+' non-bearish';
+ $('shared-subscore').textContent=groupScoreLabel(shared)+' health pts';
  $('shared-breakdown-equation').textContent=`${shared.available}/6 shared macro signals available · Included in both market totals.`;
  for(const [prefix,market] of [['sp','sp500'],['nd','nasdaq100']]){
   const local=groupScore(data,SCORE_KEYS[prefix]);
   const score=data.markets?.[market]?.score;
   const total=score?scoreFormat(score):'—/16';
-  $(prefix+'-index-subscore').textContent=groupScoreLabel(local)+' non-bearish';
-  $(prefix+'-breakdown-equation').textContent=`${groupScoreLabel(local)} index-specific + ${groupScoreLabel(shared)} shared macro = ${total} Market Health points (including neutral)`;
+  $(prefix+'-index-subscore').textContent=groupScoreLabel(local)+' health pts';
+  $(prefix+'-breakdown-equation').textContent=`${groupScoreLabel(local)} index-specific + ${groupScoreLabel(shared)} shared macro = ${total} Market Health points (neutral included)`;
   // This is only a display check: the backend remains the authority on scoring.
   // Where complete, flag an unexpected discrepancy rather than hiding it.
   if(score?.complete&&local.available===10&&shared.available===6&&local.bearish+shared.bearish!==score.bearish)

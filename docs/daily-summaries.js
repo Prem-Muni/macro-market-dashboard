@@ -195,16 +195,14 @@
   async function renderHistory(){
     const panel=$('summary-view');if(!panel)return;
     try{
-      const data=await loadData();const recent=latestSummary(data);
-      const summary=$('summary-latest'),old=$('summary-archive');
-      summary.replaceChildren();old.replaceChildren();
-      if(recent)renderCard(summary,recent,true);else put(summary,'p','daily-summary-muted','No completed EOD summary yet.');
+      const data=await loadData();
+      const old=$('summary-archive');old.replaceChildren();
       archive=previousSummaries(data);
       if(!archive.length){put(old,'p','daily-summary-muted','Earlier dated EOD summaries will appear here automatically after each new completed session.');}
       else for(const day of archive)renderCard(old,day,false);
       $('summary-count').textContent=archive.length+` previous session${archive.length===1?'':'s'} saved`;
       $('summary-export').disabled=!archive.length;
-    }catch(err){$('summary-latest').textContent='Daily summaries unavailable: '+err.message;}
+    }catch(err){const old=$('summary-archive');if(old)old.textContent='Daily summaries unavailable: '+err.message;}
   }
   function initHistory(){
     const host=$('summary-view');if(!host)return;
@@ -227,10 +225,10 @@
       document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
     });
   }
-  // Compatibility fallback for cached HTML; the current index.html provides
-  // an explicit slot so the summary exists visibly even if JavaScript fails.
+  // Only the main dashboard may receive the latest-summary card. Do not inject
+  // it into History, Guide, or Research, which caused duplicate summaries.
   if(!$('daily-summary-overview')){
-    const overview=$('clarity-overview')||document.querySelector('main');
+    const overview=$('clarity-overview');
     if(overview){
       const wrap=document.createElement('section');wrap.id='daily-summary-overview';wrap.className='daily-summary-overview';
       wrap.setAttribute('aria-label','Latest completed daily price and risk summary');

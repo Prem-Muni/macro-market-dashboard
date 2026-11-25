@@ -130,14 +130,14 @@
     if(row.baseline)small('p',row.sourceNote,'journal-baseline-note',card1);
     if(d.baseline_context){
       const x=d.baseline_context;
-      small('p',`Captured ${x.volatility_index?.name||'Volatility'}: ${text(x.volatility_index?.value)} · RSI(14): ${text(x.rsi14)} · Index-specific healthy: ${isNum(x.index_specific_bearish)?9-x.index_specific_bearish:'—'}/9 · Shared macro healthy: ${isNum(x.shared_macro_bearish)?6-x.shared_macro_bearish:'—'}/6.`,'',card1);
+      small('p',`Captured ${x.volatility_index?.name||'Volatility'}: ${text(x.volatility_index?.value)} · RSI(14): ${text(x.rsi14)} · Index-specific health points: ${isNum(x.index_specific_bearish)?9-x.index_specific_bearish:'—'}/9 · Shared macro health points: ${isNum(x.shared_macro_bearish)?6-x.shared_macro_bearish:'—'}/6.`,'',card1);
       const b=x.breadth_1d;
       if(b)small('p',`Breadth 1D: ${text(b.state)} (${text(b.value)} ${text(b.units)}).`,'',card1);
     }
     small('p',`${row.symbol.toUpperCase()} ${money(d.previous_close)} → ${money(d.close)} (${signed(d.price_change_pct,'%')})`,'',card1);
     small('p',`Market Health: ${text(d.previous_score)} → ${text(d.score)}${d.score_max!==d.score?'–'+d.score_max:''}/${text(d.total)}. 5D trend: ${text(d.trend_5d)}.`,'',card1);
     small('p',`Risk: ${text(d.previous_regime)} → ${text(d.regime)}. Swing: ${text(d.swing)}.`,'',card1);
-    if(d.macd_info){const m=d.macd_info;small('p',`Daily MACD (12,26,9) · NOT SCORED: line ${text(m.macd)} · signal ${text(m.signal)} · histogram ${text(m.histogram)} · ${text(m.relation)}${m.crossover&&m.crossover!=='none'?' · '+text(m.crossover)+' crossover':''}.`,'',card1);}
+    if(d.macd_info){const m=d.macd_info;small('p',`Daily MACD (12,26,9) · ${d.total>=16?'SCORED':'CONTEXT ONLY'}: line ${text(m.macd)} · signal ${text(m.signal)} · histogram ${text(m.histogram)} · ${text(m.relation)}${m.crossover&&m.crossover!=='none'?' · '+text(m.crossover)+' crossover':''}.`,'',card1);}
     const conf=d.confirmation||{};
     small('p',`Market confirmation: ${text(conf.confirmed)}/${text(conf.total)} improving · ${text(conf.available)}/${text(conf.total)} checked.`,'',card1);
     const card2=make('div','journal-detail',cards);

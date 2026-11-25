@@ -1,176 +1,105 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
-  <meta name="description" content="Current Market Health score and archived bearish scoring thresholds for every signal in the 16-point Macro Decision Dashboard.">
-  <title>Scoring Guide | Macro Decision Dashboard</title>
-  <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
-  <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
-</head>
-<body>
- <div class="shell">
-  <header class="topbar">
-   <div class="identity"><div class="mark">M<span>·</span>D</div><div><div class="eyebrow">DAILY MARKET INTELLIGENCE</div><h1>Macro Decision <span>Dashboard</span></h1></div></div>
-   <div class="topactions"><span class="capsule">MODEL REFERENCE · 15 POINTS</span></div>
-  </header>
-  <nav class="site-tabs" aria-label="Dashboard navigation">
-   <a class="site-tab" href="index.html"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
-   <a class="site-tab active" href="scoring-guide.html" aria-current="page"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">16 signals</span></a>
-   <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
-  </nav>
-  
-<main class="guide-main">
-<section class="threshold-intro" aria-label="Current Market Health methodology" style="margin:24px 0 18px">
- <div class="eyebrow">CURRENT MODEL · BOTH SPY AND QQQ</div>
- <h2>Market Health Score · Higher is healthier</h2>
- <p>Both benchmarks use the <strong>same 16-point scale</strong>: 0–5 Risk-Off, 6–10 Neutral, 11–16 Risk-On. Each scored indicator contributes <strong>1 health point when it is not bearish</strong> and <strong>0 when bearish</strong>. Neutral signals count as non-bearish, so this is a health score—not a count of strictly bullish votes.</p>
- <div class="threshold-bands"><span class="off">0–5 · RISK-OFF</span><span>6–10 · NEUTRAL</span><span class="on">11–16 · RISK-ON</span></div>
- <p><strong>Score calculation:</strong> Market Health = 16 − current bearish signal count. A higher daily change is improving; a lower daily change is deteriorating. With missing data, the website shows a range and will not assume absent inputs are healthy.</p>
- <p>Six shared macro signals plus ten index-specific signals are now scored, including MACD(12,26,9). MACD line at/above its signal earns one health point; below it earns zero. Five individual SMA rows and external Fear &amp; Greed remain informational only. The November 20 baseline and historical records retain their underlying bearish counts; the website retains their original 15-point denominator when displaying older records.</p>
- <p><strong>Research caveat:</strong> The new unified 0–5 / 6–10 / 11–16 classification has not been revalidated using forward returns. The earlier research sections below are archived analysis of the old bearish-score thresholds and should not be treated as evidence for the new bands.</p>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="description" content="Practical guide to all 16 scored SPY and QQQ indicators and their exact health-point rules."><title>Scoring Guide | Macro Decision Dashboard</title><link rel="stylesheet" href="styles.css?v=macd16-20261125b"><link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a"><link rel="stylesheet" href="audit-cleanup.css?v=20261125a"></head><body><div class="shell"><header class="topbar"><div class="identity"><div class="mark">M<span>·</span>D</div><div><div class="eyebrow">DAILY MARKET INTELLIGENCE</div><h1>Macro Decision <span>Dashboard</span></h1></div></div><div class="topactions"><span class="capsule">16 SIGNALS · CURRENT RULES</span></div></header>
+ <nav class="site-tabs" aria-label="Dashboard navigation"><a class="site-tab" href="index.html"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
+<a class="site-tab" href="insights-history.html"><span class="tab-icon" aria-hidden="true">▤</span> Insights History</a>
+<a class="site-tab active" href="scoring-guide.html" aria-current="page"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">16 signals</span></a>
+<a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Model Research</a>
+</nav><main class="guide-main audit-main">
+<section class="guide-hero audit-hero"><div class="guide-hero-copy"><div class="eyebrow">PRACTICAL REFERENCE · 16 SCORING RULES</div><h2>Know exactly what earns a health point.</h2><p>The current model uses <strong>six shared macro signals</strong> and <strong>ten signals specific to each ETF</strong>. One point is awarded for a valid state that is not classified bearish, including neutral states. The individual rules below tell you what that means.</p><p class="audit-note">Higher score = healthier conditions; this is not a count of purely bullish indicators or a forecast of returns.</p></div><div class="guide-formula" aria-label="Six shared macro plus ten index-specific signals totals sixteen"><div><span class="guide-big-number">6</span><small>SHARED</small></div><b>+</b><div><span class="guide-big-number">10</span><small>SPY / QQQ</small></div><b>=</b><div class="formula-total"><span class="guide-big-number">16</span><small>HEALTH PTS</small></div></div></section>
+<section class="audit-score-strip"><strong>Market Health</strong><span class="audit-regime risk-off">0–5 · Risk-Off</span><span class="audit-regime neutral">6–10 · Neutral</span><span class="audit-regime risk-on">11–16 · Risk-On</span></section>
+<div class="audit-intro-row"><p><strong>Scoring:</strong> bearish state = 0; any other verified scored state = +1. If an input is missing, the score is displayed as a possible range—not assumed healthy.</p><a href="threshold-logic.html" class="audit-secondary-link">How the model is evaluated →</a></div>
+<nav class="guide-jumps audit-jumps" aria-label="Jump to scoring indicator rules"><span>JUMP TO</span><a href="#shared">Shared macro · 6</a><a href="#sp">SPY · 10</a><a href="#nd">QQQ · 10</a><a href="#extras">Unscored context</a></nav>
+<section aria-labelledby="shared-title" class="guide-section" id="shared">
+<div class="section-head"><div><span class="eyebrow">01 / BOTH MARKETS · 6 SCORED SIGNALS</span><h2 id="shared-title">Macro conditions</h2><p>Each shared macro signal contributes to both SPY and QQQ. Red/bearish states earn zero health points; other valid scored states earn one.</p></div><span class="guide-count">6 signals</span></div>
+<div class="rules-grid"><article class="rule-card" id="oil">
+<div class="rule-head"><div class="rule-number">01</div><div><h3>Crude Oil</h3><p class="rule-desc">Oil is a cyclical inflation / growth proxy; the dashboard tracks its daily direction rather than its absolute level.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>Daily oil price change is positive (oil rises).</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Oil flat → CAUTION; falling → BULLISH. The “DIV” suffix means oil and SPY moved in the same direction that day; it is a label, not another point.</p></div></div>
+</article><article class="rule-card" id="usd">
+<div class="rule-head"><div class="rule-number">02</div><div><h3>US Dollar</h3><p class="rule-desc">A proxy for changes in dollar strength. The model treats a stronger dollar as a risk headwind.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>Daily USD index/proxy change is positive.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Flat → CAUTION; falling → BULLISH. “DIV” is a same-direction comparison with SPY, not a second penalty.</p></div></div>
+</article><article class="rule-card" id="tnx">
+<div class="rule-head"><div class="rule-number">03</div><div><h3>10Y Yield</h3><p class="rule-desc">Daily direction of the 10-year Treasury yield proxy, often associated with discount-rate pressure.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>Daily 10-year yield change is positive.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Flat → CAUTION; falling → BULLISH. The “DIV” annotation compares its direction with SPY.</p></div></div>
+</article><article class="rule-card" id="credit">
+<div class="rule-head"><div class="rule-number">04</div><div><h3>Credit · HYG / IEF</h3><p class="rule-desc">HYG represents high-yield corporate bonds; IEF represents intermediate Treasury bonds. Relative daily performance is a simple credit-risk appetite check.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>HYG one-day percentage return is lower than IEF one-day percentage return.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>HYG return equal to or above IEF → BULLISH. This checks daily returns, not the raw price ratio against a moving average.</p></div></div>
+</article><article class="rule-card" id="copper">
+<div class="rule-head"><div class="rule-number">05</div><div><h3>Copper</h3><p class="rule-desc">A cyclical industrial-metal proxy; weakening copper can signal softer growth expectations.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>Daily copper price change is negative.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Unchanged or rising copper → BULLISH.</p></div></div>
+</article><article class="rule-card" id="vix_curve">
+<div class="rule-head"><div class="rule-number">06</div><div><h3>VIX Curve</h3><p class="rule-desc">Compares short-dated VIX with three-month implied volatility (VIX3M). An inverted / backwardated curve can signal near-term stress.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>VIX ÷ VIX3M is greater than 1.00.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Below 0.90 → BULLISH (contango). 0.90 through 1.00 → CAUTION / shallow contango / flat; 1.00 is not bearish.</p></div></div>
+</article></div>
+</section><section aria-labelledby="sp-title" class="guide-section" id="sp">
+<div class="section-head"><div><span class="eyebrow">02 / SPY · 10 SCORED SIGNALS</span><h2 id="sp-title">S&amp;P 500 indicators</h2><p>Ten SPY-specific signals. Read the bearish condition for zero points; every other valid scored state earns one health point.</p></div><span class="guide-count">10 signals</span></div>
+<div class="rules-grid"><article class="rule-card" id="vix">
+<div class="rule-head"><div class="rule-number">01</div><div><h3>VIX</h3><p class="rule-desc">S&amp;P 500 option-implied volatility; a short-term measure of expected market movement.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>VIX greater than 20.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Below 16 → BULLISH; 16–20 inclusive → CAUTION.</p></div></div>
+</article><article class="rule-card" id="sp_def">
+<div class="rule-head"><div class="rule-number">02</div><div><h3>Defensives / SPY</h3><p class="rule-desc">An equal-weighted basket of XLP (consumer staples), XLV (healthcare), and XLU (utilities), compared with SPY.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>Average 10-session return of XLP, XLV and XLU exceeds SPY’s 10-session return.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>If the basket leads on 1D but not 10D → CAUTION; otherwise BULLISH. Measures sector rotation, not certainty of a market decline.</p></div></div>
+</article><article class="rule-card" id="sp_xle">
+<div class="rule-head"><div class="rule-number">03</div><div><h3>XLE / SPY</h3><p class="rule-desc">Energy sector ETF (XLE) 10-session return compared with the S&amp;P 500 ETF (SPY).</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>XLE 10-session percentage return exceeds SPY’s.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Equal or lower energy-sector return → BULLISH. Energy outperformance is interpreted as defensive/inflation-related rotation in this experimental model.</p></div></div>
+</article><article class="rule-card" id="sp_smh">
+<div class="rule-head"><div class="rule-number">04</div><div><h3>SMH / SPY</h3><p class="rule-desc">Semiconductor ETF (SMH) trend and its relative leadership versus SPY.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>SMH closes below its own 20-day EMA.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>If SMH is at/above its EMA but SMH/SPY relative ratio is below its 15D SMA → LAGGING / CAUTION; otherwise BULLISH. “BEARISH DIV” notes SMH weakness while SPY is at/above its 20D EMA.</p></div></div>
+</article><article class="rule-card" id="spy_trend">
+<div class="rule-head"><div class="rule-number">05</div><div><h3>SPY Trend</h3><p class="rule-desc">The original scored trend rule based on SPY’s close, 50-day simple moving average and 200-day simple moving average.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>SPY close is below its 200-day SMA.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>BULLISH only if SPY close &gt; 50D SMA and 50D SMA &gt; 200D SMA. All other combinations → CAUTION. This remains the scored trend signal.</p></div></div>
+</article><article class="rule-card" id="sp_rsi14">
+<div class="rule-head"><div class="rule-number">06</div><div><h3>SPY RSI (14)</h3><p class="rule-desc">Wilder-smoothed 14-session Relative Strength Index, a momentum oscillator from 0 to 100.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>RSI(14) is below 45.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>RSI 45–55 inclusive → CAUTION; above 55 → BULLISH. Separate chart labels of overbought (≥70) or oversold (≤30) are descriptive, not extra score points.</p></div></div>
+</article><article class="rule-card" id="sp_macd"><div class="rule-head"><div class="rule-number">07</div><div><h3>SPY MACD (12, 26, 9)</h3><p class="rule-desc">Daily MACD line compared with its nine-session EMA signal line. Calculated using completed ETF daily closes.</p></div><span class="rule-weight">0 or 1 health pt</span></div><div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>MACD line below the signal line (negative histogram).</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>MACD line at or above the signal line (histogram ≥ 0). This is a momentum check, not a standalone trade recommendation.</p></div></div></article><article class="rule-card" id="rsp_spy">
+<div class="rule-head"><div class="rule-number">08</div><div><h3>RSP / SPY</h3><p class="rule-desc">Equal-weighted S&amp;P 500 (RSP) relative to cap-weighted SPY. Tests whether gains are broad or concentrated.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>RSP/SPY price ratio is more than 0.25% below its own 10D SMA.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>More than 0.25% above its 10D SMA → BULLISH; within ±0.25% inclusive → CAUTION.</p></div></div>
+</article><article class="rule-card" id="iwm_spy">
+<div class="rule-head"><div class="rule-number">09</div><div><h3>IWM / SPY</h3><p class="rule-desc">Russell 2000 small-cap ETF (IWM) relative to SPY. Gauges small-cap participation.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>IWM/SPY price ratio is more than 0.25% below its own 10D SMA.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>More than 0.25% above → BULLISH; ±0.25% inclusive → CAUTION.</p></div></div>
+</article><article class="rule-card" id="sp_breadth1d">
+<div class="rule-head"><div class="rule-number">10</div><div><h3>S&amp;P Breadth · 1D</h3><p class="rule-desc">Daily change in the percentage of S&amp;P 500 constituents trading above their own 200-day SMAs. Expressed in percentage points (pp).</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>Breadth falls by at least 1 percentage point in one session (change ≤ −1 pp).</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Change ≥ +1 pp → EXPANDING / BULLISH; between −1 and +1 pp → STABLE / CAUTION. Website breadth may use estimated constituent-derived data.</p></div></div>
+</article></div>
+</section><section aria-labelledby="nd-title" class="guide-section" id="nd">
+<div class="section-head"><div><span class="eyebrow">03 / QQQ · 10 SCORED SIGNALS</span><h2 id="nd-title">Nasdaq-100 indicators</h2><p>Ten QQQ-specific signals. Read the bearish condition for zero points; every other valid scored state earns one health point.</p></div><span class="guide-count">10 signals</span></div>
+<div class="rules-grid"><article class="rule-card" id="vxn">
+<div class="rule-head"><div class="rule-number">01</div><div><h3>VXN</h3><p class="rule-desc">Nasdaq-100 option-implied volatility; Nasdaq analogue of VIX.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>VXN greater than 25.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Below 20 → BULLISH; 20–25 inclusive → CAUTION.</p></div></div>
+</article><article class="rule-card" id="nd_def">
+<div class="rule-head"><div class="rule-number">02</div><div><h3>Defensives / QQQ</h3><p class="rule-desc">The same equal-weighted XLP, XLV and XLU basket, compared against QQQ instead of SPY.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>Defensive-basket 10-session return exceeds QQQ’s 10-session return.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>If basket leads on 1D but not 10D → CAUTION; otherwise BULLISH.</p></div></div>
+</article><article class="rule-card" id="nd_xle">
+<div class="rule-head"><div class="rule-number">03</div><div><h3>XLE / QQQ</h3><p class="rule-desc">Energy sector ETF 10-session return compared with QQQ.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>XLE 10-session return exceeds QQQ’s 10-session return.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Equal or lower relative energy return → BULLISH.</p></div></div>
+</article><article class="rule-card" id="nd_smh">
+<div class="rule-head"><div class="rule-number">04</div><div><h3>SMH / QQQ</h3><p class="rule-desc">Semiconductor ETF (SMH) trend and relative leadership versus QQQ.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>SMH closes below its own 20-day EMA.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>SMH at/above EMA but SMH/QQQ ratio below its 15D SMA → LAGGING / CAUTION. “BEARISH DIV” appears if QQQ is at/above its 20D EMA while SMH is below its own.</p></div></div>
+</article><article class="rule-card" id="qqq_trend">
+<div class="rule-head"><div class="rule-number">05</div><div><h3>QQQ Trend</h3><p class="rule-desc">The original Nasdaq trend: QQQ close, 50D SMA and 200D SMA.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>QQQ close below its 200-day SMA.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>BULLISH only if QQQ close &gt; 50D SMA and 50D SMA &gt; 200D SMA; otherwise CAUTION.</p></div></div>
+</article><article class="rule-card" id="nd_rsi14">
+<div class="rule-head"><div class="rule-number">06</div><div><h3>QQQ RSI (14)</h3><p class="rule-desc">Wilder RSI calculated on QQQ completed daily closes.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>RSI(14) below 45.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>45–55 inclusive → CAUTION; above 55 → BULLISH. The chart’s 30/70 bands are informational.</p></div></div>
+</article><article class="rule-card" id="nd_macd"><div class="rule-head"><div class="rule-number">07</div><div><h3>QQQ MACD (12, 26, 9)</h3><p class="rule-desc">Daily MACD line compared with its nine-session EMA signal line. Calculated using completed ETF daily closes.</p></div><span class="rule-weight">0 or 1 health pt</span></div><div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>MACD line below the signal line (negative histogram).</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>MACD line at or above the signal line (histogram ≥ 0). This is a momentum check, not a standalone trade recommendation.</p></div></div></article><article class="rule-card" id="qqqe_qqq">
+<div class="rule-head"><div class="rule-number">08</div><div><h3>QQQE / QQQ</h3><p class="rule-desc">Equal-weighted Nasdaq-100 ETF (QQQE) relative to cap-weighted QQQ. Measures participation beyond mega-cap leaders.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>QQQE/QQQ ratio is more than 0.25% below its 10D SMA.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>More than 0.25% above → BULLISH; within ±0.25% inclusive → CAUTION.</p></div></div>
+</article><article class="rule-card" id="iwm_qqq">
+<div class="rule-head"><div class="rule-number">09</div><div><h3>IWM / QQQ</h3><p class="rule-desc">Small-cap ETF (IWM) relative to QQQ. Tests leadership beyond large growth stocks.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>IWM/QQQ ratio is more than 0.25% below its 10D SMA.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>More than 0.25% above → BULLISH; within ±0.25% inclusive → CAUTION.</p></div></div>
+</article><article class="rule-card" id="nd_breadth1d">
+<div class="rule-head"><div class="rule-number">10</div><div><h3>Nasdaq Breadth · 1D</h3><p class="rule-desc">Percentage of Nasdaq-100 constituents advancing during the day (advancers ÷ advancers plus decliners). This is NOT the S&amp;P breadth-above-200D measure.</p></div><span class="rule-weight">0 or 1 health pt</span></div>
+<div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH STATE · 0 HEALTH PTS</div><p>Advancing share is below 45%.</p></div><div><div class="rule-kicker">OTHER STATES · +1 HEALTH PT</div><p>Above 55% → EXPANDING / BULLISH; 45%–55% inclusive → STABLE / CAUTION. May be estimated from constituent prices.</p></div></div>
+</article></div>
 </section>
-<section class="guide-section" aria-label="New 16th MACD scored input"><h3>16th scored input: Daily MACD (12, 26, 9)</h3><p><strong>SPY / QQQ each receive 1 Market Health point</strong> when the completed daily MACD line is at or above its 9-period signal line, otherwise 0. Missing MACD data creates an incomplete score interval. MACD here is a momentum confirmation, not a prediction; no Fear &amp; Greed score is included.</p><p><strong>Historical comparability:</strong> Old 15-point archive entries and the earlier backtest were created without a MACD score, and must not be reported as verified 16-point observations.</p></section>
-<details class="threshold-evidence" style="margin:16px 0" aria-label="Archived previous bearish-score research"><summary><strong>Previous bearish-count methodology and historical research (archived)</strong> · expand to review</summary>
-<div class="info-line">ARCHIVED REFERENCE ONLY — these score ranges and conclusions refer to the former lower-is-better bearish-count model, not today's Market Health display.</div>
-
-   <section class="guide-hero" aria-labelledby="guide-title">
-    <div class="guide-hero-copy"><div class="eyebrow">THE MODEL, EXPLAINED</div>
-    <h2 id="guide-title">What every market signal means.</h2>
-    <p>A transparent reference for the dashboard’s <strong>experimental 15-point bearish score</strong>. Each market combines six shared macro signals with nine market-specific signals. Only a BEARISH scored signal adds one point. A higher score means more of the selected risk conditions are present—not a probability or a price forecast.</p></div>
-    <div class="guide-formula" aria-label="15-point model: 6 shared plus 9 market-specific signals">
-     <div><span class="guide-big-number">6</span><small>SHARED MACRO</small></div><b>+</b><div><span class="guide-big-number">9</span><small>MARKET SPECIFIC</small></div><b>=</b><div class="formula-total"><span class="guide-big-number">15</span><small>MAXIMUM POINTS</small></div>
-    </div>
-   </section>
-
-   <section class="guide-section" id="score" aria-labelledby="score-title">
-    <div class="section-head"><div><span class="eyebrow">HOW TO READ IT</span><h2 id="score-title">How the bearish score works</h2><p>The live 15-point website uses SPY Risk-On 0–4 and QQQ Risk-On 0–5. QQQ 5 is borderline cautious; these are research-policy thresholds, not validated trading recommendations.</p></div></div>
-    <div class="guide-regimes">
-      <div class="guide-regime guide-on"><span class="regime bull">SPY · RISK-ON</span><strong>0–4 <small>/ 15</small></strong><p>SPY CAUTION 5–8 · RISK-OFF 9–15.</p></div>
-      <div class="guide-regime guide-on"><span class="regime bull">QQQ · RISK-ON</span><strong>0–5 <small>/ 15</small></strong><p>QQQ score 5 is <strong>borderline cautious</strong>. QQQ CAUTION 6–8 · RISK-OFF 9–15.</p></div>
-      <div class="guide-regime guide-caution"><span class="regime warn">POLICY RATIONALE</span><strong>15 <small>signals</small></strong><p>Different Risk-On thresholds, same scoring indicators. <a href="threshold-logic.html">Read the decision record and historical evidence</a>.</p></div>
-    </div>
-    <div class="guide-insight-grid">
-      <div class="guide-note"><h3>+1 or 0—not a weighted average</h3><p>Each scored signal contributes <strong>1 bearish point</strong> only in its BEARISH state. BULLISH, CAUTION, FLAT, LAGGING and STABLE each contribute <strong>0</strong>. Some non-scored rows can be red without changing the total.</p></div>
-      <div class="guide-note"><h3>Missing data is not bullish</h3><p>If a scored feed is unavailable, the dashboard displays a possible score interval, such as <strong>10–11/15</strong>. It shows a definite regime only when every possible score belongs to the same regime; otherwise it says <strong>INCOMPLETE</strong>.</p></div>
-      <div class="guide-note"><h3>Why there's an original 14-point number</h3><p>The reference score removes the new RSI(14) point but keeps the previous 14 indicators, including the original 50D/200D Trend. The old score uses its own bands: 0–4 Risk-On, 5–7 Caution, and 8–14 Risk-Off.</p></div>
-    </div>
-   </section>
-
-   <nav class="guide-jumps" aria-label="Scoring guide sections"><span>JUMP TO</span><a href="#shared">Macro · 6</a><a href="#sp">S&P 500 · 9</a><a href="#nd">Nasdaq-100 · 9</a><a href="#extras">Info-only data</a><a href="#derived">Summary calculations</a></nav>
-
-   <section class="guide-section" id="shared" aria-labelledby="shared-title">
-      <div class="section-head"><div><span class="eyebrow">01 / SHARED</span><h2 id="shared-title">Macro conditions</h2><p>These six rules are counted in BOTH the S&amp;P 500 and Nasdaq-100 scores.</p></div><span class="guide-count">6 points</span></div>
-      <div class="rules-grid"><article class="rule-card" id="oil">
-          <div class="rule-head"><div class="rule-number">01</div><div><h3>Crude Oil</h3><p class="rule-desc">Oil is a cyclical inflation / growth proxy; the dashboard tracks its daily direction rather than its absolute level.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>Daily oil price change is positive (oil rises).</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Oil flat → CAUTION; falling → BULLISH. The “DIV” suffix means oil and SPY moved in the same direction that day; it is a label, not another point.</p></div></div>
-        </article><article class="rule-card" id="usd">
-          <div class="rule-head"><div class="rule-number">02</div><div><h3>US Dollar</h3><p class="rule-desc">A proxy for changes in dollar strength. The model treats a stronger dollar as a risk headwind.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>Daily USD index/proxy change is positive.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Flat → CAUTION; falling → BULLISH. “DIV” is a same-direction comparison with SPY, not a second penalty.</p></div></div>
-        </article><article class="rule-card" id="tnx">
-          <div class="rule-head"><div class="rule-number">03</div><div><h3>10Y Yield</h3><p class="rule-desc">Daily direction of the 10-year Treasury yield proxy, often associated with discount-rate pressure.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>Daily 10-year yield change is positive.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Flat → CAUTION; falling → BULLISH. The “DIV” annotation compares its direction with SPY.</p></div></div>
-        </article><article class="rule-card" id="credit">
-          <div class="rule-head"><div class="rule-number">04</div><div><h3>Credit · HYG / IEF</h3><p class="rule-desc">HYG represents high-yield corporate bonds; IEF represents intermediate Treasury bonds. Relative daily performance is a simple credit-risk appetite check.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>HYG one-day percentage return is lower than IEF one-day percentage return.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>HYG return equal to or above IEF → BULLISH. This checks daily returns, not the raw price ratio against a moving average.</p></div></div>
-        </article><article class="rule-card" id="copper">
-          <div class="rule-head"><div class="rule-number">05</div><div><h3>Copper</h3><p class="rule-desc">A cyclical industrial-metal proxy; weakening copper can signal softer growth expectations.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>Daily copper price change is negative.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Unchanged or rising copper → BULLISH.</p></div></div>
-        </article><article class="rule-card" id="vix_curve">
-          <div class="rule-head"><div class="rule-number">06</div><div><h3>VIX Curve</h3><p class="rule-desc">Compares short-dated VIX with three-month implied volatility (VIX3M). An inverted / backwardated curve can signal near-term stress.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>VIX ÷ VIX3M is greater than 1.00.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Below 0.90 → BULLISH (contango). 0.90 through 1.00 → CAUTION / shallow contango / flat; 1.00 is not bearish.</p></div></div>
-        </article></div>
-    </section>
-   <section class="guide-section" id="sp" aria-labelledby="sp-title">
-      <div class="section-head"><div><span class="eyebrow">02 / S&amp;P 500</span><h2 id="sp-title">S&amp;P 500 indicators</h2><p>Nine S&amp;P-specific rules. SPY is the benchmark for price, sector and trend comparisons.</p></div><span class="guide-count">9 points</span></div>
-      <div class="rules-grid"><article class="rule-card" id="vix">
-          <div class="rule-head"><div class="rule-number">01</div><div><h3>VIX</h3><p class="rule-desc">S&amp;P 500 option-implied volatility; a short-term measure of expected market movement.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>VIX greater than 20.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Below 16 → BULLISH; 16–20 inclusive → CAUTION.</p></div></div>
-        </article><article class="rule-card" id="sp_def">
-          <div class="rule-head"><div class="rule-number">02</div><div><h3>Defensives / SPY</h3><p class="rule-desc">An equal-weighted basket of XLP (consumer staples), XLV (healthcare), and XLU (utilities), compared with SPY.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>Average 10-session return of XLP, XLV and XLU exceeds SPY’s 10-session return.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>If the basket leads on 1D but not 10D → CAUTION; otherwise BULLISH. Measures sector rotation, not certainty of a market decline.</p></div></div>
-        </article><article class="rule-card" id="sp_xle">
-          <div class="rule-head"><div class="rule-number">03</div><div><h3>XLE / SPY</h3><p class="rule-desc">Energy sector ETF (XLE) 10-session return compared with the S&amp;P 500 ETF (SPY).</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>XLE 10-session percentage return exceeds SPY’s.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Equal or lower energy-sector return → BULLISH. Energy outperformance is interpreted as defensive/inflation-related rotation in this experimental model.</p></div></div>
-        </article><article class="rule-card" id="sp_smh">
-          <div class="rule-head"><div class="rule-number">04</div><div><h3>SMH / SPY</h3><p class="rule-desc">Semiconductor ETF (SMH) trend and its relative leadership versus SPY.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>SMH closes below its own 20-day EMA.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>If SMH is at/above its EMA but SMH/SPY relative ratio is below its 15D SMA → LAGGING / CAUTION; otherwise BULLISH. “BEARISH DIV” notes SMH weakness while SPY is at/above its 20D EMA.</p></div></div>
-        </article><article class="rule-card" id="spy_trend">
-          <div class="rule-head"><div class="rule-number">05</div><div><h3>SPY Trend</h3><p class="rule-desc">The original scored trend rule based on SPY’s close, 50-day simple moving average and 200-day simple moving average.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>SPY close is below its 200-day SMA.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>BULLISH only if SPY close &gt; 50D SMA and 50D SMA &gt; 200D SMA. All other combinations → CAUTION. This remains the scored trend signal.</p></div></div>
-        </article><article class="rule-card" id="sp_rsi14">
-          <div class="rule-head"><div class="rule-number">06</div><div><h3>SPY RSI (14)</h3><p class="rule-desc">Wilder-smoothed 14-session Relative Strength Index, a momentum oscillator from 0 to 100.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>RSI(14) is below 45.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>RSI 45–55 inclusive → CAUTION; above 55 → BULLISH. Separate chart labels of overbought (≥70) or oversold (≤30) are descriptive, not extra score points.</p></div></div>
-        </article><article class="rule-card" id="rsp_spy">
-          <div class="rule-head"><div class="rule-number">07</div><div><h3>RSP / SPY</h3><p class="rule-desc">Equal-weighted S&amp;P 500 (RSP) relative to cap-weighted SPY. Tests whether gains are broad or concentrated.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>RSP/SPY price ratio is more than 0.25% below its own 10D SMA.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>More than 0.25% above its 10D SMA → BULLISH; within ±0.25% inclusive → CAUTION.</p></div></div>
-        </article><article class="rule-card" id="iwm_spy">
-          <div class="rule-head"><div class="rule-number">08</div><div><h3>IWM / SPY</h3><p class="rule-desc">Russell 2000 small-cap ETF (IWM) relative to SPY. Gauges small-cap participation.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>IWM/SPY price ratio is more than 0.25% below its own 10D SMA.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>More than 0.25% above → BULLISH; ±0.25% inclusive → CAUTION.</p></div></div>
-        </article><article class="rule-card" id="sp_breadth1d">
-          <div class="rule-head"><div class="rule-number">09</div><div><h3>S&amp;P Breadth · 1D</h3><p class="rule-desc">Daily change in the percentage of S&amp;P 500 constituents trading above their own 200-day SMAs. Expressed in percentage points (pp).</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>Breadth falls by at least 1 percentage point in one session (change ≤ −1 pp).</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Change ≥ +1 pp → EXPANDING / BULLISH; between −1 and +1 pp → STABLE / CAUTION. Website breadth may use estimated constituent-derived data.</p></div></div>
-        </article></div>
-    </section>
-   <section class="guide-section" id="nd" aria-labelledby="nd-title">
-      <div class="section-head"><div><span class="eyebrow">03 / NASDAQ-100</span><h2 id="nd-title">Nasdaq-100 indicators</h2><p>Nine Nasdaq-specific rules. QQQ is the benchmark for price, sector and trend comparisons.</p></div><span class="guide-count">9 points</span></div>
-      <div class="rules-grid"><article class="rule-card" id="vxn">
-          <div class="rule-head"><div class="rule-number">01</div><div><h3>VXN</h3><p class="rule-desc">Nasdaq-100 option-implied volatility; Nasdaq analogue of VIX.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>VXN greater than 25.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Below 20 → BULLISH; 20–25 inclusive → CAUTION.</p></div></div>
-        </article><article class="rule-card" id="nd_def">
-          <div class="rule-head"><div class="rule-number">02</div><div><h3>Defensives / QQQ</h3><p class="rule-desc">The same equal-weighted XLP, XLV and XLU basket, compared against QQQ instead of SPY.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>Defensive-basket 10-session return exceeds QQQ’s 10-session return.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>If basket leads on 1D but not 10D → CAUTION; otherwise BULLISH.</p></div></div>
-        </article><article class="rule-card" id="nd_xle">
-          <div class="rule-head"><div class="rule-number">03</div><div><h3>XLE / QQQ</h3><p class="rule-desc">Energy sector ETF 10-session return compared with QQQ.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>XLE 10-session return exceeds QQQ’s 10-session return.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Equal or lower relative energy return → BULLISH.</p></div></div>
-        </article><article class="rule-card" id="nd_smh">
-          <div class="rule-head"><div class="rule-number">04</div><div><h3>SMH / QQQ</h3><p class="rule-desc">Semiconductor ETF (SMH) trend and relative leadership versus QQQ.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>SMH closes below its own 20-day EMA.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>SMH at/above EMA but SMH/QQQ ratio below its 15D SMA → LAGGING / CAUTION. “BEARISH DIV” appears if QQQ is at/above its 20D EMA while SMH is below its own.</p></div></div>
-        </article><article class="rule-card" id="qqq_trend">
-          <div class="rule-head"><div class="rule-number">05</div><div><h3>QQQ Trend</h3><p class="rule-desc">The original Nasdaq trend: QQQ close, 50D SMA and 200D SMA.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>QQQ close below its 200-day SMA.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>BULLISH only if QQQ close &gt; 50D SMA and 50D SMA &gt; 200D SMA; otherwise CAUTION.</p></div></div>
-        </article><article class="rule-card" id="nd_rsi14">
-          <div class="rule-head"><div class="rule-number">06</div><div><h3>QQQ RSI (14)</h3><p class="rule-desc">Wilder RSI calculated on QQQ completed daily closes.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>RSI(14) below 45.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>45–55 inclusive → CAUTION; above 55 → BULLISH. The chart’s 30/70 bands are informational.</p></div></div>
-        </article><article class="rule-card" id="qqqe_qqq">
-          <div class="rule-head"><div class="rule-number">07</div><div><h3>QQQE / QQQ</h3><p class="rule-desc">Equal-weighted Nasdaq-100 ETF (QQQE) relative to cap-weighted QQQ. Measures participation beyond mega-cap leaders.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>QQQE/QQQ ratio is more than 0.25% below its 10D SMA.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>More than 0.25% above → BULLISH; within ±0.25% inclusive → CAUTION.</p></div></div>
-        </article><article class="rule-card" id="iwm_qqq">
-          <div class="rule-head"><div class="rule-number">08</div><div><h3>IWM / QQQ</h3><p class="rule-desc">Small-cap ETF (IWM) relative to QQQ. Tests leadership beyond large growth stocks.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>IWM/QQQ ratio is more than 0.25% below its 10D SMA.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>More than 0.25% above → BULLISH; within ±0.25% inclusive → CAUTION.</p></div></div>
-        </article><article class="rule-card" id="nd_breadth1d">
-          <div class="rule-head"><div class="rule-number">09</div><div><h3>Nasdaq Breadth · 1D</h3><p class="rule-desc">Percentage of Nasdaq-100 constituents advancing during the day (advancers ÷ advancers plus decliners). This is NOT the S&amp;P breadth-above-200D measure.</p></div><span class="rule-weight">+1 max</span></div>
-          <div class="rule-details"><div><div class="rule-kicker bearish-kicker">BEARISH · +1</div><p>Advancing share is below 45%.</p></div><div><div class="rule-kicker">OTHER OUTCOMES · 0</div><p>Above 55% → EXPANDING / BULLISH; 45%–55% inclusive → STABLE / CAUTION. May be estimated from constituent prices.</p></div></div>
-        </article></div>
-    </section>
-
-   <section class="guide-section" id="extras" aria-labelledby="extras-title">
-     <div class="section-head"><div><span class="eyebrow">04 / REFERENCE ONLY</span><h2 id="extras-title">Data displayed but not scored</h2><p>These add context without creating additional bearish points. In particular, a red informational label is not automatically an extra score point.</p></div><span class="guide-count guide-count-muted">0 points</span></div>
-     <div class="info-rule-grid">
-       <article class="guide-note"><h3>SPY / QQQ · 5, 20, 50, 100 and 200D SMAs</h3><p>The simple moving average is the mean of the last N completed ETF closing prices. Each card displays its average and the percentage difference from the latest close.</p><p><strong>BULLISH:</strong> latest close ≥ SMA (including equality). <strong>BEARISH:</strong> latest close &lt; SMA. These <em>individual</em> comparisons add no points; the separate original Trend signal remains scored.</p></article>
-       <article class="guide-note"><h3>S&P Breadth · 5D</h3><p>Five-session change in the percentage of S&P 500 constituents above their own 200D moving averages. ≤ −2 percentage points = CONTRACTING; ≥ +2 pp = EXPANDING; otherwise STABLE. <strong>Not in the score.</strong></p></article>
-       <article class="guide-note"><h3>S&P Breadth · 200D level</h3><p>Current percentage of S&P 500 constituents above their own 200D averages. Below 40% = BEARISH; 40% to less than 60% = CAUTION; ≥60% = BULLISH. <strong>Not in the score.</strong></p></article>
-       <article class="guide-note"><h3>Nasdaq Breadth · 5D</h3><p>Difference between the latest five-session average advancing share and the preceding five-session average, in percentage points. ≤ −5 pp = CONTRACTING; ≥ +5 pp = EXPANDING; otherwise STABLE. <strong>Not in the score.</strong></p></article>
-       <article class="guide-note"><h3>RSI chart band vs. RSI score</h3><p>RSI is <strong>scored once</strong> below 45, even though its chart also displays classic labels: ≤30 = OVERSOLD, ≥70 = OVERBOUGHT, and everything between = NEUTRAL. Those chart bands are not additional points.</p></article>
-       <article class="guide-note"><h3>SPY / QQQ charts &amp; Fear &amp; Greed</h3><p>TradingView's hosted ETF price charts update independently of the EOD score engine. The separate FearGreedChart.com sentiment series is not the CNN index. Neither chart contributes bearish points. The website has no put/call ratio component.</p></article>
-     </div>
-   </section>
-
-   <section class="guide-section" id="derived" aria-labelledby="derived-title">
-     <div class="section-head"><div><span class="eyebrow">05 / INTERPRETING THE SUMMARY</span><h2 id="derived-title">Beyond the 15-point total</h2><p>The summary cards calculate trend, confirmations and swing environment separately from the 15 individual signal points.</p></div></div>
-     <div class="info-rule-grid">
-       <article class="guide-note"><h3>1D / 5D score change</h3><p>Today's bearish points minus the points one or five trading sessions earlier. <strong>Positive</strong> means risk signals increased; <strong>negative</strong> means they decreased.</p><p>For the <strong>5D Score Trend</strong>: change ≥ +2 = DETERIORATING; change ≤ −2 = IMPROVING; otherwise STABLE. Missing feeds can cause UNCERTAIN rather than a misleading definite label.</p></article>
-       <article class="guide-note"><h3>Market Confirmation · 0/4 through 4/4</h3><p>Four five-session recovery checks are counted: <strong>volatility declining</strong> (VIX for SPY, VXN for QQQ), <strong>HYG/IEF credit ratio rising</strong>, <strong>breadth improving</strong> (S&P 5D breadth ≥ +2 pp, or Nasdaq advancing-share five-session-window change ≥ +5 pp), and <strong>SPY / QQQ price rising</strong>. Unavailable categories count as unknown, not as failed.</p></article>
-       <article class="guide-note"><h3>Swing Environment</h3><p><strong>BULLISH:</strong> score ≤4, 5D change &lt; +2, at least 3 confirmations, and trend not bearish. <strong>EARLY IMPROVEMENT:</strong> score ≥9, 5D change ≤−2 and at least 2 confirmations. <strong>BEARISH:</strong> score ≥9 without that early-improvement pattern. <strong>DETERIORATING:</strong> score 5–7 and 5D change ≥+2. Otherwise <strong>SELECTIVE</strong>.</p><p>Shows N/A if required information is missing or possible missing-input outcomes disagree; this is a separate decision aid, not an extra point.</p></article>
-       <article class="guide-note"><h3>Historical chart &amp; data freshness</h3><p>The historical line chart plots observed bearish points per available completed <em>trading session</em> (30 or 90 sessions). Weekends and holidays are compressed. An incomplete score has an uncertainty range even when only the observed count is plotted. Market inputs are end-of-day proxies and may differ from Thinkorswim data.</p></article>
-     </div>
-   </section>
-
-   <section class="guide-bottom"><div><span class="eyebrow">TRANSPARENT BY DESIGN</span><h2>A score is a checklist, not a forecast.</h2><p>This is an experimental model with heuristic thresholds. Signal overlap exists (for example, trend, RSI, breadth and sector leadership). Check the market data, timeframe, and indicator availability before using the score in a trading decision.</p></div><a href="index.html" class="guide-return">← Return to dashboard</a></section>
-  </details>
-</main>
-  <footer><span>Macro Decision Dashboard · Scoring methodology</span><span>15-point model · Original trend + RSI · EOD research</span></footer>
- </div>
-</body>
-</html>
+<section aria-labelledby="extras-title" class="guide-section" id="extras">
+<div class="section-head"><div><span class="eyebrow">04 / REFERENCE ONLY</span><h2 id="extras-title">Data displayed but not scored</h2><p>These are supporting readings. They do not add extra points beyond the 16 scored signals.</p></div><span class="guide-count guide-count-muted">0 points</span></div>
+<div class="info-rule-grid">
+<article class="guide-note"><h3>SPY / QQQ · 5, 20, 50, 100 and 200D SMAs</h3><p>The simple moving average is the mean of the last N completed ETF closing prices. Each card displays its average and the percentage difference from the latest close.</p><p><strong>BULLISH:</strong> latest close ≥ SMA (including equality). <strong>BEARISH:</strong> latest close &lt; SMA. These <em>individual</em> comparisons add no points; the separate original Trend signal remains scored.</p></article>
+<article class="guide-note"><h3>S&amp;P Breadth · 5D</h3><p>Five-session change in the percentage of S&amp;P 500 constituents above their own 200D moving averages. ≤ −2 percentage points = CONTRACTING; ≥ +2 pp = EXPANDING; otherwise STABLE. <strong>Not in the score.</strong></p></article>
+<article class="guide-note"><h3>S&amp;P Breadth · 200D level</h3><p>Current percentage of S&amp;P 500 constituents above their own 200D averages. Below 40% = BEARISH; 40% to less than 60% = CAUTION; ≥60% = BULLISH. <strong>Not in the score.</strong></p></article>
+<article class="guide-note"><h3>Nasdaq Breadth · 5D</h3><p>Difference between the latest five-session average advancing share and the preceding five-session average, in percentage points. ≤ −5 pp = CONTRACTING; ≥ +5 pp = EXPANDING; otherwise STABLE. <strong>Not in the score.</strong></p></article>
+<article class="guide-note"><h3>RSI chart band vs. RSI score</h3><p>RSI is <strong>scored once</strong> below 45, even though its chart also displays classic labels: ≤30 = OVERSOLD, ≥70 = OVERBOUGHT, and everything between = NEUTRAL. Those chart bands are not additional points.</p></article>
+<article class="guide-note"><h3>SPY / QQQ charts &amp; Fear &amp; Greed</h3><p>TradingView's hosted ETF price charts update independently of the EOD score engine. The separate FearGreedChart.com sentiment series is not the CNN index. Neither chart contributes Market Health points. The website has no put/call ratio component.</p></article>
+</div>
+</section>
+<div class="audit-footer-note"><strong>Remember:</strong> Fear &amp; Greed, the five individual SMA rows, and five-day/200-day breadth *context* do not add additional points. MACD and RSI each contribute one of the 16 possible points. <a href="threshold-logic.html">View model research and limitations →</a></div>
+</main><footer><span>Macro Decision Dashboard · Personal research model</span><span>16-point Market Health · Completed EOD · <a href="index.html">Dashboard</a></span></footer></div></body></html>

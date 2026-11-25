@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="dashboard-clarity.css?v=macd16-20261125b">
   <link rel="stylesheet" href="daily-summaries.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
+  <link rel="stylesheet" href="audit-cleanup.css?v=20261125a">
 </head>
 <body>
   <div class="shell">
@@ -21,7 +22,7 @@
       <a class="site-tab active" href="index.html" aria-current="page"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
       <a class="site-tab" href="insights-history.html"><span class="tab-icon" aria-hidden="true">▤</span> Insights History</a>
       <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">16 signals</span></a>
-      <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
+      <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Model Research</a>
     </nav>
     <div class="info-line" id="warning">A research dashboard, not a trading signal. Data and scores are indicative; verify against Thinkorswim before acting.</div>
     <div id="freshness-alert" class="freshness-alert" role="status" hidden></div>
@@ -76,7 +77,7 @@
       <section class="market-prices" aria-label="SPY and QQQ daily price history and moving averages">
         <div class="extras-header">
           <div><div class="eyebrow">PRICE CONTEXT</div><h2>SPY &amp; QQQ · Price History</h2><p>Daily price charts with adjustable date ranges. Hosted charts may include intraday/delayed quotes; the moving averages below use the latest completed end-of-day session.</p></div>
-          <span class="capsule">ORIGINAL TREND + RSI SCORED · 5 SMAS INFO ONLY</span>
+          <span class="capsule">TREND + RSI + MACD SCORED · 5 SMAS INFO ONLY</span>
         </div>
         <div class="market-chart-grid">
           <article class="chartpanel market-price-panel">
@@ -101,7 +102,7 @@
               <div class="ma-item"><dt>200D SMA</dt><dd id="spy-ma200">—</dd><span id="spy-ma200-gap" class="ma-gap">Awaiting EOD data</span></div>
               </dl>
               <div class="rsi-strip" aria-label="SPY 14-day relative strength index; contributes to scoring">
-                <div class="rsi-caption"><strong>RSI (14)</strong><span>Scored: &lt;45 bearish · 45–55 caution · &gt;55 bullish</span></div>
+                <div class="rsi-caption"><strong>RSI (14)</strong><span>Scored: &lt;45 bearish · 45–55 neutral · &gt;55 bullish</span></div>
                 <div class="rsi-result"><strong id="spy-rsi14">—</strong><span class="rsi-state" id="spy-rsi14-state">Awaiting EOD data</span></div>
                 <div class="rsi-track" aria-hidden="true"><div id="spy-rsi14-marker" class="rsi-marker" style="left:50%"></div></div>
                 <div class="rsi-scale"><span>0</span><span>30 · Oversold</span><span>70 · Overbought</span><span>100</span></div>
@@ -140,7 +141,7 @@
               <div class="ma-item"><dt>200D SMA</dt><dd id="qqq-ma200">—</dd><span id="qqq-ma200-gap" class="ma-gap">Awaiting EOD data</span></div>
               </dl>
               <div class="rsi-strip" aria-label="QQQ 14-day relative strength index; contributes to scoring">
-                <div class="rsi-caption"><strong>RSI (14)</strong><span>Scored: &lt;45 bearish · 45–55 caution · &gt;55 bullish</span></div>
+                <div class="rsi-caption"><strong>RSI (14)</strong><span>Scored: &lt;45 bearish · 45–55 neutral · &gt;55 bullish</span></div>
                 <div class="rsi-result"><strong id="qqq-rsi14">—</strong><span class="rsi-state" id="qqq-rsi14-state">Awaiting EOD data</span></div>
                 <div class="rsi-track" aria-hidden="true"><div id="qqq-rsi14-marker" class="rsi-marker" style="left:50%"></div></div>
                 <div class="rsi-scale"><span>0</span><span>30 · Oversold</span><span>70 · Overbought</span><span>100</span></div>
@@ -175,21 +176,22 @@
         <p class="provider-note">Source: <a href="https://feargreedchart.com/" target="_blank" rel="noopener noreferrer">FearGreedChart.com</a> (<a href="https://feargreedchart.com/methodology" target="_blank" rel="noopener noreferrer">methodology</a>). Free public API, refreshed by its provider; values are not the CNN Fear &amp; Greed Index. <a href="https://www.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener noreferrer">View CNN's separate index</a>.</p>
       </section>
       </div>
-      <p class="research-link-inline">Want the 365-day and 20-month score-5 evidence? <a href="threshold-logic.html#rolling-research">View research in Scoring Logic</a>.</p>
+      <p class="research-link-inline">Want the 365-day and 20-month score-5 evidence? <a href="threshold-logic.html#rolling-research">View research in Model Research</a>.</p>
       <div class="columns" id="market-indicators">
-        <section class="signals-panel score-breakdown-panel" id="sp-breakdown"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC · 10 SCORED SIGNALS</div><h2>S&P 500 internals</h2><p class="score-breakdown-equation" id="sp-breakdown-equation">Awaiting score breakdown</p></div><span class="capsule score-subtotal" id="sp-index-subscore">—/10</span></div><div id="sp-signals" class="signal-list"></div><p class="breakdown-footer">Breadth 5D and 200D are informational and do not add points. <a href="#shared-breakdown">See shared macro score ↓</a></p></section>
-        <section class="signals-panel score-breakdown-panel" id="nd-breakdown"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC · 10 SCORED SIGNALS</div><h2>Nasdaq-100 internals</h2><p class="score-breakdown-equation" id="nd-breakdown-equation">Awaiting score breakdown</p></div><span class="capsule score-subtotal" id="nd-index-subscore">—/10</span></div><div id="nd-signals" class="signal-list"></div><p class="breakdown-footer">Breadth 5D is informational and does not add points. <a href="#shared-breakdown">See shared macro score ↓</a></p></section>
+        <section class="signals-panel score-breakdown-panel" id="sp-breakdown"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC · 10 SCORED SIGNALS</div><h2>S&P 500 internals</h2><div class="audit-date" id="sp-breakdown-date">As of —</div><p class="score-breakdown-equation" id="sp-breakdown-equation">Awaiting score breakdown</p></div><span class="capsule score-subtotal" id="sp-index-subscore">—/10</span></div><div id="sp-signals" class="signal-list"></div><p class="breakdown-footer">Breadth 5D and 200D are informational and do not add points. <a href="#shared-breakdown">See shared macro score ↓</a></p></section>
+        <section class="signals-panel score-breakdown-panel" id="nd-breakdown"><div class="panel-head"><div><div class="eyebrow">INDEX-SPECIFIC · 10 SCORED SIGNALS</div><h2>Nasdaq-100 internals</h2><div class="audit-date" id="nd-breakdown-date">As of —</div><p class="score-breakdown-equation" id="nd-breakdown-equation">Awaiting score breakdown</p></div><span class="capsule score-subtotal" id="nd-index-subscore">—/10</span></div><div id="nd-signals" class="signal-list"></div><p class="breakdown-footer">Breadth 5D is informational and does not add points. <a href="#shared-breakdown">See shared macro score ↓</a></p></section>
       </div>
-      <section class="signals-panel shared score-breakdown-panel" id="shared-breakdown"><div class="panel-head"><div><div class="eyebrow">SHARED BY BOTH MARKET SCORES · 6 SIGNALS</div><h2>Macro signals</h2><p class="score-breakdown-equation" id="shared-breakdown-equation">Shared macro points count in both market scores.</p></div><span class="capsule score-subtotal" id="shared-subscore">—/6</span></div><div id="shared-signals" class="signal-list double"></div></section>
+      <div class="audit-score-explanation">Health points = verified scored states that are not bearish; neutral states count. <a href="scoring-guide.html">See exact rules →</a></div>
+      <section class="signals-panel shared score-breakdown-panel" id="shared-breakdown"><div class="panel-head"><div><div class="eyebrow">SHARED BY BOTH MARKET SCORES · 6 SIGNALS</div><h2>Macro signals</h2><div class="audit-date" id="shared-breakdown-date">As of —</div><p class="score-breakdown-equation" id="shared-breakdown-equation">Shared macro points count in both market scores.</p></div><span class="capsule score-subtotal" id="shared-subscore">—/6</span></div><div id="shared-signals" class="signal-list double"></div></section>
       <section class="disclaimer"><h3>Reading the dashboard responsibly</h3><p id="coverage-note">Specialized index breadth data may require separate authorized data sources. An incomplete 16-point score can be a range, not a definitive RISK-ON / NEUTRAL / RISK-OFF classification.</p><p>The website uses the original Thinkorswim-style 50D/200D trend point plus a separate RSI(14) and MACD(12,26,9) points in an experimental 16-point model. The original 14-point score remains available as an inverted health reference. Five individual SMA comparisons are informational only. Install the accompanying Thinkorswim health-score study separately. It is not a broker feed, a backtested strategy, or an instruction to trade. Futures and ETF proxies can differ from Thinkorswim settlements. Provider availability and data display rights vary.</p><details><summary>Data source diagnostics</summary><pre id="diagnostics">Awaiting first update.</pre></details></section>
     </main>
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>16-point experimental model · Updated EOD · <a href="threshold-logic.html">Model record</a></span></footer>
   </div>
   <script src="market-intelligence.js?v=macd16-20261125b-intelligence-20261122a" defer></script>
   <script src="price-risk.js?v=macd16-20261125b-price-risk-20261123a" defer></script>
-  <script src="app.js?v=eod-sync-v1-20261124" defer></script>
+  <script src="app.js?v=audit-20261125a-eod-sync-v1-20261124" defer></script>
   <script src="market-extras.js?v=context-20261122b" defer></script>
   <script src="dashboard-clarity.js?v=summary-overview-v2-20261125" defer></script>
-  <script src="daily-summaries.js?v=visual-refresh-20261125a" defer></script>
+  <script src="daily-summaries.js?v=audit-20261125a" defer></script>
 </body>
 </html>

@@ -9,9 +9,10 @@
   <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
   <link rel="stylesheet" href="insights-history.css?v=macd16-20261125b">
   <link rel="stylesheet" href="daily-summaries.css?v=visual-refresh-20261125a">
-  <script src="insights-history.js?v=macd16-20261125b" defer></script>
-  <script src="daily-summaries.js?v=visual-refresh-20261125a" defer></script>
+  <script src="insights-history.js?v=audit-20261125a" defer></script>
+  <script src="daily-summaries.js?v=audit-20261125a" defer></script>
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
+  <link rel="stylesheet" href="audit-cleanup.css?v=20261125a">
 </head>
 <body>
   <div class="shell">
@@ -23,26 +24,24 @@
       <a class="site-tab" href="index.html"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
       <a class="site-tab active" href="insights-history.html" aria-current="page"><span class="tab-icon" aria-hidden="true">▤</span> Insights History</a>
       <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">16 signals</span></a>
-      <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
+      <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Model Research</a>
     </nav>
     <main class="journal-main">
       <div class="journal-title-row">
         <div>
           <div class="eyebrow">PERMANENT EOD JOURNAL · EXPERIMENTAL MODEL</div>
           <h2>Market Insights History</h2>
-          <p>Review the newest session and its previous summaries, or open SPY and QQQ histories for detailed records.</p>
+          <p>Browse previous daily summaries, or open separate SPY and QQQ histories for detailed records.</p>
         </div>
         <a class="journal-back" href="index.html">← Today's dashboard</a>
       </div>
-      <p class="journal-policy" role="note">Automatically recorded after eligible end-of-day refreshes, with a <strong>clearly labeled November 20 screenshot baseline</strong>. The baseline includes only values visible in the saved screenshots; its Friday price-change alert is not evaluated. Later sessions are recorded automatically. No live intraday series is included.</p>
+      <details class="journal-policy audit-history-note"><summary>About the archive and November 20 screenshot baseline</summary><p>Records are saved after eligible end-of-day refreshes. November 20 is explicitly marked as a screenshot baseline; its previous closing price and daily price/risk alert are unavailable. Later sessions are recorded automatically. No live intraday series is included.</p></details>
       <div class="summary-view-tabs" role="tablist" aria-label="History sections">
-        <button id="summary-tab-current" type="button" role="tab" class="active" aria-selected="true" aria-controls="summary-view">Daily Summaries</button>
+        <button id="summary-tab-current" type="button" role="tab" class="active" aria-selected="true" aria-controls="summary-view">Summary Archive</button>
         <button id="summary-tab-etfs" type="button" role="tab" aria-selected="false" aria-controls="j-history-views">SPY / QQQ History</button>
       </div>
       <section id="summary-view" role="tabpanel" aria-labelledby="summary-tab-current" aria-label="Saved EOD market summaries">
-        <div class="summary-view-heading"><div><div class="eyebrow">LATEST SAVED EOD</div><h3>Latest Daily Summary</h3><p>The latest completed market session, not intraday prices or a stale prior-day alert.</p></div></div>
-        <div id="summary-latest" aria-live="polite"><p>Loading latest daily summary…</p></div>
-        <div class="summary-view-heading"><div><div class="eyebrow">ARCHIVED MARKET INSIGHTS</div><h3>Previous Daily Summaries</h3><p>Every earlier saved trading session stays available, including the November 23 price/risk alert.</p><span class="daily-summary-muted" id="summary-count">Loading…</span></div><button type="button" id="summary-export" class="journal-export" disabled>↓ Export summary CSV</button></div>
+        <div class="audit-archive-banner"><div><div class="eyebrow">PREVIOUS TRADING SESSIONS</div><h3>Daily Summary Archive</h3><p>Earlier saved sessions, newest first. The current completed session is shown on the Dashboard.</p><span class="daily-summary-muted" id="summary-count">Loading…</span></div><div class="audit-archive-actions"><a href="index.html#daily-summary-overview" class="audit-secondary-link">Today's summary →</a><button type="button" id="summary-export" class="journal-export" disabled>↓ Export archive CSV</button></div></div>
         <div class="summary-archive-grid" id="summary-archive" aria-live="polite"></div>
         <p class="daily-summary-muted">Summaries are reconstructed from dated, saved EOD journal records. If a source is missing, its reading stays unavailable rather than being guessed. The screenshot baseline has no previous ETF price change.</p>
       </section>
