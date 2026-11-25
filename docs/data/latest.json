@@ -1,18 +1,18 @@
 {
-  "session": "2026-11-24",
-  "generated_at": "2026-11-25T00:56:13.618653+00:00",
-  "model_version": "15-point-health-v1-neutral-6-10",
+  "session": "2026-11-23",
+  "generated_at": "2026-11-25T01:15:21.834487+00:00",
+  "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
     "sp500": {
       "score": {
-        "bearish": 10,
-        "possible_max": 10,
+        "bearish": 11,
+        "possible_max": 11,
         "health": 5,
         "health_max": 5,
-        "total": 15,
-        "available": 15,
+        "total": 16,
+        "available": 16,
         "missing": 0,
         "regime": "RISK-OFF",
         "complete": true
@@ -28,17 +28,28 @@
         "regime": "RISK-OFF",
         "complete": true
       },
+      "legacy_15": {
+        "bearish": 10,
+        "possible_max": 10,
+        "health": 5,
+        "health_max": 5,
+        "total": 15,
+        "available": 15,
+        "missing": 0,
+        "regime": "RISK-OFF",
+        "complete": true
+      },
       "momentum": {
-        "d1": 0,
-        "d5": 0,
+        "d1": -1,
+        "d5": 1,
         "state": "STABLE",
         "d1_range": [
-          0,
-          0
+          -1,
+          -1
         ],
         "d5_range": [
-          0,
-          0
+          1,
+          1
         ],
         "partial": false
       },
@@ -57,38 +68,49 @@
     },
     "nasdaq100": {
       "score": {
-        "bearish": 10,
-        "possible_max": 10,
-        "health": 5,
-        "health_max": 5,
-        "total": 15,
-        "available": 15,
+        "bearish": 12,
+        "possible_max": 12,
+        "health": 4,
+        "health_max": 4,
+        "total": 16,
+        "available": 16,
         "missing": 0,
         "regime": "RISK-OFF",
         "complete": true
       },
       "legacy_14": {
-        "bearish": 9,
-        "possible_max": 9,
-        "health": 5,
-        "health_max": 5,
+        "bearish": 10,
+        "possible_max": 10,
+        "health": 4,
+        "health_max": 4,
         "total": 14,
         "available": 14,
         "missing": 0,
         "regime": "RISK-OFF",
         "complete": true
       },
+      "legacy_15": {
+        "bearish": 11,
+        "possible_max": 11,
+        "health": 4,
+        "health_max": 4,
+        "total": 15,
+        "available": 15,
+        "missing": 0,
+        "regime": "RISK-OFF",
+        "complete": true
+      },
       "momentum": {
-        "d1": -1,
-        "d5": -1,
-        "state": "STABLE",
+        "d1": 0,
+        "d5": 2,
+        "state": "DETERIORATING",
         "d1_range": [
-          -1,
-          -1
+          0,
+          0
         ],
         "d5_range": [
-          -1,
-          -1
+          2,
+          2
         ],
         "partial": false
       },
@@ -110,48 +132,48 @@
     "vix": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 26.36,
+      "value": 26.62,
       "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
     },
     "vxn": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 36.42,
+      "value": 36.31,
       "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
     },
     "oil": {
-      "state": "bear",
-      "label": "BEARISH",
+      "state": "bull",
+      "label": "BULLISH",
       "value": null,
       "note": "Daily direction vs SPY",
       "source": "Yahoo Finance via yfinance (unofficial): CL=F"
     },
     "usd": {
-      "state": "bull",
-      "label": "BULLISH DIV",
+      "state": "bear",
+      "label": "BEARISH DIV",
       "value": null,
       "note": "Daily direction vs SPY",
       "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
     },
     "tnx": {
-      "state": "bull",
-      "label": "BULLISH DIV",
+      "state": "bear",
+      "label": "BEARISH DIV",
       "value": null,
       "note": "Daily direction vs SPY",
       "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
     },
     "credit": {
-      "state": "bear",
-      "label": "BEARISH",
+      "state": "bull",
+      "label": "BULLISH",
       "value": null,
-      "note": "HYG daily return below IEF",
+      "note": "HYG daily return at least IEF",
       "source": "HYG / IEF"
     },
     "copper": {
-      "state": "bear",
-      "label": "BEARISH",
+      "state": "bull",
+      "label": "BULLISH",
       "value": null,
       "note": "Daily copper change",
       "source": "Yahoo Finance via yfinance (unofficial): HG=F"
@@ -159,7 +181,7 @@
     "vix_curve": {
       "state": "bear",
       "label": "BACKWARDATION",
-      "value": 1.035,
+      "value": 1.044,
       "note": "VIX / VIX3M implied-volatility ratio",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
     },
@@ -222,56 +244,70 @@
     "sp_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 40.471,
+      "value": 41.512,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "SPY EOD close"
     },
     "nd_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 39.45,
+      "value": 42.185,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "QQQ EOD close"
     },
+    "sp_macd": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": -4.29,
+      "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+      "source": "SPY EOD close \u00b7 EMA(12,26,9)"
+    },
+    "nd_macd": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": -3.254,
+      "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+      "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
+    },
     "rsp_spy": {
-      "state": "bull",
-      "label": "BULLISH",
-      "value": 0.841,
+      "state": "warn",
+      "label": "CAUTION",
+      "value": -0.077,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "RSP/SPY"
     },
     "iwm_spy": {
-      "state": "bull",
-      "label": "BULLISH",
-      "value": 0.583,
+      "state": "bear",
+      "label": "BEARISH",
+      "value": -0.497,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/SPY"
     },
     "qqqe_qqq": {
-      "state": "bull",
-      "label": "BULLISH",
-      "value": 0.59,
+      "state": "bear",
+      "label": "BEARISH",
+      "value": -0.406,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "QQQE/QQQ"
     },
     "iwm_qqq": {
-      "state": "bull",
-      "label": "BULLISH",
-      "value": 1.796,
+      "state": "bear",
+      "label": "BEARISH",
+      "value": -0.681,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/QQQ"
     },
     "sp_breadth1d": {
-      "state": "warn",
-      "label": "STABLE",
-      "value": 0.0,
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 7.014,
       "note": "1D change in % of SPX constituents above 200D SMA; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth5d": {
       "state": "bear",
       "label": "CONTRACTING",
-      "value": -2.605,
+      "value": -6.413,
       "note": "5D change, percentage points",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
@@ -283,61 +319,61 @@
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "nd_breadth1d": {
-      "state": "warn",
-      "label": "STABLE",
-      "value": 52.041,
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 89.796,
       "note": "Today's advancing share % (not SPX 200D breadth)",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     },
     "nd_breadth5d": {
-      "state": "warn",
-      "label": "STABLE",
-      "value": 2.741,
+      "state": "bear",
+      "label": "CONTRACTING",
+      "value": -5.904,
       "note": "Change in average advancing share between adjacent 5D windows; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     }
   },
   "signal_changes": {
-    "from_session": "2026-11-23",
-    "to_session": "2026-11-24",
+    "from_session": "2026-11-20",
+    "to_session": "2026-11-23",
     "groups": {
       "shared": {
         "new_bearish": [
           {
-            "key": "oil",
-            "label": "Crude Oil",
-            "before": "BULLISH",
-            "after": "BEARISH",
+            "key": "usd",
+            "label": "US Dollar",
+            "before": "BULLISH DIV",
+            "after": "BEARISH DIV",
             "kind": "new_bearish"
           },
           {
-            "key": "credit",
-            "label": "Credit HYG/IEF",
-            "before": "BULLISH",
-            "after": "BEARISH",
-            "kind": "new_bearish"
-          },
-          {
-            "key": "copper",
-            "label": "Copper",
-            "before": "BULLISH",
-            "after": "BEARISH",
+            "key": "tnx",
+            "label": "10Y Yield",
+            "before": "BULLISH DIV",
+            "after": "BEARISH DIV",
             "kind": "new_bearish"
           }
         ],
         "eased": [
           {
-            "key": "usd",
-            "label": "US Dollar",
-            "before": "BEARISH DIV",
-            "after": "BULLISH DIV",
+            "key": "oil",
+            "label": "Crude Oil",
+            "before": "BEARISH",
+            "after": "BULLISH",
             "kind": "eased"
           },
           {
-            "key": "tnx",
-            "label": "10Y Yield",
-            "before": "BEARISH DIV",
-            "after": "BULLISH DIV",
+            "key": "credit",
+            "label": "Credit HYG/IEF",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          },
+          {
+            "key": "copper",
+            "label": "Copper",
+            "before": "BEARISH",
+            "after": "BULLISH",
             "kind": "eased"
           }
         ],
@@ -347,13 +383,21 @@
         "total": 6
       },
       "sp": {
-        "new_bearish": [],
-        "eased": [
+        "new_bearish": [
           {
             "key": "iwm_spy",
             "label": "IWM/SPY",
-            "before": "BEARISH",
-            "after": "BULLISH",
+            "before": "BULLISH",
+            "after": "BEARISH",
+            "kind": "new_bearish"
+          }
+        ],
+        "eased": [
+          {
+            "key": "sp_breadth1d",
+            "label": "S&P Breadth 1D",
+            "before": "CONTRACTING",
+            "after": "EXPANDING",
             "kind": "eased"
           }
         ],
@@ -361,140 +405,133 @@
           {
             "key": "rsp_spy",
             "label": "RSP/SPY",
-            "before": "CAUTION",
-            "after": "BULLISH",
-            "kind": "other"
-          },
-          {
-            "key": "sp_breadth1d",
-            "label": "S&P Breadth 1D",
-            "before": "EXPANDING",
-            "after": "STABLE",
+            "before": "BULLISH",
+            "after": "CAUTION",
             "kind": "other"
           }
         ],
-        "compared": 9,
+        "compared": 10,
         "skipped": 0,
-        "total": 9
+        "total": 10
       },
       "nd": {
-        "new_bearish": [],
-        "eased": [
+        "new_bearish": [
           {
             "key": "qqqe_qqq",
             "label": "QQQE/QQQ",
-            "before": "BEARISH",
-            "after": "BULLISH",
-            "kind": "eased"
+            "before": "BULLISH",
+            "after": "BEARISH",
+            "kind": "new_bearish"
           },
           {
             "key": "iwm_qqq",
             "label": "IWM/QQQ",
-            "before": "BEARISH",
-            "after": "BULLISH",
-            "kind": "eased"
+            "before": "BULLISH",
+            "after": "BEARISH",
+            "kind": "new_bearish"
           }
         ],
-        "other": [
+        "eased": [
           {
             "key": "nd_breadth1d",
             "label": "Nasdaq Breadth 1D",
-            "before": "EXPANDING",
-            "after": "STABLE",
-            "kind": "other"
+            "before": "CONTRACTING",
+            "after": "EXPANDING",
+            "kind": "eased"
           }
         ],
-        "compared": 9,
+        "other": [],
+        "compared": 10,
         "skipped": 0,
-        "total": 9
+        "total": 10
       }
     },
     "by_key": {
-      "oil": "new_bearish",
-      "usd": "eased",
-      "tnx": "eased",
-      "credit": "new_bearish",
-      "copper": "new_bearish",
+      "oil": "eased",
+      "usd": "new_bearish",
+      "tnx": "new_bearish",
+      "credit": "eased",
+      "copper": "eased",
       "rsp_spy": "other",
-      "iwm_spy": "eased",
-      "sp_breadth1d": "other",
-      "qqqe_qqq": "eased",
-      "iwm_qqq": "eased",
-      "nd_breadth1d": "other"
+      "iwm_spy": "new_bearish",
+      "sp_breadth1d": "eased",
+      "qqqe_qqq": "new_bearish",
+      "iwm_qqq": "new_bearish",
+      "nd_breadth1d": "eased"
     }
   },
   "moving_averages": {
     "spy": {
       "symbol": "SPY",
-      "as_of": "2026-11-24",
-      "close": 718.78,
+      "as_of": "2026-11-23",
+      "close": 722.29,
       "averages": {
         "5": {
-          "value": 715.39,
-          "distance_pct": 0.47,
+          "value": 718.122,
+          "distance_pct": 0.58,
           "state": "BULLISH"
         },
         "20": {
-          "value": 743.109,
-          "distance_pct": -3.27,
+          "value": 745.653,
+          "distance_pct": -3.13,
           "state": "BEARISH"
         },
         "50": {
-          "value": 758.636,
-          "distance_pct": -5.25,
+          "value": 759.408,
+          "distance_pct": -4.89,
           "state": "BEARISH"
         },
         "100": {
-          "value": 758.848,
-          "distance_pct": -5.28,
+          "value": 759.173,
+          "distance_pct": -4.86,
           "state": "BEARISH"
         },
         "200": {
-          "value": 733.038,
-          "distance_pct": -1.95,
+          "value": 732.914,
+          "distance_pct": -1.45,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 40.47,
+        "value": 41.51,
         "state": "NEUTRAL"
       }
     },
     "qqq": {
       "symbol": "QQQ",
-      "as_of": "2026-11-24",
-      "close": 638.1,
+      "as_of": "2026-11-23",
+      "close": 651.03,
       "averages": {
         "5": {
-          "value": 640.426,
-          "distance_pct": -0.36,
-          "state": "BEARISH"
+          "value": 644.196,
+          "distance_pct": 1.06,
+          "state": "BULLISH"
         },
         "20": {
-          "value": 671.315,
-          "distance_pct": -4.95,
+          "value": 675.472,
+          "distance_pct": -3.62,
           "state": "BEARISH"
         },
         "50": {
-          "value": 708.465,
-          "distance_pct": -9.93,
+          "value": 709.794,
+          "distance_pct": -8.28,
           "state": "BEARISH"
         },
         "100": {
-          "value": 709.219,
-          "distance_pct": -10.03,
+          "value": 710.066,
+          "distance_pct": -8.31,
           "state": "BEARISH"
         },
         "200": {
-          "value": 683.387,
-          "distance_pct": -6.63,
+          "value": 683.268,
+          "distance_pct": -4.72,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 39.45,
+        "value": 42.18,
         "state": "NEUTRAL"
       }
     }
@@ -503,3810 +540,3801 @@
     {
       "date": "2025-03-24",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-03-25",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-03-26",
       "sp": 8,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 8,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2025-03-27",
       "sp": 10,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 10,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2025-03-28",
       "sp": 9,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 9,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2025-03-31",
       "sp": 12,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 12,
       "nd": 11,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 11
     },
     {
       "date": "2025-04-01",
       "sp": 10,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 10,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2025-04-02",
       "sp": 10,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 10,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2025-04-03",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2025-04-04",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2025-04-07",
       "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2025-04-08",
-      "sp": 11,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 11,
       "nd": 11,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 11
     },
     {
-      "date": "2025-04-09",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "date": "2025-04-04",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
     },
     {
-      "date": "2025-04-10",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
+      "date": "2025-04-07",
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
       "nd": 10,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 10
     },
     {
-      "date": "2025-04-11",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
+      "date": "2025-04-08",
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
+    },
+    {
+      "date": "2025-04-09",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
+      "date": "2025-04-10",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2025-04-11",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
+    },
+    {
       "date": "2025-04-14",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2025-04-15",
       "sp": 9,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 9,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2025-04-16",
       "sp": 9,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 9,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2025-04-17",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2025-04-21",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2025-04-22",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2025-04-23",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-04-24",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-04-25",
       "sp": 8,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 8,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2025-04-28",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-04-29",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2025-04-30",
       "sp": 8,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 8,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2025-05-01",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2025-05-02",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-05-05",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-05-06",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-05-07",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-05-08",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-05-09",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-05-12",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-05-13",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-05-14",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-05-15",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-05-16",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-05-19",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-05-20",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-05-21",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-05-22",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-05-23",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-05-27",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-05-28",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2025-05-29",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-05-30",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2025-06-02",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-06-03",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-06-04",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2025-06-05",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2025-06-06",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
+      "date": "2025-06-05",
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
+    },
+    {
+      "date": "2025-06-06",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
+    },
+    {
       "date": "2025-06-09",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 2,
-      "nd_available": 15,
-      "nd_max": 2
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 3,
+      "nd_available": 16,
+      "nd_max": 3
     },
     {
       "date": "2025-06-10",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2025-06-11",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-06-12",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 2,
-      "nd_available": 15,
-      "nd_max": 2
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 3,
+      "nd_available": 16,
+      "nd_max": 3
     },
     {
       "date": "2025-06-13",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2025-06-16",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2025-06-17",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2025-06-18",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2025-06-20",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
-    },
-    {
-      "date": "2025-06-23",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2025-06-24",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 1,
-      "nd_available": 15,
-      "nd_max": 1
-    },
-    {
-      "date": "2025-06-25",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
-      "date": "2025-06-26",
+      "date": "2025-06-23",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
+    },
+    {
+      "date": "2025-06-24",
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 2,
+      "nd_available": 16,
+      "nd_max": 2
+    },
+    {
+      "date": "2025-06-25",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
+    },
+    {
+      "date": "2025-06-26",
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-06-27",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-06-30",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-07-01",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-07-02",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-07-03",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-07-07",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-07-08",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-07-09",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-07-10",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-07-11",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2025-07-14",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-07-15",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2025-07-16",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-07-17",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2025-07-18",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2025-07-21",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2025-07-22",
-      "sp": 1,
-      "sp_available": 15,
-      "sp_max": 1,
-      "nd": 1,
-      "nd_available": 15,
-      "nd_max": 1
-    },
-    {
-      "date": "2025-07-23",
-      "sp": 1,
-      "sp_available": 15,
-      "sp_max": 1,
+      "sp": 2,
+      "sp_available": 16,
+      "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
+      "date": "2025-07-23",
+      "sp": 2,
+      "sp_available": 16,
+      "sp_max": 2,
+      "nd": 3,
+      "nd_available": 16,
+      "nd_max": 3
+    },
+    {
       "date": "2025-07-24",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-07-25",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2025-07-28",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-07-29",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2025-07-30",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2025-07-31",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2025-08-01",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2025-08-04",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
-    },
-    {
-      "date": "2025-08-05",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
-    },
-    {
-      "date": "2025-08-06",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2025-08-07",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
-      "date": "2025-08-08",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "date": "2025-08-05",
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
-      "date": "2025-08-11",
+      "date": "2025-08-06",
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
+    },
+    {
+      "date": "2025-08-07",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
+      "date": "2025-08-08",
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
+    },
+    {
+      "date": "2025-08-11",
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
       "date": "2025-08-12",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-08-13",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-08-14",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-08-15",
       "sp": 1,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 1,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-08-18",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-08-19",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2025-08-20",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2025-08-21",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
+      "date": "2025-08-20",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2025-08-21",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
       "date": "2025-08-22",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2025-08-25",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2025-08-26",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
-      "date": "2025-08-27",
+      "date": "2025-08-25",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2025-08-26",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
+    },
+    {
+      "date": "2025-08-27",
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-08-28",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
-    },
-    {
-      "date": "2025-08-29",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2025-09-02",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
-    },
-    {
-      "date": "2025-09-03",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
-      "date": "2025-09-04",
+      "date": "2025-08-29",
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2025-09-02",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
+      "date": "2025-09-03",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
+      "date": "2025-09-04",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
       "date": "2025-09-05",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2025-09-08",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2025-09-09",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-09-10",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-09-11",
       "sp": 1,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 1,
       "nd": 1,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 1
     },
     {
       "date": "2025-09-12",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2025-09-15",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-09-16",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-09-17",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-09-18",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-09-19",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-09-22",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-09-23",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-09-24",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-09-25",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2025-09-26",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-09-29",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-09-30",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-10-01",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-10-02",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-10-03",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-10-06",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-10-07",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-10-08",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-10-09",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2025-10-10",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2025-10-13",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
-    },
-    {
-      "date": "2025-10-14",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2025-10-15",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2025-10-16",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
-      "date": "2025-10-17",
+      "date": "2025-10-13",
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
+    },
+    {
+      "date": "2025-10-14",
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
+    },
+    {
+      "date": "2025-10-15",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
+    },
+    {
+      "date": "2025-10-16",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
+      "date": "2025-10-17",
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2025-10-20",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 2,
-      "nd_available": 15,
-      "nd_max": 2
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 3,
+      "nd_available": 16,
+      "nd_max": 3
     },
     {
       "date": "2025-10-21",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-10-22",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-10-23",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2025-10-24",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-10-27",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-10-28",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-10-29",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-10-30",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2025-10-31",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2025-11-03",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2025-11-04",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-11-05",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-11-06",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2025-11-07",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
-    },
-    {
-      "date": "2025-11-10",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
-      "date": "2025-11-11",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
-    },
-    {
-      "date": "2025-11-12",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
-    },
-    {
-      "date": "2025-11-13",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2025-11-14",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2025-11-17",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2025-11-18",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2025-11-19",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
-    },
-    {
-      "date": "2025-11-20",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2025-11-21",
+      "date": "2025-11-10",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
-      "date": "2025-11-24",
+      "date": "2025-11-11",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
+      "date": "2025-11-12",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
+    },
+    {
+      "date": "2025-11-13",
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2025-11-14",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2025-11-17",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2025-11-18",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2025-11-19",
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
+    },
+    {
+      "date": "2025-11-20",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
+    },
+    {
+      "date": "2025-11-21",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
+      "date": "2025-11-24",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
       "date": "2025-11-25",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 2,
-      "nd_available": 15,
-      "nd_max": 2
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 3,
+      "nd_available": 16,
+      "nd_max": 3
     },
     {
       "date": "2025-11-26",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-11-28",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-12-01",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2025-12-02",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-12-03",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-12-04",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-12-05",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-12-08",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-12-09",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2025-12-10",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-12-11",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2025-12-12",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2025-12-15",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-12-16",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-12-17",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
     },
     {
       "date": "2025-12-18",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-12-19",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-12-22",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2025-12-23",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2025-12-24",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-12-26",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-12-29",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2025-12-30",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2025-12-31",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-01-02",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 2,
-      "nd_available": 15,
-      "nd_max": 2
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 3,
+      "nd_available": 16,
+      "nd_max": 3
     },
     {
       "date": "2026-01-05",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2026-01-06",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2026-01-07",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-01-08",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-01-09",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-01-12",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-01-13",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-01-14",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-01-15",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-01-16",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-01-20",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
+      "date": "2026-01-20",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
       "date": "2026-01-21",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-01-22",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 2,
-      "nd_available": 15,
-      "nd_max": 2
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 3,
+      "nd_available": 16,
+      "nd_max": 3
     },
     {
       "date": "2026-01-23",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-01-26",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-01-27",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2026-01-28",
       "sp": 8,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 8,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2026-01-29",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-01-30",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2026-02-02",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-02-03",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-02-04",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
     },
     {
       "date": "2026-02-05",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
     },
     {
       "date": "2026-02-06",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-02-09",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2026-02-10",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-02-11",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-02-12",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2026-02-13",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-02-17",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
+      "date": "2026-02-17",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
       "date": "2026-02-18",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-02-19",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2026-02-20",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2026-02-23",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2026-02-24",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-02-25",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-02-26",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-02-27",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-03-02",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2026-03-03",
-      "sp": 13,
-      "sp_available": 15,
-      "sp_max": 13,
+      "sp": 14,
+      "sp_available": 16,
+      "sp_max": 14,
       "nd": 13,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 13
     },
     {
       "date": "2026-03-04",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-03-05",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
       "nd": 10,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 10
     },
     {
       "date": "2026-03-06",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
       "nd": 10,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 10
     },
     {
       "date": "2026-03-09",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2026-03-10",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-03-11",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
       "date": "2026-03-12",
-      "sp": 13,
-      "sp_available": 15,
-      "sp_max": 13,
-      "nd": 13,
-      "nd_available": 15,
-      "nd_max": 13
+      "sp": 14,
+      "sp_available": 16,
+      "sp_max": 14,
+      "nd": 14,
+      "nd_available": 16,
+      "nd_max": 14
     },
     {
       "date": "2026-03-13",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
     },
     {
       "date": "2026-03-16",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-03-17",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
-    },
-    {
-      "date": "2026-03-18",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
-    },
-    {
-      "date": "2026-03-19",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
+      "date": "2026-03-17",
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
+    },
+    {
+      "date": "2026-03-18",
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
+    },
+    {
+      "date": "2026-03-19",
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
       "date": "2026-03-20",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
     },
     {
       "date": "2026-03-23",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-03-24",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
-      "nd": 12,
-      "nd_available": 15,
-      "nd_max": 12
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
+      "nd": 13,
+      "nd_available": 16,
+      "nd_max": 13
     },
     {
       "date": "2026-03-25",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-03-26",
-      "sp": 12,
-      "sp_available": 15,
-      "sp_max": 12,
-      "nd": 12,
-      "nd_available": 15,
-      "nd_max": 12
+      "sp": 13,
+      "sp_available": 16,
+      "sp_max": 13,
+      "nd": 13,
+      "nd_available": 16,
+      "nd_max": 13
     },
     {
       "date": "2026-03-27",
-      "sp": 12,
-      "sp_available": 15,
-      "sp_max": 12,
-      "nd": 12,
-      "nd_available": 15,
-      "nd_max": 12
+      "sp": 13,
+      "sp_available": 16,
+      "sp_max": 13,
+      "nd": 13,
+      "nd_available": 16,
+      "nd_max": 13
     },
     {
       "date": "2026-03-30",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
     },
     {
       "date": "2026-03-31",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-04-01",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-04-02",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2026-04-06",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-04-07",
       "sp": 10,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 10,
       "nd": 10,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 10
     },
     {
       "date": "2026-04-08",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2026-04-09",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-04-10",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-04-13",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2026-04-14",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-04-15",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-04-16",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-04-17",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-04-20",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-04-21",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-04-22",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-04-23",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-04-24",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-04-27",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-04-28",
       "sp": 8,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 8,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2026-04-29",
       "sp": 8,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 8,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2026-04-30",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2026-05-01",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-05-04",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2026-05-05",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-05-06",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-05-07",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2026-05-08",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-05-11",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-05-12",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-05-13",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-05-14",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-05-15",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2026-05-18",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-05-19",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-05-20",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2026-05-21",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
-    },
-    {
-      "date": "2026-05-22",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
-    },
-    {
-      "date": "2026-05-26",
-      "sp": 1,
-      "sp_available": 15,
-      "sp_max": 1,
-      "nd": 1,
-      "nd_available": 15,
-      "nd_max": 1
-    },
-    {
-      "date": "2026-05-27",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
-      "date": "2026-05-28",
+      "date": "2026-05-21",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
+    },
+    {
+      "date": "2026-05-22",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
+    },
+    {
+      "date": "2026-05-26",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
+      "date": "2026-05-27",
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
+    },
+    {
+      "date": "2026-05-28",
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 3,
+      "nd_available": 16,
+      "nd_max": 3
+    },
+    {
       "date": "2026-05-29",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2026-06-01",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-06-02",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-06-03",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-06-04",
-      "sp": 0,
-      "sp_available": 15,
-      "sp_max": 0,
-      "nd": 0,
-      "nd_available": 15,
-      "nd_max": 0
+      "sp": 1,
+      "sp_available": 16,
+      "sp_max": 1,
+      "nd": 1,
+      "nd_available": 16,
+      "nd_max": 1
     },
     {
       "date": "2026-06-05",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-06-08",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2026-06-09",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-06-10",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
     },
     {
       "date": "2026-06-11",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-06-12",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-06-15",
-      "sp": 1,
-      "sp_available": 15,
-      "sp_max": 1,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 2,
+      "sp_available": 16,
+      "sp_max": 2,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2026-06-16",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-06-17",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-06-18",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-06-22",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-06-23",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-06-24",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-06-25",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
-    },
-    {
-      "date": "2026-06-26",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
-      "date": "2026-06-29",
+      "date": "2026-06-26",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
+    },
+    {
+      "date": "2026-06-29",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-06-30",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-07-01",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-07-02",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-07-06",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-07-07",
       "sp": 8,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 8,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2026-07-08",
       "sp": 9,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 9,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
     },
     {
       "date": "2026-07-09",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-07-10",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-07-13",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-07-14",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-07-15",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
     },
     {
       "date": "2026-07-16",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-07-17",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2026-07-20",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2026-07-21",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-07-22",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2026-07-23",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
       "nd": 11,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 11
     },
     {
-      "date": "2026-07-24",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
+      "date": "2026-07-20",
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
+    },
+    {
+      "date": "2026-07-21",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
+    },
+    {
+      "date": "2026-07-22",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
+    },
+    {
+      "date": "2026-07-23",
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
+    },
+    {
+      "date": "2026-07-24",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-07-27",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-07-28",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-07-29",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
     },
     {
       "date": "2026-07-30",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-07-31",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2026-08-03",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
     },
     {
       "date": "2026-08-04",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-08-05",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-08-06",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2026-08-07",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-08-10",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-08-11",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-08-12",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-08-13",
       "sp": 2,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 2,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-08-14",
       "sp": 3,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 3,
       "nd": 2,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 2
     },
     {
       "date": "2026-08-17",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-08-18",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2026-08-19",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-08-20",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
       "date": "2026-08-21",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-08-24",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-08-25",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-08-26",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-08-27",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
     },
     {
       "date": "2026-08-28",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2026-08-31",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
-    },
-    {
-      "date": "2026-09-01",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
-    },
-    {
-      "date": "2026-09-02",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
-    },
-    {
-      "date": "2026-09-03",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
-    },
-    {
-      "date": "2026-09-04",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
-    },
-    {
-      "date": "2026-09-08",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-09-09",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-09-10",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2026-09-11",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
-    },
-    {
-      "date": "2026-09-14",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
-    },
-    {
-      "date": "2026-09-15",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
       "nd": 10,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 10
     },
     {
-      "date": "2026-09-16",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
+      "date": "2026-08-31",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
+    },
+    {
+      "date": "2026-09-01",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
+    },
+    {
+      "date": "2026-09-02",
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
+      "date": "2026-09-03",
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
+      "date": "2026-09-04",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
+    },
+    {
+      "date": "2026-09-08",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2026-09-09",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2026-09-10",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
+    },
+    {
+      "date": "2026-09-11",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 6,
+      "nd_available": 16,
+      "nd_max": 6
+    },
+    {
+      "date": "2026-09-14",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
+    },
+    {
+      "date": "2026-09-15",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2026-09-16",
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
       "date": "2026-09-17",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 3,
-      "nd_available": 15,
-      "nd_max": 3
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 4,
+      "nd_available": 16,
+      "nd_max": 4
     },
     {
       "date": "2026-09-18",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-09-21",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-09-22",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-09-23",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-09-24",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-09-25",
       "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-09-28",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2026-09-29",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-09-30",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
       "date": "2026-10-01",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-10-02",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
       "nd": 3,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 3
     },
     {
       "date": "2026-10-05",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-10-06",
       "sp": 4,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 4,
       "nd": 4,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 4
     },
     {
       "date": "2026-10-07",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-10-08",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-10-09",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
       "date": "2026-10-12",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 5,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 5
     },
     {
       "date": "2026-10-13",
       "sp": 7,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 7,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-10-14",
       "sp": 8,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 8,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
     },
     {
       "date": "2026-10-15",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 7,
-      "nd_available": 15,
-      "nd_max": 7
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
+      "nd": 8,
+      "nd_available": 16,
+      "nd_max": 8
     },
     {
       "date": "2026-10-16",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
     },
     {
       "date": "2026-10-19",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
     },
     {
       "date": "2026-10-20",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-10-21",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-10-22",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 8,
-      "nd_available": 15,
-      "nd_max": 8
-    },
-    {
-      "date": "2026-10-23",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2026-10-26",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-10-27",
       "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 5,
-      "nd_available": 15,
-      "nd_max": 5
-    },
-    {
-      "date": "2026-10-28",
-      "sp": 4,
-      "sp_available": 15,
-      "sp_max": 4,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
-    },
-    {
-      "date": "2026-10-29",
-      "sp": 5,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 5,
       "nd": 7,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 7
     },
     {
-      "date": "2026-10-30",
-      "sp": 8,
-      "sp_available": 15,
-      "sp_max": 8,
+      "date": "2026-10-21",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2026-10-22",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
       "nd": 9,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 9
     },
     {
-      "date": "2026-11-02",
+      "date": "2026-10-23",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
+    },
+    {
+      "date": "2026-10-26",
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2026-10-27",
       "sp": 6,
-      "sp_available": 15,
+      "sp_available": 16,
       "sp_max": 6,
       "nd": 6,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 6
     },
     {
-      "date": "2026-11-03",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
+      "date": "2026-10-28",
+      "sp": 5,
+      "sp_available": 16,
+      "sp_max": 5,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
+    },
+    {
+      "date": "2026-10-29",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
       "nd": 8,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 8
     },
     {
+      "date": "2026-10-30",
+      "sp": 9,
+      "sp_available": 16,
+      "sp_max": 9,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
+    },
+    {
+      "date": "2026-11-02",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2026-11-03",
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 9,
+      "nd_available": 16,
+      "nd_max": 9
+    },
+    {
       "date": "2026-11-04",
-      "sp": 2,
-      "sp_available": 15,
-      "sp_max": 2,
-      "nd": 4,
-      "nd_available": 15,
-      "nd_max": 4
+      "sp": 3,
+      "sp_available": 16,
+      "sp_max": 3,
+      "nd": 5,
+      "nd_available": 16,
+      "nd_max": 5
     },
     {
       "date": "2026-11-05",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
-    },
-    {
-      "date": "2026-11-06",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
-    },
-    {
-      "date": "2026-11-09",
-      "sp": 3,
-      "sp_available": 15,
-      "sp_max": 3,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-11-10",
-      "sp": 7,
-      "sp_available": 15,
-      "sp_max": 7,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2026-11-11",
-      "sp": 5,
-      "sp_available": 15,
-      "sp_max": 5,
-      "nd": 6,
-      "nd_available": 15,
-      "nd_max": 6
-    },
-    {
-      "date": "2026-11-12",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2026-11-13",
-      "sp": 6,
-      "sp_available": 15,
-      "sp_max": 6,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
-    },
-    {
-      "date": "2026-11-16",
-      "sp": 9,
-      "sp_available": 15,
-      "sp_max": 9,
-      "nd": 9,
-      "nd_available": 15,
-      "nd_max": 9
-    },
-    {
-      "date": "2026-11-17",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
-    },
-    {
-      "date": "2026-11-18",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
       "nd": 12,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 12
     },
     {
-      "date": "2026-11-19",
-      "sp": 12,
-      "sp_available": 15,
-      "sp_max": 12,
+      "date": "2026-11-06",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
+    },
+    {
+      "date": "2026-11-09",
+      "sp": 4,
+      "sp_available": 16,
+      "sp_max": 4,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2026-11-10",
+      "sp": 8,
+      "sp_available": 16,
+      "sp_max": 8,
       "nd": 10,
-      "nd_available": 15,
+      "nd_available": 16,
       "nd_max": 10
+    },
+    {
+      "date": "2026-11-11",
+      "sp": 6,
+      "sp_available": 16,
+      "sp_max": 6,
+      "nd": 7,
+      "nd_available": 16,
+      "nd_max": 7
+    },
+    {
+      "date": "2026-11-12",
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2026-11-13",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2026-11-16",
+      "sp": 10,
+      "sp_available": 16,
+      "sp_max": 10,
+      "nd": 10,
+      "nd_available": 16,
+      "nd_max": 10
+    },
+    {
+      "date": "2026-11-17",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
+    },
+    {
+      "date": "2026-11-18",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 13,
+      "nd_available": 16,
+      "nd_max": 13
+    },
+    {
+      "date": "2026-11-19",
+      "sp": 13,
+      "sp_available": 16,
+      "sp_max": 13,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
     },
     {
       "date": "2026-11-20",
-      "sp": 11,
-      "sp_available": 15,
-      "sp_max": 11,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
     },
     {
       "date": "2026-11-23",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 11,
-      "nd_available": 15,
-      "nd_max": 11
-    },
-    {
-      "date": "2026-11-24",
-      "sp": 10,
-      "sp_available": 15,
-      "sp_max": 10,
-      "nd": 10,
-      "nd_available": 15,
-      "nd_max": 10
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
     }
   ],
   "backtest": {
     "year": {
-      "start": "2025-11-24",
-      "end": "2026-11-24",
-      "sessions": 252,
+      "start": "2025-11-23",
+      "end": "2026-11-23",
+      "sessions": 251,
       "markets": {
         "sp": {
-          "complete_days": 252,
+          "complete_days": 251,
           "incomplete_days": 0,
           "zero_to_four": {
             "days": 87,
@@ -4473,7 +4501,7 @@
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
-          "complete_days": 252,
+          "complete_days": 251,
           "incomplete_days": 0,
           "zero_to_four": {
             "days": 69,
@@ -4766,12 +4794,12 @@
       }
     },
     "twenty_months": {
-      "start": "2025-03-24",
-      "end": "2026-11-24",
-      "sessions": 422,
+      "start": "2025-03-23",
+      "end": "2026-11-23",
+      "sessions": 421,
       "markets": {
         "sp": {
-          "complete_days": 422,
+          "complete_days": 421,
           "incomplete_days": 0,
           "zero_to_four": {
             "days": 159,
@@ -4938,7 +4966,7 @@
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
-          "complete_days": 422,
+          "complete_days": 421,
           "incomplete_days": 0,
           "zero_to_four": {
             "days": 138,
@@ -5231,25 +5259,25 @@
         "halves": [
           {
             "label": "Earlier 10 months",
-            "start": "2025-03-24",
-            "end": "2026-01-23",
-            "sessions": 211,
+            "start": "2025-03-23",
+            "end": "2026-01-22",
+            "sessions": 210,
             "groups": {
               "zero_to_four": {
-                "days": 88,
-                "forward1_observations": 88,
-                "forward1_mean_pct": 0.152,
-                "forward5_observations": 88,
-                "forward5_mean_pct": 0.475,
-                "forward5_median_pct": 0.725,
-                "forward5_stddev_pct": 1.593,
-                "forward5_p10_pct": -1.966,
+                "days": 87,
+                "forward1_observations": 87,
+                "forward1_mean_pct": 0.149,
+                "forward5_observations": 87,
+                "forward5_mean_pct": 0.482,
+                "forward5_median_pct": 0.747,
+                "forward5_stddev_pct": 1.601,
+                "forward5_p10_pct": -1.989,
                 "forward5_worst_pct": -4.334,
-                "forward5_positive_pct": 65.9,
-                "forward5_worst_close_mean_pct": -0.767,
+                "forward5_positive_pct": 66.7,
+                "forward5_worst_close_mean_pct": -0.774,
                 "forward5_worst_close_pct": -4.334,
-                "forward5_worst_close_median_pct": -0.313,
-                "forward5_below_minus2_pct": 15.9,
+                "forward5_worst_close_median_pct": -0.325,
+                "forward5_below_minus2_pct": 16.1,
                 "nonoverlap_observations": 29,
                 "nonoverlap_mean_pct": 0.684,
                 "nonoverlap_median_pct": 1.166,
@@ -5336,20 +5364,20 @@
                 "nonoverlap_positive_pct": 50.0
               },
               "selective": {
-                "days": 96,
-                "forward1_observations": 96,
-                "forward1_mean_pct": 0.14,
-                "forward5_observations": 96,
-                "forward5_mean_pct": 0.438,
-                "forward5_median_pct": 0.725,
-                "forward5_stddev_pct": 1.707,
-                "forward5_p10_pct": -2.144,
+                "days": 95,
+                "forward1_observations": 95,
+                "forward1_mean_pct": 0.137,
+                "forward5_observations": 95,
+                "forward5_mean_pct": 0.444,
+                "forward5_median_pct": 0.747,
+                "forward5_stddev_pct": 1.715,
+                "forward5_p10_pct": -2.147,
                 "forward5_worst_pct": -4.334,
-                "forward5_positive_pct": 64.6,
-                "forward5_worst_close_mean_pct": -0.822,
+                "forward5_positive_pct": 65.3,
+                "forward5_worst_close_mean_pct": -0.829,
                 "forward5_worst_close_pct": -4.973,
-                "forward5_worst_close_median_pct": -0.313,
-                "forward5_below_minus2_pct": 16.7,
+                "forward5_worst_close_median_pct": -0.325,
+                "forward5_below_minus2_pct": 16.8,
                 "nonoverlap_observations": 32,
                 "nonoverlap_mean_pct": 0.579,
                 "nonoverlap_median_pct": 0.98,
@@ -5359,29 +5387,29 @@
           },
           {
             "label": "Later 10 months",
-            "start": "2026-01-24",
-            "end": "2026-11-24",
+            "start": "2026-01-23",
+            "end": "2026-11-23",
             "sessions": 211,
             "groups": {
               "zero_to_four": {
-                "days": 50,
-                "forward1_observations": 50,
-                "forward1_mean_pct": -0.039,
-                "forward5_observations": 50,
-                "forward5_mean_pct": 0.462,
-                "forward5_median_pct": 0.167,
-                "forward5_stddev_pct": 2.729,
-                "forward5_p10_pct": -3.177,
+                "days": 51,
+                "forward1_observations": 51,
+                "forward1_mean_pct": -0.03,
+                "forward5_observations": 51,
+                "forward5_mean_pct": 0.451,
+                "forward5_median_pct": 0.109,
+                "forward5_stddev_pct": 2.702,
+                "forward5_p10_pct": -3.172,
                 "forward5_worst_pct": -5.137,
-                "forward5_positive_pct": 52.0,
-                "forward5_worst_close_mean_pct": -1.407,
+                "forward5_positive_pct": 51.0,
+                "forward5_worst_close_mean_pct": -1.382,
                 "forward5_worst_close_pct": -6.489,
-                "forward5_worst_close_median_pct": -0.641,
-                "forward5_below_minus2_pct": 26.0,
+                "forward5_worst_close_median_pct": -0.616,
+                "forward5_below_minus2_pct": 25.5,
                 "nonoverlap_observations": 21,
-                "nonoverlap_mean_pct": 0.561,
-                "nonoverlap_median_pct": 0.109,
-                "nonoverlap_positive_pct": 52.4
+                "nonoverlap_mean_pct": 0.549,
+                "nonoverlap_median_pct": -0.131,
+                "nonoverlap_positive_pct": 47.6
               },
               "exactly_five": {
                 "days": 33,
@@ -5464,24 +5492,24 @@
                 "nonoverlap_positive_pct": 100.0
               },
               "selective": {
-                "days": 58,
-                "forward1_observations": 58,
-                "forward1_mean_pct": -0.011,
-                "forward5_observations": 58,
-                "forward5_mean_pct": 0.658,
-                "forward5_median_pct": 0.322,
-                "forward5_stddev_pct": 2.778,
-                "forward5_p10_pct": -2.973,
+                "days": 59,
+                "forward1_observations": 59,
+                "forward1_mean_pct": -0.004,
+                "forward5_observations": 59,
+                "forward5_mean_pct": 0.644,
+                "forward5_median_pct": 0.225,
+                "forward5_stddev_pct": 2.756,
+                "forward5_p10_pct": -2.945,
                 "forward5_worst_pct": -5.137,
-                "forward5_positive_pct": 53.4,
-                "forward5_worst_close_mean_pct": -1.338,
+                "forward5_positive_pct": 52.5,
+                "forward5_worst_close_mean_pct": -1.318,
                 "forward5_worst_close_pct": -6.489,
-                "forward5_worst_close_median_pct": -0.625,
-                "forward5_below_minus2_pct": 25.9,
+                "forward5_worst_close_median_pct": -0.616,
+                "forward5_below_minus2_pct": 25.4,
                 "nonoverlap_observations": 22,
-                "nonoverlap_mean_pct": 0.786,
-                "nonoverlap_median_pct": 0.167,
-                "nonoverlap_positive_pct": 54.5
+                "nonoverlap_mean_pct": 0.775,
+                "nonoverlap_median_pct": 0.047,
+                "nonoverlap_positive_pct": 50.0
               }
             }
           }
@@ -5494,7 +5522,7 @@
   "risk_policy": {
     "score_name": "Market Health",
     "direction": "higher_is_healthier",
-    "formula": "15 minus bearish signal count; neutral/warning input counts as non-bearish",
+    "formula": "16 minus bearish signal count; neutral/warning input counts as non-bearish; daily MACD line >= signal earns one health point",
     "sp500": {
       "risk_off_max": 5,
       "neutral_min": 6,
@@ -5508,7 +5536,10 @@
       "risk_on_min": 11
     },
     "legacy_backtest_policy": "Earlier forward-return research used bearish scores and different thresholds; not validated for this new policy.",
-    "decision_date": "2026-11-25"
+    "decision_date": "2026-11-25",
+    "prior_model": "15-point-health-v1-neutral-6-10",
+    "macd_rule": "Daily MACD(12,26,9) histogram >=0: non-bearish (+1 health); <0: bearish (+0 health)",
+    "fear_greed_scored": false
   },
   "order": {
     "shared": [
@@ -5529,6 +5560,7 @@
       "rsp_spy",
       "iwm_spy",
       "sp_breadth1d",
+      "sp_macd",
       "sp_breadth5d",
       "sp_breadth200"
     ],
@@ -5542,6 +5574,7 @@
       "qqqe_qqq",
       "iwm_qqq",
       "nd_breadth1d",
+      "nd_macd",
       "nd_breadth5d"
     ]
   },
@@ -5556,6 +5589,8 @@
     "vix_curve": "VIX Curve",
     "sp_rsi14": "SPY RSI (14)",
     "nd_rsi14": "QQQ RSI (14)",
+    "sp_macd": "SPY MACD (12,26,9)",
+    "nd_macd": "QQQ MACD (12,26,9)",
     "sp_def": "Defensives/SPY",
     "sp_xle": "XLE/SPY",
     "sp_smh": "SMH/SPY",
@@ -5578,21 +5613,21 @@
     "missing": "Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
     "partial": "Health Score is an interval when inputs are missing. Missing points are never automatically counted as healthy.",
     "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly.",
-    "model": "Experimental 15-point Market Health model for both indexes: higher is healthier; 0\u20135 Risk-Off, 6\u201310 Neutral, 11\u201315 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score \u22644/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."
+    "model": "Experimental 16-point Market Health model for both indexes: higher is healthier; 0\u20135 Risk-Off, 6\u201310 Neutral, 11\u201316 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. The existing score \u22644/5 historical research still uses the archived 15-point model; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) and MACD(12,26,9) each add one point; original 50D/200D trend rule is retained; five SMA readings and external Fear & Greed remain informational only."
   },
   "price_moves": {
-    "session": "2026-11-24",
-    "previous_session": "2026-11-23",
+    "session": "2026-11-23",
+    "previous_session": "2026-11-20",
     "status": "complete",
     "spy": {
-      "previous_close": 722.289978,
-      "close": 718.780029,
-      "change_pct": -0.48595
+      "previous_close": 689.809998,
+      "close": 722.289978,
+      "change_pct": 4.70854
     },
     "qqq": {
-      "previous_close": 651.030029,
-      "close": 638.099976,
-      "change_pct": -1.98609
+      "previous_close": 608.450012,
+      "close": 651.030029,
+      "change_pct": 6.99811
     }
   },
   "daily_macd": {
@@ -5602,22 +5637,22 @@
       "signal": 9
     },
     "source": "unadjusted SPY/QQQ daily closes, same sessions as scored EOD model",
-    "scored": false,
+    "scored": true,
     "spy": {
-      "as_of": "2026-11-24",
+      "as_of": "2026-11-23",
       "status": "complete",
-      "macd": -12.86124,
-      "signal": -9.33189,
-      "histogram": -3.52935,
+      "macd": -12.73954,
+      "signal": -8.44955,
+      "histogram": -4.28999,
       "relation": "below",
       "crossover": "none"
     },
     "qqq": {
-      "as_of": "2026-11-24",
+      "as_of": "2026-11-23",
       "status": "complete",
-      "macd": -19.84865,
-      "signal": -17.0358,
-      "histogram": -2.81285,
+      "macd": -19.5867,
+      "signal": -16.33259,
+      "histogram": -3.25412,
       "relation": "below",
       "crossover": "none"
     }
@@ -5625,51 +5660,51 @@
   "sources": {
     "SPY": {
       "provider": "Yahoo Finance via yfinance (unofficial): SPY",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "QQQ": {
       "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "RSP": {
       "provider": "Yahoo Finance via yfinance (unofficial): RSP",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "QQQE": {
       "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "IWM": {
       "provider": "Yahoo Finance via yfinance (unofficial): IWM",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "SMH": {
       "provider": "Yahoo Finance via yfinance (unofficial): SMH",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "XLE": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLE",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "XLP": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLP",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "XLV": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLV",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "XLU": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLU",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "HYG": {
       "provider": "Yahoo Finance via yfinance (unofficial): HYG",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "IEF": {
       "provider": "Yahoo Finance via yfinance (unofficial): IEF",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "OIL": {
       "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
@@ -5701,18 +5736,19 @@
     },
     "SPX_BREADTH200": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "NDX_ADV": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     },
     "NDX_DECL": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-23"
     }
   },
   "warnings": [
+    "EOD provider lag / possible exchange holiday: latest priced session 2026-11-23 vs calendar date 2026-11-24. A 4:15pm Central backup refresh is also scheduled on weekdays.",
     "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
     "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
     "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
