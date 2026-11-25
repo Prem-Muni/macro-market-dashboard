@@ -57,3 +57,18 @@ def check_snapshot_session(current_session: str, prior_session: str | None,
     required=expected_close(now)
     if required and current_session < required.isoformat():
         raise RuntimeError(f'EOD DATA NOT READY: provider latest common SPY/QQQ session is {current_session}, expected {required}; retaining saved snapshot. The later backup refresh will retry.')
+
+
+def most_recent_completed_session(now: datetime | None = None) -> date:
+    """Last session past our EOD safety buffer, including before weekends/holidays.
+
+    Used only to repair a previously published incomplete snapshot; does not
+    permit a newer intraday session to be published as a completed market day.
+    """
+    now = now.astimezone(CENTRAL) if now is not None else datetime.now(CENTRAL)
+    day = now.date()
+    if not is_regular_session(day) or (now.hour, now.minute) < (15, 15):
+        day -= timedelta(days=1)
+    while not is_regular_session(day):
+        day -= timedelta(days=1)
+    return day

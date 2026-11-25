@@ -18,7 +18,8 @@ from breadth import derive_breadth
 from price_risk import build_price_moves
 from insights_history import merge_daily_archive
 from daily_macd import calculate_daily_macd
-from eod_freshness import check_snapshot_session, expected_close
+from eod_freshness import check_snapshot_session, expected_close, most_recent_completed_session
+from snapshot_integrity import check_completed_snapshot
 from eod_recovery import recover_missing_equity_closes
 from public_eod import recover_public_etf_closes
 from zoneinfo import ZoneInfo
@@ -139,7 +140,17 @@ def load_extra():
 
 
 def is_same_session_quality_regression(previous_snapshot: dict, candidate: dict) -> bool:
-    """Avoid replacing a same-session, same-model snapshot with missing inputs."""
+    """Protect an already verified, same-session snapshot from losing coverage."""
+    # A previously published unverified snapshot may have a newer date but
+    # no completed prices. Always permit a *verified* replacement, even when
+    # the raw breadth feed happens to be less complete on the retry.
+    prior_price = previous_snapshot.get("price_moves") or {}
+    newer_price = candidate.get("price_moves") or {}
+    if (prior_price.get("status") != "complete" or
+            prior_price.get("session") != previous_snapshot.get("session")) and (
+            newer_price.get("status") == "complete" and
+            newer_price.get("session") == candidate.get("session")):
+        return False
     if (previous_snapshot.get("session") != candidate.get("session") or
             previous_snapshot.get("model_version") != candidate.get("model_version")):
         return False
@@ -157,11 +168,32 @@ def is_same_session_quality_regression(previous_snapshot: dict, candidate: dict)
 
 def main():
     DATA.mkdir(parents=True,exist_ok=True)
+    needed = expected_close()
+    if needed is None:
+        # On a market holiday, weekend, or before today's close, permit a
+        # *repair* of the already-saved incomplete session if it was genuinely
+        # an earlier completed NYSE session. Nov 26 Thanksgiving can therefore
+        # repair a Nov 25 incomplete close without publishing a fake Nov 26 bar.
+        prior = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
+        prior_day = prior.get('session')
+        prior_price = prior.get('price_moves') or {}
+        if (isinstance(prior_day,str) and
+              (prior_price.get('status') != 'complete' or prior_price.get('session') != prior_day)):
+            try:
+                prior_date = datetime.strptime(prior_day,'%Y-%m-%d').date()
+                if prior_date == most_recent_completed_session():
+                    needed = prior_date
+                    print(f'::notice::Repairing saved incomplete EOD session {needed} (not creating a new market session)')
+            except ValueError:
+                pass
+        if needed is None:
+            print('::notice::No new regular completed session eligible; existing published snapshot retained.')
+            return
+    print(f'::notice::Verifying completed EOD session {needed}')
     prices,sources,errors=download_yahoo()
     # yfinance's historical batch request can lag a complete equity session.
     # Recheck missing SPY/QQQ closes individually before the strict EOD guard.
     # No single-symbol daily close => no update; preserve the prior snapshot.
-    needed = expected_close()
     if needed is not None:
         refreshed = recover_missing_equity_closes(prices, sources, errors, needed)
         for symbol, outcome in refreshed.items():
@@ -236,19 +268,21 @@ def main():
     # session as a fresh model update. Keep the prior JSON/history unchanged.
     previous_snapshot=json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
     check_snapshot_session(result['session'],previous_snapshot.get('session'))
-    # A same-session rerun must not erase an already saved, more complete
-    # observation of the SAME scoring model just because a feed later throttles.
-    # Never reuse another day's breadth or invent a missing signal.
+    # Price verification precedes the quality comparison, saving, and archive.
+    # This prevents a premature trading-day score from appearing as completed
+    # while the close/summary remains unavailable.
+    result["price_moves"] = build_price_moves(df, result["session"])
+    check_completed_snapshot(result, needed)
+    # A same-session rerun must not erase a verified result with fewer signals.
+    # Exception: a formerly *unverified* snapshot may be repaired in place.
     if is_same_session_quality_regression(previous_snapshot, result):
         print("::warning::Same-session refresh has fewer validated signals than the "
-              "already saved snapshot; preserving the more complete prior result.")
+              "already verified snapshot; preserving the more complete prior result.")
         return
-    # Add EOD price context from the SAME SPY/QQQ sessions as the risk engine.
-    # This does not alter any scored inputs, regimes, or past returns.
-    result["price_moves"] = build_price_moves(df, result["session"])
     # EOD MACD(12,26,9), now the 16th scored signal, with additional
     # display values derived from the same completed EOD close series.
     result["daily_macd"] = calculate_daily_macd(df, result["session"])
+    check_completed_snapshot(result, needed)
     result["sources"]={k:{"provider":v,"latest_session":prices[k].dropna().index.max().strftime("%Y-%m-%d")}
                        for k,v in sources.items() if k in prices and not prices[k].dropna().empty}
     for key in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL"):

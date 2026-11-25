@@ -2,12 +2,14 @@ name: Refresh EOD dashboard
 
 on:
   schedule:
-    # Primary: 3:15pm Central, 15 minutes after the regular US equity close.
-    - cron: '15 15 * * 1-5'
+    # Primary at 3:20pm CT (4:20pm ET) after verified regular market close.
+    - cron: '20 15 * * 1-5'
       timezone: 'America/Chicago'
-    # Backup: 4:15pm Central, if a provider has not finalized daily bars at 3:15.
-    # Re-running the updater updates today's existing archive record, never duplicates it.
-    - cron: '15 16 * * 1-5'
+    # Backup at 4:20pm CT when unofficial providers have published more bars.
+    - cron: '20 16 * * 1-5'
+      timezone: 'America/Chicago'
+    # Late backup at 7:20pm CT for delayed vendors; same-day archives upsert.
+    - cron: '20 19 * * 1-5'
       timezone: 'America/Chicago'
   workflow_dispatch:
 
@@ -15,11 +17,9 @@ permissions:
   contents: write
   pages: write
   id-token: write
-
 concurrency:
   group: market-refresh
   cancel-in-progress: false
-
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -59,16 +59,12 @@ jobs:
               fi
             fi
           fi
-      # GITHUB_TOKEN-created commits do not reliably trigger branch-based Pages builds.
-      # Publish the generated docs/ directory directly in this workflow instead.
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
       - name: Upload website artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: docs
-
-  # Separate job prevents the GitHub Pages artifact lookup from racing its upload.
   deploy:
     name: Deploy published dashboard
     needs: update
