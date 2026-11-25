@@ -18,7 +18,8 @@ from breadth import derive_breadth
 from price_risk import build_price_moves
 from insights_history import merge_daily_archive
 from daily_macd import calculate_daily_macd
-from eod_freshness import check_snapshot_session
+from eod_freshness import check_snapshot_session, expected_close
+from eod_recovery import recover_missing_equity_closes
 from zoneinfo import ZoneInfo
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -139,6 +140,14 @@ def load_extra():
 def main():
     DATA.mkdir(parents=True,exist_ok=True)
     prices,sources,errors=download_yahoo()
+    # yfinance's historical batch request can lag a complete equity session.
+    # Recheck missing SPY/QQQ closes individually before the strict EOD guard.
+    # No single-symbol daily close => no update; preserve the prior snapshot.
+    needed = expected_close()
+    if needed is not None:
+        refreshed = recover_missing_equity_closes(prices, sources, errors, needed)
+        for symbol, outcome in refreshed.items():
+            print(f"::notice::EOD equity close status: {symbol}: {outcome}")
     cboe,cb_sources,cb_err=official_cboe()
     errors+=cb_err
     # Prefer official Cboe indices; if official feed currently lags, use Yahoo for those missing sessions.
