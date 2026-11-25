@@ -1,6 +1,6 @@
 {
   "session": "2026-11-25",
-  "generated_at": "2026-11-25T18:42:20.132759+00:00",
+  "generated_at": "2026-11-25T22:10:07.080129+00:00",
   "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -132,7 +132,7 @@
     "vix": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 28.41,
+      "value": 28.29,
       "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
     },
@@ -181,7 +181,7 @@
     "vix_curve": {
       "state": "bear",
       "label": "BACKWARDATION",
-      "value": 1.071,
+      "value": 1.076,
       "note": "VIX / VIX3M implied-volatility ratio",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
     },
@@ -244,91 +244,91 @@
     "sp_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 39.397,
+      "value": 39.833,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "SPY EOD close"
     },
     "nd_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 37.761,
+      "value": 38.581,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "QQQ EOD close"
     },
     "sp_macd": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -3.008,
+      "value": -2.915,
       "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
       "source": "SPY EOD close \u00b7 EMA(12,26,9)"
     },
     "nd_macd": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -2.762,
+      "value": -2.5,
       "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
       "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
     },
     "rsp_spy": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.946,
+      "value": 1.7,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "RSP/SPY"
     },
     "iwm_spy": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.589,
+      "value": 1.458,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/SPY"
     },
     "qqqe_qqq": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.413,
+      "value": 1.327,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "QQQE/QQQ"
     },
     "iwm_qqq": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 3.324,
+      "value": 2.777,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/QQQ"
     },
     "sp_breadth1d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 3.206,
+      "value": 2.806,
       "note": "1D change in % of SPX constituents above 200D SMA; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth5d": {
       "state": "warn",
       "label": "STABLE",
-      "value": 0.601,
+      "value": 0.2,
       "note": "5D change, percentage points",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth200": {
       "state": "warn",
       "label": "CAUTION",
-      "value": 58.918,
+      "value": 58.517,
       "note": "Current % of SPX constituents above own 200D SMA",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "nd_breadth1d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 55.102,
+      "value": 56.122,
       "note": "Today's advancing share % (not SPX 200D breadth)",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     },
     "nd_breadth5d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 11.109,
+      "value": 11.313,
       "note": "Change in average advancing share between adjacent 5D windows; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     }
@@ -396,74 +396,74 @@
     "spy": {
       "symbol": "SPY",
       "as_of": "2026-11-25",
-      "close": 715.24,
+      "close": 716.7,
       "averages": {
         "5": {
-          "value": 712.398,
-          "distance_pct": 0.4,
+          "value": 712.69,
+          "distance_pct": 0.56,
           "state": "BULLISH"
         },
         "20": {
-          "value": 740.256,
-          "distance_pct": -3.38,
+          "value": 740.329,
+          "distance_pct": -3.19,
           "state": "BEARISH"
         },
         "50": {
-          "value": 757.86,
-          "distance_pct": -5.62,
+          "value": 757.889,
+          "distance_pct": -5.43,
           "state": "BEARISH"
         },
         "100": {
-          "value": 758.523,
-          "distance_pct": -5.71,
+          "value": 758.538,
+          "distance_pct": -5.52,
           "state": "BEARISH"
         },
         "200": {
-          "value": 733.153,
-          "distance_pct": -2.44,
+          "value": 733.161,
+          "distance_pct": -2.25,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 39.4,
+        "value": 39.83,
         "state": "NEUTRAL"
       }
     },
     "qqq": {
       "symbol": "QQQ",
       "as_of": "2026-11-25",
-      "close": 629.818,
+      "close": 633.93,
       "averages": {
         "5": {
-          "value": 634.487,
-          "distance_pct": -0.74,
+          "value": 635.31,
+          "distance_pct": -0.22,
           "state": "BEARISH"
         },
         "20": {
-          "value": 666.525,
-          "distance_pct": -5.51,
+          "value": 666.731,
+          "distance_pct": -4.92,
           "state": "BEARISH"
         },
         "50": {
-          "value": 706.967,
-          "distance_pct": -10.91,
+          "value": 707.05,
+          "distance_pct": -10.34,
           "state": "BEARISH"
         },
         "100": {
-          "value": 708.423,
-          "distance_pct": -11.1,
+          "value": 708.464,
+          "distance_pct": -10.52,
           "state": "BEARISH"
         },
         "200": {
-          "value": 683.478,
-          "distance_pct": -7.85,
+          "value": 683.499,
+          "distance_pct": -7.25,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 37.76,
+        "value": 38.58,
         "state": "NEUTRAL"
       }
     }
@@ -5494,25 +5494,25 @@
                 "positive_n": 5,
                 "positive_pct": 45.455,
                 "negative_pct": 54.545,
-                "mean_pct": 0.123,
-                "median_pct": -0.306,
+                "mean_pct": 0.142,
+                "median_pct": -0.289,
                 "p10_pct": -1.962,
                 "worst_pct": -3.64,
-                "stdev_pct": 2.156,
+                "stdev_pct": 2.151,
                 "nonoverlap_n": 11,
                 "nonoverlap_positive_pct": 45.455,
-                "nonoverlap_median_pct": -0.306
+                "nonoverlap_median_pct": -0.289
               },
               "5": {
                 "n": 7,
                 "positive_n": 5,
                 "positive_pct": 71.429,
                 "negative_pct": 28.571,
-                "mean_pct": 0.685,
+                "mean_pct": 0.713,
                 "median_pct": 0.629,
-                "p10_pct": -2.049,
-                "worst_pct": -2.049,
-                "stdev_pct": 2.114,
+                "p10_pct": -1.865,
+                "worst_pct": -1.865,
+                "stdev_pct": 2.072,
                 "nonoverlap_n": 4,
                 "nonoverlap_positive_pct": 75.0,
                 "nonoverlap_median_pct": 0.355
@@ -5569,11 +5569,11 @@
                 "positive_n": 28,
                 "positive_pct": 49.123,
                 "negative_pct": 50.877,
-                "mean_pct": 0.042,
+                "mean_pct": 0.045,
                 "median_pct": -0.179,
                 "p10_pct": -2.904,
-                "worst_pct": -5.866,
-                "stdev_pct": 2.33,
+                "worst_pct": -5.674,
+                "stdev_pct": 2.321,
                 "nonoverlap_n": 9,
                 "nonoverlap_positive_pct": 55.556,
                 "nonoverlap_median_pct": 0.27
@@ -5635,11 +5635,11 @@
               "positive_n": 44,
               "positive_pct": 44.444,
               "negative_pct": 55.556,
-              "mean_pct": -0.036,
+              "mean_pct": -0.034,
               "median_pct": -0.116,
               "p10_pct": -1.081,
               "worst_pct": -4.409,
-              "stdev_pct": 1.082,
+              "stdev_pct": 1.081,
               "nonoverlap_n": 99,
               "nonoverlap_positive_pct": 44.444,
               "nonoverlap_median_pct": -0.116
@@ -5649,11 +5649,11 @@
               "positive_n": 36,
               "positive_pct": 37.895,
               "negative_pct": 62.105,
-              "mean_pct": -0.257,
+              "mean_pct": -0.255,
               "median_pct": -0.34,
-              "p10_pct": -1.989,
+              "p10_pct": -1.968,
               "worst_pct": -8.558,
-              "stdev_pct": 1.921,
+              "stdev_pct": 1.92,
               "nonoverlap_n": 19,
               "nonoverlap_positive_pct": 42.105,
               "nonoverlap_median_pct": -0.277
@@ -5663,11 +5663,11 @@
               "positive_n": 36,
               "positive_pct": 40.0,
               "negative_pct": 60.0,
-              "mean_pct": -0.304,
+              "mean_pct": -0.302,
               "median_pct": -0.665,
               "p10_pct": -2.904,
               "worst_pct": -6.185,
-              "stdev_pct": 2.226,
+              "stdev_pct": 2.221,
               "nonoverlap_n": 9,
               "nonoverlap_positive_pct": 44.444,
               "nonoverlap_median_pct": -0.095
@@ -5688,25 +5688,25 @@
                 "positive_n": 7,
                 "positive_pct": 50.0,
                 "negative_pct": 50.0,
-                "mean_pct": -0.247,
-                "median_pct": -0.546,
+                "mean_pct": -0.201,
+                "median_pct": -0.314,
                 "p10_pct": -2.668,
                 "worst_pct": -5.673,
-                "stdev_pct": 2.978,
+                "stdev_pct": 2.965,
                 "nonoverlap_n": 14,
                 "nonoverlap_positive_pct": 50.0,
-                "nonoverlap_median_pct": -0.546
+                "nonoverlap_median_pct": -0.314
               },
               "5": {
                 "n": 10,
                 "positive_n": 4,
                 "positive_pct": 40.0,
                 "negative_pct": 60.0,
-                "mean_pct": -0.966,
+                "mean_pct": -0.904,
                 "median_pct": -1.406,
                 "p10_pct": -10.508,
                 "worst_pct": -10.508,
-                "stdev_pct": 5.427,
+                "stdev_pct": 5.385,
                 "nonoverlap_n": 5,
                 "nonoverlap_positive_pct": 60.0,
                 "nonoverlap_median_pct": 1.225
@@ -5763,11 +5763,11 @@
                 "positive_n": 24,
                 "positive_pct": 40.678,
                 "negative_pct": 59.322,
-                "mean_pct": -0.827,
+                "mean_pct": -0.817,
                 "median_pct": -1.012,
                 "p10_pct": -6.239,
-                "worst_pct": -8.772,
-                "stdev_pct": 4.362,
+                "worst_pct": -8.177,
+                "stdev_pct": 4.344,
                 "nonoverlap_n": 9,
                 "nonoverlap_positive_pct": 44.444,
                 "nonoverlap_median_pct": -0.521
@@ -5829,11 +5829,11 @@
               "positive_n": 46,
               "positive_pct": 46.465,
               "negative_pct": 53.535,
-              "mean_pct": -0.108,
+              "mean_pct": -0.102,
               "median_pct": -0.102,
               "p10_pct": -1.966,
               "worst_pct": -6.489,
-              "stdev_pct": 1.728,
+              "stdev_pct": 1.724,
               "nonoverlap_n": 99,
               "nonoverlap_positive_pct": 46.465,
               "nonoverlap_median_pct": -0.102
@@ -5843,11 +5843,11 @@
               "positive_n": 37,
               "positive_pct": 38.947,
               "negative_pct": 61.053,
-              "mean_pct": -0.6,
+              "mean_pct": -0.593,
               "median_pct": -0.658,
-              "p10_pct": -4.502,
+              "p10_pct": -4.471,
               "worst_pct": -10.508,
-              "stdev_pct": 3.256,
+              "stdev_pct": 3.249,
               "nonoverlap_n": 19,
               "nonoverlap_positive_pct": 47.368,
               "nonoverlap_median_pct": -0.078
@@ -5857,11 +5857,11 @@
               "positive_n": 34,
               "positive_pct": 37.778,
               "negative_pct": 62.222,
-              "mean_pct": -0.898,
+              "mean_pct": -0.891,
               "median_pct": -1.034,
               "p10_pct": -5.767,
-              "worst_pct": -8.772,
-              "stdev_pct": 3.924,
+              "worst_pct": -8.177,
+              "stdev_pct": 3.911,
               "nonoverlap_n": 9,
               "nonoverlap_positive_pct": 33.333,
               "nonoverlap_median_pct": -0.856
@@ -5979,10 +5979,18 @@
   },
   "price_moves": {
     "session": "2026-11-25",
-    "previous_session": null,
-    "status": "awaiting_close",
-    "spy": null,
-    "qqq": null
+    "previous_session": "2026-11-24",
+    "status": "complete",
+    "spy": {
+      "previous_close": 718.780029,
+      "close": 716.700012,
+      "change_pct": -0.28938
+    },
+    "qqq": {
+      "previous_close": 638.099976,
+      "close": 633.929993,
+      "change_pct": -0.6535
+    }
   },
   "daily_macd": {
     "parameters": {
@@ -5995,18 +6003,18 @@
     "spy": {
       "as_of": "2026-11-25",
       "status": "complete",
-      "macd": -13.09242,
-      "signal": -10.08399,
-      "histogram": -3.00842,
+      "macd": -12.97595,
+      "signal": -10.0607,
+      "histogram": -2.91525,
       "relation": "below",
       "crossover": "none"
     },
     "qqq": {
       "as_of": "2026-11-25",
       "status": "complete",
-      "macd": -20.4884,
-      "signal": -17.72632,
-      "histogram": -2.76208,
+      "macd": -20.16034,
+      "signal": -17.66071,
+      "histogram": -2.49963,
       "relation": "below",
       "crossover": "none"
     }
@@ -6624,6 +6632,124 @@
           }
         },
         "spy_qqq_divergence": "none"
+      },
+      {
+        "session": "2026-11-25",
+        "previous_session": "2026-11-24",
+        "model": "16-point Market Health with scored MACD",
+        "spy": {
+          "macd_info": {
+            "macd": -12.97595,
+            "signal": -10.0607,
+            "histogram": -2.91525,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 718.78,
+          "close": 716.7,
+          "price_change_pct": -0.28938,
+          "score": 10,
+          "available": 16,
+          "total": 16,
+          "regime": "NEUTRAL",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "sp_breadth1d"
+          ],
+          "trend_5d": "STABLE",
+          "five_day_delta_range": [
+            -1,
+            -1
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": -1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "changed",
+          "price_risk_status": "none",
+          "price_risk_label": "No price/risk alert"
+        },
+        "qqq": {
+          "macd_info": {
+            "macd": -20.16034,
+            "signal": -17.66071,
+            "histogram": -2.49963,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 638.1,
+          "close": 633.93,
+          "price_change_pct": -0.6535,
+          "score": 9,
+          "available": 15,
+          "total": 16,
+          "regime": "INCOMPLETE",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "nd_breadth1d"
+          ],
+          "trend_5d": "IMPROVING",
+          "five_day_delta_range": [
+            -4,
+            -3
+          ],
+          "confirmation": {
+            "confirmed": 1,
+            "available": 3,
+            "total": 4
+          },
+          "swing": "N/A",
+          "previous_score": null,
+          "score_delta_1d": null,
+          "previous_regime": "incomplete",
+          "risk_transition": "uncertain",
+          "price_risk_status": "uncertain",
+          "price_risk_label": "Score incomplete \u2014 no confirmed alert"
+        },
+        "signal_changes": {
+          "status": "complete",
+          "groups": {
+            "shared": {
+              "new_bearish": [],
+              "eased": [
+                {
+                  "label": "Copper",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                }
+              ],
+              "other": []
+            },
+            "sp": {
+              "new_bearish": [],
+              "eased": [],
+              "other": [
+                {
+                  "label": "S&P Breadth 1D",
+                  "before": "STABLE",
+                  "after": "EXPANDING"
+                }
+              ]
+            },
+            "nd": {
+              "new_bearish": [],
+              "eased": [],
+              "other": [
+                {
+                  "label": "Nasdaq Breadth 1D",
+                  "before": "STABLE",
+                  "after": "EXPANDING"
+                }
+              ]
+            }
+          }
+        },
+        "spy_qqq_divergence": "uncertain"
       }
     ]
   }
