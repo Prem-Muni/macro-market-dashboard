@@ -1,27 +1,27 @@
 {
   "session": "2026-11-25",
-  "generated_at": "2026-11-25T16:55:23.100790+00:00",
+  "generated_at": "2026-11-25T18:42:20.132759+00:00",
   "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
     "sp500": {
       "score": {
-        "bearish": 11,
-        "possible_max": 11,
-        "health": 5,
-        "health_max": 5,
+        "bearish": 10,
+        "possible_max": 10,
+        "health": 6,
+        "health_max": 6,
         "total": 16,
         "available": 16,
         "missing": 0,
-        "regime": "RISK-OFF",
+        "regime": "NEUTRAL",
         "complete": true
       },
       "legacy_14": {
-        "bearish": 9,
-        "possible_max": 9,
-        "health": 5,
-        "health_max": 5,
+        "bearish": 8,
+        "possible_max": 8,
+        "health": 6,
+        "health_max": 6,
         "total": 14,
         "available": 14,
         "missing": 0,
@@ -29,27 +29,27 @@
         "complete": true
       },
       "legacy_15": {
-        "bearish": 10,
-        "possible_max": 10,
-        "health": 5,
-        "health_max": 5,
+        "bearish": 9,
+        "possible_max": 9,
+        "health": 6,
+        "health_max": 6,
         "total": 15,
         "available": 15,
         "missing": 0,
-        "regime": "RISK-OFF",
+        "regime": "NEUTRAL",
         "complete": true
       },
       "momentum": {
-        "d1": 0,
-        "d5": 0,
+        "d1": -1,
+        "d5": -1,
         "state": "STABLE",
         "d1_range": [
-          0,
-          0
+          -1,
+          -1
         ],
         "d5_range": [
-          0,
-          0
+          -1,
+          -1
         ],
         "partial": false
       },
@@ -68,49 +68,49 @@
     },
     "nasdaq100": {
       "score": {
-        "bearish": 11,
-        "possible_max": 12,
-        "health": 4,
-        "health_max": 5,
+        "bearish": 9,
+        "possible_max": 10,
+        "health": 6,
+        "health_max": 7,
         "total": 16,
         "available": 15,
         "missing": 1,
-        "regime": "RISK-OFF",
+        "regime": "NEUTRAL",
         "complete": false
       },
       "legacy_14": {
-        "bearish": 9,
-        "possible_max": 10,
-        "health": 4,
-        "health_max": 5,
+        "bearish": 7,
+        "possible_max": 8,
+        "health": 6,
+        "health_max": 7,
         "total": 14,
         "available": 13,
         "missing": 1,
-        "regime": "RISK-OFF",
+        "regime": "INCOMPLETE",
         "complete": false
       },
       "legacy_15": {
-        "bearish": 10,
-        "possible_max": 11,
-        "health": 4,
-        "health_max": 5,
+        "bearish": 8,
+        "possible_max": 9,
+        "health": 6,
+        "health_max": 7,
         "total": 15,
         "available": 14,
         "missing": 1,
-        "regime": "RISK-OFF",
+        "regime": "NEUTRAL",
         "complete": false
       },
       "momentum": {
-        "d1": 0,
-        "d5": -2,
-        "state": "UNCERTAIN",
+        "d1": -2,
+        "d5": -4,
+        "state": "IMPROVING",
         "d1_range": [
-          0,
-          1
-        ],
-        "d5_range": [
           -2,
           -1
+        ],
+        "d5_range": [
+          -4,
+          -3
         ],
         "partial": true
       },
@@ -132,7 +132,7 @@
     "vix": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 33.81,
+      "value": 28.41,
       "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
     },
@@ -172,8 +172,8 @@
       "source": "HYG / IEF"
     },
     "copper": {
-      "state": "bear",
-      "label": "BEARISH",
+      "state": "bull",
+      "label": "BULLISH",
       "value": null,
       "note": "Daily copper change",
       "source": "Yahoo Finance via yfinance (unofficial): HG=F"
@@ -181,7 +181,7 @@
     "vix_curve": {
       "state": "bear",
       "label": "BACKWARDATION",
-      "value": 1.14,
+      "value": 1.071,
       "note": "VIX / VIX3M implied-volatility ratio",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
     },
@@ -244,91 +244,91 @@
     "sp_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 35.376,
+      "value": 39.397,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "SPY EOD close"
     },
     "nd_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 34.572,
+      "value": 37.761,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "QQQ EOD close"
     },
     "sp_macd": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -3.977,
+      "value": -3.008,
       "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
       "source": "SPY EOD close \u00b7 EMA(12,26,9)"
     },
     "nd_macd": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -3.901,
+      "value": -2.762,
       "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
       "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
     },
     "rsp_spy": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 2.366,
+      "value": 1.946,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "RSP/SPY"
     },
     "iwm_spy": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.592,
+      "value": 1.589,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/SPY"
     },
     "qqqe_qqq": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.765,
+      "value": 1.413,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "QQQE/QQQ"
     },
     "iwm_qqq": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 4.006,
+      "value": 3.324,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/QQQ"
     },
     "sp_breadth1d": {
-      "state": "warn",
-      "label": "STABLE",
-      "value": -0.601,
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 3.206,
       "note": "1D change in % of SPX constituents above 200D SMA; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth5d": {
-      "state": "bear",
-      "label": "CONTRACTING",
-      "value": -3.206,
+      "state": "warn",
+      "label": "STABLE",
+      "value": 0.601,
       "note": "5D change, percentage points",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth200": {
       "state": "warn",
       "label": "CAUTION",
-      "value": 55.11,
+      "value": 58.918,
       "note": "Current % of SPX constituents above own 200D SMA",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "nd_breadth1d": {
-      "state": "bear",
-      "label": "CONTRACTING",
-      "value": 26.531,
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 55.102,
       "note": "Today's advancing share % (not SPX 200D breadth)",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     },
     "nd_breadth5d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 5.394,
+      "value": 11.109,
       "note": "Change in average advancing share between adjacent 5D windows; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     }
@@ -339,7 +339,15 @@
     "groups": {
       "shared": {
         "new_bearish": [],
-        "eased": [],
+        "eased": [
+          {
+            "key": "copper",
+            "label": "Copper",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          }
+        ],
         "other": [],
         "compared": 6,
         "skipped": 0,
@@ -348,104 +356,114 @@
       "sp": {
         "new_bearish": [],
         "eased": [],
-        "other": [],
+        "other": [
+          {
+            "key": "sp_breadth1d",
+            "label": "S&P Breadth 1D",
+            "before": "STABLE",
+            "after": "EXPANDING",
+            "kind": "other"
+          }
+        ],
         "compared": 10,
         "skipped": 0,
         "total": 10
       },
       "nd": {
-        "new_bearish": [
+        "new_bearish": [],
+        "eased": [],
+        "other": [
           {
             "key": "nd_breadth1d",
             "label": "Nasdaq Breadth 1D",
             "before": "STABLE",
-            "after": "CONTRACTING",
-            "kind": "new_bearish"
+            "after": "EXPANDING",
+            "kind": "other"
           }
         ],
-        "eased": [],
-        "other": [],
         "compared": 9,
         "skipped": 1,
         "total": 10
       }
     },
     "by_key": {
-      "nd_breadth1d": "new_bearish"
+      "copper": "eased",
+      "sp_breadth1d": "other",
+      "nd_breadth1d": "other"
     }
   },
   "moving_averages": {
     "spy": {
       "symbol": "SPY",
       "as_of": "2026-11-25",
-      "close": 700.07,
+      "close": 715.24,
       "averages": {
         "5": {
-          "value": 709.364,
-          "distance_pct": -1.31,
-          "state": "BEARISH"
+          "value": 712.398,
+          "distance_pct": 0.4,
+          "state": "BULLISH"
         },
         "20": {
-          "value": 739.497,
-          "distance_pct": -5.33,
+          "value": 740.256,
+          "distance_pct": -3.38,
           "state": "BEARISH"
         },
         "50": {
-          "value": 757.556,
-          "distance_pct": -7.59,
+          "value": 757.86,
+          "distance_pct": -5.62,
           "state": "BEARISH"
         },
         "100": {
-          "value": 758.372,
-          "distance_pct": -7.69,
+          "value": 758.523,
+          "distance_pct": -5.71,
           "state": "BEARISH"
         },
         "200": {
-          "value": 733.078,
-          "distance_pct": -4.5,
+          "value": 733.153,
+          "distance_pct": -2.44,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 35.38,
+        "value": 39.4,
         "state": "NEUTRAL"
       }
     },
     "qqq": {
       "symbol": "QQQ",
       "as_of": "2026-11-25",
-      "close": 611.97,
+      "close": 629.818,
       "averages": {
         "5": {
-          "value": 630.918,
-          "distance_pct": -3.0,
+          "value": 634.487,
+          "distance_pct": -0.74,
           "state": "BEARISH"
         },
         "20": {
-          "value": 665.633,
-          "distance_pct": -8.06,
+          "value": 666.525,
+          "distance_pct": -5.51,
           "state": "BEARISH"
         },
         "50": {
-          "value": 706.61,
-          "distance_pct": -13.39,
+          "value": 706.967,
+          "distance_pct": -10.91,
           "state": "BEARISH"
         },
         "100": {
-          "value": 708.244,
-          "distance_pct": -13.59,
+          "value": 708.423,
+          "distance_pct": -11.1,
           "state": "BEARISH"
         },
         "200": {
-          "value": 683.389,
-          "distance_pct": -10.45,
+          "value": 683.478,
+          "distance_pct": -7.85,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 34.57,
+        "value": 37.76,
         "state": "NEUTRAL"
       }
     }
@@ -4242,12 +4260,12 @@
     },
     {
       "date": "2026-11-25",
-      "sp": 11,
+      "sp": 10,
       "sp_available": 16,
-      "sp_max": 11,
-      "nd": 11,
+      "sp_max": 10,
+      "nd": 9,
       "nd_available": 15,
-      "nd_max": 12
+      "nd_max": 10
     }
   ],
   "backtest": {
@@ -5440,6 +5458,427 @@
       }
     }
   },
+  "validation_20w": {
+    "version": 1,
+    "model": "16-point-health-v2-macd-neutral-6-10",
+    "start": "2026-07-08",
+    "end": "2026-11-25",
+    "weeks": 20,
+    "method": "reconstructed_historical_EOD_not_point_in_time_saved_signals",
+    "outcome": "positive ETF close-to-close return after 1/5/10 trading sessions",
+    "thresholds": {
+      "risk_off": [
+        0,
+        5
+      ],
+      "neutral": [
+        6,
+        10
+      ],
+      "risk_on": [
+        11,
+        16
+      ]
+    },
+    "markets": {
+      "sp": {
+        "symbol": "SPY",
+        "eligible_signal_sessions": 100,
+        "incomplete_or_missing_sessions": 0,
+        "regimes": {
+          "RISK-OFF": {
+            "signal_sessions": 11,
+            "horizons": {
+              "1": {
+                "n": 11,
+                "positive_n": 5,
+                "positive_pct": 45.455,
+                "negative_pct": 54.545,
+                "mean_pct": 0.123,
+                "median_pct": -0.306,
+                "p10_pct": -1.962,
+                "worst_pct": -3.64,
+                "stdev_pct": 2.156,
+                "nonoverlap_n": 11,
+                "nonoverlap_positive_pct": 45.455,
+                "nonoverlap_median_pct": -0.306
+              },
+              "5": {
+                "n": 7,
+                "positive_n": 5,
+                "positive_pct": 71.429,
+                "negative_pct": 28.571,
+                "mean_pct": 0.685,
+                "median_pct": 0.629,
+                "p10_pct": -2.049,
+                "worst_pct": -2.049,
+                "stdev_pct": 2.114,
+                "nonoverlap_n": 4,
+                "nonoverlap_positive_pct": 75.0,
+                "nonoverlap_median_pct": 0.355
+              },
+              "10": {
+                "n": 5,
+                "positive_n": 2,
+                "positive_pct": 40.0,
+                "negative_pct": 60.0,
+                "mean_pct": -1.481,
+                "median_pct": -1.015,
+                "p10_pct": -6.185,
+                "worst_pct": -6.185,
+                "stdev_pct": 3.005,
+                "nonoverlap_n": 2,
+                "nonoverlap_positive_pct": 0.0,
+                "nonoverlap_median_pct": -1.676
+              }
+            }
+          },
+          "NEUTRAL": {
+            "signal_sessions": 61,
+            "horizons": {
+              "1": {
+                "n": 60,
+                "positive_n": 30,
+                "positive_pct": 50.0,
+                "negative_pct": 50.0,
+                "mean_pct": 0.008,
+                "median_pct": 0.005,
+                "p10_pct": -1.107,
+                "worst_pct": -1.912,
+                "stdev_pct": 0.809,
+                "nonoverlap_n": 60,
+                "nonoverlap_positive_pct": 50.0,
+                "nonoverlap_median_pct": 0.005
+              },
+              "5": {
+                "n": 60,
+                "positive_n": 22,
+                "positive_pct": 36.667,
+                "negative_pct": 63.333,
+                "mean_pct": -0.358,
+                "median_pct": -0.41,
+                "p10_pct": -2.402,
+                "worst_pct": -8.558,
+                "stdev_pct": 2.153,
+                "nonoverlap_n": 16,
+                "nonoverlap_positive_pct": 37.5,
+                "nonoverlap_median_pct": -0.27
+              },
+              "10": {
+                "n": 57,
+                "positive_n": 28,
+                "positive_pct": 49.123,
+                "negative_pct": 50.877,
+                "mean_pct": 0.042,
+                "median_pct": -0.179,
+                "p10_pct": -2.904,
+                "worst_pct": -5.866,
+                "stdev_pct": 2.33,
+                "nonoverlap_n": 9,
+                "nonoverlap_positive_pct": 55.556,
+                "nonoverlap_median_pct": 0.27
+              }
+            }
+          },
+          "RISK-ON": {
+            "signal_sessions": 28,
+            "horizons": {
+              "1": {
+                "n": 28,
+                "positive_n": 9,
+                "positive_pct": 32.143,
+                "negative_pct": 67.857,
+                "mean_pct": -0.193,
+                "median_pct": -0.199,
+                "p10_pct": -0.84,
+                "worst_pct": -4.409,
+                "stdev_pct": 1.028,
+                "nonoverlap_n": 28,
+                "nonoverlap_positive_pct": 32.143,
+                "nonoverlap_median_pct": -0.199
+              },
+              "5": {
+                "n": 28,
+                "positive_n": 9,
+                "positive_pct": 32.143,
+                "negative_pct": 67.857,
+                "mean_pct": -0.275,
+                "median_pct": -0.305,
+                "p10_pct": -1.693,
+                "worst_pct": -1.964,
+                "stdev_pct": 1.217,
+                "nonoverlap_n": 13,
+                "nonoverlap_positive_pct": 46.154,
+                "nonoverlap_median_pct": -0.132
+              },
+              "10": {
+                "n": 28,
+                "positive_n": 6,
+                "positive_pct": 21.429,
+                "negative_pct": 78.571,
+                "mean_pct": -0.797,
+                "median_pct": -0.886,
+                "p10_pct": -2.122,
+                "worst_pct": -4.774,
+                "stdev_pct": 1.726,
+                "nonoverlap_n": 8,
+                "nonoverlap_positive_pct": 25.0,
+                "nonoverlap_median_pct": -1.281
+              }
+            }
+          }
+        },
+        "all_eligible": {
+          "horizons": {
+            "1": {
+              "n": 99,
+              "positive_n": 44,
+              "positive_pct": 44.444,
+              "negative_pct": 55.556,
+              "mean_pct": -0.036,
+              "median_pct": -0.116,
+              "p10_pct": -1.081,
+              "worst_pct": -4.409,
+              "stdev_pct": 1.082,
+              "nonoverlap_n": 99,
+              "nonoverlap_positive_pct": 44.444,
+              "nonoverlap_median_pct": -0.116
+            },
+            "5": {
+              "n": 95,
+              "positive_n": 36,
+              "positive_pct": 37.895,
+              "negative_pct": 62.105,
+              "mean_pct": -0.257,
+              "median_pct": -0.34,
+              "p10_pct": -1.989,
+              "worst_pct": -8.558,
+              "stdev_pct": 1.921,
+              "nonoverlap_n": 19,
+              "nonoverlap_positive_pct": 42.105,
+              "nonoverlap_median_pct": -0.277
+            },
+            "10": {
+              "n": 90,
+              "positive_n": 36,
+              "positive_pct": 40.0,
+              "negative_pct": 60.0,
+              "mean_pct": -0.304,
+              "median_pct": -0.665,
+              "p10_pct": -2.904,
+              "worst_pct": -6.185,
+              "stdev_pct": 2.226,
+              "nonoverlap_n": 9,
+              "nonoverlap_positive_pct": 44.444,
+              "nonoverlap_median_pct": -0.095
+            }
+          }
+        }
+      },
+      "nd": {
+        "symbol": "QQQ",
+        "eligible_signal_sessions": 99,
+        "incomplete_or_missing_sessions": 1,
+        "regimes": {
+          "RISK-OFF": {
+            "signal_sessions": 14,
+            "horizons": {
+              "1": {
+                "n": 14,
+                "positive_n": 7,
+                "positive_pct": 50.0,
+                "negative_pct": 50.0,
+                "mean_pct": -0.247,
+                "median_pct": -0.546,
+                "p10_pct": -2.668,
+                "worst_pct": -5.673,
+                "stdev_pct": 2.978,
+                "nonoverlap_n": 14,
+                "nonoverlap_positive_pct": 50.0,
+                "nonoverlap_median_pct": -0.546
+              },
+              "5": {
+                "n": 10,
+                "positive_n": 4,
+                "positive_pct": 40.0,
+                "negative_pct": 60.0,
+                "mean_pct": -0.966,
+                "median_pct": -1.406,
+                "p10_pct": -10.508,
+                "worst_pct": -10.508,
+                "stdev_pct": 5.427,
+                "nonoverlap_n": 5,
+                "nonoverlap_positive_pct": 60.0,
+                "nonoverlap_median_pct": 1.225
+              },
+              "10": {
+                "n": 6,
+                "positive_n": 2,
+                "positive_pct": 33.333,
+                "negative_pct": 66.667,
+                "mean_pct": -0.171,
+                "median_pct": -0.362,
+                "p10_pct": -7.263,
+                "worst_pct": -7.263,
+                "stdev_pct": 4.175,
+                "nonoverlap_n": 3,
+                "nonoverlap_positive_pct": 0.0,
+                "nonoverlap_median_pct": -0.413
+              }
+            }
+          },
+          "NEUTRAL": {
+            "signal_sessions": 60,
+            "horizons": {
+              "1": {
+                "n": 60,
+                "positive_n": 29,
+                "positive_pct": 48.333,
+                "negative_pct": 51.667,
+                "mean_pct": -0.001,
+                "median_pct": -0.012,
+                "p10_pct": -1.898,
+                "worst_pct": -3.474,
+                "stdev_pct": 1.385,
+                "nonoverlap_n": 60,
+                "nonoverlap_positive_pct": 48.333,
+                "nonoverlap_median_pct": -0.012
+              },
+              "5": {
+                "n": 60,
+                "positive_n": 23,
+                "positive_pct": 38.333,
+                "negative_pct": 61.667,
+                "mean_pct": -0.61,
+                "median_pct": -0.638,
+                "p10_pct": -4.722,
+                "worst_pct": -9.547,
+                "stdev_pct": 3.263,
+                "nonoverlap_n": 17,
+                "nonoverlap_positive_pct": 35.294,
+                "nonoverlap_median_pct": -0.299
+              },
+              "10": {
+                "n": 59,
+                "positive_n": 24,
+                "positive_pct": 40.678,
+                "negative_pct": 59.322,
+                "mean_pct": -0.827,
+                "median_pct": -1.012,
+                "p10_pct": -6.239,
+                "worst_pct": -8.772,
+                "stdev_pct": 4.362,
+                "nonoverlap_n": 9,
+                "nonoverlap_positive_pct": 44.444,
+                "nonoverlap_median_pct": -0.521
+              }
+            }
+          },
+          "RISK-ON": {
+            "signal_sessions": 25,
+            "horizons": {
+              "1": {
+                "n": 25,
+                "positive_n": 10,
+                "positive_pct": 40.0,
+                "negative_pct": 60.0,
+                "mean_pct": -0.289,
+                "median_pct": -0.254,
+                "p10_pct": -1.415,
+                "worst_pct": -6.489,
+                "stdev_pct": 1.612,
+                "nonoverlap_n": 25,
+                "nonoverlap_positive_pct": 40.0,
+                "nonoverlap_median_pct": -0.254
+              },
+              "5": {
+                "n": 25,
+                "positive_n": 10,
+                "positive_pct": 40.0,
+                "negative_pct": 60.0,
+                "mean_pct": -0.427,
+                "median_pct": -0.433,
+                "p10_pct": -3.227,
+                "worst_pct": -4.639,
+                "stdev_pct": 2.052,
+                "nonoverlap_n": 9,
+                "nonoverlap_positive_pct": 33.333,
+                "nonoverlap_median_pct": -0.227
+              },
+              "10": {
+                "n": 25,
+                "positive_n": 8,
+                "positive_pct": 32.0,
+                "negative_pct": 68.0,
+                "mean_pct": -1.239,
+                "median_pct": -1.326,
+                "p10_pct": -5.004,
+                "worst_pct": -5.533,
+                "stdev_pct": 2.684,
+                "nonoverlap_n": 5,
+                "nonoverlap_positive_pct": 20.0,
+                "nonoverlap_median_pct": -0.955
+              }
+            }
+          }
+        },
+        "all_eligible": {
+          "horizons": {
+            "1": {
+              "n": 99,
+              "positive_n": 46,
+              "positive_pct": 46.465,
+              "negative_pct": 53.535,
+              "mean_pct": -0.108,
+              "median_pct": -0.102,
+              "p10_pct": -1.966,
+              "worst_pct": -6.489,
+              "stdev_pct": 1.728,
+              "nonoverlap_n": 99,
+              "nonoverlap_positive_pct": 46.465,
+              "nonoverlap_median_pct": -0.102
+            },
+            "5": {
+              "n": 95,
+              "positive_n": 37,
+              "positive_pct": 38.947,
+              "negative_pct": 61.053,
+              "mean_pct": -0.6,
+              "median_pct": -0.658,
+              "p10_pct": -4.502,
+              "worst_pct": -10.508,
+              "stdev_pct": 3.256,
+              "nonoverlap_n": 19,
+              "nonoverlap_positive_pct": 47.368,
+              "nonoverlap_median_pct": -0.078
+            },
+            "10": {
+              "n": 90,
+              "positive_n": 34,
+              "positive_pct": 37.778,
+              "negative_pct": 62.222,
+              "mean_pct": -0.898,
+              "median_pct": -1.034,
+              "p10_pct": -5.767,
+              "worst_pct": -8.772,
+              "stdev_pct": 3.924,
+              "nonoverlap_n": 9,
+              "nonoverlap_positive_pct": 33.333,
+              "nonoverlap_median_pct": -0.856
+            }
+          }
+        }
+      }
+    },
+    "limitations": [
+      "Reconstructed historical signals, NOT saved historical live observations. Current constituents can introduce survivorship bias.",
+      "No dividends, trading costs or slippage. Five- and ten-session return windows overlap; nonoverlap statistics are sensitivity checks.",
+      "Classification thresholds were chosen before this test but after earlier model research; this is not out-of-sample proof.",
+      "Short 20-week window. No statistical significance or predictive-performance claim is made.",
+      "The latest sessions lack mature forward outcomes and are excluded from those horizons.",
+      "Exclude any incomplete 16-point scores instead of inferring their regime."
+    ]
+  },
   "history_window_months": 20,
   "history_storage": "legacy_bearish_counts_display_as_health",
   "risk_policy": {
@@ -5556,18 +5995,18 @@
     "spy": {
       "as_of": "2026-11-25",
       "status": "complete",
-      "macd": -14.30256,
-      "signal": -10.32602,
-      "histogram": -3.97653,
+      "macd": -13.09242,
+      "signal": -10.08399,
+      "histogram": -3.00842,
       "relation": "below",
       "crossover": "none"
     },
     "qqq": {
       "as_of": "2026-11-25",
       "status": "complete",
-      "macd": -21.91214,
-      "signal": -18.01107,
-      "histogram": -3.90107,
+      "macd": -20.4884,
+      "signal": -17.72632,
+      "histogram": -2.76208,
       "relation": "below",
       "crossover": "none"
     }
