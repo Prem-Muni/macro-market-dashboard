@@ -607,7 +607,15 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     # Do not silently relabel its results as a validated 16-point backtest.
     old_research_records = [dict(r,sp=r["sp_legacy15"],nd=r["nd_legacy15"]) for r in records]
     backtest=historical_backtest(old_research_records,f,pd.Timestamp(d),history_months)  # include 8 warm-up sessions for score-trend classification
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"16-point-health-v2-macd-neutral-6-10", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"legacy_15":legacy15_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"legacy_15":legacy15_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"signal_changes":signal_changes,"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,"history_storage":"legacy_bearish_counts_display_as_health",
+    # New research only: forward-return validation of CURRENT 16-point thresholds.
+    # The public research result is recomputed on each EOD update using the same
+    # prices and reconstructed scores already available to this engine.
+    try:
+        from validation_20w import evaluate as evaluate_20w
+    except ModuleNotFoundError:
+        from scripts.validation_20w import evaluate as evaluate_20w
+    validation_20w=evaluate_20w(records,f,d,weeks=20)
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"16-point-health-v2-macd-neutral-6-10", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"legacy_15":legacy15_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"legacy_15":legacy15_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"signal_changes":signal_changes,"moving_averages":moving_averages,"history":history,"backtest":backtest,"validation_20w":validation_20w,"history_window_months":history_months,"history_storage":"legacy_bearish_counts_display_as_health",
             "risk_policy":{"score_name":"Market Health", "direction":"higher_is_healthier",
                             "formula":"16 minus bearish signal count; neutral/warning input counts as non-bearish; daily MACD line >= signal earns one health point",
                             "sp500":{"risk_off_max":5,"neutral_min":6,"neutral_max":10,"risk_on_min":11},

@@ -11,7 +11,9 @@
   <link rel="stylesheet" href="daily-summaries.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="internals-recap.css?v=20261125-internals1">
   <script src="insights-history.js?v=qqq-direct-tabs-20261125a" defer></script>
-  <script src="daily-summaries.js?v=qqq-direct-tabs-20261125a" defer></script>
+  <script src="daily-summaries.js?v=validation-20w-20261125a" defer></script>
+  <script src="model-validation.js?v=validation-20w-20261125a" defer></script>
+  <link rel="stylesheet" href="model-validation.css?v=validation-20w-20261125a">
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="audit-cleanup.css?v=20261125a">
   <link rel="stylesheet" href="history-direct-tabs.css?v=20261125a">
@@ -34,7 +36,7 @@
         <div>
           <div class="eyebrow">PERMANENT EOD JOURNAL · EXPERIMENTAL MODEL</div>
           <h2>Market Insights History</h2>
-          <p>Browse previous daily summaries, or open separate SPY and QQQ histories for detailed records.</p>
+          <p>Browse saved daily summaries, separate ETF histories, and a transparent 20-week validation of the current Market Health model.</p>
         </div>
         <a class="journal-back" href="index.html">← Today's dashboard</a>
       </div>
@@ -43,6 +45,7 @@
         <button id="summary-tab-current" type="button" role="tab" class="active" aria-selected="true" aria-controls="summary-view">Summary Archive</button>
         <button id="summary-tab-spy" type="button" role="tab" aria-selected="false" aria-controls="j-history-views" data-market="spy">SPY History</button>
         <button id="summary-tab-qqq" type="button" role="tab" aria-selected="false" aria-controls="j-history-views" data-market="qqq">QQQ History</button>
+        <button id="summary-tab-validation" type="button" role="tab" aria-selected="false" aria-controls="validation-view">Model Validation</button>
       </div>
       <section id="summary-view" role="tabpanel" aria-labelledby="summary-tab-current" aria-label="Saved EOD market summaries">
         <div class="audit-archive-banner"><div><div class="eyebrow">PREVIOUS TRADING SESSIONS</div><h3>Daily Summary Archive</h3><p>Earlier saved sessions, newest first. The current completed session is shown on the Dashboard.</p><span class="daily-summary-muted" id="summary-count">Loading…</span></div><div class="audit-archive-actions"><a href="index.html#daily-summary-overview" class="audit-secondary-link">Today's summary →</a><button type="button" id="summary-export" class="journal-export" disabled>↓ Export archive CSV</button></div></div>
@@ -76,6 +79,30 @@
       </section>
       </div>
       </div>
+      <section id="validation-view" role="tabpanel" aria-labelledby="summary-tab-validation" hidden>
+        <div class="validation-heading">
+          <div><div class="eyebrow">EXPLORATORY RESEARCH · CURRENT 16-POINT MODEL</div>
+          <h3>Does Risk-On lead to stronger forward returns?</h3>
+          <p>Check the next 1, 5, or 10 trading sessions following each dated completed-EOD signal. Higher health scores mean fewer bearish indicators—not a guaranteed market gain.</p></div>
+          <div class="validation-status" id="validation-period">20-week study · waiting for refreshed results</div>
+        </div>
+        <div class="validation-controls">
+          <label>Benchmark <select id="validation-market"><option value="sp">SPY · S&amp;P 500</option><option value="nd">QQQ · Nasdaq-100</option></select></label>
+          <label>Forward outcome <select id="validation-horizon"><option value="1">Next session</option><option value="5" selected>Next 5 sessions</option><option value="10">Next 10 sessions</option></select></label>
+          <button type="button" id="validation-export" disabled>Export results CSV</button>
+        </div>
+        <p id="validation-status" class="validation-note" role="status">Waiting for the next completed EOD run to generate the current-model backtest.</p>
+        <div id="validation-results" hidden>
+          <div class="validation-metrics" id="validation-cards"></div>
+          <div class="validation-table-wrap"><table class="validation-table"><thead><tr><th>Regime at signal</th><th>Signals</th><th>Forward outcomes</th><th>Positive</th><th>Median return</th><th>Average return</th><th>Worst outcome</th></tr></thead><tbody id="validation-table-body"></tbody></table></div>
+          <p class="validation-note" id="validation-comparison"></p>
+          <details class="validation-notes"><summary>How the test works · limitations and bias</summary>
+            <p>Uses the same end-of-day price and reconstructed indicator inputs as the current 16-point dashboard. It evaluates the <em>following</em> completed sessions, so the signal itself uses no future prices. Full 16/16 signal coverage is required. The last 10 sessions may have no mature 10-session outcome.</p>
+            <p>The sample uses reconstructed historical breadth based partly on today's constituents and can have survivorship bias. Return windows overlap. The non-overlapping 5-session sensitivity check offers fewer, less-dependent observations but is not a strategy simulation. Outcomes omit dividends, transaction costs, and slippage. Thresholds were chosen after earlier research, so this cannot establish statistical significance or independent predictive skill.</p>
+            <p id="validation-nonoverlap"></p>
+          </details>
+        </div>
+      </section>
       <section class="journal-footnotes"><h3>How to use this archive</h3><p>Each dated row captures the selected ETF's completed close, day-over-day ETF price change when available, daily Market Health Score, daily change in Market Health points, risk regime, 5-day trend, data coverage and matching price/risk alert. Select <strong>Signals</strong> to inspect the same-session changes available in the engine's snapshot.</p><p>Scores use the website's experimental 16-point model; older archived sessions retain their original 15-point scale. Thinkorswim is calculated independently using its corresponding 16-point study; price sources and timing may differ. Constituent-derived breadth may be estimated, and observations are not proof of predictive accuracy. <strong>Archive persistence:</strong> data is stored in <code>docs/data/latest.json</code> and included in the existing GitHub Actions snapshot commit. November 20 is a user-screenshot backfill; its prior ETF close and price/risk alert are intentionally unavailable. Download a CSV periodically for a personal backup.</p></section>
     </main>
     <footer><span>Daily Market Intelligence · Independent research dashboard</span><span>Saved EOD observations · <a href="index.html">Dashboard</a></span></footer>

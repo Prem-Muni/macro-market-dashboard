@@ -250,13 +250,15 @@
   }
   function initHistory(){
     const host=$('summary-view');if(!host)return;
-    const tabs={summaries:$('summary-tab-current'),spy:$('summary-tab-spy'),qqq:$('summary-tab-qqq')};
+    const tabs={summaries:$('summary-tab-current'),spy:$('summary-tab-spy'),qqq:$('summary-tab-qqq'),validation:$('summary-tab-validation')};
     const historyHost=$('j-history-views');
+    const validationHost=$('validation-view');
     function show(which){
       if(!tabs[which])which='summaries';
       const showingSummary=which==='summaries';
       host.hidden=!showingSummary;
-      historyHost.hidden=showingSummary;
+      historyHost.hidden=which!=='spy'&&which!=='qqq';
+      if(validationHost)validationHost.hidden=which!=='validation';
       for(const [key,button] of Object.entries(tabs)){
         const selected=key===which;
         button.classList.toggle('active',selected);
@@ -264,6 +266,7 @@
         button.tabIndex=selected?0:-1;
       }
       if(showingSummary)renderHistory();
+      else if(which==='validation')window.MarketValidation?.refresh?.();
       else window.InsightsHistory?.selectMarket?.(which);
     }
     for(const [key,button] of Object.entries(tabs)){
@@ -272,7 +275,7 @@
     // Preserve links from earlier versions of the site.
     const fromHash=()=>{
       const value=location.hash.slice(1).toLowerCase();
-      show(value==='qqq'?'qqq':value==='spy'||value==='etfs'?'spy':'summaries');
+      show(value==='validation'?'validation':value==='qqq'?'qqq':value==='spy'||value==='etfs'?'spy':'summaries');
     };
     window.addEventListener('hashchange',fromHash);fromHash();
     $('summary-export').addEventListener('click',()=>{
