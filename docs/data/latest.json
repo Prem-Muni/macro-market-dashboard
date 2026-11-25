@@ -1,7 +1,7 @@
 {
   "session": "2026-11-24",
-  "generated_at": "2026-11-25T00:06:26.828599+00:00",
-  "model_version": "15-point-v3-qqq-5-borderline-risk-on",
+  "generated_at": "2026-11-25T00:56:13.618653+00:00",
+  "model_version": "15-point-health-v1-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
@@ -9,6 +9,8 @@
       "score": {
         "bearish": 10,
         "possible_max": 10,
+        "health": 5,
+        "health_max": 5,
         "total": 15,
         "available": 15,
         "missing": 0,
@@ -18,6 +20,8 @@
       "legacy_14": {
         "bearish": 9,
         "possible_max": 9,
+        "health": 5,
+        "health_max": 5,
         "total": 14,
         "available": 14,
         "missing": 0,
@@ -55,6 +59,8 @@
       "score": {
         "bearish": 10,
         "possible_max": 10,
+        "health": 5,
+        "health_max": 5,
         "total": 15,
         "available": 15,
         "missing": 0,
@@ -64,6 +70,8 @@
       "legacy_14": {
         "bearish": 9,
         "possible_max": 9,
+        "health": 5,
+        "health_max": 5,
         "total": 14,
         "available": 14,
         "missing": 0,
@@ -5482,23 +5490,25 @@
     }
   },
   "history_window_months": 20,
+  "history_storage": "legacy_bearish_counts_display_as_health",
   "risk_policy": {
+    "score_name": "Market Health",
+    "direction": "higher_is_healthier",
+    "formula": "15 minus bearish signal count; neutral/warning input counts as non-bearish",
     "sp500": {
-      "risk_on_max": 4,
-      "caution_min": 5,
-      "caution_max": 8,
-      "risk_off_min": 9
+      "risk_off_max": 5,
+      "neutral_min": 6,
+      "neutral_max": 10,
+      "risk_on_min": 11
     },
     "nasdaq100": {
-      "risk_on_max": 5,
-      "caution_min": 6,
-      "caution_max": 8,
-      "risk_off_min": 9,
-      "borderline_score": 5,
-      "borderline_note": "Score 5 is Risk-On by policy but borderline cautious."
+      "risk_off_max": 5,
+      "neutral_min": 6,
+      "neutral_max": 10,
+      "risk_on_min": 11
     },
-    "decision_date": "2026-11-22",
-    "evidence_through": "2026-11-20"
+    "legacy_backtest_policy": "Earlier forward-return research used bearish scores and different thresholds; not validated for this new policy.",
+    "decision_date": "2026-11-25"
   },
   "order": {
     "shared": [
@@ -5566,9 +5576,9 @@
   },
   "explanation": {
     "missing": "Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
-    "partial": "Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.",
+    "partial": "Health Score is an interval when inputs are missing. Missing points are never automatically counted as healthy.",
     "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly.",
-    "model": "Experimental 15-point model: S&P 500 Risk-On 0\u20134; Nasdaq-100 Risk-On 0\u20135, with QQQ score 5 borderline cautious. Both Risk-Off at 9+. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score \u22644/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."
+    "model": "Experimental 15-point Market Health model for both indexes: higher is healthier; 0\u20135 Risk-Off, 6\u201310 Neutral, 11\u201315 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score \u22644/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."
   },
   "price_moves": {
     "session": "2026-11-24",
