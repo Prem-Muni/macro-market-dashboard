@@ -1,0 +1,13 @@
+/* Site-wide identity · presentation only · latest CSS loaded last. */
+.topbar .identity{display:flex;align-items:center;gap:14px;min-width:0}
+.topbar .brand-monogram{width:54px;height:54px;min-width:54px;border-radius:15px;
+ background:linear-gradient(150deg,#233f51,#162b3b);border:1px solid #4f7789;
+ display:flex;align-items:center;justify-content:center;position:relative;
+ color:#ecf8fc;box-shadow:inset 0 1px 0 rgba(255,255,255,.11)}
+.topbar .brand-monogram span{font-size:21px;font-weight:840;letter-spacing:-.065em;line-height:1}
+.topbar .brand-monogram i{position:absolute;bottom:7px;right:8px;height:5px;width:5px;border-radius:50%;background:#63d9bd}
+.topbar .brand-copy{min-width:0}
+.topbar .brand-copy .eyebrow{font-size:10px;letter-spacing:.18em;color:#9cbad0;font-weight:740;margin-bottom:4px}
+.topbar .brand-copy h1{font-size:clamp(20px,2.2vw,29px);font-weight:820;line-height:1.15;letter-spacing:-.04em;color:#edf5fb}
+.topbar .brand-copy h1 span{color:#a7dbef}
+@media(max-width:480px){.topbar .identity{gap:11px}.topbar .brand-monogram{width:46px;min-width:46px;height:46px;border-radius:13px}.topbar .brand-monogram span{font-size:18px}.topbar .brand-copy h1{font-size:22px}.topbar .brand-copy .eyebrow{font-size:9px;letter-spacing:.1em}}

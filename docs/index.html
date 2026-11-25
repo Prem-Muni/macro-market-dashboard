@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>Macro Decision Dashboard | SP500 + Nasdaq-100</title>
+  <title>Daily Market Intelligence | SPY & QQQ</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
   <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
   <link rel="stylesheet" href="dashboard-clarity.css?v=macd16-20261125b">
@@ -14,11 +14,12 @@
   <link rel="stylesheet" href="overview-unified.css?v=20261125-market-art1">
   <link rel="stylesheet" href="internals-recap.css?v=20261125-internals1">
   <link rel="stylesheet" href="readability-refresh.css?v=20261125-typography-1">
+  <link rel="stylesheet" href="site-brand.css?v=20261125-brand-icons1">
 </head>
 <body>
   <div class="shell">
     <header class="topbar">
-      <div class="identity"><div class="mark">M<span>·</span>D</div><div><div class="eyebrow">DAILY MARKET INTELLIGENCE</div><h1>Macro Decision <span>Dashboard</span></h1></div></div>
+      <div class="identity"><div class="brand-monogram" aria-hidden="true"><span>MI</span><i></i></div><div class="brand-copy"><div class="eyebrow">SPY &amp; QQQ · MARKET HEALTH</div><h1>Daily Market <span>Intelligence</span></h1></div></div>
       <div class="topactions"><span class="status-dot" id="status-dot"></span><span id="latest-run">Awaiting first update</span><button id="refresh" type="button" title="Reload the latest published data">↻ Refresh</button></div>
     </header>
     <nav class="site-tabs" aria-label="Dashboard navigation">
@@ -188,7 +189,7 @@
       <section class="signals-panel shared score-breakdown-panel" id="shared-breakdown"><div class="panel-head"><div><div class="eyebrow">SHARED BY BOTH MARKET SCORES · 6 SIGNALS</div><h2>Macro Signals</h2><div class="audit-date" id="shared-breakdown-date">As of —</div><p class="score-breakdown-equation" id="shared-breakdown-equation">Shared macro points count in both market scores.</p></div><span class="capsule score-subtotal" id="shared-subscore">—/6</span></div><div id="shared-signals" class="signal-list double"></div></section>
       <section class="disclaimer"><h3>Reading the Dashboard Responsibly</h3><p id="coverage-note">Specialized index breadth data may require separate authorized data sources. An incomplete 16-point score can be a range, not a definitive RISK-ON / NEUTRAL / RISK-OFF classification.</p><p>The website uses the original Thinkorswim-style 50D/200D trend point plus a separate RSI(14) and MACD(12,26,9) points in an experimental 16-point model. The original 14-point score remains available as an inverted health reference. Five individual SMA comparisons are informational only. Install the accompanying Thinkorswim health-score study separately. It is not a broker feed, a backtested strategy, or an instruction to trade. Futures and ETF proxies can differ from Thinkorswim settlements. Provider availability and data display rights vary.</p><details><summary>Data source diagnostics</summary><pre id="diagnostics">Awaiting first update.</pre></details></section>
     </main>
-    <footer><span>Macro Decision Dashboard · Personal research build</span><span>16-point experimental model · Updated EOD · <a href="threshold-logic.html">Model record</a></span></footer>
+    <footer><span>Daily Market Intelligence · Independent research dashboard</span><span>16-point experimental model · Updated EOD · <a href="threshold-logic.html">Model record</a></span></footer>
   </div>
   <script src="market-intelligence.js?v=macd16-20261125b-intelligence-20261122a" defer></script>
   <script src="price-risk.js?v=macd16-20261125b-price-risk-20261123a" defer></script>
@@ -196,6 +197,6 @@
   <script src="market-extras.js?v=context-20261122b" defer></script>
   <script src="dashboard-clarity.js?v=summary-overview-v2-20261125" defer></script>
   <script src="daily-summaries.js?v=20261125-internals1" defer></script>
-  <script src="overview-unified.js?v=20261125-market-art1" defer></script>
+  <script src="overview-unified.js?v=20261125-brand-icons1" defer></script>
 </body>
 </html>

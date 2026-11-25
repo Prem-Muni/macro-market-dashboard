@@ -191,3 +191,26 @@ body{background:#101824;color:#e3eaf2}
 .market-condition-art[data-state="mixed"]{color:#a4d3ec;border-color:#50788d;background:#243949}
 @media(max-width:620px){.unified-title-with-art{gap:9px}.market-condition-art{width:42px;height:42px;flex-basis:42px;border-radius:11px}.market-condition-art svg{width:29px;height:29px}}
 @media(prefers-reduced-motion:reduce){.market-condition-art{transition:none}}
+
+
+/* Human-readable Bull / Balanced / Bear per ETF (original scoring labels stay in DOM). */
+.unified-snapshot .score-zone{align-items:center;gap:13px}
+.unified-snapshot .regime.regime-source-only{position:absolute!important;overflow:hidden!important;
+ clip-path:inset(50%)!important;clip:rect(0 0 0 0)!important;width:1px!important;height:1px!important;
+ padding:0!important;border:0!important;margin:-1px!important;white-space:nowrap!important}
+.market-mood{display:flex;align-items:center;gap:10px;flex:0 0 auto;min-width:112px;
+ padding:10px 12px;border-radius:13px;border:1px solid #4d6674;background:#1e3241;
+ color:#bfd0de;transition:border-color .15s,background .15s}
+.market-mood-symbol{display:grid;place-items:center;flex:0 0 31px}
+.market-mood-symbol svg{display:block;width:30px;height:30px;fill:none;stroke:currentColor;
+ stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.market-mood-copy{display:flex;flex-direction:column;gap:2px;line-height:1.1}
+.market-mood-copy strong{font-size:clamp(15px,1.3vw,18px);letter-spacing:-.02em;font-weight:850}
+.market-mood-copy small{font-size:11px;color:#aebfd0;font-weight:650;white-space:nowrap}
+.market-mood[data-state="bull"]{border-color:#416d60;background:rgba(29,83,69,.35);color:#83e7b9}
+.market-mood[data-state="bear"]{border-color:#79515d;background:rgba(95,45,59,.28);color:#f3a0ac}
+.market-mood[data-state="balanced"]{border-color:#7a6b4d;background:rgba(96,81,43,.25);color:#f0d49b}
+.market-mood[data-state="pending"]{color:#b4c7d4}
+.unified-title-with-art .market-condition-art svg{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:600px){.market-mood{min-width:103px;padding:9px 10px;gap:6px}.market-mood-symbol{flex-basis:25px}.market-mood-symbol svg{width:25px;height:25px}.market-mood-copy strong{font-size:15px}.market-mood-copy small{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.market-mood{transition:none}}

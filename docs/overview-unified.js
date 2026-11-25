@@ -80,6 +80,48 @@
     head.appendChild(quote);
   }
 
+  // The 16-point model is unchanged. Each visual label reads the existing
+  // scored #sp-regime / #nd-regime text, never the reverse.
+  const regimeArrow = {
+    bull: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m4 22 8-8 6 6 10-12M20 8h8v8"/></svg>',
+    bear: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m4 9 8 8 6-6 10 12M20 23h8v-8"/></svg>',
+    balanced: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 16h18"/></svg>',
+    mixed: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m5 11 8 8 6-6 8 8M20 21h7v-7"/></svg>',
+    pending: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 11v7M16 23v.5"/></svg>'
+  };
+  const marketMoods = {};
+  for (const [prefix, sym] of [['sp', 'SPY'], ['nd', 'QQQ']]) {
+    const original = $(prefix + '-regime');
+    if (!original) continue;
+    // Preserve the original node and its id: app.js continues to update it.
+    original.classList.add('regime-source-only');
+    original.setAttribute('aria-hidden','true');
+    const mood = make('div','market-mood');
+    mood.id = prefix + '-market-mood';
+    mood.dataset.state = 'pending';
+    mood.setAttribute('role','status');
+    mood.setAttribute('aria-label',sym+' market condition pending');
+    mood.innerHTML = '<span class="market-mood-symbol" aria-hidden="true"></span><span class="market-mood-copy"><strong>Pending</strong><small>Awaiting data</small></span>';
+    original.parentNode.insertBefore(mood,original);
+    marketMoods[prefix] = mood;
+  }
+  function updateMarketMoods() {
+    for (const [prefix,sym] of [['sp','SPY'],['nd','QQQ']]) {
+      const mood = marketMoods[prefix];
+      if (!mood) continue;
+      const current = regime(prefix+'-regime');
+      const state = current==='Risk-On'?'bull':current==='Risk-Off'?'bear':current==='Neutral'?'balanced':'pending';
+      const word = state==='bull'?'Bull':state==='bear'?'Bear':state==='balanced'?'Balanced':'Pending';
+      const technical = current||'Awaiting data';
+      if (mood.dataset.state===state && mood.querySelector('small')?.textContent===technical) continue;
+      mood.dataset.state=state;
+      mood.querySelector('.market-mood-symbol').innerHTML=regimeArrow[state];
+      mood.querySelector('strong').textContent=word;
+      mood.querySelector('small').textContent=technical;
+      mood.setAttribute('aria-label',sym+': '+word+' ('+technical+')');
+    }
+  }
+
   // One visitor-friendly recap explains the relationship between price,
   // Market Health, and the key indicators without duplicating full alerts.
   const recap = make('section','unified-recap');
@@ -204,14 +246,8 @@
     const text=$(key)?.textContent?.trim()||'';
     return /risk.off/i.test(text)?'Risk-Off':/risk.on/i.test(text)?'Risk-On':/neutral/i.test(text)?'Neutral':null;
   }
-  const animalArt = {
-    bull: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M19 24C12 23 7 18 6 10c7 3 12 3 17 2M45 24c7-1 12-6 13-14-7 3-12 3-17 2" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 19c4-5 10-6 14-6s10 1 14 6l4 13c2 11-6 21-18 21S12 43 14 32z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M24 31h1m14 0h1" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M23 40c2-4 16-4 18 0v4c-5 5-13 5-18 0z" fill="currentColor" opacity=".3"/></svg>`,
-    bear: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="17" cy="19" r="9" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="47" cy="19" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 31c0-12 8-21 20-21s20 9 20 21v6c0 12-9 19-20 19s-20-7-20-19z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M23 33h1m16 0h1" stroke="currentColor" stroke-linecap="round" stroke-width="4"/><path d="M24 43c0-5 16-5 16 0l-8 8z" fill="currentColor" opacity=".45"/><path d="M28 46h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
-    neutral: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 13v39M16 20h32M13 50h38" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M16 20l-9 21h18zM48 20l-9 21h18z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M26 53h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`,
-    mixed: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 40l16-16 10 10 18-18M43 16h11v11" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 50h44" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`,
-    pending: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="4 5"/><path d="M32 20v16" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="44" r="2" fill="currentColor"/></svg>`
-  };
   function updateArt(){
+    updateMarketMoods();
     const sp=regime('sp-regime'),qq=regime('nd-regime');
     let state='pending',description='Market health reading pending';
     if(sp&&qq){
@@ -224,7 +260,7 @@
     art.dataset.state=state;
     art.setAttribute('aria-label',description);
     art.title=description;
-    art.innerHTML=animalArt[state];
+    art.innerHTML=regimeArrow[state==='neutral'?'balanced':state];
   }
   function validScore(sym){
     const value=$(sym==='spy'?'sp-score':'nd-score')?.textContent?.trim()||'';
