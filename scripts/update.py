@@ -20,6 +20,7 @@ from insights_history import merge_daily_archive
 from daily_macd import calculate_daily_macd
 from eod_freshness import check_snapshot_session, expected_close
 from eod_recovery import recover_missing_equity_closes
+from public_eod import recover_public_etf_closes
 from zoneinfo import ZoneInfo
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -147,7 +148,23 @@ def main():
     if needed is not None:
         refreshed = recover_missing_equity_closes(prices, sources, errors, needed)
         for symbol, outcome in refreshed.items():
-            print(f"::notice::EOD equity close status: {symbol}: {outcome}")
+            print(f"::notice::EOD Yahoo equity close status: {symbol}: {outcome}")
+        # If Yahoo's latest daily close is still missing, try a DIFFERENT
+        # no-key public Nasdaq ETF-history feed. Require matching prior dates and prices
+        # before accepting a verified bar. Never synthesize any EOD close.
+        recovered = recover_public_etf_closes(prices, sources, errors, needed)
+        for symbol, outcome in recovered.items():
+            if outcome != "already current via primary feed":
+                print(f"::notice::Nasdaq public daily {symbol}: {outcome}")
+        required_ts = pd.Timestamp(needed)
+        missing = [symbol for symbol in ("SPY", "QQQ")
+                   if symbol not in prices or required_ts not in prices[symbol].dropna().index]
+        if missing:
+            raise RuntimeError(
+                f"EOD DATA NOT READY for {needed}: Yahoo and Nasdaq public history "
+                f"lack verified completed daily closes for {', '.join(missing)}. "
+                "Prior market snapshot preserved. See individual source notices above."
+            )
     cboe,cb_sources,cb_err=official_cboe()
     errors+=cb_err
     # Prefer official Cboe indices; if official feed currently lags, use Yahoo for those missing sessions.
