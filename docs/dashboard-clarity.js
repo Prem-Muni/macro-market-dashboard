@@ -148,21 +148,7 @@
     if (scoreLink) scoreLink.innerHTML = 'View scoring breakdown <span aria-hidden="true">↗</span>';
   }
 
-  // Technical summaries always expose MACD, even while the detailed price
-  // chart and numeric tables are farther down the Technicals view.
-  for (const sym of ['spy', 'qqq']) {
-    const ma = document.querySelector(`.market-price-panel .ma-panel:has(#${sym}-ma5)`);
-    if (ma) {
-      const values = ma.querySelector('.ma-values');
-      if (values) {
-        const fold = document.createElement('details');
-        fold.className = 'clarity-ma-details';
-        fold.innerHTML = '<summary>Show all 5 moving averages</summary>';
-        values.parentNode.insertBefore(fold, values);
-        fold.appendChild(values);
-      }
-    }
-  }
+  // All five moving averages remain visible in their original grid.
   const note = document.querySelector('.market-prices > .provider-note');
   if (note) {
     const fold = document.createElement('details');

@@ -214,3 +214,5 @@ body{background:#101824;color:#e3eaf2}
 .unified-title-with-art .market-condition-art svg{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:600px){.market-mood{min-width:103px;padding:9px 10px;gap:6px}.market-mood-symbol{flex-basis:25px}.market-mood-symbol svg{width:25px;height:25px}.market-mood-copy strong{font-size:15px}.market-mood-copy small{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.market-mood{transition:none}}
+
+.unified-regime-transition{margin:0 0 13px;padding:12px 15px;border:1px solid #826b40;border-radius:9px;background:rgba(80,65,35,.22)}.unified-regime-transition[hidden]{display:none!important}.unified-regime-transition strong{display:block;color:#ecd098;font-size:13px;margin-bottom:4px}.unified-transition-text{margin:0;color:#e8e4d8;line-height:1.6;font-size:14px;font-weight:650}

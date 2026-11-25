@@ -7,6 +7,7 @@ contemporaneous screenshots if missing. No unseen historic alerts are inferred.
 from __future__ import annotations
 
 import math
+from copy import deepcopy
 import re
 from datetime import date
 from typing import Any
@@ -113,6 +114,21 @@ def _changes(result: dict, from_session: str, to_session: str) -> dict:
     return {"status": "complete", "groups": out}
 
 
+def capture_metrics(result: dict, sym: str) -> dict:
+    """Archive only the already-produced snapshot; never fetch or infer data."""
+    model, _, _ = INDEX_KEYS[sym]
+    keys = list(dict.fromkeys(result.get("order", {}).get("shared", []) + result.get("order", {}).get(model, [])))
+    ma = result.get("moving_averages", {}).get(sym, {})
+    return deepcopy({
+        "signals": {k: result.get("signals", {}).get(k) for k in keys},
+        "names": {k: result.get("names", {}).get(k, k) for k in keys},
+        "moving_averages": ma if ma.get("as_of") == result.get("session") else {},
+        "sources": result.get("sources", {}),
+        "warnings": result.get("warnings", []),
+        "confirmation_components": result.get("markets", {}).get(model, {}).get("confirmation", {}).get("components", {}),
+    })
+
+
 def make_daily_entry(result: dict) -> dict | None:
     """Return a validated, session-aligned record; otherwise skip the day."""
     session = result.get("session")
@@ -166,6 +182,7 @@ def make_daily_entry(result: dict) -> dict | None:
             macd_snapshot = {name: macd.get(name) for name in
                              ("macd", "signal", "histogram", "relation", "crossover")}
         out[sym] = {
+            "metrics": capture_metrics(result, sym),
             "macd_info": macd_snapshot,  # also included among the 16 scored inputs
             "previous_close": round(p, 4), "close": round(c, 4), "price_change_pct": round(pct, 5),
             **now, "previous_score": prevscore, "score_delta_1d": delta,
@@ -217,6 +234,23 @@ def merge_daily_archive(previous: dict, fresh: dict) -> dict:
     if not any(row["session"] == FRIDAY_BASELINE_SESSION for row in entries):
         entries.append(friday_baseline_entry())
         entries.sort(key=lambda row: row["session"])
+    # Preserve the last published full snapshot before it is superseded.
+    # Enrich only an existing matching, fully aligned record; no historical reconstruction.
+    prior_day = None
+    if (previous.get("price_moves") or {}).get("status") == "complete":
+        try:
+            prior_day = make_daily_entry(previous)
+        except (ValueError, TypeError, KeyError):
+            pass
+    if prior_day:
+        for i, row in enumerate(entries):
+            if row["session"] == prior_day["session"] and all(
+                all(row[sym].get(k) == prior_day[sym].get(k) for k in ("score", "available", "total", "close"))
+                for sym in ("spy", "qqq")
+            ):
+                entries[i] = deepcopy(row)
+                for sym in ("spy", "qqq"):
+                    entries[i][sym].setdefault("metrics", prior_day[sym]["metrics"])
     new = make_daily_entry(fresh)
     if new is not None:
         if not entries or new["session"] > entries[-1]["session"]:

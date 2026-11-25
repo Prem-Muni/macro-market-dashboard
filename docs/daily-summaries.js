@@ -37,6 +37,8 @@
       pct,close:finite(item.close)?item.close:null,
       trend:typeof item.trend_5d==='string'?item.trend_5d:'N/A',
       delta:finite(item.score_delta_1d)?-item.score_delta_1d:null,
+      previousRisk: !baseline && item.available===item.total && finite(item.previous_score) ? regime(item.total-item.previous_score,item.total-item.previous_score) : null,
+      previousHealth: !baseline && finite(item.previous_score) ? item.total-item.previous_score : null,
       alert};
   }
   function fromSnapshotMarket(item,move){
@@ -91,12 +93,14 @@
     const moves=finite(spy.pct)&&finite(qqq.pct)?` SPY ${signed(spy.pct)} and QQQ ${signed(qqq.pct)} versus the prior completed session.`:'';
     const gaps=[spy,qqq].filter(o=>o.available<o.total).length;
     const coverage=gaps?` ${gaps===2?'Both benchmarks have':'One benchmark has'} missing scored inputs; scores are shown as ranges where necessary.`:'';
-    const summary=`${x}; ${y}.${moves}${coverage}`;
+    const transitions = [['SPY',spy],['QQQ',qqq]].filter(([,m])=>m.available===m.total && names[m.previousRisk] && names[m.risk] && m.previousRisk!==m.risk).map(([symbol,m])=>({symbol,from:names[m.previousRisk],to:names[m.risk],before:`${m.previousHealth}/${m.total}`,after:scoreText(m)}));
+    const transitionText=transitions.map(t=>`${t.symbol} transitioned from ${t.from} to ${t.to} (${t.before} → ${t.after}).`).join(' ');
+    const summary=`${x}; ${y}.${moves}${coverage}${transitionText?' '+transitionText:''}`;
     const alertCount=[spy,qqq].filter(x=>x.alert.kind==='divergence').length;
     const alertHeadline=alertCount===2?'Price/risk divergence in both ETFs':alertCount===1?'Price/risk divergence in one ETF':
       [spy,qqq].some(x=>x.alert.kind==='uncertain')?'Price/risk check incomplete':'No price/risk divergence flagged';
     return {session:day,previousSession:date(previous)&&previous<day?previous:null,
-      origin,headline,summary,spy,qqq,alertCount,alertHeadline,partial:gaps>0,internals:internals||null};
+      origin,headline,summary,transitions,transitionText,spy,qqq,alertCount,alertHeadline,partial:gaps>0,internals:internals||null};
   }
   function savedSummaries(data){
     const archive=data?.market_insights_history;
@@ -131,6 +135,9 @@
           current.alert=current.available<current.total ? {kind:'uncertain',label:'Scoring incomplete · alert not confirmed'} : priceRisk(current.pct,current.risk,false);
         }
         if(finite(candidate.delta))current.delta=candidate.delta;
+        if(candidate.available===candidate.total && current.available===current.total && candidate.low===current.low && candidate.high===current.high && archived.previousSession===latest.previousSession){
+          current.previousRisk=candidate.previousRisk; current.previousHealth=candidate.previousHealth;
+        }
       }
       return makeSummary(latest.session,archived.previousSession||latest.previousSession,latest.spy,latest.qqq,'current_eod',
         currentInternals.available?currentInternals:archived.internals);
@@ -160,18 +167,21 @@
     if(entry.alert.kind==='uncertain')return `Market Health ${scoreText(entry)} (${r}) has missing inputs or an unverified price comparison. No divergence conclusion is asserted.`;
     if(!percent)return `Market Health ${scoreText(entry)} (${r}). Prior-day closing price unavailable; a daily price/risk comparison cannot be confirmed.`;
     const action=entry.pct>0?`rose ${percent}`:entry.pct<0?`fell ${percent}`:'closed unchanged';
-    if(entry.alert.kind==='divergence')return `${symbol} ${action} while Market Health remained ${scoreText(entry)} (${r}). The price move and risk regime disagree; a single session does not confirm a regime change.`;
+    if(entry.available===entry.total && entry.previousRisk && entry.previousRisk!==entry.risk)return `${symbol} ${action}; Market Health changed to ${scoreText(entry)} (${r}). ${entry.alert.label}.`;
+    if(entry.alert.kind==='divergence')return `${symbol} ${action} while Market Health was ${scoreText(entry)} (${r}). The price move and risk regime disagree; a single session does not confirm a regime change.`;
     if(entry.alert.kind==='watch')return `${symbol} ${action} while Market Health is ${scoreText(entry)} (Neutral). A sizable move warrants review, but is not a confirmed regime transition.`;
     return `${symbol} ${action}; Market Health is ${scoreText(entry)} (${r}). No qualifying price/risk divergence was detected this session.`;
   }
   function marketTitle(entry){
+    const names={'RISK-OFF':'Risk-Off','NEUTRAL':'Neutral','RISK-ON':'Risk-On'};
+    if(entry.available===entry.total&&names[entry.previousRisk]&&names[entry.risk]&&entry.previousRisk!==entry.risk)return `${names[entry.previousRisk]} → ${names[entry.risk]}`;
     if(entry.alert.kind==='divergence'||entry.alert.kind==='watch')return entry.alert.label;
     if(entry.alert.kind==='baseline')return 'Screenshot baseline · no prior close';
     if(entry.alert.kind==='uncertain')return 'Incomplete data · comparison unconfirmed';
     if(!finite(entry.pct))return 'Daily price change unavailable';
     const move=entry.pct>=2?'Strong rally':entry.pct<=-2?'Sharp decline':entry.pct>0?'Positive session':entry.pct<0?'Down day':'Flat session';
     const regimeName=entry.risk==='RISK-OFF'?'Risk-Off':entry.risk==='RISK-ON'?'Risk-On':entry.risk==='NEUTRAL'?'Neutral':'Unconfirmed';
-    return `${move} · ${regimeName} persists`;
+    return `${move} · ${regimeName}${entry.previousRisk===entry.risk?' persists':''}`;
   }
   function etfTile(parent,symbol,longName,entry){
     const box=put(parent,'article','daily-summary-etf');

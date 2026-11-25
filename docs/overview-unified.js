@@ -149,6 +149,12 @@
   const recapBody = make('p','unified-recap-text','A plain-English summary will appear when the completed closing prices and market health scores are available.');
   recapBody.id='unified-recap-text';
   recapBody.setAttribute('aria-live','polite');
+  const transitionBox = make('div','unified-regime-transition');
+  transitionBox.id='unified-regime-transition';
+  transitionBox.hidden=true;
+  transitionBox.appendChild(make('strong','','Market Regime Transition'));
+  const transitionText = make('p','unified-transition-text');
+  transitionBox.appendChild(transitionText);
   const internalBox = make('div','unified-internal-changes');
   internalBox.id='unified-internal-changes';
   const internalHead=make('div','unified-internals-head');
@@ -168,7 +174,7 @@
   internalDown.id='unified-internals-down';
   internalBox.append(internalHead,internalUp,internalDown);
   const recapFootnote = make('p','unified-recap-note','Rule-based daily snapshot, not a forecast or trading recommendation.');
-  recap.append(recapHeading,recapBody,internalBox,recapFootnote);
+  recap.append(recapHeading,transitionBox,recapBody,internalBox,recapFootnote);
   panel.appendChild(recap);
 
   const divider = make('div','unified-divider');
@@ -220,6 +226,7 @@
   };
   let lastPrices=null;
   let lastInternals=null;
+  let lastTransition=null;
   let currentRequest=0;
   let lastSignature='';
 
@@ -321,6 +328,8 @@
     updateArt();
     const session=$('session')?.textContent?.trim()||'';
     writeInternals();
+    transitionBox.hidden=!(asDate(session)&&lastPrices?.session===session&&lastTransition);
+    transitionText.textContent=transitionBox.hidden?'':lastTransition;
     if(!asDate(session) || lastPrices?.session!==session){
       recapDate.textContent=asDate(session)?dateLabel(session):'Awaiting EOD session';
       recapBody.textContent='The completed-session prices and scores have not yet been verified for the same date. Please check again after the EOD refresh.';
@@ -374,6 +383,7 @@
     if(!asDate(session)){
       lastPrices=null;
       lastInternals=null;
+      lastTransition=null;
       for(const sym of ['spy','qqq'])resetMarket(sym);
       writeRecap();
       return;
@@ -390,6 +400,7 @@
       // Daily Summary Archive. No price-only heuristics are used here.
       const summary=window.DailySummaries?.latestSummary?.(data);
       lastInternals=summary?.session===session?summary.internals:null;
+      lastTransition=summary?.session===session?summary.transitionText:null;
       if(!lastInternals){
         lastInternals=window.DailySummaries?.internalsFromChanges?.(
           data.signal_changes,session,data.price_moves?.previous_session)||null;
@@ -414,6 +425,7 @@
       if(request!==currentRequest)return;
       lastPrices=null;
       lastInternals=null;
+      lastTransition=null;
       for(const sym of ['spy','qqq'])resetMarket(sym);
       writeRecap();
     }

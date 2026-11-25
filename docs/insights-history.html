@@ -7,11 +7,11 @@
   <meta name="description" content="Saved daily SPY and QQQ scores, close-to-close price changes, price-risk alerts, and market signal changes.">
   <title>Market Insights History | Daily Market Intelligence</title>
   <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
-  <link rel="stylesheet" href="insights-history.css?v=macd16-20261125b">
+  <link rel="stylesheet" href="insights-history.css?v=history-full-20261125c">
   <link rel="stylesheet" href="daily-summaries.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="internals-recap.css?v=20261125-internals1">
-  <script src="insights-history.js?v=qqq-direct-tabs-20261125a" defer></script>
-  <script src="daily-summaries.js?v=validation-20w-20261125a" defer></script>
+  <script src="insights-history.js?v=history-full-20261125c" defer></script>
+  <script src="daily-summaries.js?v=history-full-20261125c" defer></script>
   <script src="model-validation.js?v=validation-20w-20261125a" defer></script>
   <link rel="stylesheet" href="model-validation.css?v=validation-20w-20261125a">
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
@@ -61,14 +61,15 @@
         <div class="journal-stat"><span>Price/risk divergence days</span><strong id="j-alerts">—</strong><small id="j-alerts-note">SPY sessions with a price/risk mismatch</small></div>
       </section>
       <section class="journal-panel" aria-label="Risk-score trend of saved sessions">
-        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3 id="j-score-title">SPY Market Health Score history</h3><p>Historical records retain their recorded 15- or 16-point denominator; the November 20 screenshot baseline remains 15-point. Missing days are not fabricated.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
+        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3 id="j-score-title">SPY Market Health Score history</h3><p>Historical records retain their recorded 15- or 16-point denominator; the November 20 screenshot baseline remains 15-point. Hollow markers identify legacy 15-point or incomplete records. Consecutive saved sessions are connected; missing sessions are not fabricated.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
         <svg id="j-score-chart" role="img" viewBox="0 0 900 230" aria-label="SPY saved Market Health Scores over completed daily sessions"></svg>
         <p class="j-chart-note">Scores reflect the daily saved snapshot. The dashed guides mark the Market Health boundaries: Risk-Off 0–5, Neutral 6–10, Risk-On 11–16.</p>
       </section>
       <section class="journal-panel" aria-label="Historical daily insights">
-        <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">DAILY RECORDS</div><h3 id="j-log-title">SPY historical market log</h3><p>Higher Market Health Scores indicate improvement. A positive daily score change means improvement.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export visible CSV</button></div>
+        <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">DAILY RECORDS</div><h3 id="j-log-title">SPY historical market log</h3><p>Full saved daily metrics · scroll horizontally for all columns. A dash means not recorded or unavailable. Fear &amp; Greed is external and not automatically archived; the captured Nov 20 value is retained.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export full CSV</button></div>
         <div class="journal-filters">
-          <fieldset class="journal-filter-group"><legend>Sessions</legend><div class="journal-segments" id="j-range"><button class="selected" data-range="30" type="button">30</button><button data-range="90" type="button">90</button><button data-range="all" type="button">All</button></div></fieldset>
+          <fieldset class="journal-filter-group"><legend>Sessions</legend><div class="journal-segments" id="j-range"><button data-range="m1" type="button">1M</button><button data-range="m3" type="button">3M</button><button data-range="m6" type="button">6M</button><button data-range="ytd" type="button">YTD</button><button class="selected" data-range="all" type="button">All History</button></div></fieldset>
+          <label class="journal-select">Columns <select id="j-columns"><option value="all">All metrics</option><option value="overview">Market overview</option><option value="technical">Technicals</option><option value="shared">Shared macro</option><option value="internals">Index internals</option><option value="quality">Data quality</option></select></label>
           <label class="journal-check"><input id="j-alert-only" type="checkbox"> Divergence alerts only</label>
           <span id="j-matches" class="journal-matches" role="status">Loading…</span>
         </div>
