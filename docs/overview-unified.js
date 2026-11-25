@@ -44,32 +44,46 @@
   scoreRow.appendChild(grid);
   panel.appendChild(scoreRow);
   overview.insertBefore(panel, intro); // Attach before looking up IDs inside the moved cards.
-  for (const [prefix, symbol] of [['sp','SPY'],['nd','QQQ']]) {
-    const card = $(prefix + '-card');
-    if (!card) continue;
-    const marketHead = card.querySelector('.market-head');
-    if (!marketHead) continue;
-    // Both numbers come from the existing completed-EOD data, not TradingView's live quote.
-    const quote = make('div','unified-quote');
-    const closing = make('div','unified-close');
-    const closeLabel = make('span','unified-close-label','EOD CLOSE');
-    const closeValue = make('strong','unified-close-value','—');
-    closeValue.id = `unified-${symbol.toLowerCase()}-close`;
-    const closeAsOf = make('span','unified-close-asof','Awaiting EOD');
-    closeAsOf.id = `unified-${symbol.toLowerCase()}-asof`;
-    closing.append(closeLabel,closeValue,closeAsOf);
-    const movement = make('div','unified-price');
-    movement.dataset.price = 'missing';
-    const label = make('span','unified-price-label','1D CHANGE');
-    const change = make('strong','unified-price-change','—');
-    change.id = `unified-${symbol.toLowerCase()}-move`;
-    movement.append(label,change);
-    quote.append(closing,movement);
-    marketHead.appendChild(quote);
-    const note = make('p','unified-market-note','Awaiting the completed daily price comparison');
-    note.id = `unified-${symbol.toLowerCase()}-note`;
-    card.appendChild(note);
+
+  // A compact SPY/QQQ price ribbon sits ABOVE the Market Snapshot.
+  // These are ETF closes (not raw SPX/NDX index levels) and are strictly EOD.
+  const ribbon = make('section', 'benchmark-ribbon');
+  ribbon.id = 'benchmark-price-ribbon';
+  ribbon.setAttribute('aria-label', 'SPY and QQQ latest completed closing prices');
+  const ribbonHeader = make('div','benchmark-ribbon-heading');
+  const ribbonHeadingLeft = make('div','benchmark-ribbon-heading-left');
+  ribbonHeadingLeft.appendChild(make('span','benchmark-ribbon-kicker','BENCHMARK ETF PRICES'));
+  ribbonHeadingLeft.appendChild(make('span','benchmark-ribbon-source','Latest completed close · not live quotes'));
+  ribbonHeader.appendChild(ribbonHeadingLeft);
+  const ribbonDate = make('span','benchmark-ribbon-date','Awaiting EOD session');
+  ribbonDate.id='benchmark-ribbon-date';
+  ribbonHeader.appendChild(ribbonDate);
+  ribbon.appendChild(ribbonHeader);
+  const ribbonGrid = make('div','benchmark-ribbon-grid');
+  for(const [sym,name] of [['spy','SPY · S&P 500 ETF'],['qqq','QQQ · Nasdaq-100 ETF']]){
+    const item=make('div','benchmark-ribbon-market');
+    item.id='benchmark-ribbon-'+sym;
+    const identity=make('div','benchmark-ribbon-identity');
+    identity.appendChild(make('span','benchmark-ribbon-ticker',sym.toUpperCase()));
+    identity.appendChild(make('span','benchmark-ribbon-name',name.split(' · ')[1]));
+    const quote=make('div','benchmark-ribbon-quote');
+    const close=make('strong','benchmark-ribbon-close','—');
+    close.id='benchmark-ribbon-'+sym+'-close';
+    const delta=make('div','benchmark-ribbon-delta');
+    delta.dataset.direction='missing';
+    const pct=make('strong','benchmark-ribbon-percent','—');
+    pct.id='benchmark-ribbon-'+sym+'-percent';
+    const pts=make('span','benchmark-ribbon-points','—');
+    pts.id='benchmark-ribbon-'+sym+'-points';
+    delta.append(pct,pts);
+    quote.append(close,delta);
+    item.append(identity,quote);
+    ribbonGrid.appendChild(item);
   }
+  ribbon.appendChild(ribbonGrid);
+  overview.insertBefore(ribbon,panel);
+  // Do not repeat the daily ETF price move inside either health-score card:
+  // the strip above is the single source of price presentation.
 
   const divider = make('div','unified-divider');
   const driversHeader = make('div','unified-driver-heading');
@@ -85,60 +99,6 @@
   const whyDetail = $('brief-detail');
   if (whyDetail) why.appendChild(whyDetail);
   panel.appendChild(why);
-
-  // Optional charts on Overview use the same instruments and daily timeframe as Technicals.
-  // Widgets are created only if the user opens this section, to avoid extra chart requests.
-  const charts = make('details','unified-charts');
-  charts.id = 'unified-daily-charts';
-  const chartsSummary = make('summary','','SPY & QQQ daily price charts');
-  const chartHint = make('span','unified-charts-hint','Expand charts · full RSI, MACD and moving averages stay in Technicals');
-  chartsSummary.append(chartHint);
-  const chartGrid = make('div','unified-charts-grid');
-  for (const [sym, instrument, url] of [
-    ['SPY','AMEX:SPY','https://www.tradingview.com/symbols/AMEX-SPY/'],
-    ['QQQ','NASDAQ:QQQ','https://www.tradingview.com/symbols/NASDAQ-QQQ/']
-  ]) {
-    const holder = make('div','unified-chart-item');
-    const titleRow = make('div','unified-chart-title');
-    titleRow.appendChild(make('strong','',sym + ' · Daily'));
-    const link = make('a','','Open chart ↗');
-    link.href = url;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    titleRow.appendChild(link);
-    const canvas = make('div','unified-chart-canvas');
-    canvas.dataset.instrument = instrument;
-    canvas.appendChild(make('p','unified-chart-placeholder','Open this section to load the daily chart.'));
-    holder.append(titleRow,canvas);
-    chartGrid.appendChild(holder);
-  }
-  const chartsDisclosure = make('p','unified-charts-disclosure',
-    'Hosted TradingView charts may show delayed or intraday quotes. EOD closing prices above come from the published daily snapshot.');
-  charts.append(chartsSummary, chartGrid, chartsDisclosure);
-  charts.addEventListener('toggle', () => {
-    if (!charts.open || charts.dataset.initialized) return;
-    charts.dataset.initialized='true';
-    for (const canvas of chartGrid.querySelectorAll('.unified-chart-canvas')) {
-      const instrument = canvas.dataset.instrument;
-      const box = make('div','tradingview-widget-container');
-      box.style.height = '100%'; box.style.width = '100%';
-      const widget = make('div','tradingview-widget-container__widget');
-      widget.style.height='100%'; widget.style.width='100%';
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.async = true;
-      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-      script.text = JSON.stringify({autosize:true,symbol:instrument,interval:'D',range:'YTD',
-        timezone:'America/New_York',theme:'dark',style:'1',locale:'en',
-        backgroundColor:'#142334',gridColor:'rgba(96,127,158,0.12)',
-        withdateranges:true,hide_side_toolbar:true,hide_top_toolbar:false,
-        hide_legend:true,hide_volume:true,allow_symbol_change:false,
-        save_image:false,calendar:false,support_host:'https://www.tradingview.com'});
-      box.append(widget, script);
-      canvas.replaceChildren(box);
-    }
-  });
-  panel.appendChild(charts);
 
   const footer = make('div','unified-footer');
   const actions = overview.querySelector('.clarity-next-actions');
@@ -157,68 +117,95 @@
   const intelligence = $('market-intelligence');
   if (sourcePriceRisk && intelligence) intelligence.insertBefore(sourcePriceRisk, intelligence.querySelector('.intel-grid'));
 
-  // Mirror the already-rendered Technicals EOD closes, which app.js derives from
-  // moving_averages.spy/qqq. Never take these values from a live TradingView widget.
-  // Date matching prevents a prior-session close appearing under a newer score.
-  function syncCloses() {
-    const scoredSession = $('session')?.textContent?.trim() || '';
-    for (const sym of ['spy','qqq']) {
-      const source = $(sym + '-ma-close');
-      const sourceDate = $(sym + '-ma-asof')?.textContent?.match(/\b\d{4}-\d{2}-\d{2}\b/)?.[0];
-      const target = $('unified-' + sym + '-close');
-      const asof = $('unified-' + sym + '-asof');
-      if (!target || !asof) continue;
-      const text = source?.textContent?.trim() || '—';
-      const numeric = /^\$\d[\d,]*\.\d{2}$/.test(text);
-      const dateMatches = !!sourceDate && /^\d{4}-\d{2}-\d{2}$/.test(scoredSession) && sourceDate === scoredSession;
-      target.textContent = numeric && dateMatches ? text : '—';
-      asof.textContent = numeric && dateMatches ? sourceDate + ' close' : 'Completed close pending';
-      target.parentElement.dataset.complete = numeric && dateMatches ? 'true' : 'false';
+  // Pull the same committed, completed-EOD JSON used by the dashboard.
+  // Require exact date alignment; never substitute a current TradingView quote.
+  const asDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value||'');
+  const isNum = value => typeof value === 'number' && Number.isFinite(value);
+  const currency = value => '$'+value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const signedDollars = value => (value<0?'−':value>0?'+':'')+'$'+Math.abs(value).toFixed(2);
+  const dateLabel = value => new Date(value+'T12:00:00Z').toLocaleDateString('en-US',{
+    month:'short',day:'numeric',year:'numeric',timeZone:'UTC'
+  });
+  let currentRequest=0;
+  let lastSignature='';
+  function resetMarket(sym){
+    $('benchmark-ribbon-'+sym+'-close').textContent='—';
+    $('benchmark-ribbon-'+sym+'-percent').textContent='—';
+    $('benchmark-ribbon-'+sym+'-points').textContent='—';
+    $('benchmark-ribbon-'+sym).querySelector('.benchmark-ribbon-delta').dataset.direction='missing';
+  }
+  async function syncBenchmarkStrip(){
+    const request=++currentRequest;
+    const session=$('session')?.textContent?.trim()||'';
+    if(!asDate(session)){
+      ribbonDate.textContent='Awaiting completed EOD session';
+      for(const sym of ['spy','qqq'])resetMarket(sym);
+      return;
+    }
+    ribbonDate.textContent=dateLabel(session)+' close';
+    try{
+      const res=await fetch('data/latest.json?benchmark='+Date.now(),{cache:'no-store'});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const data=await res.json();
+      if(request!==currentRequest)return;
+      if(data?.session!==session){
+        ribbonDate.textContent='Closing prices pending for '+dateLabel(session);
+        for(const sym of ['spy','qqq'])resetMarket(sym);
+        return;
+      }
+      const changes=data.price_moves?.status==='complete' && data.price_moves.session===session
+        ? data.price_moves : null;
+      const prevSession=changes?.previous_session;
+      const prevRow=Array.isArray(data.market_insights_history?.entries)
+        ? data.market_insights_history.entries.find(r=>r?.session===prevSession):null;
+      for(const sym of ['spy','qqq']){
+        const move=changes?.[sym];
+        // Price fallback from the saved history is allowed only for this same EOD date.
+        const currentRow=Array.isArray(data.market_insights_history?.entries)
+          ? data.market_insights_history.entries.find(r=>r?.session===session):null;
+        const currentClose=isNum(move?.close) && move.close>0 ? move.close :
+          isNum(currentRow?.[sym]?.close) && currentRow[sym].close>0 ? currentRow[sym].close:null;
+        const sourceAsOf=$(''+sym+'-ma-asof')?.textContent?.match(/\d{4}-\d{2}-\d{2}/)?.[0];
+        const technicalClose=$(''+sym+'-ma-close')?.textContent||'';
+        const maClose=Number(technicalClose.replace(/[$,]/g,''));
+        // Where the technicals value is loaded and dated, confirm the data agrees.
+        const maMismatch=sourceAsOf===session && isNum(maClose) && maClose>0 && isNum(currentClose)
+          && Math.abs(maClose-currentClose)>0.03;
+        const closeEl=$('benchmark-ribbon-'+sym+'-close');
+        const pctEl=$('benchmark-ribbon-'+sym+'-percent');
+        const pointsEl=$('benchmark-ribbon-'+sym+'-points');
+        const deltaEl=$('benchmark-ribbon-'+sym).querySelector('.benchmark-ribbon-delta');
+        if(!isNum(currentClose)||maMismatch){resetMarket(sym);continue;}
+        closeEl.textContent=currency(currentClose);
+        const prior=isNum(move?.previous_close)&&move.previous_close>0 ? move.previous_close :
+          isNum(prevRow?.[sym]?.close)&&prevRow[sym].close>0 ? prevRow[sym].close : null;
+        const points=isNum(prior)?Math.round((currentClose-prior)*100)/100:null;
+        const pct=isNum(move?.change_pct)?move.change_pct:
+          isNum(prior)?((currentClose-prior)/prior)*100:null;
+        if(isNum(pct)){
+          pctEl.textContent=(pct>0?'▲ +':pct<0?'▼ −':'')+Math.abs(pct).toFixed(2)+'%';
+        } else pctEl.textContent='Change pending';
+        pointsEl.textContent=isNum(points)?signedDollars(points):'Point change unavailable';
+        const direction=isNum(points)?Math.sign(points):isNum(pct)?Math.sign(pct):null;
+        deltaEl.dataset.direction=direction===1?'up':direction===-1?'down':direction===0?'flat':'missing';
+      }
+    }catch(_err){
+      if(request!==currentRequest)return;
+      ribbonDate.textContent='Completed closing prices unavailable';
+      for(const sym of ['spy','qqq'])resetMarket(sym);
     }
   }
-  for (const id of ['spy-ma-close','qqq-ma-close','spy-ma-asof','qqq-ma-asof','session']) {
-    const node = $(id);
-    if (node) new MutationObserver(syncCloses).observe(node, {childList:true,characterData:true,subtree:true});
+  function watchSession(){
+    const now=$('session')?.textContent?.trim()||'';
+    if(now===lastSignature)return;
+    lastSignature=now;
+    syncBenchmarkStrip();
   }
-  syncCloses();
-
-  function syncDaily() {
-    const src = $('daily-summary-live');
-    const latest = src?.querySelector('.daily-summary-card.current');
-    const tiles = latest?.querySelectorAll('.daily-summary-etf');
-    const sourceDateText = latest?.querySelector('.daily-summary-top .eyebrow')?.textContent || '';
-    const sourceDateMatch = sourceDateText.match(/\b[A-Za-z]{3}\s+\d{1,2},\s+\d{4}\b/);
-    const sourceSession = sourceDateMatch ? new Date(sourceDateMatch[0] + ' 12:00:00 GMT').toISOString().slice(0,10) : null;
-    const scoredSession = $('session')?.textContent?.trim();
-    const matched = !!sourceSession && (!/^\d{4}-\d{2}-\d{2}$/.test(scoredSession || '') || scoredSession === sourceSession);
-    for (const [i, symbol] of ['spy','qqq'].entries()) {
-      const price = $('unified-' + symbol + '-move');
-      const note = $('unified-' + symbol + '-note');
-      const tile = matched ? tiles?.[i] : null;
-      if (!price || !note) continue;
-      const change = tile?.querySelector('.daily-summary-move')?.textContent?.trim() || '—';
-      const kind = tile?.dataset.tone || 'incomplete';
-      const direction = tile?.dataset.price || 'missing';
-      const title = tile?.querySelector('.daily-summary-etf-title')?.textContent?.trim() || '';
-      price.textContent = change;
-      price.parentElement.dataset.price = direction;
-      note.dataset.tone = kind;
-      // Do not duplicate the score and regime already visible above.
-      if (!tile) note.textContent = latest && !matched ? 'Waiting for a matching completed EOD summary' : 'Daily price change is not yet available';
-      else if (kind === 'divergence') note.textContent = title + ' · Price and risk disagree';
-      else if (kind === 'watch') note.textContent = title + ' · Large move, mixed market conditions';
-      else if (kind === 'incomplete') note.textContent = 'Price/risk comparison incomplete';
-      else if (change === '—') note.textContent = 'Prior close unavailable · change not evaluated';
-      else note.textContent = 'No significant price/risk mismatch';
-    }
-    // Only an alert earns an amber highlight. Ordinary down days should not.
-    panel.dataset.alert = matched && latest?.dataset.tone === 'divergence' ? 'divergence' : 'normal';
-  }
-  const summary = $('daily-summary-live');
-  if (summary) new MutationObserver(syncDaily).observe(summary, {childList:true});
-  if ($('session')) new MutationObserver(syncDaily).observe($('session'), {childList:true,characterData:true,subtree:true});
-  syncDaily();
-
+  if($('session'))new MutationObserver(watchSession).observe($('session'),{childList:true,characterData:true,subtree:true});
+  // A background browser tab can remain open after the next EOD refresh.
+  window.addEventListener('focus',syncBenchmarkStrip);
+  window.setInterval(syncBenchmarkStrip,10*60*1000);
+  watchSession();
   // All scoring/data IDs remain exactly the same and are still updated by app.js.
   document.body.classList.add('unified-ready');
 })();
