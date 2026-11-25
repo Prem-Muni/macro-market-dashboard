@@ -1,0 +1,81 @@
+/* Unified Market Snapshot — restrained, accessible dark palette. UI ONLY.
+ * Put this stylesheet last so it overrides earlier cosmetic layers.
+ * Source snapshots, scores, EOD archive and indicators are never altered. */
+body{background:#101824;color:#e3eaf2}
+.shell{max-width:1260px}
+.site-tab.active,.clarity-nav button[aria-selected="true"]{background:#253d50!important;box-shadow:inset 0 -2px 0 rgba(143,205,222,.5)!important;border-color:#557b91!important}
+.site-tab:hover,.clarity-nav button:hover:not([aria-selected="true"]){background:#1c3142!important}
+.clarity-nav{background:rgba(16,24,36,.96);border-bottom-color:#34485a}
+.clarity-nav-buttons{background:#132131;border-color:#334d60}
+.unified-ready #clarity-overview>.section-intro,
+.unified-ready #clarity-overview>.decision-brief,
+.unified-ready #daily-summary-overview,
+.unified-ready #clarity-overview>.clarity-alert-empty,
+.unified-ready #clarity-overview>.clarity-next-actions,
+.unified-ready #clarity-overview>.clarity-price-risk,
+.unified-ready .audit-score-explanation{display:none!important}
+.unified-snapshot{margin:16px 0 24px;background:linear-gradient(138deg,#192c3b 0%,#142334 46%,#142132 100%);border:1px solid #40586a;border-radius:19px;padding:26px 26px 21px;box-shadow:0 15px 32px rgba(0,0,0,.14)}
+.unified-snapshot[data-alert="divergence"]{border-color:#7c6449}
+.unified-top{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;margin-bottom:21px}
+.unified-top-copy{min-width:0;flex:1}
+.unified-kicker{font-size:10px;letter-spacing:.15em;font-weight:780;color:#96b6c8;margin:0 0 9px}
+.unified-top .unified-headline{font-size:26px;line-height:1.22;letter-spacing:-.5px;color:#edf3f9;margin:0 0 9px;font-weight:740}
+.unified-intro{font-size:13px;line-height:1.55;color:#b4c6d3;margin:0 0 12px}
+.unified-guide{color:#a2cede;font-weight:650;font-size:12px;text-decoration:none;border-bottom:1px solid rgba(159,210,227,.25);padding-bottom:3px}
+.unified-guide:hover{color:#d7f1fa;border-color:currentColor}
+.unified-snapshot .session-box{flex:0 0 auto;min-width:205px;max-width:260px;background:#1c3041!important;border:1px solid #476379!important;box-shadow:none!important;border-radius:12px;padding:12px 16px}
+.unified-snapshot .session-box .eyebrow{color:#93b8ca}
+.unified-snapshot .session-box strong{font-size:18px;color:#f0f6fa}
+.unified-score-row .market-grid{margin:0!important;gap:14px}
+.unified-snapshot .market-card,
+.unified-snapshot #sp-card,.unified-snapshot #nd-card{background:#1a2c3c!important;border:1px solid #3a5467!important;border-radius:14px!important;padding:20px 20px 17px!important;box-shadow:none!important;transform:none!important;transition:border-color .2s}
+.unified-snapshot .market-card:hover{border-color:#607d90!important;box-shadow:none!important;transform:none!important}
+.unified-snapshot .market-head{align-items:flex-start;gap:14px}
+.unified-snapshot .market-head h3{font-size:18px;color:#e7f0f6}
+.unified-snapshot .market-head .eyebrow{font-size:10px;letter-spacing:.14em;color:#a2bdcd}
+.unified-price{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:0 0 auto;text-align:right}
+.unified-price-label{color:#99b3c5;font-size:10px;letter-spacing:.08em;font-weight:700}
+.unified-price-change{font-size:27px;line-height:1.1;letter-spacing:-.8px;color:#c0ccda;font-weight:750;font-variant-numeric:tabular-nums}
+.unified-price[data-price="up"] .unified-price-change{color:#8bdec1}
+.unified-price[data-price="down"] .unified-price-change{color:#f2a3ab}
+.unified-snapshot .score-zone{margin:13px 0 13px}
+.unified-snapshot .score{font-size:49px;line-height:1.1;color:#f2f5f8}
+.unified-snapshot .regime{font-size:11px;letter-spacing:.01em;box-shadow:none!important;filter:saturate(.65)}
+.unified-snapshot .risk-meter{height:5px;margin-bottom:11px;background:#344858;box-shadow:none}
+.unified-snapshot .risk-meter>div{filter:saturate(.65)}
+.unified-snapshot .score-daily-compare{background:#1a2a39!important;border:1px solid #3b5264!important;color:#b9d3de!important;font-weight:600}
+.unified-snapshot .market-card .stats{border-color:#354c5d;padding:11px 0 0}
+.unified-snapshot .market-card .stats span{color:#9fb5c6}
+.unified-snapshot .market-card .stats b{color:#c8d9e3}
+.unified-market-note{font-size:12px;line-height:1.5;color:#a9c4d1;margin:11px 0 0;min-height:18px}
+.unified-market-note[data-tone="divergence"]{color:#f0c88d;font-weight:700}
+.unified-market-note[data-tone="watch"]{color:#e4c995}
+.unified-market-note[data-tone="incomplete"]{color:#c8af8e}
+.unified-snapshot .clarity-score-more{border-color:#304859;margin-top:12px}
+.unified-snapshot .clarity-score-more>summary{color:#a7c9da}
+.unified-divider{border-top:1px solid #3c5162;margin-top:20px;padding-top:19px}
+.unified-driver-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:11px}
+.unified-driver-heading h3{margin:0;color:#dbe7ef;font-size:14px;letter-spacing:-.1px}
+.unified-driver-heading span{font-size:11px;color:#8da9bc}
+.unified-snapshot .decision-brief-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.unified-snapshot .decision-stat{border:1px solid #344d5e!important;background:#182a3a!important;box-shadow:none!important;padding:12px 14px!important;border-radius:10px}
+.unified-snapshot .decision-stat strong{font-size:13px;line-height:1.5;color:#c8d8e3}
+.unified-snapshot .decision-stat .decision-stat-label{color:#9bb5c6;font-size:10px}
+.unified-snapshot .decision-stat small{display:none}
+.unified-why{margin-top:15px;padding-top:0}
+.unified-why>summary{cursor:pointer;font-size:12px;font-weight:630;color:#a6ccdc}
+.unified-why p{font-size:12px;color:#b7cad9;line-height:1.7;max-width:880px;margin:11px 0}
+.unified-footer{margin-top:17px;padding-top:15px;border-top:1px solid #344c5d;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.unified-footer .clarity-next-actions{display:flex!important;margin:0;gap:8px}
+.unified-footer .clarity-next-actions button,.unified-footer .clarity-next-actions a{background:#223b4e!important;border:1px solid #46657a!important;color:#c8e2ed!important;box-shadow:none!important;border-radius:9px;font-size:12px;padding:9px 13px;transform:none!important}
+.unified-footer .clarity-next-actions button:hover,.unified-footer .clarity-next-actions a:hover{background:#2e4b60!important;border-color:#769cb1!important;box-shadow:none!important}
+.unified-archive-link{font-size:12px;font-weight:620;color:#a7cada;text-decoration:none}
+.unified-archive-link:hover{text-decoration:underline;text-underline-offset:4px}
+/* Make secondary views quieter, without suppressing meaningful red/green statuses. */
+.clarity-tech-summary,.clarity-signals .market-intelligence,.chartpanel,.signals-panel,.journal-panel,.disclaimer{box-shadow:none!important;border-color:#364e60!important}
+.clarity-tech-card{border-color:#354c5e!important;background:#162739!important}
+@media(max-width:900px){.unified-snapshot{padding:21px 19px}.unified-top{flex-wrap:wrap}.unified-snapshot .session-box{min-width:0;max-width:none;width:100%}.unified-score-row .market-grid{grid-template-columns:1fr!important}.unified-snapshot .decision-brief-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.unified-snapshot{padding:16px 13px;border-radius:14px}.unified-top{margin-bottom:17px}.unified-top .unified-headline{font-size:22px}.unified-snapshot .market-card{padding:16px!important}.unified-price-change{font-size:25px}.unified-snapshot .score{font-size:46px}.unified-snapshot .decision-brief-stats{grid-template-columns:1fr 1fr}.unified-snapshot .decision-stat:last-child{grid-column:1/-1}.unified-footer{align-items:flex-start;flex-direction:column}.unified-footer .clarity-next-actions{width:100%;flex-wrap:wrap}.unified-footer .clarity-next-actions button,.unified-footer .clarity-next-actions a{flex:1;min-width:130px;text-align:center}}
+@media(prefers-reduced-motion:reduce){.unified-snapshot *{transition:none!important;animation:none!important}}
+
+.unified-snapshot .market-card::before{background:linear-gradient(90deg,rgba(110,163,181,.12),rgba(118,174,188,.55),rgba(110,163,181,.12))!important;opacity:.7!important}
