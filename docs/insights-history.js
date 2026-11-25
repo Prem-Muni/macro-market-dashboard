@@ -239,7 +239,7 @@
   }
   function rerender(){
     const market=options.market,display=market.toUpperCase();
-    $('j-market-panel').setAttribute('aria-labelledby','j-tab-'+market);
+    $('j-market-panel').setAttribute('aria-labelledby','summary-tab-'+market);
     $('j-score-title').textContent=`${display} Market Health history`;
     $('j-log-title').textContent=`${display} historical market log`;
     $('j-chart-legend-label').textContent=display;
@@ -284,27 +284,11 @@
   function selectMarket(market,moveFocus=false){
     if(!ALL_MARKETS.includes(market))return;
     options.market=market;
-    for(const button of document.querySelectorAll('.journal-market-tabs button[role="tab"]')){
-      const active=button.dataset.market===market;
-      button.classList.toggle('active',active);
-      button.setAttribute('aria-selected',String(active));
-      button.tabIndex=active?0:-1;
-      if(active&&moveFocus)button.focus();
-    }
+    // Direct History tabs live in the primary tab bar. The summary view
+    // controls their selected states; selecting the ETF controls its data.
     rerender();
+    if(moveFocus)document.getElementById('summary-tab-'+market)?.focus();
   }
-  const marketTabs=document.querySelector('.journal-market-tabs');
-  marketTabs.addEventListener('click',event=>{
-    const button=event.target.closest('button[data-market]');
-    if(button&&marketTabs.contains(button))selectMarket(button.dataset.market);
-  });
-  marketTabs.addEventListener('keydown',event=>{
-    if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
-    event.preventDefault();
-    const current=event.target.closest('button[data-market]');if(!current)return;
-    const market=event.key==='Home'?'spy':event.key==='End'?'qqq':options.market==='spy'?'qqq':'spy';
-    selectMarket(market,true);
-  });
   $('j-alert-only').addEventListener('change',event=>{options.alertsOnly=event.target.checked;rerender();});
   $('j-export').addEventListener('click',()=>{
     const rows=filterRows(entries,options);if(!rows.length)return;
@@ -317,5 +301,5 @@
     }finally{setTimeout(()=>URL.revokeObjectURL(url),1000);}
   });
   load();
-  return {validArchive,filterRows,toCSV,chartRows,signed,dateLabel};
+  return {validArchive,filterRows,toCSV,chartRows,signed,dateLabel,selectMarket};
 });

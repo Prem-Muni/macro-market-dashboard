@@ -250,17 +250,30 @@
   }
   function initHistory(){
     const host=$('summary-view');if(!host)return;
-    const summariesBtn=$('summary-tab-current'),historyBtn=$('summary-tab-etfs'),historyHost=$('j-history-views');
+    const tabs={summaries:$('summary-tab-current'),spy:$('summary-tab-spy'),qqq:$('summary-tab-qqq')};
+    const historyHost=$('j-history-views');
     function show(which){
-      const showingSummary=which==='summaries';host.hidden=!showingSummary;historyHost.hidden=showingSummary;
-      summariesBtn.setAttribute('aria-selected',String(showingSummary));
-      historyBtn.setAttribute('aria-selected',String(!showingSummary));
-      summariesBtn.classList.toggle('active',showingSummary);historyBtn.classList.toggle('active',!showingSummary);
+      if(!tabs[which])which='summaries';
+      const showingSummary=which==='summaries';
+      host.hidden=!showingSummary;
+      historyHost.hidden=showingSummary;
+      for(const [key,button] of Object.entries(tabs)){
+        const selected=key===which;
+        button.classList.toggle('active',selected);
+        button.setAttribute('aria-selected',String(selected));
+        button.tabIndex=selected?0:-1;
+      }
       if(showingSummary)renderHistory();
+      else window.InsightsHistory?.selectMarket?.(which);
     }
-    summariesBtn.addEventListener('click',()=>{show('summaries');history.replaceState(null,'','#summaries');});
-    historyBtn.addEventListener('click',()=>{show('etfs');history.replaceState(null,'','#etfs');});
-    const fromHash=()=>show(location.hash==='#etfs'?'etfs':'summaries');
+    for(const [key,button] of Object.entries(tabs)){
+      button.addEventListener('click',()=>{show(key);history.replaceState(null,'','#'+key);});
+    }
+    // Preserve links from earlier versions of the site.
+    const fromHash=()=>{
+      const value=location.hash.slice(1).toLowerCase();
+      show(value==='qqq'?'qqq':value==='spy'||value==='etfs'?'spy':'summaries');
+    };
     window.addEventListener('hashchange',fromHash);fromHash();
     $('summary-export').addEventListener('click',()=>{
       if(!archive.length)return;

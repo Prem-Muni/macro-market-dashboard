@@ -1,0 +1,9 @@
+/* One-level History navigation: Summary Archive | SPY History | QQQ History */
+.summary-view-tabs{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:16px 0 24px}
+.summary-view-tabs button{min-width:0;font-size:14px;font-weight:720;line-height:1.3;padding:11px 17px;white-space:nowrap}
+.summary-view-tabs #summary-tab-qqq.active{border-color:#8db5de;background:#254761;color:#e9f5ff}
+.summary-view-tabs #summary-tab-spy.active{border-color:#77bcb4;background:#214b51;color:#e7fcf6}
+#j-history-views[hidden],#summary-view[hidden]{display:none!important}
+#j-history-views .journal-stats{margin-top:16px}
+#j-market-panel:focus{outline:none}
+@media(max-width:560px){.summary-view-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.summary-view-tabs #summary-tab-current{grid-column:1 / -1}.summary-view-tabs button{padding:11px 8px;font-size:13px;width:100%;text-align:center}}

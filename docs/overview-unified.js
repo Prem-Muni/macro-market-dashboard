@@ -26,15 +26,17 @@
   const sectionTitle = make('p', 'unified-kicker', 'Daily Market Snapshot');
   sectionTitle.setAttribute('role', 'heading');
   sectionTitle.setAttribute('aria-level', '2');
-  heading.appendChild(sectionTitle);
-  const briefTitle = $('brief-title');
-  if (briefTitle) {
-    heading.appendChild(briefTitle); // Move the live-updating heading; do not copy it.
-    briefTitle.classList.add('unified-headline');
-  } else {
-    heading.appendChild(make('h2', 'unified-headline', 'Latest market conditions'));
-  }
-  heading.appendChild(make('p', 'unified-intro', 'One view of market health, price direction and key signals.'));
+  const titleRow = make('div', 'unified-title-with-art');
+  const art = make('span', 'market-condition-art');
+  art.id = 'market-condition-art';
+  art.setAttribute('role','img');
+  art.setAttribute('aria-label','Market condition pending');
+  art.dataset.state = 'pending';
+  titleRow.append(sectionTitle,art);
+  heading.appendChild(titleRow);
+  // The live #brief-title stays in the original hidden .decision-brief,
+  // so app.js can update it without repeating the regime headline here.
+  // SPY/QQQ scorecards and the dedicated Daily Market Summary carry the meaning.
   const guide = make('a', 'unified-guide', 'How the 16-point Market Health Score works');
   guide.href = 'scoring-guide.html';
   heading.appendChild(guide);
@@ -202,6 +204,28 @@
     const text=$(key)?.textContent?.trim()||'';
     return /risk.off/i.test(text)?'Risk-Off':/risk.on/i.test(text)?'Risk-On':/neutral/i.test(text)?'Neutral':null;
   }
+  const animalArt = {
+    bull: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M19 24C12 23 7 18 6 10c7 3 12 3 17 2M45 24c7-1 12-6 13-14-7 3-12 3-17 2" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 19c4-5 10-6 14-6s10 1 14 6l4 13c2 11-6 21-18 21S12 43 14 32z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M24 31h1m14 0h1" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M23 40c2-4 16-4 18 0v4c-5 5-13 5-18 0z" fill="currentColor" opacity=".3"/></svg>`,
+    bear: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="17" cy="19" r="9" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="47" cy="19" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 31c0-12 8-21 20-21s20 9 20 21v6c0 12-9 19-20 19s-20-7-20-19z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M23 33h1m16 0h1" stroke="currentColor" stroke-linecap="round" stroke-width="4"/><path d="M24 43c0-5 16-5 16 0l-8 8z" fill="currentColor" opacity=".45"/><path d="M28 46h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+    neutral: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 13v39M16 20h32M13 50h38" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M16 20l-9 21h18zM48 20l-9 21h18z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M26 53h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`,
+    mixed: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 40l16-16 10 10 18-18M43 16h11v11" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 50h44" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`,
+    pending: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="4 5"/><path d="M32 20v16" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="44" r="2" fill="currentColor"/></svg>`
+  };
+  function updateArt(){
+    const sp=regime('sp-regime'),qq=regime('nd-regime');
+    let state='pending',description='Market health reading pending';
+    if(sp&&qq){
+      if(sp!==qq){state='mixed';description='Mixed market conditions: SPY '+sp+', QQQ '+qq;}
+      else if(sp==='Risk-On'){state='bull';description='Both SPY and QQQ in Risk-On';}
+      else if(sp==='Risk-Off'){state='bear';description='Both SPY and QQQ in Risk-Off';}
+      else {state='neutral';description='Both SPY and QQQ in Neutral';}
+    }
+    if(art.dataset.state===state&&art.getAttribute('aria-label')===description)return;
+    art.dataset.state=state;
+    art.setAttribute('aria-label',description);
+    art.title=description;
+    art.innerHTML=animalArt[state];
+  }
   function validScore(sym){
     const value=$(sym==='spy'?'sp-score':'nd-score')?.textContent?.trim()||'';
     return /^\d+(?:[–-]\d+)?\/16$/.test(value)?value:null;
@@ -248,6 +272,7 @@
     }
   }
   function writeRecap(){
+    updateArt();
     const session=$('session')?.textContent?.trim()||'';
     writeInternals();
     if(!asDate(session) || lastPrices?.session!==session){
@@ -369,5 +394,6 @@
   window.addEventListener('focus',syncOverviewPrices);
   window.setInterval(syncOverviewPrices,10*60*1000);
   watchSession();
+  updateArt();
   document.body.classList.add('unified-ready');
 })();

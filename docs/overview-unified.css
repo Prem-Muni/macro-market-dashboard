@@ -179,3 +179,15 @@ body{background:#101824;color:#e3eaf2}
 .unified-snapshot .unified-internals-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 8px}
 .unified-snapshot .unified-internals-detail{font-size:12px;line-height:1.4;color:#b4d4e4;text-align:left}
 .unified-snapshot .unified-internal-changes{margin-top:16px}
+
+/* Small dynamic bull/bear illustration beside the primary section title. */
+.unified-title-with-art{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin:0 0 7px}
+.unified-title-with-art .unified-kicker{margin:0!important}
+.market-condition-art{display:grid;place-items:center;width:49px;height:49px;flex:0 0 49px;border:1px solid #506779;border-radius:13px;background:#253a48;color:#b3c7d4;transition:background .15s ease,border-color .15s ease}
+.market-condition-art svg{width:35px;height:35px;display:block}
+.market-condition-art[data-state="bull"]{color:#80dfba;border-color:#386d5f;background:#1a3a39}
+.market-condition-art[data-state="bear"]{color:#ed9daa;border-color:#825567;background:#3a2937}
+.market-condition-art[data-state="neutral"]{color:#eed5a0;border-color:#7d7052;background:#38342a}
+.market-condition-art[data-state="mixed"]{color:#a4d3ec;border-color:#50788d;background:#243949}
+@media(max-width:620px){.unified-title-with-art{gap:9px}.market-condition-art{width:42px;height:42px;flex-basis:42px;border-radius:11px}.market-condition-art svg{width:29px;height:29px}}
+@media(prefers-reduced-motion:reduce){.market-condition-art{transition:none}}
