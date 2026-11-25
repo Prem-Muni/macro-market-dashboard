@@ -1,0 +1,55 @@
+/* Visitor-focused cross-page typography update — styling only.
+ * No changes to indicator rules, data, scores or EOD archival behavior. */
+:root{--readable-text:#e4eff6;--readable-muted:#abc3d4;--readable-border:rgba(121,165,190,.3)}
+.site-tabs{gap:7px}
+.site-tabs .site-tab{
+  font-size:clamp(12px,.94vw,14px);
+  font-weight:720;
+  line-height:1.35;
+  min-height:37px;
+  border-radius:9px;
+  transition:background-color .15s ease,border-color .15s ease;
+}
+.site-tabs .site-tab:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{
+  outline:2px solid #91cde8!important;outline-offset:3px!important;
+}
+.site-tabs .nav-counter{font-size:11px;letter-spacing:0}
+.journal-title-row h2,.audit-hero h2,.audit-research-hero h2{
+  font-size:clamp(25px,2.55vw,34px)!important;
+  line-height:1.22;letter-spacing:-.03em;
+}
+.journal-title-row .eyebrow,.audit-hero .eyebrow,.audit-research-hero .eyebrow{
+  color:#a4c6d8;font-size:11px;font-weight:780;letter-spacing:.12em;
+}
+.journal-title-row p,.audit-hero p,.audit-research-hero p{
+  color:var(--readable-muted);font-size:clamp(13px,1.1vw,15px);line-height:1.6;
+}
+.journal-panel-header h3,.audit-archive-banner h3,.journal-footnotes h3{
+  font-size:clamp(18px,1.65vw,22px)!important;
+  line-height:1.3;letter-spacing:-.025em;color:var(--readable-text);
+}
+.journal-panel-header .eyebrow,.audit-archive-banner .eyebrow{
+  font-size:11px;font-weight:750;letter-spacing:.1em;color:#a4c6d8;
+}
+.journal-market-tabs button,.summary-view-tabs button{
+  font-size:13px;font-weight:730;
+}
+.journal-stat>span{font-size:12px!important;font-weight:700;color:var(--readable-muted)}
+.journal-table thead th{font-size:12px!important;letter-spacing:.045em;color:#b7d1df}
+.audit-main .guide-section h2{font-size:clamp(23px,2.1vw,30px)!important;letter-spacing:-.022em}
+.audit-main .rule-card h3{font-size:clamp(17px,1.45vw,20px)!important;line-height:1.3}
+.audit-main .rule-details p,.audit-research-card p{line-height:1.65}
+.audit-research-card h3{font-size:clamp(18px,1.48vw,22px)!important;font-weight:750}
+/* Technical Pulse and signal sections are also more prominent, but keep charts compact. */
+.clarity-summary-head h3{font-size:clamp(20px,1.75vw,24px)!important;letter-spacing:-.03em}
+.clarity-tech-card-title strong{font-size:clamp(19px,1.65vw,24px)!important}
+.clarity-signals .panel-head h2,.signals-panel .panel-head h2{
+  font-size:clamp(19px,1.72vw,24px)!important;letter-spacing:-.02em;
+}
+.audit-date{font-size:12px!important;color:#b0d2e4!important}
+@media(max-width:650px){
+  .journal-title-row h2,.audit-hero h2,.audit-research-hero h2{font-size:25px!important}
+  .site-tabs{gap:4px}
+  .site-tabs .site-tab{font-size:12px;padding:8px 10px}
+}
+@media(prefers-reduced-motion:reduce){.site-tabs .site-tab{transition:none}}

@@ -23,7 +23,10 @@
   panel.setAttribute('aria-label', 'Latest completed market snapshot');
   const head = make('div', 'unified-top');
   const heading = make('div', 'unified-top-copy');
-  heading.appendChild(make('p', 'unified-kicker', 'MARKET SNAPSHOT · COMPLETED EOD'));
+  const sectionTitle = make('p', 'unified-kicker', 'Daily Market Snapshot');
+  sectionTitle.setAttribute('role', 'heading');
+  sectionTitle.setAttribute('aria-level', '2');
+  heading.appendChild(sectionTitle);
   const briefTitle = $('brief-title');
   if (briefTitle) {
     heading.appendChild(briefTitle); // Move the live-updating heading; do not copy it.
@@ -36,8 +39,16 @@
   guide.href = 'scoring-guide.html';
   heading.appendChild(guide);
   head.appendChild(heading);
+  const sessionBadge = make('time', 'unified-session-date', 'Date pending');
+  sessionBadge.id = 'unified-session-date';
+  sessionBadge.setAttribute('aria-label', 'Latest completed market session date');
+  head.appendChild(sessionBadge);
   const sessionBox = intro.querySelector('.session-box');
-  if (sessionBox) head.appendChild(sessionBox); // Keep #session and freshness IDs in place.
+  if (sessionBox) {
+    // Data/status nodes stay in the DOM for existing scoring and freshness logic.
+    sessionBox.classList.add('unified-source-session');
+    head.appendChild(sessionBox);
+  }
   panel.appendChild(head);
 
   const scoreRow = make('div', 'unified-score-row');
@@ -56,7 +67,7 @@
     const quote = make('div','overview-etf-quote');
     quote.id='overview-etf-quote-'+sym;
     quote.setAttribute('aria-label', sym.toUpperCase()+' completed-session close');
-    const label = make('span','overview-quote-label','ETF close · date pending');
+    const label = make('span','overview-quote-label','Market Closed · Price pending');
     label.id='overview-quote-date-'+sym;
     const close = make('strong','overview-quote-value','—');
     close.id='overview-close-'+sym;
@@ -74,8 +85,7 @@
   recap.setAttribute('aria-labelledby','unified-recap-title');
   const recapHeading = make('div','unified-recap-heading');
   const recapCopy = make('div','unified-recap-copy');
-  recapCopy.appendChild(make('span','unified-recap-kicker','DAILY MARKET EXPLANATION'));
-  const recapTitle = make('h3','unified-recap-title','The daily move, explained');
+  const recapTitle = make('h3','unified-recap-title','Daily Market Summary');
   recapTitle.id='unified-recap-title';
   recapCopy.appendChild(recapTitle);
   recapHeading.appendChild(recapCopy);
@@ -88,7 +98,7 @@
   const internalBox = make('div','unified-internal-changes');
   internalBox.id='unified-internal-changes';
   const internalHead=make('div','unified-internals-head');
-  internalHead.appendChild(make('strong','','WHAT CHANGED IN THE INTERNALS?'));
+  internalHead.appendChild(make('strong','','Changes in Market Internals'));
   const signalDetails=make('button','unified-internals-detail','View all signal changes →');
   signalDetails.type='button';
   signalDetails.addEventListener('click',()=>{
@@ -109,7 +119,7 @@
 
   const divider = make('div','unified-divider');
   const driversHeader = make('div','unified-driver-heading');
-  driversHeader.appendChild(make('h3','','Key market signals'));
+  driversHeader.appendChild(make('h3','','Key Market Signals'));
   driversHeader.appendChild(make('span','','Volatility · breadth · credit'));
   divider.appendChild(driversHeader);
   const stats = brief.querySelector('.decision-brief-stats');
@@ -159,6 +169,15 @@
   let currentRequest=0;
   let lastSignature='';
 
+  // Keep the secondary Technicals view consistent with visitor-facing titles.
+  const pulseHeader = document.querySelector('.clarity-summary-head');
+  if (pulseHeader) {
+    const pulseTitle = pulseHeader.querySelector('h3');
+    const pulseCaption = pulseHeader.querySelector('span');
+    if (pulseTitle) pulseTitle.textContent = 'Technical Pulse';
+    if (pulseCaption) pulseCaption.textContent = 'Market Closed · MACD Scored';
+  }
+
   // The Technical pulse is created by dashboard-clarity.js; add the closing
   // price to its ticker header while retaining all existing RSI/MACD IDs.
   for (const sym of ['spy','qqq']) {
@@ -175,9 +194,9 @@
     $('overview-close-'+sym).textContent='—';
     $('overview-quote-delta-'+sym).textContent='Price change pending';
     $('overview-quote-delta-'+sym).dataset.direction='missing';
-    $('overview-quote-date-'+sym).textContent='ETF close pending';
+    $('overview-quote-date-'+sym).textContent='Market Closed · Price pending';
     const technical=$('technical-close-'+sym);
-    if(technical)technical.textContent='— · EOD close pending';
+    if(technical)technical.textContent='— · Closing price pending';
   }
   function regime(key){
     const text=$(key)?.textContent?.trim()||'';
@@ -236,7 +255,7 @@
       recapBody.textContent='The completed-session prices and scores have not yet been verified for the same date. Please check again after the EOD refresh.';
       return;
     }
-    recapDate.textContent=dateLabel(session)+' · completed close';
+    recapDate.textContent=dateLabel(session);
     const a=lastPrices.spy?.pct, b=lastPrices.qqq?.pct;
     let priceSentence;
     if(isNum(a)&&isNum(b)){
@@ -311,13 +330,13 @@
         const mismatch=technicalAsOf===session&&isNum(technicalValue)&&technicalValue>0&&isNum(close)&&Math.abs(close-technicalValue)>.03;
         if(!isNum(close)||mismatch){resetMarket(sym);prices[sym]={close:null,pct:null,points:null};continue;}
         $('overview-close-'+sym).textContent=currency(close);
-        $('overview-quote-date-'+sym).textContent=dateLabel(session)+' · ETF close';
+        $('overview-quote-date-'+sym).textContent='Market Closed';
         $('overview-quote-delta-'+sym).textContent=isNum(pct)
           ? (pct>0?'▲ +':pct<0?'▼ −':'')+Math.abs(pct).toFixed(2)+'%'+(isNum(points)?' · '+signedDollars(points):'')
           : 'Daily change pending';
         $('overview-quote-delta-'+sym).dataset.direction=isNum(pct)?(pct>0?'up':pct<0?'down':'flat'):'missing';
         const technical=$('technical-close-'+sym);
-        if(technical)technical.textContent=currency(close)+' · '+dateLabel(session)+' close';
+        if(technical)technical.textContent=currency(close)+' · '+dateLabel(session)+' · Market Closed';
       }
       writeRecap();
     }catch(err){
@@ -330,6 +349,13 @@
   }
   function watchSession(){
     const now=$('session')?.textContent?.trim()||'';
+    if (asDate(now)) {
+      sessionBadge.textContent=dateLabel(now);
+      sessionBadge.dateTime=now;
+    } else {
+      sessionBadge.textContent='Date pending';
+      sessionBadge.removeAttribute('datetime');
+    }
     if(now===lastSignature)return;
     lastSignature=now;
     syncOverviewPrices();

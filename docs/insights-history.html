@@ -14,6 +14,7 @@
   <script src="daily-summaries.js?v=20261125-internals1" defer></script>
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="audit-cleanup.css?v=20261125a">
+  <link rel="stylesheet" href="readability-refresh.css?v=20261125-typography-1">
 </head>
 <body>
   <div class="shell">
@@ -30,7 +31,7 @@
     <main class="journal-main">
       <div class="journal-title-row">
         <div>
-          <div class="eyebrow">PERMANENT EOD JOURNAL · EXPERIMENTAL MODEL</div>
+          <div class="eyebrow">DAILY MARKET HISTORY</div>
           <h2>Market Insights History</h2>
           <p>Browse previous daily summaries, or open separate SPY and QQQ histories for detailed records.</p>
         </div>
@@ -54,16 +55,16 @@
       <div id="j-market-panel" role="tabpanel" aria-labelledby="j-tab-spy" tabindex="0">
       <section class="journal-stats" aria-label="Selected ETF archive statistics">
         <div class="journal-stat"><span>Sessions saved</span><strong id="j-count">—</strong><small id="j-date-range">Starts with first EOD refresh</small></div>
-        <div class="journal-stat"><span>Latest saved EOD</span><strong id="j-last">—</strong><small id="j-last-note">Not yet available</small></div>
+        <div class="journal-stat"><span>Latest Saved Session</span><strong id="j-last">—</strong><small id="j-last-note">Not yet available</small></div>
         <div class="journal-stat"><span>Price/risk divergence days</span><strong id="j-alerts">—</strong><small id="j-alerts-note">SPY sessions with a price/risk mismatch</small></div>
       </section>
       <section class="journal-panel" aria-label="Risk-score trend of saved sessions">
-        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3 id="j-score-title">SPY Market Health Score history</h3><p>Historical records retain their recorded 15- or 16-point denominator; the November 20 screenshot baseline remains 15-point. Missing days are not fabricated.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
+        <div class="journal-panel-header"><div><div class="eyebrow">MARKET HEALTH HISTORY</div><h3 id="j-score-title">SPY Market Health Score history</h3><p>Historical records retain their recorded 15- or 16-point denominator; the November 20 screenshot baseline remains 15-point. Missing days are not fabricated.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
         <svg id="j-score-chart" role="img" viewBox="0 0 900 230" aria-label="SPY saved Market Health Scores over completed daily sessions"></svg>
         <p class="j-chart-note">Scores reflect the daily saved snapshot. The dashed guides mark the Market Health boundaries: Risk-Off 0–5, Neutral 6–10, Risk-On 11–16.</p>
       </section>
       <section class="journal-panel" aria-label="Historical daily insights">
-        <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">DAILY RECORDS</div><h3 id="j-log-title">SPY historical market log</h3><p>Higher Market Health Scores indicate improvement. A positive daily score change means improvement.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export visible CSV</button></div>
+        <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">SESSION DETAILS</div><h3 id="j-log-title">SPY historical market log</h3><p>Higher Market Health Scores indicate improvement. A positive daily score change means improvement.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export visible CSV</button></div>
         <div class="journal-filters">
           <fieldset class="journal-filter-group"><legend>Sessions</legend><div class="journal-segments" id="j-range"><button class="selected" data-range="30" type="button">30</button><button data-range="90" type="button">90</button><button data-range="all" type="button">All</button></div></fieldset>
           <label class="journal-check"><input id="j-alert-only" type="checkbox"> Divergence alerts only</label>
