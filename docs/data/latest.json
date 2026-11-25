@@ -1,6 +1,6 @@
 {
   "session": "2026-11-24",
-  "generated_at": "2026-11-24T23:43:31.418287+00:00",
+  "generated_at": "2026-11-25T00:06:26.828599+00:00",
   "model_version": "15-point-v3-qqq-5-borderline-risk-on",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
