@@ -25,3 +25,21 @@
 .summary-archive-grid{display:grid;gap:12px}
 #summary-view[hidden],#j-history-views[hidden]{display:none!important}
 @media(max-width:650px){.daily-summary-card{padding:14px}.daily-summary-card h3{font-size:18px}.daily-summary-etfs{grid-template-columns:1fr}.summary-view-tabs button{flex:1;padding:10px}}
+
+/* First-page dated daily wrap: visible every scored session, even without an alert. */
+.daily-summary-overview{display:block!important;max-width:100%;min-width:0;order:0;margin:14px 0 16px}
+.daily-summary-loading{background:#102136;border:1px solid #3a5b74;border-radius:12px;padding:17px 20px}
+.daily-summary-loading p{color:#adc3d9;margin:8px 0 0;font-size:13px}
+.daily-summary-card.current{border:1px solid #385a77;background:linear-gradient(155deg,#16283c,#0d1727)}
+.daily-summary-card[data-tone="divergence"]{border-color:#80623d;background:linear-gradient(155deg,#28241f,#101823)}
+.daily-summary-etf[data-tone="divergence"]{border-color:#936d39;background:linear-gradient(140deg,#28241f,#0c1826)}
+.daily-summary-etf[data-tone="incomplete"]{border-color:#45627b}
+.daily-summary-etf-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.daily-summary-symbol{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:#9ab8cf;font-weight:750}
+.daily-summary-move{font-size:25px;font-variant-numeric:tabular-nums;color:#e9f3ff;letter-spacing:.2px}
+.daily-summary-etf[data-tone="divergence"] .daily-summary-move{color:#f1c17b}
+.daily-summary-etf-title{font-size:14px;line-height:1.35;color:#e7f0fc;margin:7px 0 2px}
+.daily-summary-etf-evidence{color:#a9c0d4;line-height:1.55;font-size:12px;margin:0}
+.daily-summary-partial{color:#f4c383;font-size:11px;margin:6px 0 0}
+.daily-summary-overview-link{display:inline-block;margin:3px 4px 0;font-size:12px;font-weight:650;color:#a9d8f4}
+@media(max-width:650px){.daily-summary-etf-head{align-items:flex-start}.daily-summary-move{font-size:21px}.daily-summary-card.current{padding:15px}}

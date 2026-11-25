@@ -8,7 +8,7 @@
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
   <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
   <link rel="stylesheet" href="dashboard-clarity.css?v=macd16-20261125b">
-  <link rel="stylesheet" href="daily-summaries.css?v=summary-20261124a">
+  <link rel="stylesheet" href="daily-summaries.css?v=summary-overview-v2-20261125">
 </head>
 <body>
   <div class="shell">
@@ -58,6 +58,13 @@
           <div class="decision-stat" id="brief-credit-tile"><span class="decision-stat-label">CREDIT · HYG / IEF</span><strong id="brief-credit">—</strong><small id="brief-credit-note">Awaiting EOD data</small></div>
         </div>
         <a class="decision-brief-link" href="#market-indicators">Review the contributing signals <span aria-hidden="true">↓</span></a>
+      </section>
+      <!-- Always-visible daily summary: the scored snapshot is EOD-only; alert panels may be hidden. -->
+      <section class="daily-summary-overview" id="daily-summary-overview" aria-label="Latest completed daily price and risk summary">
+        <div id="daily-summary-live" role="status" aria-live="polite">
+          <div class="daily-summary-loading"><div class="eyebrow">LATEST DAILY MARKET SUMMARY</div><p>Loading the latest completed EOD summary…</p></div>
+        </div>
+        <a class="daily-summary-overview-link" href="insights-history.html#summaries">View previous daily summaries →</a>
       </section>
       <section class="session-changes" id="session-changes" aria-label="Scored indicator changes since the previous completed session">
         <div class="session-changes-head"><div><div class="eyebrow">WHAT CHANGED</div><h2>Signal changes since the previous session</h2><p id="changes-caption">Changes are derived from completed daily market data, not intraday movements.</p></div><span class="tiny-pill" id="changes-date">Awaiting EOD comparison</span></div>
@@ -181,7 +188,7 @@
   <script src="price-risk.js?v=macd16-20261125b-price-risk-20261123a" defer></script>
   <script src="app.js?v=eod-sync-v1-20261124" defer></script>
   <script src="market-extras.js?v=context-20261122b" defer></script>
-  <script src="dashboard-clarity.js?v=macd16-20261125b-clarity-20261124a" defer></script>
-  <script src="daily-summaries.js?v=summary-20261124a" defer></script>
+  <script src="dashboard-clarity.js?v=summary-overview-v2-20261125" defer></script>
+  <script src="daily-summaries.js?v=summary-overview-v2-20261125" defer></script>
 </body>
 </html>

@@ -118,23 +118,35 @@
   const $=id=>document.getElementById(id);
   const put=(parent,tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=value;parent.appendChild(e);return e;};
   function etfTile(parent,name,entry){
-    const box=put(parent,'div','daily-summary-etf');
-    put(box,'strong','',`${name} · ${scoreText(entry)} · ${entry.risk.replace('-', '‑')}`);
-    put(box,'span','daily-summary-pct',`${signed(entry.pct)} day change · ${entry.alert.label}`);
+    const box=put(parent,'article','daily-summary-etf');
+    box.dataset.tone=entry.alert.kind==='divergence'?'divergence':entry.alert.kind==='watch'?'watch':entry.alert.kind==='uncertain'?'incomplete':'standard';
+    const label=put(box,'div','daily-summary-etf-head');
+    put(label,'span','daily-summary-symbol',name);
+    put(label,'strong','daily-summary-move',signed(entry.pct));
+    const riskText=entry.risk==='RISK-OFF'?'Risk-Off':entry.risk==='RISK-ON'?'Risk-On':entry.risk==='NEUTRAL'?'Neutral':'Incomplete';
+    const labelText=entry.alert.kind==='divergence'||entry.alert.kind==='watch'?entry.alert.label:
+      entry.alert.kind==='uncertain'?'Incomplete score · price/risk alert unconfirmed':
+      entry.alert.kind==='baseline'?'Screenshot baseline · price change unavailable':
+      entry.alert.kind==='none'?'No price/risk divergence this session':entry.alert.label;
+    put(box,'h4','daily-summary-etf-title',labelText);
+    const evidence=finite(entry.pct)?`Daily price change ${signed(entry.pct)} · `:'Daily price change not available · ';
+    put(box,'p','daily-summary-etf-evidence',`${evidence}Market Health ${scoreText(entry)} · ${riskText}`);
+    if(entry.available<entry.total)put(box,'p','daily-summary-partial',`${entry.available}/${entry.total} scored signals available · range shown`);
     return box;
   }
   function renderCard(parent,record,current){
     const card=put(parent,'article',current?'daily-summary-card current':'daily-summary-card');
+    card.dataset.tone=record.alertCount?'divergence':record.partial?'incomplete':'standard';
     const top=put(card,'div','daily-summary-top');
-    put(top,'span','eyebrow',`${current?'LATEST COMPLETED EOD':'ARCHIVED EOD'} · ${formatted(record.session)}`);
-    put(top,'span','daily-summary-source',record.origin==='screenshot_baseline'?'SCREENSHOT BASELINE':record.previousSession?`${formatted(record.previousSession)} → ${formatted(record.session)}`:'EOD session');
+    put(top,'span','eyebrow',`${current?'LATEST DAILY MARKET SUMMARY':'PREVIOUS DAILY SUMMARY'} · ${formatted(record.session)}`);
+    put(top,'span','daily-summary-source',record.origin==='screenshot_baseline'?'SCREENSHOT BASELINE':record.previousSession?`${formatted(record.previousSession)} → ${formatted(record.session)}`:'Completed EOD session');
     put(card,'h3','',record.headline);
     put(card,'p','daily-summary-description',record.summary);
-    const tiles=put(card,'div','daily-summary-etfs');etfTile(tiles,'SPY',record.spy);etfTile(tiles,'QQQ',record.qqq);
+    const tiles=put(card,'div','daily-summary-etfs');etfTile(tiles,'SPY · S&P 500',record.spy);etfTile(tiles,'QQQ · Nasdaq-100',record.qqq);
     const footer=put(card,'div','daily-summary-footer');
     const alert=put(footer,'span',record.alertCount?'daily-summary-alert':'daily-summary-muted',record.alertHeadline);
-    if(record.partial)put(footer,'span','daily-summary-muted','Partial scored coverage · no invented points');
-    if(record.origin==='screenshot_baseline')put(footer,'span','daily-summary-muted','No prior-day ETF price change was supplied');
+    if(record.partial)put(footer,'span','daily-summary-muted','Partial data · no assumed missing health points');
+    if(record.origin==='screenshot_baseline')put(footer,'span','daily-summary-muted','Prior-day ETF close not provided');
     return card;
   }
   async function loadData(){
@@ -143,7 +155,7 @@
     return res.json();
   }
   async function renderOverview(){
-    const target=$('daily-summary-overview');if(!target)return;
+    const target=$('daily-summary-live')||$('daily-summary-overview');if(!target)return;
     try{
       const data=await loadData();const r=latestSummary(data);
       target.replaceChildren();
@@ -187,12 +199,18 @@
       document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
     });
   }
-  const brief=document.querySelector('#clarity-overview .decision-brief')||document.querySelector('.decision-brief');
-  if(brief && !$('daily-summary-overview')){
-    const wrap=document.createElement('section');wrap.className='daily-summary-overview';wrap.setAttribute('aria-label','Latest completed daily market summary');
-    wrap.id='daily-summary-overview';
-    const link=document.createElement('a');link.href='insights-history.html#summaries';link.className='daily-summary-overview-link';link.textContent='View previous daily summaries →';
-    brief.insertAdjacentElement('afterend',wrap);wrap.insertAdjacentElement('afterend',link);
+  // Compatibility fallback for cached HTML; the current index.html provides
+  // an explicit slot so the summary exists visibly even if JavaScript fails.
+  if(!$('daily-summary-overview')){
+    const overview=$('clarity-overview')||document.querySelector('main');
+    if(overview){
+      const wrap=document.createElement('section');wrap.id='daily-summary-overview';wrap.className='daily-summary-overview';
+      wrap.setAttribute('aria-label','Latest completed daily price and risk summary');
+      const slot=document.createElement('div');slot.id='daily-summary-live';wrap.appendChild(slot);
+      const link=document.createElement('a');link.href='insights-history.html#summaries';link.className='daily-summary-overview-link';link.textContent='View previous daily summaries →';wrap.appendChild(link);
+      const brief=overview.querySelector('.decision-brief');
+      if(brief)brief.insertAdjacentElement('afterend',wrap);else overview.prepend(wrap);
+    }
   }
   if($('daily-summary-overview')){
     renderOverview();const refresh=$('refresh');if(refresh)refresh.addEventListener('click',renderOverview);

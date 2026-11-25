@@ -81,18 +81,22 @@
     }
   }
 
-  // Prominent only when today's completed EOD snapshot actually reports a
-  // divergence/watch; no false "all clear" while the data is unavailable.
+  // A complete EOD summary should appear EVERY session, not only on
+  // divergence-alert days. Keep it between the takeaway and any special alert.
+  move('#daily-summary-overview', overview);
+
+  // The dated daily summary is always on Overview. The original detailed
+  // alert panel moves to Signals & Context to avoid duplicate alert cards.
   const alert = $('price-risk-panel');
   if (alert) {
     alert.classList.add('clarity-price-risk');
-    overview.appendChild(alert);
+    signals.appendChild(alert);
   }
   const alertEmpty = document.createElement('div');
   alertEmpty.className = 'clarity-alert-empty';
   alertEmpty.id = 'clarity-alert-empty';
   alertEmpty.textContent = 'Price/risk alert check pending';
-  overview.appendChild(alertEmpty);
+  signals.appendChild(alertEmpty);
 
   const actions = document.createElement('div');
   actions.className = 'clarity-next-actions';
