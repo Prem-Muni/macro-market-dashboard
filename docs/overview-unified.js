@@ -108,7 +108,11 @@
     mood.setAttribute('role','status');
     mood.setAttribute('aria-label',sym+' market condition pending');
     mood.innerHTML = '<span class="market-mood-symbol" aria-hidden="true"></span><span class="market-mood-copy"><strong>Pending</strong><small>Awaiting data</small></span>';
-    original.parentNode.insertBefore(mood,original);
+    // The illustrated badge takes the old badge's exact slot in .score-zone.
+    // Keep the original scored node as a hidden child so app.js can still
+    // update it by ID, even if app.js replaces the original CSS class.
+    original.replaceWith(mood);
+    mood.appendChild(original);
     marketMoods[prefix] = mood;
   }
   function updateMarketMoods() {
