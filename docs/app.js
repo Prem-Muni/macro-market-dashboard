@@ -249,7 +249,17 @@ function renderDecisionBrief(data){
  else if(regimes.every(x=>x==='NEUTRAL'))headline='Both benchmarks are Neutral';
  else if(regimes.includes('INCOMPLETE'))headline='Mixed coverage — review missing data';
  else headline=`Mixed regimes · SPY ${regimes[0]} · QQQ ${regimes[1]}`;
- const title=$('brief-title');title.textContent=headline;
+ const status=eodStatus(data.session);
+ const outOfDate=status.kind==='pending'||status.kind==='stale'||status.kind==='unknown';
+ const brief=document.querySelector('.decision-brief-intro');
+ let asof=$('brief-asof');
+ if(!asof && brief){
+   asof=document.createElement('p');asof.id='brief-asof';asof.className='detail-caption';
+   const eyebrow=brief.querySelector('.eyebrow');
+   eyebrow?.insertAdjacentElement('afterend',asof);
+ }
+ if(asof)asof.textContent=`EOD reading: ${data.session||'unknown'}${outOfDate?' · Newer market session not yet published':''}`;
+ const title=$('brief-title');title.textContent=outOfDate?'Prior session only · '+headline:headline;
  title.className=regimes.every(x=>x==='RISK-ON')?'brief-good':regimes.every(x=>x==='RISK-OFF')?'brief-bad':'brief-caution';
  const state=k=>data.signals?.[k]?.state||'na';
  const tile=(name,label,note,kind)=>{
@@ -275,7 +285,7 @@ function renderDecisionBrief(data){
  if(combined(state('spy_trend'),state('qqq_trend'))==='both')concerns.push('both ETFs below their 200-day averages');
  const clause=concerns.length?`Key conditions: ${concerns.slice(0,4).join('; ')}.`:'Review the individual indicator rows to understand the current risk drivers.';
  const trendNote=sp.momentum?.state==='STABLE'||nd.momentum?.state==='STABLE'? ' STABLE describes the score change, not flat market prices.':'';
- $('brief-detail').textContent=clause+' '+`SPY 5D trend: ${sp.momentum?.state||'unknown'}; QQQ: ${nd.momentum?.state||'unknown'}.`+trendNote;
+ $('brief-detail').textContent=(outOfDate?`This is a ${data.session} reading, not the latest completed market session. `:'')+clause+' '+`SPY 5D trend: ${sp.momentum?.state||'unknown'}; QQQ: ${nd.momentum?.state||'unknown'}.`+trendNote;
 }
 
 // EOD freshness is measured against expected U.S. stock-market sessions,
@@ -325,8 +335,9 @@ function eodStatus(session, now=new Date()){
  const today=utcDay(Number(parts.year),Number(parts.month),Number(parts.day));
  const hour=Number(parts.hour);
  const holidays=nyseHolidays(today.getUTCFullYear());
- // Before 8pm New York time a completed session may not yet have refreshed.
- let expected=nyseSession(today,holidays)&&hour>=20?today:offsetDay(today,-1);
+ // After 4:00 PM New York time the latest completed equity session is
+ // expected; do not hide a failed EOD update behind the old 8 PM cutoff.
+ let expected=nyseSession(today,holidays)&&hour>=16?today:offsetDay(today,-1);
  while(!nyseSession(expected,holidays))expected=offsetDay(expected,-1);
  const observed=utcDay(...session.split('-').map(Number));
  if(!Number.isFinite(observed.getTime()))return {kind:'unknown',text:'Invalid session date',lag:null};
@@ -394,6 +405,23 @@ function renderSignalChanges(data){
 function renderPriceRisk(data,spHistory,ndHistory){
  const api=window.PriceRisk,mi=window.MarketIntel;
  if(!api||!mi)return;
+ // An older price/risk divergence is not a new alert for the current EOD day.
+ // Older observations remain accessible in the dated Insights History archive.
+ const freshness=eodStatus(data.session);
+ if(freshness.kind==='pending'||freshness.kind==='stale'||freshness.kind==='unknown'){
+   $('price-risk-headline').textContent='Awaiting the latest completed EOD session';
+   $('price-risk-summary').textContent=`Latest available comparison is through ${data.session||'an unknown date'}; previous-session alerts are archived under Insights History.`;
+   $('price-risk-dates').textContent=`As of ${data.session||'—'} · OUTDATED`;
+   $('price-risk-panel')?.setAttribute('data-tone','neutral');
+   for(const m of ['sp','nd']){
+     const card=$('price-risk-'+m);card.dataset.tone='neutral';
+     $('price-risk-'+m+'-change').textContent='—';
+     $('price-risk-'+m+'-title').textContent='New EOD price move pending';
+     $('price-risk-'+m+'-detail').textContent='No current-session divergence can be confirmed until new scored prices are published.';
+     $('price-risk-'+m+'-evidence').textContent='Open Insights History for older observations';
+   }
+   return;
+ }
  const sp=api.evaluate(data,'sp',spHistory),nd=api.evaluate(data,'nd',ndHistory);
  const overall=api.summary(sp,nd),headline=$('price-risk-headline');
  headline.textContent=overall.headline;
@@ -489,7 +517,7 @@ function render(data){
  plot(data.history);
 }
 async function load(){
- try{const res=await fetch('data/latest.json?refresh='+Date.now(),{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);const data=await res.json();render(data)}
+ try{const res=await fetch('data/latest.json?refresh='+Date.now(),{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);const data=await res.json();if(snapshot?.session && data.session && data.session<snapshot.session)throw Error('Published session regressed; keeping the newer local snapshot');render(data)}
  catch(err){$('warning').textContent='Unable to read the latest published JSON: '+err.message; $('status-dot').className='status-dot warn';}
 }
 $('refresh').addEventListener('click',load);
@@ -505,5 +533,8 @@ for(const mode of [30,90,'year','all']){
 load();
 
 // Re-evaluate freshness when returning to a tab after a market close.
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&snapshot)renderFreshness(snapshot);});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)load();});
+// The page can stay open through the market close; re-check published JSON
+// automatically without reloading external TradingView or sentiment widgets.
+if(typeof setInterval==='function')setInterval(()=>{if(!document.hidden)load();},10*60*1000);
 window.addEventListener('resize',()=>{if(snapshot)plot(snapshot.history);});

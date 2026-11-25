@@ -18,6 +18,7 @@ from breadth import derive_breadth
 from price_risk import build_price_moves
 from insights_history import merge_daily_archive
 from daily_macd import calculate_daily_macd
+from eod_freshness import check_snapshot_session
 from zoneinfo import ZoneInfo
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -182,6 +183,11 @@ def main():
     # SPY session determines the website's EOD date; prevent a partial current-day candle.
     # Workflow scheduled after close; manual runs during market hours may include incomplete bars.
     result=analyze(df,extra,sources,history_months=20)
+    # Workflow jobs can succeed even when the provider hasn't published today's
+    # common completed SPY/QQQ daily bar. Never publish a regressed or stale
+    # session as a fresh model update. Keep the prior JSON/history unchanged.
+    previous_snapshot=json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
+    check_snapshot_session(result['session'],previous_snapshot.get('session'))
     # Add EOD price context from the SAME SPY/QQQ sessions as the risk engine.
     # This does not alter any scored inputs, regimes, or past returns.
     result["price_moves"] = build_price_moves(df, result["session"])
@@ -208,8 +214,7 @@ def main():
     # GitHub's existing workflow commits only docs/data/latest.json, so preserve
     # the append-only insight journal inside this file (no workflow edits needed).
     # Do not reconstruct earlier alerts from historical data.
-    prior=json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
-    result["market_insights_history"] = merge_daily_archive(prior, result)
+    result["market_insights_history"] = merge_daily_archive(previous_snapshot, result)
     temporary=OUT.with_name("latest.json.tmp")
     try:
         temporary.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
