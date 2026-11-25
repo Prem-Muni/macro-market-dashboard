@@ -186,6 +186,102 @@ def calculate_breadth(sessions: pd.DatetimeIndex, membership: dict[str, list[str
     return output, coverage, messages
 
 
+
+def repair_recent_constituent_bars(
+    sessions: pd.DatetimeIndex,
+    membership: dict[str, list[str]],
+    closes: dict[str, pd.Series],
+    downloader: Callable | None = None,
+    *,
+    batch_size: int = 30,
+    max_seconds: float = 120.0,
+) -> tuple[dict[str, pd.Series], list[str]]:
+    """One bounded short-window retry for verified missing recent *constituent* bars.
+
+    The primary 34-month history is retained for 200-day moving averages. Only
+    real, same-date close observations are merged, and a minimum of two existing
+    overlapping observations must agree (<= 1% relative difference). No proxy,
+    synthetic value, stale daily close or forward fill is accepted.
+    """
+    notes: list[str] = []
+    dates = pd.DatetimeIndex(sessions)
+    if dates.tz is not None:
+        dates = dates.tz_convert(None)
+    dates = dates.normalize().sort_values().unique()
+    if len(dates) < 20:
+        return closes, ["Breadth retry skipped: insufficient dated trading sessions"]
+    last = pd.Timestamp(dates[-1])
+    recent_sessions = dates[-18:]
+    valid_members = sorted(set(membership.get("SP500", [])) | set(membership.get("NDX100", [])))
+    incomplete: list[str] = []
+    for ticker in valid_members:
+        prior = closes.get(ticker)
+        if prior is None or len(prior.dropna()) < 200:
+            continue  # A short retry cannot manufacture a 200-day history.
+        if not pd.Index(recent_sessions).isin(prior.dropna().index).all():
+            incomplete.append(ticker)
+    if not incomplete:
+        return closes, [f"Breadth retry: no missing recent constituent bars through {last.date()}"]
+    if downloader is None:
+        import yfinance as yf
+        downloader = yf.download
+    # Explicit end is exclusive in yfinance; include only observations dated <= last.
+    begin = (last - pd.Timedelta(days=39)).date().isoformat()
+    end = (last + pd.Timedelta(days=1)).date().isoformat()
+    started = time.monotonic()
+    recovered = 0
+    rejected = 0
+    attempted = 0
+    failures = 0
+    for i in range(0, len(incomplete), batch_size):
+        if time.monotonic() - started > max_seconds:
+            notes.append("Breadth retry stopped at time budget; unavailable remains N/A")
+            break
+        tickers = incomplete[i:i+batch_size]
+        attempted += len(tickers)
+        try:
+            frame = downloader(tickers=tickers, start=begin, end=end, interval="1d",
+                               group_by="ticker", auto_adjust=True,
+                               progress=False, threads=False, timeout=20)
+        except Exception as exc:
+            failures += 1
+            notes.append(f"Breadth short-window batch {i // batch_size + 1} failed: {type(exc).__name__}")
+            continue
+        for ticker in tickers:
+            incoming = _close_from_batch(frame, ticker)
+            if incoming is None:
+                continue
+            incoming = incoming[(incoming.index <= last) & (incoming.index.isin(dates))]
+            if last not in incoming.index or not pd.notna(incoming.loc[last]) or float(incoming.loc[last]) <= 0:
+                continue
+            original = closes[ticker].sort_index()
+            shared = original.dropna().index.intersection(incoming.dropna().index)
+            shared = shared[shared < last][-3:]
+            if len(shared) < 2:
+                rejected += 1
+                continue
+            historical = original.reindex(shared).astype(float)
+            fresh = incoming.reindex(shared).astype(float)
+            discrepancies = (fresh - historical).abs() / historical.abs().clip(lower=1e-9)
+            if not discrepancies.notna().all() or (discrepancies > 0.01).any():
+                rejected += 1
+                continue
+            # Never replace a previously verified value on an overlapping date.
+            merged = original.combine_first(incoming).sort_index()
+            if pd.isna(original.get(last)) and pd.notna(merged.get(last)):
+                recovered += 1
+            closes[ticker] = merged
+        if i + batch_size < len(incomplete) and getattr(downloader, "__module__", "").startswith("yfinance"):
+            time.sleep(0.5)
+    current = sum(last in c.dropna().index for c in closes.values())
+    notes.append(
+        f"Breadth same-session retry {last.date()}: {recovered} newly verified stocks; "
+        f"{attempted}/{len(incomplete)} incomplete stocks checked; {rejected} overlap rejections; "
+        f"{failures} failed batches; {current} stocks now have a dated close"
+    )
+    return closes, notes
+
+
 def derive_breadth(sessions: pd.DatetimeIndex):
     """Network-dependent optional operation. Its failures never invent scores."""
     errors = []
@@ -197,5 +293,21 @@ def derive_breadth(sessions: pd.DatetimeIndex):
     closes, dl_errors = acquire_closes(all_tickers)
     errors.extend(dl_errors)
     result, coverage, calc_errors = calculate_breadth(sessions, membership, closes)
+    final_session = pd.Timestamp(pd.DatetimeIndex(sessions)[-1]).normalize()
+    # A fresh SPY/QQQ bar may be recovered before the broad Yahoo constituent
+    # batches have that day's bars. Retry only the recent constituent data when
+    # the latest *scored* breadth inputs are unavailable.
+    current_missing = (result is None or
+                       any(pd.isna(result[col].get(final_session))
+                           for col in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL")))
+    if current_missing:
+        closes, retry_notes = repair_recent_constituent_bars(sessions, membership, closes)
+        errors.extend(retry_notes)
+        result, coverage, calc_errors = calculate_breadth(sessions, membership, closes)
     errors.extend(calc_errors)
+    for index_name, pct in sorted(coverage.items()):
+        errors.append(f"Breadth {index_name} validated recent-session constituent coverage: {pct:.1f}% (minimum {REQUIRED_COVERAGE:.0%})")
+    for col in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL"):
+        if pd.isna(result[col].get(final_session)):
+            errors.append(f"Breadth {col} missing for {final_session.date()}; scored signal remains N/A")
     return result, coverage, errors

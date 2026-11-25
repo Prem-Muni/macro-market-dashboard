@@ -138,6 +138,23 @@ def load_extra():
     return df,errors
 
 
+def is_same_session_quality_regression(previous_snapshot: dict, candidate: dict) -> bool:
+    """Avoid replacing a same-session, same-model snapshot with missing inputs."""
+    if (previous_snapshot.get("session") != candidate.get("session") or
+            previous_snapshot.get("model_version") != candidate.get("model_version")):
+        return False
+    older = previous_snapshot.get("markets", {})
+    newer = candidate.get("markets", {})
+    for market in ("sp500", "nasdaq100"):
+        old_score = older.get(market, {}).get("score", {})
+        new_score = newer.get(market, {}).get("score", {})
+        if (isinstance(old_score.get("available"), (int, float)) and
+                isinstance(new_score.get("available"), (int, float)) and
+                new_score["available"] < old_score["available"]):
+            return True
+    return False
+
+
 def main():
     DATA.mkdir(parents=True,exist_ok=True)
     prices,sources,errors=download_yahoo()
@@ -188,6 +205,11 @@ def main():
         try:
             estimate, coverage, breadth_errors = derive_breadth(df.index)
             errors.extend(breadth_errors)
+            # Preserve the actionable breadth failure cause in GitHub Actions.
+            # Previously it was often lost among the first 8 generic warnings.
+            for breadth_message in breadth_errors:
+                if breadth_message.startswith(("Breadth ", "SP500:", "NDX100:", "Constituent membership")):
+                    print("::notice::" + breadth_message[:240])
             if estimate is not None:
                 # Licensed supplements, if present, always take precedence.
                 if extra is None:
@@ -214,6 +236,13 @@ def main():
     # session as a fresh model update. Keep the prior JSON/history unchanged.
     previous_snapshot=json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
     check_snapshot_session(result['session'],previous_snapshot.get('session'))
+    # A same-session rerun must not erase an already saved, more complete
+    # observation of the SAME scoring model just because a feed later throttles.
+    # Never reuse another day's breadth or invent a missing signal.
+    if is_same_session_quality_regression(previous_snapshot, result):
+        print("::warning::Same-session refresh has fewer validated signals than the "
+              "already saved snapshot; preserving the more complete prior result.")
+        return
     # Add EOD price context from the SAME SPY/QQQ sessions as the risk engine.
     # This does not alter any scored inputs, regimes, or past returns.
     result["price_moves"] = build_price_moves(df, result["session"])
