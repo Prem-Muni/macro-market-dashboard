@@ -50,7 +50,38 @@
       trend:typeof item?.momentum?.state==='string'?item.momentum.state:'N/A',
       delta:null,alert:sc.available<sc.total ? {kind:'uncertain',label:'Scoring incomplete · alert not confirmed'} : priceRisk(pct,risk,false)};
   }
-  function makeSummary(day,previous,spy,qqq,origin){
+  // Only validated, completed-session scored changes count as improving or
+  // weakening internals. A neutral-to-bullish wording change can be useful in
+  // Signals & Context, but is not silently treated as a health-point gain.
+  function internalsFromChanges(changes, session, previousSession){
+    const groups=changes?.groups;
+    const paired=date(session)&&date(previousSession)&&previousSession<session;
+    const direct=changes?.to_session===session&&changes?.from_session===previousSession;
+    // Archived changes were date-validated before they were saved; their
+    // persisted representation has status=complete and omits from/to dates.
+    const archived=(changes?.status==='complete'||changes?.status==='partial')&&
+      !('to_session' in changes)&&!('from_session' in changes);
+    if(!paired||!groups||(typeof groups!=='object')||!(direct||archived)||changes?.status==='unavailable'){
+      return {available:false,improved:'',worsened:'',improvedCount:0,worsenedCount:0,otherCount:0,partial:false};
+    }
+    const sections=[['shared','Shared macro'],['sp','SPY'],['nd','QQQ']];
+    const collect=field=>{
+      const parts=[];let count=0;
+      for(const [key,title] of sections){
+        const raw=Array.isArray(groups[key]?.[field])?groups[key][field]:[];
+        const labels=[...new Set(raw.map(x=>typeof x?.label==='string'?x.label.trim():'').filter(Boolean))];
+        if(!labels.length)continue;
+        count+=labels.length;
+        parts.push(title+': '+labels.slice(0,2).join(', ')+(labels.length>2?' +'+(labels.length-2)+' more':''));
+      }
+      return {text:parts.join(' · '),count};
+    };
+    const up=collect('eased'),down=collect('new_bearish');
+    const other=sections.reduce((n,[key])=>n+(Array.isArray(groups[key]?.other)?groups[key].other.length:0),0);
+    return {available:true,improved:up.text,worsened:down.text,
+      improvedCount:up.count,worsenedCount:down.count,otherCount:other,partial:changes.status==='partial'};
+  }
+  function makeSummary(day,previous,spy,qqq,origin,internals){
     if(!date(day)||!spy||!qqq)return null;
     const both=spy.risk===qqq.risk && spy.risk!=='INCOMPLETE';
     const names={'RISK-OFF':'Risk-Off','NEUTRAL':'Neutral','RISK-ON':'Risk-On'};
@@ -65,7 +96,7 @@
     const alertHeadline=alertCount===2?'Price/risk divergence in both ETFs':alertCount===1?'Price/risk divergence in one ETF':
       [spy,qqq].some(x=>x.alert.kind==='uncertain')?'Price/risk check incomplete':'No price/risk divergence flagged';
     return {session:day,previousSession:date(previous)&&previous<day?previous:null,
-      origin,headline,summary,spy,qqq,alertCount,alertHeadline,partial:gaps>0};
+      origin,headline,summary,spy,qqq,alertCount,alertHeadline,partial:gaps>0,internals:internals||null};
   }
   function savedSummaries(data){
     const archive=data?.market_insights_history;
@@ -75,7 +106,8 @@
       if(!row || !date(row.session)||seen.has(row.session))continue;
       const baseline=row.baseline===true;
       const spy=fromArchivedMarket(row.spy,baseline),qqq=fromArchivedMarket(row.qqq,baseline);
-      const summary=makeSummary(row.session,row.previous_session,spy,qqq,baseline?'screenshot_baseline':'saved_eod');
+      const internal=internalsFromChanges(row.signal_changes,row.session,row.previous_session);
+      const summary=makeSummary(row.session,row.previous_session,spy,qqq,baseline?'screenshot_baseline':'saved_eod',internal);
       if(!summary)continue;
       seen.add(summary.session);out.push(summary);
     }
@@ -86,7 +118,8 @@
     const archived=savedSummaries(data).find(x=>x.session===data.session);
     const move=data.price_moves?.status==='complete' && data.price_moves.session===data.session?data.price_moves:null;
     const spy=fromSnapshotMarket(data.markets?.sp500,move?.spy),qqq=fromSnapshotMarket(data.markets?.nasdaq100,move?.qqq);
-    const latest=makeSummary(data.session,move?.previous_session,spy,qqq,'current_eod');
+    const currentInternals=internalsFromChanges(data.signal_changes,data.session,move?.previous_session);
+    const latest=makeSummary(data.session,move?.previous_session,spy,qqq,'current_eod',currentInternals);
     if(!latest)return archived||null;
     // A saved same-session price comparison may be richer than a partial current
     // snapshot. Never mix mismatched scoring models or dates.
@@ -99,7 +132,8 @@
         }
         if(finite(candidate.delta))current.delta=candidate.delta;
       }
-      return makeSummary(latest.session,archived.previousSession||latest.previousSession,latest.spy,latest.qqq,'current_eod');
+      return makeSummary(latest.session,archived.previousSession||latest.previousSession,latest.spy,latest.qqq,'current_eod',
+        currentInternals.available?currentInternals:archived.internals);
     }
     return latest;
   }
@@ -108,12 +142,12 @@
     return savedSummaries(data).filter(x=>!latest||x.session<latest).reverse();
   }
   function csv(rows){
-    const cols=['Date','Comparison from','Source','Headline','Summary','SPY Health','SPY Regime','SPY Price Change %','SPY Alert','QQQ Health','QQQ Regime','QQQ Price Change %','QQQ Alert','Signal Coverage Incomplete'];
-    const values=[cols,...rows.map(x=>[x.session,x.previousSession,x.origin,x.headline,x.summary,scoreText(x.spy),x.spy.risk,x.spy.pct,x.spy.alert.label,scoreText(x.qqq),x.qqq.risk,x.qqq.pct,x.qqq.alert.label,x.partial])];
+    const cols=['Date','Comparison from','Source','Headline','Summary','Improved internals','Weakened internals','SPY Health','SPY Regime','SPY Price Change %','SPY Alert','QQQ Health','QQQ Regime','QQQ Price Change %','QQQ Alert','Signal Coverage Incomplete'];
+    const values=[cols,...rows.map(x=>[x.session,x.previousSession,x.origin,x.headline,x.summary,x.internals?.improved||'',x.internals?.worsened||'',scoreText(x.spy),x.spy.risk,x.spy.pct,x.spy.alert.label,scoreText(x.qqq),x.qqq.risk,x.qqq.pct,x.qqq.alert.label,x.partial])];
     const field=v=>{let s=v==null?'':String(v);if(/^[\s]*[=+@\-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};
     return '\uFEFF'+values.map(row=>row.map(field).join(',')).join('\r\n')+'\r\n';
   }
-  const api={savedSummaries,latestSummary,previousSummaries,scoreText,signed,money,formatted,csv};
+  const api={savedSummaries,latestSummary,previousSummaries,internalsFromChanges,scoreText,signed,money,formatted,csv};
   if(typeof document==='undefined')return api;
   const $=id=>document.getElementById(id);
   const put=(parent,tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=value;parent.appendChild(e);return e;};
@@ -167,6 +201,16 @@
     put(top,'span','daily-summary-source',record.origin==='screenshot_baseline'?'SCREENSHOT BASELINE':record.previousSession?`${formatted(record.previousSession)} → ${formatted(record.session)}`:'Completed EOD session');
     put(card,'h3','daily-summary-headline',record.alertCount?record.alertHeadline:record.headline);
     put(card,'p','daily-summary-description',record.summary);
+    const changes=record.internals;
+    if(changes?.available){
+      const box=put(card,'div','daily-summary-internal-changes');
+      put(box,'span','daily-summary-internal-label','INTERNALS SINCE PREVIOUS SESSION');
+      if(changes.improvedCount)put(box,'p','daily-summary-internal-up','Improved: '+changes.improved);
+      if(changes.worsenedCount)put(box,'p','daily-summary-internal-down','Weakened: '+changes.worsened);
+      if(!changes.improvedCount&&!changes.worsenedCount)
+        put(box,'p','daily-summary-internal-muted','No scored signals gained or lost a health point.');
+      if(changes.partial)put(box,'p','daily-summary-internal-muted','Partial historical comparison; other changes may be missing.');
+    }
     const tiles=put(card,'div','daily-summary-etfs');
     etfTile(tiles,'SPY','S&P 500',record.spy);
     etfTile(tiles,'QQQ','NASDAQ-100',record.qqq);

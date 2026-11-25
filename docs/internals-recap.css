@@ -1,0 +1,23 @@
+/* Scored, dated internal-signal movements. UI only; does not affect 16-point model. */
+.unified-internal-changes {
+  margin-top: 13px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(125,155,176,.27);
+  background: rgba(13,27,41,.30);
+}
+.unified-internals-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.unified-internals-head strong{color:#b4cbd9;font-size:10px;letter-spacing:.08em;font-weight:700}
+.unified-internals-detail{background:transparent;border:0;padding:0;color:#abcddd;cursor:pointer;font-size:11px;font-weight:650}
+.unified-internals-detail:hover{text-decoration:underline;text-underline-offset:3px}
+.unified-internal-changes p{margin:5px 0 0;line-height:1.6;font-size:12px;overflow-wrap:anywhere}
+.unified-internals-up{color:#8dd6bb}
+.unified-internals-down{color:#edb0b7}
+.unified-internals-up[data-tone="unknown"],.unified-internals-up[data-tone="neutral"]{color:#aec2d0}
+.daily-summary-internal-changes{margin:12px 0 0;padding:11px 13px;border:1px solid rgba(132,158,177,.22);border-radius:9px;background:rgba(15,30,43,.28)}
+.daily-summary-internal-label{color:#abc1ce;letter-spacing:.07em;font-weight:750;font-size:10px}
+.daily-summary-internal-changes p{font-size:12px;line-height:1.6;margin:6px 0 0;overflow-wrap:anywhere}
+.daily-summary-internal-up{color:#8dd6bb}
+.daily-summary-internal-down{color:#edb0b7}
+.daily-summary-internal-muted{color:#b9c7d3}
+@media(max-width:600px){.unified-internal-changes{padding:11px}.unified-internal-changes p,.daily-summary-internal-changes p{font-size:12px}}

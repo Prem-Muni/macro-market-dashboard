@@ -85,8 +85,26 @@
   const recapBody = make('p','unified-recap-text','A plain-English summary will appear when the completed closing prices and market health scores are available.');
   recapBody.id='unified-recap-text';
   recapBody.setAttribute('aria-live','polite');
+  const internalBox = make('div','unified-internal-changes');
+  internalBox.id='unified-internal-changes';
+  const internalHead=make('div','unified-internals-head');
+  internalHead.appendChild(make('strong','','WHAT CHANGED IN THE INTERNALS?'));
+  const signalDetails=make('button','unified-internals-detail','View all signal changes →');
+  signalDetails.type='button';
+  signalDetails.addEventListener('click',()=>{
+    const target=document.querySelector('[data-open-view="signals"]');
+    if(target)target.click();
+    const changes=$('session-changes');
+    if(changes)changes.scrollIntoView({block:'start',behavior:'smooth'});
+  });
+  internalHead.appendChild(signalDetails);
+  const internalUp=make('p','unified-internals-up','Waiting for a verified prior-session comparison.');
+  internalUp.id='unified-internals-up';
+  const internalDown=make('p','unified-internals-down');
+  internalDown.id='unified-internals-down';
+  internalBox.append(internalHead,internalUp,internalDown);
   const recapFootnote = make('p','unified-recap-note','Rule-based daily snapshot, not a forecast or trading recommendation.');
-  recap.append(recapHeading,recapBody,recapFootnote);
+  recap.append(recapHeading,recapBody,internalBox,recapFootnote);
   panel.appendChild(recap);
 
   const divider = make('div','unified-divider');
@@ -137,6 +155,7 @@
     return ticker+' '+(pct>0?'rose ':pct<0?'fell ':'was flat at ')+magnitude;
   };
   let lastPrices=null;
+  let lastInternals=null;
   let currentRequest=0;
   let lastSignature='';
 
@@ -181,8 +200,37 @@
     else if (/both bearish/i.test(breadth))facts.push('one-day breadth is bearish in both markets');
     return facts.length ? facts.join('; ') : null;
   }
+  function writeInternals(){
+    const session=$('session')?.textContent?.trim()||'';
+    const changes=lastInternals;
+    internalDown.hidden=true;
+    if(!asDate(session)||lastPrices?.session!==session||!changes?.available){
+      internalUp.textContent='Prior-session internal changes are not yet verified for this EOD reading.';
+      internalUp.dataset.tone='unknown';
+      return;
+    }
+    internalUp.dataset.tone='positive';
+    if(changes.improvedCount){
+      internalUp.textContent='Improved ('+changes.improvedCount+'): '+changes.improved;
+    }else if(!changes.worsenedCount){
+      internalUp.textContent='No scored internal signal gained or lost a health point.';
+      internalUp.dataset.tone='neutral';
+    }else{
+      internalUp.textContent='No scored internals improved.';
+      internalUp.dataset.tone='neutral';
+    }
+    if(changes.worsenedCount){
+      internalDown.hidden=false;
+      internalDown.textContent='Weakened ('+changes.worsenedCount+'): '+changes.worsened;
+    }
+    if(changes.partial){
+      internalDown.hidden=false;
+      internalDown.textContent+=(internalDown.textContent?' · ':'')+'Partial historical signal comparison.';
+    }
+  }
   function writeRecap(){
     const session=$('session')?.textContent?.trim()||'';
+    writeInternals();
     if(!asDate(session) || lastPrices?.session!==session){
       recapDate.textContent=asDate(session)?dateLabel(session):'Awaiting EOD session';
       recapBody.textContent='The completed-session prices and scores have not yet been verified for the same date. Please check again after the EOD refresh.';
@@ -235,6 +283,7 @@
     const session=$('session')?.textContent?.trim()||'';
     if(!asDate(session)){
       lastPrices=null;
+      lastInternals=null;
       for(const sym of ['spy','qqq'])resetMarket(sym);
       writeRecap();
       return;
@@ -247,6 +296,14 @@
       const prices=eodSnapshot(data);
       if(!prices||prices.session!==session)throw new Error('Scored and close sessions do not match');
       lastPrices=prices;
+      // The same session-aligned, archived scored changes also power the
+      // Daily Summary Archive. No price-only heuristics are used here.
+      const summary=window.DailySummaries?.latestSummary?.(data);
+      lastInternals=summary?.session===session?summary.internals:null;
+      if(!lastInternals){
+        lastInternals=window.DailySummaries?.internalsFromChanges?.(
+          data.signal_changes,session,data.price_moves?.previous_session)||null;
+      }
       for(const sym of ['spy','qqq']){
         const {close,pct,points}=prices[sym];
         const technicalAsOf=$(sym+'-ma-asof')?.textContent?.match(/\d{4}-\d{2}-\d{2}/)?.[0];
@@ -266,6 +323,7 @@
     }catch(err){
       if(request!==currentRequest)return;
       lastPrices=null;
+      lastInternals=null;
       for(const sym of ['spy','qqq'])resetMarket(sym);
       writeRecap();
     }
