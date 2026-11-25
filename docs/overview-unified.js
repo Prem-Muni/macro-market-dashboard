@@ -49,13 +49,23 @@
     if (!card) continue;
     const marketHead = card.querySelector('.market-head');
     if (!marketHead) continue;
+    // Both numbers come from the existing completed-EOD data, not TradingView's live quote.
+    const quote = make('div','unified-quote');
+    const closing = make('div','unified-close');
+    const closeLabel = make('span','unified-close-label','EOD CLOSE');
+    const closeValue = make('strong','unified-close-value','—');
+    closeValue.id = `unified-${symbol.toLowerCase()}-close`;
+    const closeAsOf = make('span','unified-close-asof','Awaiting EOD');
+    closeAsOf.id = `unified-${symbol.toLowerCase()}-asof`;
+    closing.append(closeLabel,closeValue,closeAsOf);
     const movement = make('div','unified-price');
     movement.dataset.price = 'missing';
-    const label = make('span','unified-price-label','DAILY MOVE');
+    const label = make('span','unified-price-label','1D CHANGE');
     const change = make('strong','unified-price-change','—');
     change.id = `unified-${symbol.toLowerCase()}-move`;
     movement.append(label,change);
-    marketHead.appendChild(movement);
+    quote.append(closing,movement);
+    marketHead.appendChild(quote);
     const note = make('p','unified-market-note','Awaiting the completed daily price comparison');
     note.id = `unified-${symbol.toLowerCase()}-note`;
     card.appendChild(note);
@@ -76,6 +86,60 @@
   if (whyDetail) why.appendChild(whyDetail);
   panel.appendChild(why);
 
+  // Optional charts on Overview use the same instruments and daily timeframe as Technicals.
+  // Widgets are created only if the user opens this section, to avoid extra chart requests.
+  const charts = make('details','unified-charts');
+  charts.id = 'unified-daily-charts';
+  const chartsSummary = make('summary','','SPY & QQQ daily price charts');
+  const chartHint = make('span','unified-charts-hint','Expand charts · full RSI, MACD and moving averages stay in Technicals');
+  chartsSummary.append(chartHint);
+  const chartGrid = make('div','unified-charts-grid');
+  for (const [sym, instrument, url] of [
+    ['SPY','AMEX:SPY','https://www.tradingview.com/symbols/AMEX-SPY/'],
+    ['QQQ','NASDAQ:QQQ','https://www.tradingview.com/symbols/NASDAQ-QQQ/']
+  ]) {
+    const holder = make('div','unified-chart-item');
+    const titleRow = make('div','unified-chart-title');
+    titleRow.appendChild(make('strong','',sym + ' · Daily'));
+    const link = make('a','','Open chart ↗');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    titleRow.appendChild(link);
+    const canvas = make('div','unified-chart-canvas');
+    canvas.dataset.instrument = instrument;
+    canvas.appendChild(make('p','unified-chart-placeholder','Open this section to load the daily chart.'));
+    holder.append(titleRow,canvas);
+    chartGrid.appendChild(holder);
+  }
+  const chartsDisclosure = make('p','unified-charts-disclosure',
+    'Hosted TradingView charts may show delayed or intraday quotes. EOD closing prices above come from the published daily snapshot.');
+  charts.append(chartsSummary, chartGrid, chartsDisclosure);
+  charts.addEventListener('toggle', () => {
+    if (!charts.open || charts.dataset.initialized) return;
+    charts.dataset.initialized='true';
+    for (const canvas of chartGrid.querySelectorAll('.unified-chart-canvas')) {
+      const instrument = canvas.dataset.instrument;
+      const box = make('div','tradingview-widget-container');
+      box.style.height = '100%'; box.style.width = '100%';
+      const widget = make('div','tradingview-widget-container__widget');
+      widget.style.height='100%'; widget.style.width='100%';
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.async = true;
+      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+      script.text = JSON.stringify({autosize:true,symbol:instrument,interval:'D',range:'YTD',
+        timezone:'America/New_York',theme:'dark',style:'1',locale:'en',
+        backgroundColor:'#142334',gridColor:'rgba(96,127,158,0.12)',
+        withdateranges:true,hide_side_toolbar:true,hide_top_toolbar:false,
+        hide_legend:true,hide_volume:true,allow_symbol_change:false,
+        save_image:false,calendar:false,support_host:'https://www.tradingview.com'});
+      box.append(widget, script);
+      canvas.replaceChildren(box);
+    }
+  });
+  panel.appendChild(charts);
+
   const footer = make('div','unified-footer');
   const actions = overview.querySelector('.clarity-next-actions');
   if (actions) {
@@ -92,6 +156,31 @@
   const sourcePriceRisk = $('price-risk-panel');
   const intelligence = $('market-intelligence');
   if (sourcePriceRisk && intelligence) intelligence.insertBefore(sourcePriceRisk, intelligence.querySelector('.intel-grid'));
+
+  // Mirror the already-rendered Technicals EOD closes, which app.js derives from
+  // moving_averages.spy/qqq. Never take these values from a live TradingView widget.
+  // Date matching prevents a prior-session close appearing under a newer score.
+  function syncCloses() {
+    const scoredSession = $('session')?.textContent?.trim() || '';
+    for (const sym of ['spy','qqq']) {
+      const source = $(sym + '-ma-close');
+      const sourceDate = $(sym + '-ma-asof')?.textContent?.match(/\b\d{4}-\d{2}-\d{2}\b/)?.[0];
+      const target = $('unified-' + sym + '-close');
+      const asof = $('unified-' + sym + '-asof');
+      if (!target || !asof) continue;
+      const text = source?.textContent?.trim() || '—';
+      const numeric = /^\$\d[\d,]*\.\d{2}$/.test(text);
+      const dateMatches = !!sourceDate && /^\d{4}-\d{2}-\d{2}$/.test(scoredSession) && sourceDate === scoredSession;
+      target.textContent = numeric && dateMatches ? text : '—';
+      asof.textContent = numeric && dateMatches ? sourceDate + ' close' : 'Completed close pending';
+      target.parentElement.dataset.complete = numeric && dateMatches ? 'true' : 'false';
+    }
+  }
+  for (const id of ['spy-ma-close','qqq-ma-close','spy-ma-asof','qqq-ma-asof','session']) {
+    const node = $(id);
+    if (node) new MutationObserver(syncCloses).observe(node, {childList:true,characterData:true,subtree:true});
+  }
+  syncCloses();
 
   function syncDaily() {
     const src = $('daily-summary-live');

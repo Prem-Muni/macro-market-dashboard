@@ -79,3 +79,26 @@ body{background:#101824;color:#e3eaf2}
 @media(prefers-reduced-motion:reduce){.unified-snapshot *{transition:none!important;animation:none!important}}
 
 .unified-snapshot .market-card::before{background:linear-gradient(90deg,rgba(110,163,181,.12),rgba(118,174,188,.55),rgba(110,163,181,.12))!important;opacity:.7!important}
+
+/* EOD closing prices — sourced from the completed daily snapshot shown in Technicals. */
+.unified-quote{display:flex;align-items:flex-end;flex-direction:column;gap:8px;flex:0 0 auto;min-width:112px}
+.unified-close,.unified-price{display:flex;align-items:flex-end;flex-direction:column;gap:2px;max-width:100%;text-align:right}
+.unified-close-label{font-size:10px;line-height:1.2;letter-spacing:.08em;color:#a8bfcd;font-weight:700}
+.unified-close-value{font-size:24px;line-height:1.15;letter-spacing:-.35px;color:#e9f2f5;font-weight:740;font-variant-numeric:tabular-nums}
+.unified-close[data-complete="false"] .unified-close-value{color:#91a4b5}
+.unified-close-asof{font-size:10px;color:#9eb6c3}
+.unified-price-change{font-size:19px;line-height:1.2;letter-spacing:-.2px}
+.unified-charts{margin-top:18px;padding:15px 0 0;border-top:1px solid #3a5061}
+.unified-charts>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;color:#c3deeb;font-size:13px;font-weight:700}
+.unified-charts-hint{font-weight:450;font-size:11px;color:#96afc0;text-align:right}
+.unified-charts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:15px}
+.unified-chart-item{border:1px solid #405667;border-radius:11px;background:#162535;padding:12px;min-width:0}
+.unified-chart-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 11px;color:#dae8f1;font-size:12px}
+.unified-chart-title a{font-weight:550;font-size:11px;color:#a9d7ed;text-decoration:none}
+.unified-chart-title a:hover{text-decoration:underline}
+.unified-chart-canvas{height:300px;background:#101c2a;border:1px solid #293e4f;border-radius:8px;overflow:hidden;position:relative}
+.unified-chart-placeholder{position:absolute;top:45%;left:15px;right:15px;color:#9cafbe;font-size:12px;text-align:center}
+@media(max-width:900px){.unified-charts-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.unified-quote{min-width:90px}.unified-close-value{font-size:21px}.unified-price-change{font-size:18px}.unified-charts>summary{flex-wrap:wrap}.unified-charts-hint{text-align:left;width:100%;padding-left:13px}.unified-chart-canvas{height:270px}}
+
+.unified-charts-disclosure{font-size:11px;line-height:1.55;color:#94afc1;margin:10px 0 0}
