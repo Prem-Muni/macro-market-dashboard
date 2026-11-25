@@ -1,6 +1,6 @@
 {
   "session": "2026-11-25",
-  "generated_at": "2026-11-25T22:10:07.080129+00:00",
+  "generated_at": "2026-11-25T22:50:23.638455+00:00",
   "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -68,64 +68,64 @@
     },
     "nasdaq100": {
       "score": {
-        "bearish": 9,
+        "bearish": 10,
         "possible_max": 10,
         "health": 6,
-        "health_max": 7,
+        "health_max": 6,
         "total": 16,
-        "available": 15,
-        "missing": 1,
+        "available": 16,
+        "missing": 0,
         "regime": "NEUTRAL",
-        "complete": false
+        "complete": true
       },
       "legacy_14": {
-        "bearish": 7,
+        "bearish": 8,
         "possible_max": 8,
         "health": 6,
-        "health_max": 7,
+        "health_max": 6,
         "total": 14,
-        "available": 13,
-        "missing": 1,
-        "regime": "INCOMPLETE",
-        "complete": false
+        "available": 14,
+        "missing": 0,
+        "regime": "RISK-OFF",
+        "complete": true
       },
       "legacy_15": {
-        "bearish": 8,
+        "bearish": 9,
         "possible_max": 9,
         "health": 6,
-        "health_max": 7,
+        "health_max": 6,
         "total": 15,
-        "available": 14,
-        "missing": 1,
+        "available": 15,
+        "missing": 0,
         "regime": "NEUTRAL",
-        "complete": false
+        "complete": true
       },
       "momentum": {
-        "d1": -2,
-        "d5": -4,
+        "d1": -1,
+        "d5": -3,
         "state": "IMPROVING",
         "d1_range": [
-          -2,
+          -1,
           -1
         ],
         "d5_range": [
-          -4,
+          -3,
           -3
         ],
-        "partial": true
+        "partial": false
       },
       "confirmation": {
         "confirmed": 1,
-        "available": 3,
+        "available": 4,
         "total": 4,
         "components": {
-          "volatility": null,
+          "volatility": false,
           "credit": false,
           "breadth": true,
           "price": false
         }
       },
-      "swing": "N/A"
+      "swing": "BEARISH"
     }
   },
   "signals": {
@@ -137,10 +137,10 @@
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
     },
     "vxn": {
-      "state": "na",
-      "label": "N/A",
-      "value": null,
-      "note": "Market data unavailable or stale",
+      "state": "bear",
+      "label": "BEARISH",
+      "value": 38.53,
+      "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
     },
     "oil": {
@@ -381,8 +381,8 @@
             "kind": "other"
           }
         ],
-        "compared": 9,
-        "skipped": 1,
+        "compared": 10,
+        "skipped": 0,
         "total": 10
       }
     },
@@ -4263,8 +4263,8 @@
       "sp": 10,
       "sp_available": 16,
       "sp_max": 10,
-      "nd": 9,
-      "nd_available": 15,
+      "nd": 10,
+      "nd_available": 16,
       "nd_max": 10
     }
   ],
@@ -4442,8 +4442,8 @@
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
-          "complete_days": 251,
-          "incomplete_days": 1,
+          "complete_days": 252,
+          "incomplete_days": 0,
           "zero_to_four": {
             "days": 69,
             "forward1_observations": 69,
@@ -4907,8 +4907,8 @@
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
-          "complete_days": 421,
-          "incomplete_days": 1,
+          "complete_days": 422,
+          "incomplete_days": 0,
           "zero_to_four": {
             "days": 138,
             "forward1_observations": 138,
@@ -5677,8 +5677,8 @@
       },
       "nd": {
         "symbol": "QQQ",
-        "eligible_signal_sessions": 99,
-        "incomplete_or_missing_sessions": 1,
+        "eligible_signal_sessions": 100,
+        "incomplete_or_missing_sessions": 0,
         "regimes": {
           "RISK-OFF": {
             "signal_sessions": 14,
@@ -5728,7 +5728,7 @@
             }
           },
           "NEUTRAL": {
-            "signal_sessions": 60,
+            "signal_sessions": 61,
             "horizons": {
               "1": {
                 "n": 60,
@@ -6090,7 +6090,7 @@
     },
     "VXN": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "VIX3M": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
@@ -6685,31 +6685,31 @@
           "previous_close": 638.1,
           "close": 633.93,
           "price_change_pct": -0.6535,
-          "score": 9,
-          "available": 15,
+          "score": 10,
+          "available": 16,
           "total": 16,
-          "regime": "INCOMPLETE",
+          "regime": "NEUTRAL",
           "estimated_count": 1,
           "estimated_signals": [
             "nd_breadth1d"
           ],
           "trend_5d": "IMPROVING",
           "five_day_delta_range": [
-            -4,
+            -3,
             -3
           ],
           "confirmation": {
             "confirmed": 1,
-            "available": 3,
+            "available": 4,
             "total": 4
           },
-          "swing": "N/A",
-          "previous_score": null,
-          "score_delta_1d": null,
-          "previous_regime": "incomplete",
-          "risk_transition": "uncertain",
-          "price_risk_status": "uncertain",
-          "price_risk_label": "Score incomplete \u2014 no confirmed alert"
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": -1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "changed",
+          "price_risk_status": "none",
+          "price_risk_label": "No price/risk alert"
         },
         "signal_changes": {
           "status": "complete",
@@ -6749,7 +6749,7 @@
             }
           }
         },
-        "spy_qqq_divergence": "uncertain"
+        "spy_qqq_divergence": "none"
       }
     ]
   }
