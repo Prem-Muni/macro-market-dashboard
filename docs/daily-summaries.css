@@ -1,45 +1,56 @@
-/* Compact EOD summary + permanent archive views, no scoring mutations. */
-.daily-summary-overview{margin:12px 0 20px}
-.daily-summary-card{background:linear-gradient(160deg,#14253a,#0a1423);border:1px solid #304d67;border-radius:14px;padding:17px 20px;margin:0 0 12px;color:#e9f3ff}
-.daily-summary-card.current{border-color:#376888}
-.daily-summary-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:7px}
-.daily-summary-top .eyebrow{font-size:11px;letter-spacing:1.2px;color:#94b4ce;font-weight:750}
-.daily-summary-source{font-size:11px;color:#b8cbdc;background:#22354c;border:1px solid #344a62;border-radius:20px;padding:4px 9px}
-.daily-summary-card h3{font-size:21px;line-height:1.25;margin:3px 0 9px}
-.daily-summary-description{color:#b8cadb;font-size:13px;line-height:1.5;margin:0 0 12px}
-.daily-summary-etfs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.daily-summary-etf{background:#0b1727;border:1px solid #2a4057;border-radius:9px;padding:11px;display:flex;flex-direction:column;gap:5px;min-width:0}
-.daily-summary-etf strong{font-size:13px}
-.daily-summary-pct{font-size:12px;color:#adc5d9;line-height:1.4}
-.daily-summary-footer{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:12px}
-.daily-summary-alert{color:#f4c383;font-weight:700}
-.daily-summary-muted{color:#a0b2c5;font-size:12px}
-.daily-summary-overview-link{font-size:12px;margin:6px 3px 0;display:inline-block;color:#9dc8e5}
+/* Daily Price/Risk snapshot: restores the original amber insight panel.
+   Styling only. The dated summary still derives from the saved EOD journal. */
+.daily-summary-overview{display:block!important;max-width:100%;min-width:0;margin:20px 0 18px;order:0}
+.daily-summary-card{position:relative;isolation:isolate;overflow:hidden;margin:0 0 14px;padding:20px 21px 19px;border-radius:17px;border:1px solid #5c503c;background:linear-gradient(117deg,rgba(52,42,32,.93),rgba(19,29,43,.97) 57%,rgba(12,26,40,.98));box-shadow:0 16px 40px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,224,167,.06);color:#edf4fc}
+.daily-summary-card:before{content:"";pointer-events:none;position:absolute;top:0;right:0;width:52%;height:65%;background:radial-gradient(ellipse at 85% 0%,rgba(242,173,85,.11),transparent 65%);z-index:-1}
+.daily-summary-card.current{border-color:#88623c;background:linear-gradient(122deg,rgba(49,39,30,.97),rgba(18,27,40,.97) 51%,rgba(12,26,43,.98));box-shadow:0 20px 46px rgba(0,0,0,.24),0 0 0 1px rgba(226,166,84,.04),inset 0 1px 0 rgba(255,222,169,.09)}
+.daily-summary-card[data-tone="divergence"]{border-color:#b68241;background:linear-gradient(118deg,#33271c,#172131 65%,#0d1d2c)}
+.daily-summary-card[data-tone="incomplete"]{border-color:#78674e}
+.daily-summary-card:not(.current){background:linear-gradient(125deg,#27251f,#111c2b 58%);border-color:#5a503f}
+.daily-summary-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.daily-summary-top .eyebrow{font-size:11px;letter-spacing:1.75px;line-height:1.45;color:#e4b778;font-weight:850}
+.daily-summary-source{font-size:11px;color:#bed1e6;background:#24364a;border:1px solid rgba(151,180,207,.21);border-radius:50px;padding:6px 11px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.daily-summary-headline{font-size:22px;line-height:1.28;letter-spacing:-.45px;margin:0 0 9px;color:#f7f9ff}
+.daily-summary-description{font-size:12.5px;line-height:1.65;color:#b7c9db;margin:0 0 16px;max-width:1000px}
+.daily-summary-etfs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.daily-summary-etf{position:relative;min-width:0;display:flex;flex-direction:column;gap:9px;padding:17px 17px 14px;border:1px solid #77613d;border-radius:12px;background:linear-gradient(142deg,rgba(34,34,35,.85),rgba(9,22,37,.93) 74%);box-shadow:inset 0 1px 0 rgba(246,212,166,.06)}
+.daily-summary-etf:before{content:"";position:absolute;height:1px;left:16px;right:16px;top:0;background:linear-gradient(90deg,transparent,rgba(225,168,80,.35),transparent)}
+.daily-summary-etf[data-tone="divergence"]{border-color:#c08c48;background:linear-gradient(135deg,rgba(73,52,29,.62),rgba(12,23,36,.96))}
+.daily-summary-etf[data-tone="watch"]{border-color:#9b804a}
+.daily-summary-etf[data-tone="incomplete"]{border-color:#796e61;background:linear-gradient(150deg,#292a2d,#121e2b)}
+.daily-summary-etf-head{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.daily-summary-symbol-wrap{min-width:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.daily-summary-symbol{font-size:12px;font-weight:900;color:#e3ecfa;letter-spacing:.3px}
+.daily-summary-market-label{font-size:11px;font-weight:720;color:#9ebacf}
+.daily-summary-move{font-size:33px;font-weight:850;letter-spacing:-.85px;color:#e6ebf1;line-height:1.12;font-variant-numeric:tabular-nums;white-space:nowrap}
+.daily-summary-etf[data-price="up"] .daily-summary-move{color:#69dbb0}
+.daily-summary-etf[data-price="down"] .daily-summary-move{color:#ff929e}
+.daily-summary-etf[data-price="flat"] .daily-summary-move,.daily-summary-etf[data-price="missing"] .daily-summary-move{color:#b6c6d9}
+.daily-summary-etf-title{font-size:15px;font-weight:780;color:#f5f7fc;letter-spacing:-.2px;line-height:1.35;margin:3px 0 0}
+.daily-summary-etf-evidence{font-size:12.5px;line-height:1.62;color:#c0cddd;margin:0;max-width:580px}
+.daily-summary-etf-metrics{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:11px;margin-top:auto;border-top:1px solid rgba(141,165,184,.18)}
+.daily-summary-metric{font-size:10px;font-weight:800;letter-spacing:.5px;border:1px solid #3b5163;background:rgba(14,31,47,.79);color:#b6d0e7;padding:5px 9px;border-radius:7px}
+.daily-summary-regime[data-tone="RISK-OFF"]{background:rgba(126,52,72,.24);border-color:#7d3c52;color:#ffacb7}
+.daily-summary-regime[data-tone="NEUTRAL"]{background:rgba(136,100,39,.22);border-color:#816536;color:#ffd68c}
+.daily-summary-regime[data-tone="RISK-ON"]{background:rgba(32,113,86,.22);border-color:#307760;color:#80e4be}
+.daily-summary-partial{color:#e4c58b;font-size:11px;line-height:1.5;margin:0}
+.daily-summary-footer{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:11.5px;line-height:1.5}
+.daily-summary-alert{color:#f6ca84;font-weight:790}
+.daily-summary-muted{color:#9bb0c7;font-size:12px}
+.daily-summary-overview-link{display:inline-flex;margin:6px 3px 2px;font-size:12px;color:#9ed9f6;font-weight:750;text-decoration:none;gap:4px;align-items:center}
+.daily-summary-overview-link:hover{text-decoration:underline;text-underline-offset:4px;color:#d1edff}
+.daily-summary-loading{background:#132339;border:1px solid #40617b;border-radius:14px;padding:17px 20px}
+.daily-summary-loading p{color:#b6cbda;font-size:13px;margin:8px 0 0}
 .summary-view-tabs{display:flex;gap:8px;margin:18px 0 16px;flex-wrap:wrap}
-.summary-view-tabs button{background:#111f30;border:1px solid #32506a;border-radius:9px;color:#b4c8de;cursor:pointer;padding:11px 16px;font:inherit;font-size:13px;font-weight:700}
-.summary-view-tabs button.active{background:#22445f;color:#fff;border-color:#6a9dbe}
+.summary-view-tabs button{background:#111f30;border:1px solid #32506a;border-radius:9px;color:#bed2e8;cursor:pointer;padding:11px 16px;font:inherit;font-size:13px;font-weight:700}
+.summary-view-tabs button.active{background:linear-gradient(115deg,#234a60,#24415c);color:#fff;border-color:#62a2c3;box-shadow:0 5px 18px rgba(5,24,39,.25)}
+.summary-view-tabs button:hover{background:#213b54}
 .summary-view-tabs button:focus-visible{outline:2px solid #9ccde9;outline-offset:2px}
 .summary-view-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0 10px}
 .summary-view-heading h3{margin:0}
-.summary-view-heading p{color:#9db2c9;font-size:13px;margin:4px 0}
-.summary-archive-grid{display:grid;gap:12px}
+.summary-view-heading p{color:#a3b9ce;font-size:13px;margin:4px 0}
+.summary-archive-grid{display:grid;gap:14px}
 #summary-view[hidden],#j-history-views[hidden]{display:none!important}
-@media(max-width:650px){.daily-summary-card{padding:14px}.daily-summary-card h3{font-size:18px}.daily-summary-etfs{grid-template-columns:1fr}.summary-view-tabs button{flex:1;padding:10px}}
-
-/* First-page dated daily wrap: visible every scored session, even without an alert. */
-.daily-summary-overview{display:block!important;max-width:100%;min-width:0;order:0;margin:14px 0 16px}
-.daily-summary-loading{background:#102136;border:1px solid #3a5b74;border-radius:12px;padding:17px 20px}
-.daily-summary-loading p{color:#adc3d9;margin:8px 0 0;font-size:13px}
-.daily-summary-card.current{border:1px solid #385a77;background:linear-gradient(155deg,#16283c,#0d1727)}
-.daily-summary-card[data-tone="divergence"]{border-color:#80623d;background:linear-gradient(155deg,#28241f,#101823)}
-.daily-summary-etf[data-tone="divergence"]{border-color:#936d39;background:linear-gradient(140deg,#28241f,#0c1826)}
-.daily-summary-etf[data-tone="incomplete"]{border-color:#45627b}
-.daily-summary-etf-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.daily-summary-symbol{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:#9ab8cf;font-weight:750}
-.daily-summary-move{font-size:25px;font-variant-numeric:tabular-nums;color:#e9f3ff;letter-spacing:.2px}
-.daily-summary-etf[data-tone="divergence"] .daily-summary-move{color:#f1c17b}
-.daily-summary-etf-title{font-size:14px;line-height:1.35;color:#e7f0fc;margin:7px 0 2px}
-.daily-summary-etf-evidence{color:#a9c0d4;line-height:1.55;font-size:12px;margin:0}
-.daily-summary-partial{color:#f4c383;font-size:11px;margin:6px 0 0}
-.daily-summary-overview-link{display:inline-block;margin:3px 4px 0;font-size:12px;font-weight:650;color:#a9d8f4}
-@media(max-width:650px){.daily-summary-etf-head{align-items:flex-start}.daily-summary-move{font-size:21px}.daily-summary-card.current{padding:15px}}
+@media(max-width:750px){.daily-summary-etfs{grid-template-columns:1fr}.daily-summary-card{padding:17px}.daily-summary-headline{font-size:20px}.daily-summary-move{font-size:30px}}
+@media(max-width:480px){.daily-summary-card{padding:15px 13px}.daily-summary-etf{padding:14px}.daily-summary-top .eyebrow{font-size:10px;letter-spacing:1.1px}.daily-summary-source{white-space:normal}.daily-summary-move{font-size:29px}.daily-summary-description{font-size:12px}.daily-summary-etf-evidence{font-size:12px}.summary-view-tabs button{flex:1;padding:10px}}
+@media(prefers-reduced-motion:reduce){.daily-summary-card,.daily-summary-etf{transition:none}}

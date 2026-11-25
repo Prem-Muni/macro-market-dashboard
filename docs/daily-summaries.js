@@ -117,36 +117,64 @@
   if(typeof document==='undefined')return api;
   const $=id=>document.getElementById(id);
   const put=(parent,tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=value;parent.appendChild(e);return e;};
-  function etfTile(parent,name,entry){
+  // Presentation language only. These labels never change the saved score,
+  // percentage move, alert rule, or historical journal.
+  function marketDescription(symbol,entry){
+    const r=entry.risk==='RISK-OFF'?'Risk-Off':entry.risk==='RISK-ON'?'Risk-On':entry.risk==='NEUTRAL'?'Neutral':'unconfirmed';
+    const percent=finite(entry.pct)?Math.abs(entry.pct).toFixed(2)+'%':null;
+    if(entry.alert.kind==='baseline')return `Screenshot baseline: Market Health ${scoreText(entry)} (${r}). No earlier ETF close was supplied, so the daily return and divergence cannot be evaluated.`;
+    if(entry.alert.kind==='uncertain')return `Market Health ${scoreText(entry)} (${r}) has missing inputs or an unverified price comparison. No divergence conclusion is asserted.`;
+    if(!percent)return `Market Health ${scoreText(entry)} (${r}). Prior-day closing price unavailable; a daily price/risk comparison cannot be confirmed.`;
+    const action=entry.pct>0?`rose ${percent}`:entry.pct<0?`fell ${percent}`:'closed unchanged';
+    if(entry.alert.kind==='divergence')return `${symbol} ${action} while Market Health remained ${scoreText(entry)} (${r}). The price move and risk regime disagree; a single session does not confirm a regime change.`;
+    if(entry.alert.kind==='watch')return `${symbol} ${action} while Market Health is ${scoreText(entry)} (Neutral). A sizable move warrants review, but is not a confirmed regime transition.`;
+    return `${symbol} ${action}; Market Health is ${scoreText(entry)} (${r}). No qualifying price/risk divergence was detected this session.`;
+  }
+  function marketTitle(entry){
+    if(entry.alert.kind==='divergence'||entry.alert.kind==='watch')return entry.alert.label;
+    if(entry.alert.kind==='baseline')return 'Screenshot baseline · no prior close';
+    if(entry.alert.kind==='uncertain')return 'Incomplete data · comparison unconfirmed';
+    if(!finite(entry.pct))return 'Daily price change unavailable';
+    const move=entry.pct>=2?'Strong rally':entry.pct<=-2?'Sharp decline':entry.pct>0?'Positive session':entry.pct<0?'Down day':'Flat session';
+    const regimeName=entry.risk==='RISK-OFF'?'Risk-Off':entry.risk==='RISK-ON'?'Risk-On':entry.risk==='NEUTRAL'?'Neutral':'Unconfirmed';
+    return `${move} · ${regimeName} persists`;
+  }
+  function etfTile(parent,symbol,longName,entry){
     const box=put(parent,'article','daily-summary-etf');
     box.dataset.tone=entry.alert.kind==='divergence'?'divergence':entry.alert.kind==='watch'?'watch':entry.alert.kind==='uncertain'?'incomplete':'standard';
-    const label=put(box,'div','daily-summary-etf-head');
-    put(label,'span','daily-summary-symbol',name);
-    put(label,'strong','daily-summary-move',signed(entry.pct));
-    const riskText=entry.risk==='RISK-OFF'?'Risk-Off':entry.risk==='RISK-ON'?'Risk-On':entry.risk==='NEUTRAL'?'Neutral':'Incomplete';
-    const labelText=entry.alert.kind==='divergence'||entry.alert.kind==='watch'?entry.alert.label:
-      entry.alert.kind==='uncertain'?'Incomplete score · price/risk alert unconfirmed':
-      entry.alert.kind==='baseline'?'Screenshot baseline · price change unavailable':
-      entry.alert.kind==='none'?'No price/risk divergence this session':entry.alert.label;
-    put(box,'h4','daily-summary-etf-title',labelText);
-    const evidence=finite(entry.pct)?`Daily price change ${signed(entry.pct)} · `:'Daily price change not available · ';
-    put(box,'p','daily-summary-etf-evidence',`${evidence}Market Health ${scoreText(entry)} · ${riskText}`);
-    if(entry.available<entry.total)put(box,'p','daily-summary-partial',`${entry.available}/${entry.total} scored signals available · range shown`);
+    box.dataset.price=finite(entry.pct)?entry.pct>0?'up':entry.pct<0?'down':'flat':'missing';
+    box.dataset.regime=entry.risk;
+    const head=put(box,'div','daily-summary-etf-head');
+    const labels=put(head,'div','daily-summary-symbol-wrap');
+    put(labels,'span','daily-summary-symbol',symbol);
+    put(labels,'span','daily-summary-market-label',longName);
+    const move=put(head,'strong','daily-summary-move',signed(entry.pct));
+    move.setAttribute('aria-label',finite(entry.pct)?`${symbol} price change ${signed(entry.pct)}`:`${symbol} daily price change not available`);
+    put(box,'h4','daily-summary-etf-title',marketTitle(entry));
+    put(box,'p','daily-summary-etf-evidence',marketDescription(symbol,entry));
+    const metrics=put(box,'div','daily-summary-etf-metrics');
+    put(metrics,'span','daily-summary-metric',`HEALTH ${scoreText(entry)}`);
+    const risk=put(metrics,'span','daily-summary-metric daily-summary-regime',entry.risk==='RISK-OFF'?'RISK-OFF':entry.risk==='RISK-ON'?'RISK-ON':entry.risk==='NEUTRAL'?'NEUTRAL':'UNCONFIRMED');
+    risk.dataset.tone=entry.risk;
+    if(entry.available<entry.total)put(box,'p','daily-summary-partial',`${entry.available}/${entry.total} signals available · range shown, not an assumed value`);
     return box;
   }
   function renderCard(parent,record,current){
     const card=put(parent,'article',current?'daily-summary-card current':'daily-summary-card');
     card.dataset.tone=record.alertCount?'divergence':record.partial?'incomplete':'standard';
     const top=put(card,'div','daily-summary-top');
-    put(top,'span','eyebrow',`${current?'LATEST DAILY MARKET SUMMARY':'PREVIOUS DAILY SUMMARY'} · ${formatted(record.session)}`);
+    put(top,'span','eyebrow',`${current?'DAILY PRICE ↔ RISK · COMPLETED EOD':'ARCHIVED PRICE ↔ RISK · COMPLETED EOD'} · ${formatted(record.session)}`);
     put(top,'span','daily-summary-source',record.origin==='screenshot_baseline'?'SCREENSHOT BASELINE':record.previousSession?`${formatted(record.previousSession)} → ${formatted(record.session)}`:'Completed EOD session');
-    put(card,'h3','',record.headline);
+    put(card,'h3','daily-summary-headline',record.alertCount?record.alertHeadline:record.headline);
     put(card,'p','daily-summary-description',record.summary);
-    const tiles=put(card,'div','daily-summary-etfs');etfTile(tiles,'SPY · S&P 500',record.spy);etfTile(tiles,'QQQ · Nasdaq-100',record.qqq);
+    const tiles=put(card,'div','daily-summary-etfs');
+    etfTile(tiles,'SPY','S&P 500',record.spy);
+    etfTile(tiles,'QQQ','NASDAQ-100',record.qqq);
     const footer=put(card,'div','daily-summary-footer');
-    const alert=put(footer,'span',record.alertCount?'daily-summary-alert':'daily-summary-muted',record.alertHeadline);
-    if(record.partial)put(footer,'span','daily-summary-muted','Partial data · no assumed missing health points');
-    if(record.origin==='screenshot_baseline')put(footer,'span','daily-summary-muted','Prior-day ETF close not provided');
+    const alertText=record.alertCount?record.alertHeadline:record.partial?'Some indicator comparisons are incomplete':'No qualifying price/risk divergence this session';
+    put(footer,'span',record.alertCount?'daily-summary-alert':'daily-summary-muted',alertText);
+    if(record.partial)put(footer,'span','daily-summary-muted','Missing data is not treated as bullish or bearish');
+    if(record.origin==='screenshot_baseline')put(footer,'span','daily-summary-muted','Prior ETF close unavailable · historical baseline');
     return card;
   }
   async function loadData(){
