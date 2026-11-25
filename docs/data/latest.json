@@ -1,6 +1,6 @@
 {
   "session": "2026-11-25",
-  "generated_at": "2026-11-25T22:50:23.638455+00:00",
+  "generated_at": "2026-11-25T23:20:15.772210+00:00",
   "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -6638,6 +6638,297 @@
         "previous_session": "2026-11-24",
         "model": "16-point Market Health with scored MACD",
         "spy": {
+          "metrics": {
+            "signals": {
+              "oil": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+              },
+              "usd": {
+                "state": "bull",
+                "label": "BULLISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+              },
+              "tnx": {
+                "state": "bull",
+                "label": "BULLISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+              },
+              "credit": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "HYG daily return below IEF",
+                "source": "HYG / IEF"
+              },
+              "copper": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily copper change",
+                "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+              },
+              "vix_curve": {
+                "state": "bear",
+                "label": "BACKWARDATION",
+                "value": 1.076,
+                "note": "VIX / VIX3M implied-volatility ratio",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+              },
+              "vix": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 28.29,
+                "note": "Spot implied volatility",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
+              },
+              "sp_def": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Defensives lead on 10D",
+                "source": "XLP / XLV / XLU"
+              },
+              "sp_xle": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "XLE leads 10D",
+                "source": "XLE"
+              },
+              "sp_smh": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "SMH below 20D EMA",
+                "source": "SMH"
+              },
+              "spy_trend": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Below 200D SMA",
+                "source": "SPY"
+              },
+              "sp_rsi14": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 39.833,
+                "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+                "source": "SPY EOD close"
+              },
+              "rsp_spy": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.7,
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
+                "source": "RSP/SPY"
+              },
+              "iwm_spy": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.458,
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
+                "source": "IWM/SPY"
+              },
+              "sp_breadth1d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 2.806,
+                "note": "1D change in % of SPX constituents above 200D SMA; pp",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              },
+              "sp_macd": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": -2.915,
+                "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+                "source": "SPY EOD close \u00b7 EMA(12,26,9)"
+              },
+              "sp_breadth5d": {
+                "state": "warn",
+                "label": "STABLE",
+                "value": 0.2,
+                "note": "5D change, percentage points",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              },
+              "sp_breadth200": {
+                "state": "warn",
+                "label": "CAUTION",
+                "value": 58.517,
+                "note": "Current % of SPX constituents above own 200D SMA",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              }
+            },
+            "names": {
+              "oil": "Crude Oil",
+              "usd": "US Dollar",
+              "tnx": "10Y Yield",
+              "credit": "Credit HYG/IEF",
+              "copper": "Copper",
+              "vix_curve": "VIX Curve",
+              "vix": "VIX",
+              "sp_def": "Defensives/SPY",
+              "sp_xle": "XLE/SPY",
+              "sp_smh": "SMH/SPY",
+              "spy_trend": "SPY Trend",
+              "sp_rsi14": "SPY RSI (14)",
+              "rsp_spy": "RSP/SPY",
+              "iwm_spy": "IWM/SPY",
+              "sp_breadth1d": "S&P Breadth 1D",
+              "sp_macd": "SPY MACD (12,26,9)",
+              "sp_breadth5d": "S&P Breadth 5D",
+              "sp_breadth200": "S&P Breadth 200D"
+            },
+            "moving_averages": {
+              "symbol": "SPY",
+              "as_of": "2026-11-25",
+              "close": 716.7,
+              "averages": {
+                "5": {
+                  "value": 712.69,
+                  "distance_pct": 0.56,
+                  "state": "BULLISH"
+                },
+                "20": {
+                  "value": 740.329,
+                  "distance_pct": -3.19,
+                  "state": "BEARISH"
+                },
+                "50": {
+                  "value": 757.889,
+                  "distance_pct": -5.43,
+                  "state": "BEARISH"
+                },
+                "100": {
+                  "value": 758.538,
+                  "distance_pct": -5.52,
+                  "state": "BEARISH"
+                },
+                "200": {
+                  "value": 733.161,
+                  "distance_pct": -2.25,
+                  "state": "BEARISH"
+                }
+              },
+              "rsi": {
+                "period": 14,
+                "value": 39.83,
+                "state": "NEUTRAL"
+              }
+            },
+            "sources": {
+              "SPY": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                "latest_session": "2026-11-25"
+              },
+              "QQQ": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                "latest_session": "2026-11-25"
+              },
+              "RSP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                "latest_session": "2026-11-25"
+              },
+              "QQQE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                "latest_session": "2026-11-25"
+              },
+              "IWM": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                "latest_session": "2026-11-25"
+              },
+              "SMH": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                "latest_session": "2026-11-25"
+              },
+              "XLE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                "latest_session": "2026-11-25"
+              },
+              "XLP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                "latest_session": "2026-11-25"
+              },
+              "XLV": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                "latest_session": "2026-11-25"
+              },
+              "XLU": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                "latest_session": "2026-11-25"
+              },
+              "HYG": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                "latest_session": "2026-11-25"
+              },
+              "IEF": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                "latest_session": "2026-11-25"
+              },
+              "OIL": {
+                "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                "latest_session": "2026-11-25"
+              },
+              "COPPER": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                "latest_session": "2026-11-25"
+              },
+              "USD": {
+                "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                "latest_session": "2026-11-25"
+              },
+              "TNX": {
+                "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                "latest_session": "2026-11-25"
+              },
+              "VIX": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+                "latest_session": "2026-11-25"
+              },
+              "VXN": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                "latest_session": "2026-11-25"
+              },
+              "VIX3M": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+                "latest_session": "2026-11-25"
+              },
+              "SPX_BREADTH200": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                "latest_session": "2026-11-25"
+              },
+              "NDX_ADV": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-25"
+              },
+              "NDX_DECL": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-25"
+              }
+            },
+            "warnings": [
+              "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+              "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+              "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+              "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+              "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+              "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+            ],
+            "confirmation_components": {
+              "volatility": false,
+              "credit": false,
+              "breadth": false,
+              "price": false
+            }
+          },
           "macd_info": {
             "macd": -12.97595,
             "signal": -10.0607,
@@ -6675,6 +6966,289 @@
           "price_risk_label": "No price/risk alert"
         },
         "qqq": {
+          "metrics": {
+            "signals": {
+              "oil": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+              },
+              "usd": {
+                "state": "bull",
+                "label": "BULLISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+              },
+              "tnx": {
+                "state": "bull",
+                "label": "BULLISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+              },
+              "credit": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "HYG daily return below IEF",
+                "source": "HYG / IEF"
+              },
+              "copper": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily copper change",
+                "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+              },
+              "vix_curve": {
+                "state": "bear",
+                "label": "BACKWARDATION",
+                "value": 1.076,
+                "note": "VIX / VIX3M implied-volatility ratio",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+              },
+              "vxn": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 38.53,
+                "note": "Spot implied volatility",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
+              },
+              "nd_def": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Defensives lead on 10D",
+                "source": "XLP / XLV / XLU"
+              },
+              "nd_xle": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "XLE leads 10D",
+                "source": "XLE"
+              },
+              "nd_smh": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "SMH below 20D EMA",
+                "source": "SMH"
+              },
+              "qqq_trend": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Below 200D SMA",
+                "source": "QQQ"
+              },
+              "nd_rsi14": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 38.581,
+                "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+                "source": "QQQ EOD close"
+              },
+              "qqqe_qqq": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.327,
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
+                "source": "QQQE/QQQ"
+              },
+              "iwm_qqq": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 2.777,
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
+                "source": "IWM/QQQ"
+              },
+              "nd_breadth1d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 56.122,
+                "note": "Today's advancing share % (not SPX 200D breadth)",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+              },
+              "nd_macd": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": -2.5,
+                "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+                "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
+              },
+              "nd_breadth5d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 11.313,
+                "note": "Change in average advancing share between adjacent 5D windows; pp",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+              }
+            },
+            "names": {
+              "oil": "Crude Oil",
+              "usd": "US Dollar",
+              "tnx": "10Y Yield",
+              "credit": "Credit HYG/IEF",
+              "copper": "Copper",
+              "vix_curve": "VIX Curve",
+              "vxn": "VXN",
+              "nd_def": "Defensives/QQQ",
+              "nd_xle": "XLE/QQQ",
+              "nd_smh": "SMH/QQQ",
+              "qqq_trend": "QQQ Trend",
+              "nd_rsi14": "QQQ RSI (14)",
+              "qqqe_qqq": "QQQE/QQQ",
+              "iwm_qqq": "IWM/QQQ",
+              "nd_breadth1d": "Nasdaq Breadth 1D",
+              "nd_macd": "QQQ MACD (12,26,9)",
+              "nd_breadth5d": "Nasdaq Breadth 5D"
+            },
+            "moving_averages": {
+              "symbol": "QQQ",
+              "as_of": "2026-11-25",
+              "close": 633.93,
+              "averages": {
+                "5": {
+                  "value": 635.31,
+                  "distance_pct": -0.22,
+                  "state": "BEARISH"
+                },
+                "20": {
+                  "value": 666.731,
+                  "distance_pct": -4.92,
+                  "state": "BEARISH"
+                },
+                "50": {
+                  "value": 707.05,
+                  "distance_pct": -10.34,
+                  "state": "BEARISH"
+                },
+                "100": {
+                  "value": 708.464,
+                  "distance_pct": -10.52,
+                  "state": "BEARISH"
+                },
+                "200": {
+                  "value": 683.499,
+                  "distance_pct": -7.25,
+                  "state": "BEARISH"
+                }
+              },
+              "rsi": {
+                "period": 14,
+                "value": 38.58,
+                "state": "NEUTRAL"
+              }
+            },
+            "sources": {
+              "SPY": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                "latest_session": "2026-11-25"
+              },
+              "QQQ": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                "latest_session": "2026-11-25"
+              },
+              "RSP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                "latest_session": "2026-11-25"
+              },
+              "QQQE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                "latest_session": "2026-11-25"
+              },
+              "IWM": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                "latest_session": "2026-11-25"
+              },
+              "SMH": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                "latest_session": "2026-11-25"
+              },
+              "XLE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                "latest_session": "2026-11-25"
+              },
+              "XLP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                "latest_session": "2026-11-25"
+              },
+              "XLV": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                "latest_session": "2026-11-25"
+              },
+              "XLU": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                "latest_session": "2026-11-25"
+              },
+              "HYG": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                "latest_session": "2026-11-25"
+              },
+              "IEF": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                "latest_session": "2026-11-25"
+              },
+              "OIL": {
+                "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                "latest_session": "2026-11-25"
+              },
+              "COPPER": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                "latest_session": "2026-11-25"
+              },
+              "USD": {
+                "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                "latest_session": "2026-11-25"
+              },
+              "TNX": {
+                "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                "latest_session": "2026-11-25"
+              },
+              "VIX": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+                "latest_session": "2026-11-25"
+              },
+              "VXN": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                "latest_session": "2026-11-25"
+              },
+              "VIX3M": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+                "latest_session": "2026-11-25"
+              },
+              "SPX_BREADTH200": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                "latest_session": "2026-11-25"
+              },
+              "NDX_ADV": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-25"
+              },
+              "NDX_DECL": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-25"
+              }
+            },
+            "warnings": [
+              "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+              "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+              "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+              "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+              "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+              "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+            ],
+            "confirmation_components": {
+              "volatility": false,
+              "credit": false,
+              "breadth": true,
+              "price": false
+            }
+          },
           "macd_info": {
             "macd": -20.16034,
             "signal": -17.66071,
