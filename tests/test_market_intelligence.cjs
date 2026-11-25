@@ -3,24 +3,24 @@ const assert=require('node:assert/strict');
 const {test}=require('node:test');
 const mi=require('../docs/market-intelligence.js');
 function mkScore(points,available=15){return {bearish:points,available,total:15,possible_max:points+(15-available),complete:available===15};}
-function mk({spPrior=9,spNow=6,ndPrior=7,ndNow=9,spPriorAv=15,spNowAv=15,ndPriorAv=15,ndNowAv=15,date='2026-11-20'}={}){
+function mk({spPrior=10,spNow=4,ndPrior=7,ndNow=11,spPriorAv=15,spNowAv=15,ndPriorAv=15,ndNowAv=15,date='2026-11-20'}={}){
  return {session:date,history:[{date:'2026-11-19',sp:spPrior,sp_available:spPriorAv,nd:ndPrior,nd_available:ndPriorAv},{date,sp:spNow,sp_available:spNowAv,nd:ndNow,nd_available:ndNowAv}],markets:{sp500:{score:mkScore(spNow,spNowAv)},nasdaq100:{score:mkScore(ndNow,ndNowAv)}}};
 }
 test('compares the two completed EOD sessions and reports exact daily scores',()=>{
  const data=mk(),sp=mi.scoredHistory(data,'sp'),nd=mi.scoredHistory(data,'nd');
- assert.equal(mi.scoreRange(sp.previous),'9/15');assert.equal(mi.scoreRange(sp.today),'6/15');
- assert.deepEqual(sp.delta,{min:-3,max:-3});assert.equal(sp.direction,'improving');
- assert.equal(sp.transition,'risk_eased');assert.equal(sp.previousRegime,'RISK-OFF');assert.equal(sp.currentRegime,'CAUTION');
+ assert.equal(mi.scoreRange(sp.previous),'5/15');assert.equal(mi.scoreRange(sp.today),'11/15');
+ assert.deepEqual(sp.delta,{min:6,max:6});assert.equal(sp.direction,'improving');
+ assert.equal(sp.transition,'risk_eased');assert.equal(sp.previousRegime,'RISK-OFF');assert.equal(sp.currentRegime,'RISK-ON');
  assert.equal(nd.direction,'deteriorating');assert.equal(nd.transition,'risk_increased');
  assert.equal(mi.divergence(sp,nd).kind,'diverging');
 });
-test('QQQ score 5 is Risk-On, SPY score 5 is Caution',()=>{
+test('Both SPY and QQQ raw bearish 5 become health 10 Neutral',()=>{
  const qqq=mi.bounds(5,15,15),spy=mi.bounds(5,15,15);
- assert.equal(mi.regimeForRange(qqq,'nd'),'RISK-ON');
- assert.equal(mi.regimeForRange(spy,'sp'),'CAUTION');
+ assert.equal(mi.regimeForRange(qqq,'nd'),'NEUTRAL');
+ assert.equal(mi.regimeForRange(spy,'sp'),'NEUTRAL');
 });
 test('can identify regime split even without opposite day-over-day moves',()=>{
- const d=mk({spPrior:5,spNow:5,ndPrior:5,ndNow:5});
+ const d=mk({spPrior:10,spNow:10,ndPrior:4,ndNow:4});
  assert.equal(mi.divergence(mi.scoredHistory(d,'sp'),mi.scoredHistory(d,'nd')).kind,'split');
 });
 test('declares no divergence when both regimes and directions agree',()=>{
@@ -31,18 +31,18 @@ test('do not infer improvement from partial score ranges',()=>{
  const d=mk({spPrior:8,spPriorAv:14,spNow:8,spNowAv:14});
  const sp=mi.scoredHistory(d,'sp');
  assert.deepEqual(sp.delta,{min:-1,max:1});assert.equal(sp.direction,'uncertain');
- assert.equal(mi.scoreRange(sp.previous),'8–9/15');
- assert.equal(sp.transition,'uncertain');
+ assert.equal(mi.scoreRange(sp.previous),'6–7/15');
+ assert.equal(sp.transition,'unchanged');
 });
 test('regime can remain unambiguous despite a missing signal',()=>{
  const d=mk({spPrior:10,spPriorAv:14,spNow:7,spNowAv:14});
  const sp=mi.scoredHistory(d,'sp');
- assert.equal(sp.previousRegime,'RISK-OFF');assert.equal(sp.currentRegime,'CAUTION');
+ assert.equal(sp.previousRegime,'RISK-OFF');assert.equal(sp.currentRegime,'NEUTRAL');
  assert.equal(sp.transition,'risk_eased');
  assert.equal(sp.direction,'improving');
 });
 test('risk transition uncertain when missing input could cross a boundary',()=>{
- const d=mk({ndPrior:5,ndPriorAv:14,ndNow:5,ndNowAv:14});
+ const d=mk({ndPrior:9,ndPriorAv:14,ndNow:9,ndNowAv:14});
  const nd=mi.scoredHistory(d,'nd');
  assert.equal(nd.currentRegime,'INCOMPLETE');assert.equal(nd.transition,'uncertain');
 });

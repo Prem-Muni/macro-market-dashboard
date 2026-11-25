@@ -42,26 +42,26 @@
        scored.currentRegime==='INCOMPLETE')
       return {...base,kind:'uncertain',headline:'Score coverage incomplete',detail:`${symbol} moved ${pctText(change)}, but the current risk score cannot be confirmed; no divergence is asserted.`};
     const current=scored.today.min;
-    const scoreLine=`${current}/15 bearish points · ${scored.currentRegime}`;
-    const changeDesc={improving:'fewer bearish signals than the prior session',
-      deteriorating:'more bearish signals than the prior session',
-      unchanged:'no change in bearish-point count',
+    const scoreLine=`${current}/15 Market Health · ${scored.currentRegime}`;
+    const changeDesc={improving:'a higher health score than the prior session',
+      deteriorating:'a lower health score than the prior session',
+      unchanged:'no change in market health score',
       uncertain:'a prior-day score change that cannot be determined with certainty'}[scored.direction]||'an unavailable score change';
     const common={...base,scoreLine};
     const shift=`The 15-point model shows ${changeDesc}.`;
     if(change>=MOVE_THRESHOLD){
       if(scored.currentRegime==='RISK-OFF')return {...common,kind:'divergence',headline:'Strong rally · Risk-Off persists',
-        detail:`${symbol} gained ${pctText(change)} in one session, yet ${current}/15 bearish signals still place it in Risk-Off. ${shift} A rebound alone is not a confirmed regime recovery.`};
-      if(scored.currentRegime==='CAUTION')return {...common,kind:'watch',headline:'Strong rally · Caution remains',
-        detail:`${symbol} gained ${pctText(change)}, but the 15-point model remains in Caution (${current}/15). ${shift}`};
+        detail:`${symbol} gained ${pctText(change)} in one session, yet Market Health remains ${current}/15 (Risk-Off). ${shift} A rebound alone is not a confirmed regime recovery.`};
+      if(scored.currentRegime==='NEUTRAL')return {...common,kind:'watch',headline:'Strong rally · Neutral remains',
+        detail:`${symbol} gained ${pctText(change)}, but the 15-point model remains Neutral (${current}/15). ${shift}`};
       return {...common,kind:'aligned',headline:'Rally aligns with Risk-On',
         detail:`${symbol} gained ${pctText(change)} and the 15-point score is Risk-On (${current}/15). ${shift}`};
     }
     if(change<=-MOVE_THRESHOLD){
       if(scored.currentRegime==='RISK-ON')return {...common,kind:'divergence',headline:'Sharp selloff · Risk-On persists',
         detail:`${symbol} fell ${pctText(change)} in one session while the 15-point score remains Risk-On (${current}/15). ${shift} Watch for subsequent risk deterioration.`};
-      if(scored.currentRegime==='CAUTION')return {...common,kind:'watch',headline:'Sharp selloff · Caution regime',
-        detail:`${symbol} fell ${pctText(change)} and the risk score remains in Caution (${current}/15). ${shift}`};
+      if(scored.currentRegime==='NEUTRAL')return {...common,kind:'watch',headline:'Sharp selloff · Neutral regime',
+        detail:`${symbol} fell ${pctText(change)} and the Market Health Score remains Neutral (${current}/15). ${shift}`};
       return {...common,kind:'aligned',headline:'Selloff aligns with Risk-Off',
         detail:`${symbol} fell ${pctText(change)} while the risk model remains Risk-Off (${current}/15). ${shift}`};
     }
@@ -74,7 +74,7 @@
     const incomplete=[sp,nd].filter(x=>x.kind==='unavailable'||x.kind==='uncertain').length;
     if(alerts)return {tone:'warn',headline:alerts===2?'Price/risk divergence in both ETFs':'Price/risk divergence detected',
       detail:'Strong daily price moves disagree with the current 15-point risk regime. Review both readings before interpreting the rebound or selloff.'};
-    if(watch)return {tone:'watch',headline:'Strong moves within Caution',detail:'The price move is significant, but at least one risk regime has not reached Risk-On or Risk-Off.'};
+    if(watch)return {tone:'watch',headline:'Strong moves within Neutral',detail:'The price move is significant, but at least one risk regime remains Neutral rather than Risk-On or Risk-Off.'};
     if(incomplete)return {tone:'neutral',headline:'Price/risk check incomplete',detail:'A matched completed EOD price comparison and a classifiable score are required.'};
     return {tone:'neutral',headline:'No flagged price/risk divergence',detail:'Price moves and the model do not meet the mismatch rules for this session.'};
   }

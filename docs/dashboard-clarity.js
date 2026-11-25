@@ -48,7 +48,7 @@
   const introductory = move('.section-intro', overview);
   if (introductory) {
     const paragraph = introductory.querySelector('p');
-    if (paragraph) paragraph.textContent = 'Two daily risk scores. Fewer bearish points indicate improving conditions.';
+    if (paragraph) paragraph.textContent = 'Market Health Score: higher is healthier · 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On.';
   }
   move('.market-grid', overview);
   const brief = move('.decision-brief', overview);
@@ -71,7 +71,7 @@
       const update = () => {
         const a = $('sp-trend')?.textContent?.trim() || '—';
         const b = $('nd-trend')?.textContent?.trim() || '—';
-        concise.textContent = `5-day risk trend: SPY ${a.toLowerCase()} · QQQ ${b.toLowerCase()}`;
+        concise.textContent = `5-day health trend: SPY ${a.toLowerCase()} · QQQ ${b.toLowerCase()}`;
       };
       for (const key of ['sp-trend','nd-trend']) {
         const source = $(key);

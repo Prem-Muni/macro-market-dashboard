@@ -238,11 +238,15 @@ def score_of(signals, keys, risk_on_max: int = 4):
     valid=[k for k in keys if signals[k].state!="na"]
     bears=sum(signals[k].state in ("bear","wash") for k in valid)
     missing=len(keys)-len(valid)
-    # Index-specific, experimental policy: SPY=0..4, QQQ=0..5 Risk-On.
-    # The 9+ Risk-Off boundary remains identical for both markets.
-    def regime(n): return "RISK-ON" if n<=risk_on_max else "CAUTION" if n<=8 else "RISK-OFF"
-    low,high=regime(bears),regime(bears+missing)
-    return {"bearish":bears,"possible_max":bears+missing,"total":len(keys),"available":len(valid),"missing":missing,"regime":low if low==high else "INCOMPLETE","complete":missing==0,"available_keys":valid}
+    # Health counts all available non-bearish signals, including neutral states.
+    # The bearish count remains in the JSON for legacy history compatibility.
+    # Score interval: unknown inputs can be bearish or non-bearish.
+    total=len(keys)
+    health_low=total-bears-missing
+    health_high=total-bears
+    def regime(health): return "RISK-OFF" if health<=5 else "NEUTRAL" if health<=10 else "RISK-ON"
+    low,high=regime(health_low),regime(health_high)
+    return {"bearish":bears,"possible_max":bears+missing,"health":health_low,"health_max":health_high,"total":total,"available":len(valid),"missing":missing,"regime":low if low==high else "INCOMPLETE","complete":missing==0,"available_keys":valid}
 
 
 def score_of_legacy14(signals, keys):
@@ -587,8 +591,10 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
               "sp_max":r["sp"]["possible_max"], "nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"],
               "nd_max":r["nd"]["possible_max"]} for r in historical_records]
     backtest=historical_backtest(records,f,pd.Timestamp(d),history_months)  # include 8 warm-up sessions for score-trend classification
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-v3-qqq-5-borderline-risk-on", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"signal_changes":signal_changes,"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,
-            "risk_policy":{"sp500":{"risk_on_max":4,"caution_min":5,"caution_max":8,"risk_off_min":9},
-                           "nasdaq100":{"risk_on_max":5,"caution_min":6,"caution_max":8,"risk_off_min":9,
-                                        "borderline_score":5,"borderline_note":"Score 5 is Risk-On by policy but borderline cautious."},
-                           "decision_date":"2026-11-22","evidence_through":"2026-11-20"},"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Score is an interval when signals are missing. Green/risk-on is never inferred from absent bearish points.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point model: S&P 500 Risk-On 0–4; Nasdaq-100 Risk-On 0–5, with QQQ score 5 borderline cautious. Both Risk-Off at 9+. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score ≤4/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."}}
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-health-v1-neutral-6-10", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"signal_changes":signal_changes,"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,"history_storage":"legacy_bearish_counts_display_as_health",
+            "risk_policy":{"score_name":"Market Health", "direction":"higher_is_healthier",
+                            "formula":"15 minus bearish signal count; neutral/warning input counts as non-bearish",
+                            "sp500":{"risk_off_max":5,"neutral_min":6,"neutral_max":10,"risk_on_min":11},
+                            "nasdaq100":{"risk_off_max":5,"neutral_min":6,"neutral_max":10,"risk_on_min":11},
+                            "legacy_backtest_policy":"Earlier forward-return research used bearish scores and different thresholds; not validated for this new policy.",
+                            "decision_date":"2026-11-25"},"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Health Score is an interval when inputs are missing. Missing points are never automatically counted as healthy.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point Market Health model for both indexes: higher is healthier; 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score ≤4/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."}}

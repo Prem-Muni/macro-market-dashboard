@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Definitions and exact bearish scoring thresholds for every signal in the 15-point Macro Decision Dashboard.">
+  <meta name="description" content="Current Market Health score and archived bearish scoring thresholds for every signal in the 15-point Macro Decision Dashboard.">
   <title>Scoring Guide | Macro Decision Dashboard</title>
-  <link rel="stylesheet" href="styles.css?v=threshold-logic-20261122">
+  <link rel="stylesheet" href="styles.css?v=market-health-20261125a">
 </head>
 <body>
  <div class="shell">
@@ -19,7 +19,20 @@
    <a class="site-tab active" href="scoring-guide.html" aria-current="page"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">15 signals</span></a>
    <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
   </nav>
-  <main class="guide-main">
+  
+<main class="guide-main">
+<section class="threshold-intro" aria-label="Current Market Health methodology" style="margin:24px 0 18px">
+ <div class="eyebrow">CURRENT MODEL · BOTH SPY AND QQQ</div>
+ <h2>Market Health Score · Higher is healthier</h2>
+ <p>Both benchmarks use the <strong>same 15-point scale</strong>: 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On. Each scored indicator contributes <strong>1 health point when it is not bearish</strong> and <strong>0 when bearish</strong>. Neutral signals count as non-bearish, so this is a health score—not a count of strictly bullish votes.</p>
+ <div class="threshold-bands"><span class="off">0–5 · RISK-OFF</span><span>6–10 · NEUTRAL</span><span class="on">11–15 · RISK-ON</span></div>
+ <p><strong>Score calculation:</strong> Market Health = 15 − archived bearish count. A higher daily change is improving; a lower daily change is deteriorating. With missing data, the website shows a range and will not assume absent inputs are healthy.</p>
+ <p>Six shared macro signals plus nine index-specific signals remain unchanged. Daily MACD and five individual SMA rows are informational only. The November 20 baseline and historical records retain their underlying bearish counts; the website displays them on this inverted scale.</p>
+ <p><strong>Research caveat:</strong> The new unified 0–5 / 6–10 / 11–15 classification has not been revalidated using forward returns. The earlier research sections below are archived analysis of the old bearish-score thresholds and should not be treated as evidence for the new bands.</p>
+</section>
+<details class="threshold-evidence" style="margin:16px 0" aria-label="Archived previous bearish-score research"><summary><strong>Previous bearish-count methodology and historical research (archived)</strong> · expand to review</summary>
+<div class="info-line">ARCHIVED REFERENCE ONLY — these score ranges and conclusions refer to the former lower-is-better bearish-count model, not today's Market Health display.</div>
+
    <section class="guide-hero" aria-labelledby="guide-title">
     <div class="guide-hero-copy"><div class="eyebrow">THE MODEL, EXPLAINED</div>
     <h2 id="guide-title">What every market signal means.</h2>
@@ -153,7 +166,8 @@
    </section>
 
    <section class="guide-bottom"><div><span class="eyebrow">TRANSPARENT BY DESIGN</span><h2>A score is a checklist, not a forecast.</h2><p>This is an experimental model with heuristic thresholds. Signal overlap exists (for example, trend, RSI, breadth and sector leadership). Check the market data, timeframe, and indicator availability before using the score in a trading decision.</p></div><a href="index.html" class="guide-return">← Return to dashboard</a></section>
-  </main>
+  </details>
+</main>
   <footer><span>Macro Decision Dashboard · Scoring methodology</span><span>15-point model · Original trend + RSI · EOD research</span></footer>
  </div>
 </body>

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Why the Macro Decision Dashboard uses SPY Risk-On 0–4 and QQQ Risk-On 0–5, with historical research, limitations, and model rules.">
+<meta name="description" content="Market Health scoring thresholds: both SPY and QQQ use 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On, with historical research, limitations, and model rules.">
 <title>Scoring Logic | Macro Decision Dashboard</title>
-<link rel="stylesheet" href="styles.css?v=visual-refresh-20261122">
+<link rel="stylesheet" href="styles.css?v=market-health-20261125a">
 </head>
 <body>
 <div class="shell">
@@ -19,14 +19,26 @@
  <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">15 signals</span></a>
  <a class="site-tab active" href="threshold-logic.html" aria-current="page"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
 </nav>
+
 <main class="threshold-main">
+<section class="threshold-intro" aria-label="Current Market Health methodology" style="margin:24px 0 18px">
+ <div class="eyebrow">CURRENT MODEL · BOTH SPY AND QQQ</div>
+ <h2>Market Health Score · Higher is healthier</h2>
+ <p>Both benchmarks use the <strong>same 15-point scale</strong>: 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On. Each scored indicator contributes <strong>1 health point when it is not bearish</strong> and <strong>0 when bearish</strong>. Neutral signals count as non-bearish, so this is a health score—not a count of strictly bullish votes.</p>
+ <div class="threshold-bands"><span class="off">0–5 · RISK-OFF</span><span>6–10 · NEUTRAL</span><span class="on">11–15 · RISK-ON</span></div>
+ <p><strong>Score calculation:</strong> Market Health = 15 − archived bearish count. A higher daily change is improving; a lower daily change is deteriorating. With missing data, the website shows a range and will not assume absent inputs are healthy.</p>
+ <p>Six shared macro signals plus nine index-specific signals remain unchanged. Daily MACD and five individual SMA rows are informational only. The November 20 baseline and historical records retain their underlying bearish counts; the website displays them on this inverted scale.</p>
+ <p><strong>Research caveat:</strong> The new unified 0–5 / 6–10 / 11–15 classification has not been revalidated using forward returns. The earlier research sections below are archived analysis of the old bearish-score thresholds and should not be treated as evidence for the new bands.</p>
+</section>
+<details class="threshold-evidence" style="margin:16px 0" aria-label="Archived previous bearish-score research"><summary><strong>Previous bearish-count methodology and historical research (archived)</strong> · expand to review</summary>
+<div class="info-line">ARCHIVED REFERENCE ONLY — these score ranges and conclusions refer to the former lower-is-better bearish-count model, not today's Market Health display.</div>
+
  <section class="threshold-intro">
  <div class="eyebrow">WHY THE THRESHOLDS DIFFER</div>
  <h2>Same 15 indicators. Two Risk-On cutoffs.</h2>
  <p>This page records <strong>what the model does, why the threshold was chosen, and what the historical evidence actually showed</strong>. It is intended as a durable reference for future reviews and anyone with whom the dashboard is shared.</p>
  <p>Each scored bearish condition contributes one point. A lower score means fewer selected risk conditions. Risk-On is a <em>market-regime label</em>, not a prediction, a guarantee, or a direct buy instruction.</p>
  <div class="threshold-meta">Decision recorded November 22, 2026 · Evidence available through November 20, 2026 · Experimental 15-point model</div>
- <a class="mini-reference" href="#model-history">Read the model change history <span aria-hidden="true">↓</span></a>
  </section>
  <section class="threshold-policy-grid" aria-label="Current risk thresholds">
    <article class="threshold-policy-card">
@@ -52,7 +64,7 @@
  <section class="threshold-section">
   <div class="eyebrow">FROZEN DECISION SNAPSHOT</div><h2>What the historical study showed</h2>
   <p>These are the specific observations available when the policy was chosen. They are intentionally preserved so the reasoning does not silently change when the rolling historical study updates.</p>
-  <details class="threshold-evidence"><summary>SPY · Why Risk-On stops at 4</summary>
+  <details class="threshold-evidence" open><summary>SPY · Why Risk-On stops at 4</summary>
    <div class="threshold-table-scroll"><table class="threshold-compare"><thead><tr><th>Historical window</th><th>Score group</th><th>Days</th><th>Mean next 5D</th><th>Positive next 5D</th></tr></thead><tbody>
    <tr><td>Past 365 calendar days</td><td>0–4</td><td>87</td><td>+0.3%</td><td>62.1%</td></tr>
    <tr><td>Past 365 calendar days</td><td>Exactly 5</td><td>45</td><td>−0.2%</td><td>37.8%</td></tr>
@@ -61,7 +73,7 @@
    </tbody></table></div>
    <p>SPY score 5 had weaker returns and hit rates in both windows, especially over the most recent 365 days. This is the basis for keeping 5–8 in CAUTION.</p>
   </details>
-  <details class="threshold-evidence"><summary>QQQ · Why score 5 is allowed, but only borderline</summary>
+  <details class="threshold-evidence" open><summary>QQQ · Why score 5 is allowed, but only borderline</summary>
    <div class="threshold-table-scroll"><table class="threshold-compare"><thead><tr><th>Historical window</th><th>Score group</th><th>Days</th><th>Mean next 5D</th><th>Positive next 5D</th></tr></thead><tbody>
     <tr><td>Past 365 calendar days</td><td>0–4</td><td>69</td><td>+0.4%</td><td>56.5%</td></tr>
     <tr><td>Past 365 calendar days</td><td>Exactly 5</td><td>46</td><td>+0.1%</td><td>50.0%</td></tr>
@@ -93,59 +105,22 @@
     <p><b>Earlier vs later 10 months:</b> the QQQ score-5 improving group had 8 sessions in each half; its medians were +0.8% and +2.0%, while the stable group shifted from +0.4% to −0.4%. The splits share the same historical dataset and are not independent validation.</p>
   </details>
  </section>
- <section class="threshold-section model-history" id="model-history" aria-labelledby="model-history-heading">
-  <div class="eyebrow">MODEL GOVERNANCE</div>
-  <div class="model-history-head"><div><h2 id="model-history-heading">Model change history</h2><p>A short record of the decisions that affect the score and how this site presents its evidence.</p></div><span class="capsule">RECORDED NOV 22, 2026</span></div>
-  <div class="model-timeline">
-   <article class="model-timeline-item"><time datetime="2026-11-22">Nov 22, 2026</time><div><h3>Index-specific Risk-On thresholds adopted</h3><p>SPY: <b>0–4 Risk-On</b>. QQQ: <b>0–5 Risk-On</b>, with score 5 explicitly described as borderline cautious. The bearish-point rules are otherwise the same for both markets.</p></div></article>
-   <article class="model-timeline-item"><time datetime="2026-11-22">Nov 22, 2026</time><div><h3>Experimental 15-point model documented</h3><p>The original 50D/200D SPY and QQQ Trend rule remains scored; RSI(14) contributes one additional bearish point. Individual 5-, 20-, 50-, 100- and 200-day SMA comparisons stay informational.</p></div></article>
-   <article class="model-timeline-item"><time datetime="2026-11-22">Nov 22, 2026</time><div><h3>Backtests separated from the daily decision page</h3><p>Rolling 365-day and 20-month research, including QQQ score-5 risk validation, moved here. Historical results are reconstructed; the original decision snapshot above remains fixed for auditability.</p></div></article>
-   <article class="model-timeline-item"><time datetime="2026-11-22">Earlier model</time><div><h3>14-point comparison retained</h3><p>Put/call data was removed from the website scoring model. The original 14-point score remains visible for reference; it must not be compared directly with the revised 15-point historical series.</p></div></article>
-  </div>
-  <p class="model-history-note">Future material scoring changes should be added here with an effective date, a concise formula change, and the reason for the decision. Visual-only changes do not affect historical scores.</p>
- </section>
- <section class="threshold-section research-section" id="rolling-research">
-   <div class="eyebrow">ROLLING RESEARCH · UPDATED FROM EOD DATA</div>
-   <h2>Threshold backtests and QQQ score-5 validation</h2>
-   <p>Expand either research panel below to inspect the rolling evidence. The full historical research lives here—not on the daily Dashboard. Use these figures to revisit your SPY 0–4 and QQQ 0–5 policy, while keeping the dated decision snapshot above for comparison.</p>
-   <p class="threshold-status" id="research-snapshot-status" role="status">Loading latest published EOD research…</p>
-   <details class="threshold-evidence research-disclosure">
-     <summary>Risk-On threshold study · 365 days and 20 months</summary>
-<section class="chartpanel backtest-panel" aria-label="Historical score threshold research">
-        <div class="panel-head"><div><div class="eyebrow">EXPERIMENTAL HISTORICAL RESEARCH</div>
-          <h2>Risk-On threshold study · 0–4 vs 0–5 + trend filter</h2>
-          <p>Compare score 0–4 with exactly 5, then split score-5 sessions by the previous five-session bearish-score trend. The current live rule is <strong>SPY 0–4 Risk-On</strong> and <strong>QQQ 0–5 Risk-On</strong>. QQQ score 5 is a borderline cautious Risk-On classification; all historical cohorts remain available for comparison.</p>
-          <p class="chart-range" id="backtest-date-range">Awaiting reconstructed history</p>
-        </div></div>
-        <div class="backtest-grid">
-          <div><h3>Past 365 calendar days</h3><div id="year-sp-backtest" class="backtest-card">Awaiting data</div><div id="year-nd-backtest" class="backtest-card">Awaiting data</div></div>
-          <div><h3>Past 20 calendar months</h3><div id="twenty_months-sp-backtest" class="backtest-card">Awaiting data</div><div id="twenty_months-nd-backtest" class="backtest-card">Awaiting data</div></div>
-        </div>
-        <p class="provider-note">Reconstructed from EOD market history; not a stored record of past live dashboard outputs. Sessions with any missing scored indicator are <strong>excluded</strong> from threshold counts, not treated as bullish. Five-session forward price returns use subsequent ETF closing prices, overlap, exclude pending sessions, and do not account for dividends, costs or slippage. Historical constituent breadth uses <strong>current members</strong> and may introduce survivorship bias. The score-5 trend split requires complete 15/15 scores today and five trading sessions earlier; the five-session forward-return windows overlap. Worst subsequent close is based on daily closes, not intraday lows. Research only—not a validated strategy or an independently sourced backtest.</p>
-      </section>
-   </details>
-   <details class="threshold-evidence research-disclosure">
-     <summary>QQQ score 5 · return dispersion, drawdowns and stability</summary>
-<section class="chartpanel risk-validation-panel" aria-label="QQQ score five risk and stability research">
-        <div class="panel-head"><div><div class="eyebrow">QQQ · ADDITIONAL RISK VALIDATION</div>
-          <h2>QQQ score 5 · ongoing risk validation</h2>
-          <p>Compare median subsequent returns, return dispersion, worst drawdowns at daily closes, and the earlier/later halves of the 20-month sample. The QQQ 0–5 policy is a discretionary choice; these results show its limitations. This is historical research, not a trading signal.</p>
-        </div></div>
-        <h3>Past 365 calendar days</h3><div id="qqq-risk-year" class="risk-validation-content">Awaiting completed EOD research data</div>
-        <h3>Past 20 calendar months</h3><div id="qqq-risk-20m" class="risk-validation-content">Awaiting completed EOD research data</div>
-        <h3>Stability over time · first 10 months vs last 10 months</h3><div id="qqq-risk-halves" class="risk-validation-content">Awaiting completed EOD research data</div>
-        <p class="provider-note">Only sessions with complete 15/15 scores count. Future returns are based on the next five closing prices (no intraday lows), exclude pending windows, and overlap unless specifically labeled non-overlapping. Standard deviation is the sample standard deviation of subsequent five-session returns, not annualized volatility. The worst subsequent daily close is measured against the signal close, not as a portfolio drawdown. Historical constituent breadth uses current members and may introduce survivorship bias. Historical price returns omit dividends, transaction costs and slippage. Dividing the same 20 months into two halves is a stability check, not an out-of-sample backtest. Live thresholds: SPY 0–4 Risk-On; QQQ 0–5 Risk-On (score 5 borderline cautious).</p>
-      </section>
-   </details>
+ <section class="threshold-section">
+   <div class="eyebrow">ROLLING RESEARCH</div><h2>Latest dashboard backtest</h2>
+   <p>The frozen tables above capture the original decision. This section reads the <b>current</b> reconstructed historical results from the same daily JSON file as the dashboard, so you can revisit the logic as new sessions accumulate.</p>
+   <p class="threshold-status" id="threshold-asof" role="status">Checking the latest published research snapshot…</p>
+   <div id="threshold-live-data" class="threshold-dynamic"></div>
+   <a class="threshold-footer-link" href="index.html">See the full live backtest and QQQ risk-validation panels on the Dashboard</a>
  </section>
  <section class="threshold-section">
    <h2>How to interpret the decision responsibly</h2>
    <div class="threshold-disclaimer"><p><b>Important:</b> This is a discretionary classification based on preliminary, reconstructed daily-bar research—not proof that QQQ score 5 provides an advantage. Five-session return windows overlap; the sample is short; historical breadth is estimated using today's constituents (survivorship bias); prices omit dividends, slippage, and costs. Selecting a cutoff after looking at the data also introduces selection bias. Risk-On does not mean risk-free, and the separate <b>Swing Environment</b> label may disagree because it applies additional conditions. Reassess with more periods and genuine out-of-sample data.</p></div>
  </section>
  <div class="guide-bottom"><div><div class="eyebrow">MODEL DOCUMENTATION</div><h2>Need the individual indicator rules?</h2><p>Visit the Scoring Guide for the exact +1 bearish conditions of the six macro and nine market-specific indicators, or return to the Dashboard to review today's observations.</p></div><a class="guide-return" href="scoring-guide.html">Open Scoring Guide</a></div>
+</details>
 </main>
 <footer><span>Macro Decision Dashboard · Personal research build</span><span>Decision record · Nov 22, 2026</span></footer>
 </div>
-<script src="threshold-logic.js?v=visual-refresh-20261122" defer></script>
+<script src="threshold-logic.js?v=threshold-logic-20261122" defer></script>
 </body>
 </html>

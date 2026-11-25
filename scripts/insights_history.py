@@ -38,7 +38,7 @@ def _number(value: Any) -> bool:
 
 
 def _risk(score: int, symbol: str) -> str:
-    return "RISK-ON" if score <= (4 if symbol == "spy" else 5) else "CAUTION" if score <= 8 else "RISK-OFF"
+    return "RISK-OFF" if 15 - score <= 5 else "NEUTRAL" if 15 - score <= 10 else "RISK-ON"
 
 
 def _score_now(result: dict, sym: str) -> dict:
@@ -148,9 +148,9 @@ def make_daily_entry(result: dict) -> dict | None:
         elif pct <= -ALERT_PCT and currentregime == "RISK-ON":
             alert = "divergence"
             alert_title = "Sharp selloff · Risk-On persists"
-        elif abs(pct) >= ALERT_PCT and currentregime == "CAUTION":
+        elif abs(pct) >= ALERT_PCT and currentregime == "NEUTRAL":
             alert = "watch"
-            alert_title = "Large price move · Caution regime"
+            alert_title = "Large price move · Neutral regime"
         elif abs(pct) >= ALERT_PCT:
             alert = "aligned"
             alert_title = "Large price move aligns with regime"

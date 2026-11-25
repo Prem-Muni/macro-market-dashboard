@@ -461,3 +461,8 @@ html{scroll-behavior:smooth}
 .macd-negative{color:#fa8e98!important}
 .macd-neutral{color:#97abc0!important}
 @media(max-width:380px){.macd-readings{gap:5px}.macd-readings>div{padding:9px 6px}.macd-caption{flex-wrap:wrap}}
+
+/* Market Health direction: higher is healthier for all three risk bands. */
+.market-card[data-regime="NEUTRAL"] .risk-meter div{background:linear-gradient(90deg,#9b893a,#e9c568)}
+.market-card[data-regime="RISK-OFF"] .risk-meter div{background:linear-gradient(90deg,#9b394b,#fa6a77)}
+.market-card[data-regime="RISK-ON"] .risk-meter div{background:linear-gradient(90deg,#16835e,#34e2a4)}

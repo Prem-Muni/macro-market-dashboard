@@ -1,10 +1,17 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const stateClass=s=>({bull:'bull',bear:'bear',wash:'warn',warn:'warn',na:'na',info:'info','BULLISH':'bull','BEARISH':'bear','RISK-ON':'bull','RISK-OFF':'bear','CAUTION':'warn','INCOMPLETE':'neutral'}[s]||'neutral');
+const stateClass=s=>({bull:'bull',bear:'bear',wash:'warn',warn:'warn',na:'na',info:'info','BULLISH':'bull','BEARISH':'bear','RISK-ON':'bull','RISK-OFF':'bear','CAUTION':'warn','NEUTRAL':'warn','INCOMPLETE':'neutral'}[s]||'neutral');
 const tone=s=>(s==='IMPROVING'||s==='BULLISH'?'goodtext':s==='DETERIORATING'||s==='BEARISH'?'badtext':'warntext');
 const num=(x,dp=1)=>x==null?'—':Number(x).toFixed(dp);
-const scoreFormat=s=>s.complete?`${s.bearish}/${s.total}`:`${s.bearish}–${s.possible_max}/${s.total}`;
+const healthRange=s=>s?{min:s.available-s.bearish,max:s.total-s.bearish,total:s.total}:null;
+const regimeHealth=s=>{
+ const r=healthRange(s);if(!r)return 'INCOMPLETE';
+ const regime=v=>v<=5?'RISK-OFF':v<=10?'NEUTRAL':'RISK-ON';
+ const a=regime(r.min),b=regime(r.max);return a===b?a:'INCOMPLETE';
+};
+const scoreFormat=s=>{const r=healthRange(s);return !r?'—/15':r.min===r.max?`${r.min}/${r.total}`:`${r.min}–${r.max}/${r.total}`};
+const invertedRange=r=>Array.isArray(r)&&r.length===2&&r.every(v=>v!=null)?[-r[1],-r[0]]:null;
 const plus=n=>n==null?'—':`${n>0?'+':''}${n}`;
 const rangeText=r=>!Array.isArray(r)||r[0]==null?'—':r[0]===r[1]?plus(r[0]):`${plus(r[0])}…${plus(r[1])}`;
 let snapshot=null,horizon=30;
@@ -13,20 +20,21 @@ function summary(prefix,model){
  $(prefix+'-score').textContent=scoreFormat(s);
  $(prefix+'-coverage').textContent=`${s.available}/${s.total} signals available${s.complete?'':' · score range'}`;
  const base=$(prefix+'-baseline');
- if(base)base.textContent=model.legacy_14?`Original 14-point model: ${scoreFormat(model.legacy_14)} (reference only)`:'Original 14-point model: —';
- const status=$(prefix+'-regime');status.textContent=s.regime;status.className='regime '+stateClass(s.regime);
- const card=$(prefix+'-card');if(card)card.dataset.regime=s.regime||'INCOMPLETE';
- const score=$(prefix+'-score');if(score)score.setAttribute('aria-label',`${prefix==='sp'?'S&P 500':'Nasdaq-100'}: ${scoreFormat(s)} bearish conditions, ${s.regime}`);
- $(prefix+'-meter').style.width=((s.bearish/s.total)*100).toFixed(1)+'%';
+ if(base)base.textContent=model.legacy_14?`14-point health reference: ${scoreFormat(model.legacy_14)}`:'14-point health reference: —';
+ const r=healthRange(s),regime=regimeHealth(s);
+ const status=$(prefix+'-regime');status.textContent=regime;status.className='regime '+stateClass(regime);
+ const card=$(prefix+'-card');if(card)card.dataset.regime=regime;
+ const score=$(prefix+'-score');if(score)score.setAttribute('aria-label',`${prefix==='sp'?'S&P 500':'Nasdaq-100'} Market Health: ${scoreFormat(s)} (includes neutral, non-bearish signals), ${regime}`);
+ $(prefix+'-meter').style.width=((r.min/r.total)*100).toFixed(1)+'%';
  const tr=$(prefix+'-trend');tr.textContent=m.state;tr.className=tone(m.state);
- $(prefix+'-delta').textContent=`1D ${rangeText(m.d1_range)} · 5D ${rangeText(m.d5_range)}${m.partial?' · bounded':''}`;
- const explanation=m.state==='STABLE'?'STABLE = change of −1, 0 or +1 bearish points over 5 sessions; prices may still move.':m.state==='IMPROVING'?'IMPROVING = bearish score fell by at least 2 points in 5 sessions.':m.state==='DETERIORATING'?'DETERIORATING = bearish score rose by at least 2 points in 5 sessions.':'5D trend is uncertain until historical scored inputs are available.';
+ $(prefix+'-delta').textContent=`1D ${rangeText(invertedRange(m.d1_range))} · 5D ${rangeText(invertedRange(m.d5_range))}${m.partial?' · bounded':''}`;
+ const explanation=m.state==='STABLE'?'STABLE = health changed by −1, 0 or +1 over 5 sessions; prices may still move.':m.state==='IMPROVING'?'IMPROVING = health rose by at least 2 points over 5 sessions.':m.state==='DETERIORATING'?'DETERIORATING = health fell by at least 2 points over 5 sessions.':'5D trend is uncertain until historical scored inputs are available.';
  const guide=$(prefix+'-trend-guide');if(guide)guide.textContent=explanation;
  $(prefix+'-confirm').textContent=c.available===c.total?`${c.confirmed}/${c.total} IMPROVING`:`${c.confirmed}/${c.available} improving · ${c.available}/${c.total} checked`;
  const sw=$(prefix+'-swing');sw.textContent=model.swing;sw.className=tone(model.swing);
  if(prefix==='nd'){
   const borderline=$('nd-borderline');
-  if(borderline) borderline.hidden=!(s.complete && s.bearish===5 && s.regime==='RISK-ON');
+  if(borderline) borderline.hidden=true;
  }
 }
 function signals(container,keys){
@@ -44,8 +52,8 @@ function signals(container,keys){
   const change=snapshot.signal_changes?.by_key?.[key];
   if(change==='new_bearish')row.classList.add('signal-new-bearish');
   else if(change==='eased')row.classList.add('signal-eased');
-  const changeBadge=change==='new_bearish'?'<span class="signal-change-tag changed-negative">NEW BEARISH</span>':
-    change==='eased'?'<span class="signal-change-tag changed-positive">EASED</span>':
+  const changeBadge=change==='new_bearish'?'<span class="signal-change-tag changed-negative">HEALTH −1</span>':
+    change==='eased'?'<span class="signal-change-tag changed-positive">HEALTH +1</span>':
     change==='other'?'<span class="signal-change-tag changed-neutral">STATE CHANGED</span>':'';
   row.innerHTML=`<div><div class="signal-title">${esc(snapshot.names?.[key]||key)} ${changeBadge}</div><div class="signal-note">${esc(detail)}</div></div><div class="signal-right"><span class="regime ${stateClass(sig.state)}">${esc(sig.label||'N/A')}</span>${val?`<span class="signal-val">${esc(val)}${suffix}</span>`:''}</div>`;
   root.appendChild(row);
@@ -79,19 +87,17 @@ function plot(history){
  if(range)range.textContent=data.length?
   `${data.length} trading sessions · ${sessionDate(data[0].date)} – ${sessionDate(data.at(-1).date)}, ${String(data.at(-1).date||'').slice(0,4)}`:
   'No trading-session history yet';
- svg.setAttribute('aria-label',`S&P 500 and Nasdaq-100 bearish scores, last ${data.length} trading sessions, out of ${maxPts}`);
+ svg.setAttribute('aria-label',`SPY and QQQ Market Health Scores, last ${data.length} completed sessions, out of ${maxPts}`);
  const yticks=[...new Set([0,5,10,maxPts].filter(v=>v<=maxPts))].sort((a,b)=>a-b);
  for(const v of yticks){
-  if(v!==5)el('line',{x1:left,x2:W-right,y1:y(v),y2:y(v),stroke:'#2b394b','stroke-width':1});
+  el('line',{x1:left,x2:W-right,y1:y(v),y2:y(v),stroke:'#2b394b','stroke-width':1});
   const t=el('text',{x:13,y:y(v)+4,fill:'#8092ac','font-size':11}); t.textContent=String(v);
  }
-  // A 5-point marker means SPY has reached CAUTION, while QQQ is
-  // still Risk-On (borderline). Risk-Off for either benchmark begins at 9.
-  el('line',{x1:left,x2:W-right,y1:y(5),y2:y(5),stroke:'#eac66e',
-             'stroke-width':1.8,'stroke-dasharray':'7 5',opacity:0.96});
-  const thresholdLabel=el('text',{x:W-right-4,y:y(5)-7,'text-anchor':'end',
-                fill:'#f1d68d','font-size':11,'font-weight':700});
-  thresholdLabel.textContent='5/15 · SPY ceiling / QQQ borderline';
+ // Market Health thresholds are between integer scores: 0–5 Off, 6–10 Neutral, 11–15 On.
+ for(const [cut,label] of [[5.5,'RISK-OFF / NEUTRAL'],[10.5,'NEUTRAL / RISK-ON']]){
+  el('line',{x1:left,x2:W-right,y1:y(cut),y2:y(cut),stroke:'#eac66e','stroke-width':1.6,'stroke-dasharray':'7 5',opacity:.88});
+  const marker=el('text',{x:W-right-4,y:y(cut)-5,'text-anchor':'end',fill:'#f1d68d','font-size':10,'font-weight':650});marker.textContent=label;
+ }
  if(data.length<2){
   const t=el('text',{x:W/2,y:105,'text-anchor':'middle',fill:'#8092ac','font-size':15});
   t.textContent='History will appear after additional data updates';return;
@@ -117,18 +123,23 @@ function plot(history){
   data.forEach((row,i)=>{
    const v=Number(row[k]);
    if(row[k]==null||!Number.isFinite(v)){drawing=false;return;}
-   path+=(drawing?' L':' M')+x(i).toFixed(1)+','+y(v).toFixed(1); drawing=true;
+   const avail=Number(row[k+'_available']);
+   const shown=(Number.isFinite(avail)?avail:maxPts)-v;
+   path+=(drawing?' L':' M')+x(i).toFixed(1)+','+y(shown).toFixed(1); drawing=true;
   });
   if(path)el('path',{d:path.trim(),stroke:color,fill:'none','stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'});
   data.forEach((row,i)=>{
    const v=Number(row[k]);
    if(row[k]==null||!Number.isFinite(v))return;
    const partial=Number(row[k+'_available'])<maxPts;
-   const dot=el('circle',{cx:x(i),cy:y(v),r:partial?3:2.2,fill:color,opacity:partial?0.45:0.95});
+   const avail=Number(row[k+'_available']);
+   const shown=(Number.isFinite(avail)?avail:maxPts)-v;
+   const dot=el('circle',{cx:x(i),cy:y(shown),r:partial?3:2.2,fill:color,opacity:partial?0.45:0.95});
    const tip=el('title',{},dot);
-   const limit=k==='sp'?4:5;
-   const regime=partial?'INCOMPLETE':v<=limit?'RISK-ON':v<=8?'CAUTION':'RISK-OFF';
-   tip.textContent=`${market} · ${row.date} · ${v}/${maxPts} bearish points · ${regime}${k==='nd' && v===5 && !partial?' (borderline cautious)':''}${partial?' (partial coverage)':''}`;
+   const lower=shown,upper=maxPts-v;
+   const classify=h=>h<=5?'RISK-OFF':h<=10?'NEUTRAL':'RISK-ON';
+   const regime=classify(lower)===classify(upper)?classify(lower):'INCOMPLETE';
+   tip.textContent=`${market} · ${row.date} · ${lower===upper?lower:lower+'–'+upper}/${maxPts} Market Health · ${regime}${partial?' (partial coverage)':''}`;
   });
  }
 }
@@ -211,17 +222,17 @@ function groupScore(data,keys){
  }
  return {bearish,available,total:keys.length,max:bearish+keys.length-available};
 }
-function groupScoreLabel(s){return s.available===s.total?`${s.bearish}/${s.total}`:`${s.bearish}–${s.max}/${s.total}`;}
+function groupScoreLabel(s){const min=s.available-s.bearish,max=s.total-s.bearish;return min===max?`${min}/${s.total}`:`${min}–${max}/${s.total}`;}
 function renderScoreBreakdown(data){
  const shared=groupScore(data,SCORE_KEYS.shared);
- $('shared-subscore').textContent=groupScoreLabel(shared)+' bearish';
+ $('shared-subscore').textContent=groupScoreLabel(shared)+' healthy';
  $('shared-breakdown-equation').textContent=`${shared.available}/6 shared macro signals available · Included in both market totals.`;
  for(const [prefix,market] of [['sp','sp500'],['nd','nasdaq100']]){
   const local=groupScore(data,SCORE_KEYS[prefix]);
   const score=data.markets?.[market]?.score;
   const total=score?scoreFormat(score):'—/15';
-  $(prefix+'-index-subscore').textContent=groupScoreLabel(local)+' bearish';
-  $(prefix+'-breakdown-equation').textContent=`${groupScoreLabel(local)} index-specific + ${groupScoreLabel(shared)} shared macro = ${total} total bearish points`;
+  $(prefix+'-index-subscore').textContent=groupScoreLabel(local)+' healthy';
+  $(prefix+'-breakdown-equation').textContent=`${groupScoreLabel(local)} index-specific + ${groupScoreLabel(shared)} shared macro = ${total} Market Health points (including neutral)`;
   // This is only a display check: the backend remains the authority on scoring.
   // Where complete, flag an unexpected discrepancy rather than hiding it.
   if(score?.complete&&local.available===9&&shared.available===6&&local.bearish+shared.bearish!==score.bearish)
@@ -231,11 +242,11 @@ function renderScoreBreakdown(data){
 function renderDecisionBrief(data){
  const sp=data.markets?.sp500,nd=data.markets?.nasdaq100;
  if(!sp||!nd)return;
- const regimes=[sp.score?.regime||'INCOMPLETE',nd.score?.regime||'INCOMPLETE'];
+ const regimes=[regimeHealth(sp.score),regimeHealth(nd.score)];
  let headline;
  if(regimes.every(x=>x==='RISK-ON'))headline='Both benchmarks are in Risk-On';
  else if(regimes.every(x=>x==='RISK-OFF'))headline='Both benchmarks are in Risk-Off';
- else if(regimes.every(x=>x==='CAUTION'))headline='Both benchmarks are in Caution';
+ else if(regimes.every(x=>x==='NEUTRAL'))headline='Both benchmarks are Neutral';
  else if(regimes.includes('INCOMPLETE'))headline='Mixed coverage — review missing data';
  else headline=`Mixed regimes · SPY ${regimes[0]} · QQQ ${regimes[1]}`;
  const title=$('brief-title');title.textContent=headline;
@@ -355,7 +366,7 @@ function renderSignalChanges(data){
   const rows=[...bad,...good,...others];
   const card=document.createElement('article');card.className='change-card';
   const headline=document.createElement('div');headline.className='change-card-heading';
-  headline.innerHTML=`<strong>${esc(title)}</strong><span>${bad.length?`<b class="change-bear-count">${bad.length} new bearish</b>`:''}${good.length?`<b class="change-eased-count">${good.length} eased</b>`:''}</span>`;
+  headline.innerHTML=`<strong>${esc(title)}</strong><span>${bad.length?`<b class="change-bear-count">${bad.length} health −1</b>`:''}${good.length?`<b class="change-eased-count">${good.length} health +1</b>`:''}</span>`;
   card.appendChild(headline);
   if(rows.length){
    const list=document.createElement('ul');list.className='change-list';
@@ -438,8 +449,8 @@ function renderMarketIntelligence(data){
  $('intel-transition-title').textContent=header;
  $('intel-transition').dataset.tone=anyWorse?'bear':anyBetter?'bull':anyUncertain?'warn':'neutral';
  $('intel-transition-note').textContent=anyUncertain?
-  'At least one transition cannot be classified confidently; unavailable inputs are never treated as bullish.':
-  anyChanged?'A confirmed change in the published Risk-On / Caution / Risk-Off classification.':'Both benchmarks retained their prior risk regime.';
+  'At least one transition cannot be classified confidently; missing signals are never presumed healthy.':
+  anyChanged?'A confirmed change in the unified Risk-Off / Neutral / Risk-On classification.':'Both benchmarks retained their prior risk regime.';
  const diff=mi.divergence(a,b);
  $('intel-divergence-title').textContent=diff.headline;
  $('intel-divergence-note').textContent=diff.detail;
@@ -473,7 +484,7 @@ function render(data){
  renderDailyMACD(data);
  $('coverage-note').textContent=data.explanation?.partial||'';
  const all=data.markets.sp500.score.complete && data.markets.nasdaq100.score.complete;
- $('warning').textContent=all?'EXPERIMENTAL 15-point model: SPY Risk-On 0–4; QQQ Risk-On 0–5 (score 5 borderline cautious). RSI scored; five SMA rows + daily MACD informational. Thinkorswim remains 14-point.':'EXPERIMENTAL 15-point model: PARTIAL FEEDS. SPY Risk-On 0–4; QQQ Risk-On 0–5 (5 borderline cautious). Missing inputs are not bullish; Thinkorswim remains 14-point.';
+ $('warning').textContent=all?'15-point Market Health: 0–5 Risk-Off · 6–10 Neutral · 11–15 Risk-On. Higher is healthier; neutral inputs count as non-bearish. MACD and five SMAs are informational.':'PARTIAL DATA: health score shown as a possible range. 0–5 Risk-Off · 6–10 Neutral · 11–15 Risk-On. Missing signals are not assumed healthy.';
  $('diagnostics').textContent=JSON.stringify({sources:data.sources,warnings:data.warnings},null,2);
  plot(data.history);
 }

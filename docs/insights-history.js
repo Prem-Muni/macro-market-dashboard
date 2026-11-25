@@ -13,7 +13,7 @@
   const money=v=>isNum(v)?'$'+v.toFixed(2):'—';
   const signed=(v,suffix='')=>isNum(v)?`${v>0?'+':''}${v.toFixed(suffix==='%'?2:0)}${suffix}`:'—';
   const text=(value)=>value==null?'—':String(value);
-  const REGIMES=['RISK-ON','CAUTION','RISK-OFF','INCOMPLETE'];
+  const REGIMES=['RISK-ON','NEUTRAL','CAUTION','RISK-OFF','INCOMPLETE'];
   const KINDS=['divergence','watch','aligned','none','uncertain'];
   const ALL_MARKETS=['spy','qqq'];
 
@@ -26,16 +26,52 @@
     if(entries.some((entry,i)=>i>0&&entry.session<=entries[i-1].session))return [];
     return entries;
   }
+  // Persistent JSON uses raw bearish counts to retain historical comparability.
+  // Convert only at display/export boundaries; never mutate the saved archive.
+  const healthRegime=v=>v<=5?'RISK-OFF':v<=10?'NEUTRAL':'RISK-ON';
+  function healthView(d,baseline=false){
+    if(!d||!isNum(d.score)||!isNum(d.total)||!isNum(d.available))return d;
+    const available=d.available,total=d.total,raw=d.score;
+    const min=available-raw,max=total-raw;
+    const regime=healthRegime(min)===healthRegime(max)?healthRegime(min):'INCOMPLETE';
+    const previous=isNum(d.previous_score)?total-d.previous_score:null;
+    const previousRegime=previous==null?'INCOMPLETE':healthRegime(previous);
+    const change=isNum(d.score_delta_1d)?-d.score_delta_1d:null;
+    const priorRange=d.five_day_delta_range;
+    const fiveDayRange=Array.isArray(priorRange)&&priorRange.length===2&&priorRange.every(isNum)?[-priorRange[1],-priorRange[0]]:null;
+    const price=d.price_change_pct;
+    let status=d.price_risk_status,label=d.price_risk_label;
+    if(!baseline && isNum(price) && regime!=='INCOMPLETE' && d.price_risk_status!=='uncertain' && d.price_risk_status!=='unavailable'){
+      if(price>=2 && regime==='RISK-OFF'){status='divergence';label='Strong rally · Risk-Off persists';}
+      else if(price<=-2 && regime==='RISK-ON'){status='divergence';label='Sharp selloff · Risk-On persists';}
+      else if(Math.abs(price)>=2 && regime==='NEUTRAL'){status='watch';label='Large price move · Neutral regime';}
+      else {status='none';label='No price/risk divergence under current health thresholds';}
+    }
+    return {...d,score:min,score_max:max,previous_score:previous,score_delta_1d:change,
+      regime,previous_regime:previousRegime,risk_transition:previous==null?'uncertain':previousRegime===regime?'unchanged':'changed',
+      five_day_delta_range:fiveDayRange,price_risk_status:status,price_risk_label:label,
+      archived_bearish:raw};
+  }
   function filterRows(entries,options={}){
     const range=options.range||'30',market=options.market||'both',alertsOnly=!!options.alertsOnly;
     const sessions=range==='all'?entries:entries.slice(-(range==='90'?90:30));
     const selected=market==='both'?ALL_MARKETS:ALL_MARKETS.includes(market)?[market]:ALL_MARKETS;
     const rows=[];
     for(const day of sessions.slice().reverse()){
+      const spy=healthView(day.spy,day.baseline===true);
+      const qqq=healthView(day.qqq,day.baseline===true);
+      let marketDivergence='aligned';
+      if(spy.regime==='INCOMPLETE'||qqq.regime==='INCOMPLETE')marketDivergence='uncertain';
+      else if(isNum(spy.score_delta_1d)&&isNum(qqq.score_delta_1d)&&
+        (spy.score_delta_1d<0&&qqq.score_delta_1d>0 || spy.score_delta_1d>0&&qqq.score_delta_1d<0))
+        marketDivergence='opposite_score_moves';
+      else if(spy.regime!==qqq.regime)marketDivergence='regime_split';
+      else if(!isNum(spy.score_delta_1d)||!isNum(qqq.score_delta_1d))marketDivergence='uncertain';
       for(const sym of selected){
-        if(alertsOnly&&day[sym].price_risk_status!=='divergence')continue;
-        rows.push({session:day.session,previous_session:day.previous_session,symbol:sym,detail:day[sym],changes:day.signal_changes,
-          marketDivergence:day.spy_qqq_divergence,recordSource:day.record_source||"automatic_eod",sourceNote:day.source_note||"",baseline:day.baseline===true});
+        const view=sym==='spy'?spy:qqq;
+        if(alertsOnly&&view.price_risk_status!=='divergence')continue;
+        rows.push({session:day.session,previous_session:day.previous_session,symbol:sym,detail:view,changes:day.signal_changes,
+          marketDivergence,recordSource:day.record_source||"automatic_eod",sourceNote:day.source_note||"",baseline:day.baseline===true});
       }
     }
     return rows;
@@ -47,12 +83,12 @@
     return '"'+s.replace(/"/g,'""')+'"';
   }
   function toCSV(rows){
-    const head=['Session','Record origin','Source note','Previous session','ETF','Previous close','Close','Price change %','Bearish points','Points available','Total points','Previous bearish points','1D score delta','Risk regime','Previous risk regime','Risk transition','5D score trend','5D score delta low','5D score delta high','Confirmations improving','Confirmations checked','Confirmation categories','Swing environment','Price/risk alert','Price/risk detail','Estimated signal count','Estimated signal names','Shared new bearish','Shared eased','Index new bearish','Index eased','SPY vs QQQ status','RSI (14)','Volatility index','Volatility value','MACD 12-26','MACD signal 9','MACD histogram','MACD relation','MACD crossover'];
+    const head=['Session','Record origin','Source note','Previous session','ETF','Previous close','Close','Price change %','Market Health (min)','Points available','Total points','Previous Market Health','Health score max','Archived bearish points','1D score delta','Risk regime','Previous risk regime','Risk transition','5D score trend','5D score delta low','5D score delta high','Confirmations improving','Confirmations checked','Confirmation categories','Swing environment','Price/risk alert','Price/risk detail','Estimated signal count','Estimated signal names','Shared health losses','Shared health gains','Index health losses','Index health gains','SPY vs QQQ status (health policy)','RSI (14)','Volatility index','Volatility value','MACD 12-26','MACD signal 9','MACD histogram','MACD relation','MACD crossover'];
     const list=[head];
     for(const row of rows){
       const d=row.detail,c=row.changes?.groups||{},g=c[row.symbol==='spy'?'sp':'nd']||{},shared=c.shared||{};
       const labels=v=>Array.isArray(v)?v.map(x=>x.label||'').join('; '):'';
-      list.push([row.session,row.recordSource,row.sourceNote,row.previous_session,row.symbol.toUpperCase(),d.previous_close,d.close,d.price_change_pct,d.score,d.available,d.total,d.previous_score,d.score_delta_1d,d.regime,d.previous_regime,d.risk_transition,d.trend_5d,d.five_day_delta_range?.[0],d.five_day_delta_range?.[1],d.confirmation?.confirmed,d.confirmation?.available,d.confirmation?.total,d.swing,d.price_risk_status,d.price_risk_label,d.estimated_count,(d.estimated_signals||[]).join('; '),labels(shared.new_bearish),labels(shared.eased),labels(g.new_bearish),labels(g.eased),row.marketDivergence,d.baseline_context?.rsi14,d.baseline_context?.volatility_index?.name,d.baseline_context?.volatility_index?.value,d.macd_info?.macd,d.macd_info?.signal,d.macd_info?.histogram,d.macd_info?.relation,d.macd_info?.crossover]);
+      list.push([row.session,row.recordSource,row.sourceNote,row.previous_session,row.symbol.toUpperCase(),d.previous_close,d.close,d.price_change_pct,d.score,d.available,d.total,d.previous_score,d.score_max,d.archived_bearish,d.score_delta_1d,d.regime,d.previous_regime,d.risk_transition,d.trend_5d,d.five_day_delta_range?.[0],d.five_day_delta_range?.[1],d.confirmation?.confirmed,d.confirmation?.available,d.confirmation?.total,d.swing,d.price_risk_status,d.price_risk_label,d.estimated_count,(d.estimated_signals||[]).join('; '),labels(shared.new_bearish),labels(shared.eased),labels(g.new_bearish),labels(g.eased),row.marketDivergence,d.baseline_context?.rsi14,d.baseline_context?.volatility_index?.name,d.baseline_context?.volatility_index?.value,d.macd_info?.macd,d.macd_info?.signal,d.macd_info?.histogram,d.macd_info?.relation,d.macd_info?.crossover]);
     }
     return '\uFEFF'+list.map(items=>items.map(csvField).join(',')).join('\r\n')+'\r\n';
   }
@@ -70,7 +106,7 @@
   if(typeof document==='undefined')return {validArchive,filterRows,toCSV,chartRows,signed,dateLabel};
   const $=id=>document.getElementById(id);
   let entries=[],lastSession=null;
-  const options={range:'30',market:'both',alertsOnly:false};
+  const options={range:'30',market:'spy',alertsOnly:false};
   const make=(tag,cls,parent)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(parent)parent.appendChild(e);return e;};
   const small=(tag,value,cls,parent)=>{const e=make(tag,cls,parent);e.textContent=text(value);return e;};
   const pill=(v,cls,parent)=>small('span',v,'journal-pill '+cls,parent);
@@ -86,7 +122,7 @@
   }
   function detailRow(row){
     const tr=make('tr','journal-expanded-row');tr.hidden=true;
-    const td=make('td','',tr);td.colSpan=9;
+    const td=make('td','',tr);td.colSpan=8;
     const cards=make('div','journal-detail-grid',td);
     const d=row.detail;
     const card1=make('div','journal-detail',cards);
@@ -94,12 +130,12 @@
     if(row.baseline)small('p',row.sourceNote,'journal-baseline-note',card1);
     if(d.baseline_context){
       const x=d.baseline_context;
-      small('p',`Captured ${x.volatility_index?.name||'Volatility'}: ${text(x.volatility_index?.value)} · RSI(14): ${text(x.rsi14)} · Index-specific bearish: ${text(x.index_specific_bearish)}/9 · Shared macro bearish: ${text(x.shared_macro_bearish)}/6.`,'',card1);
+      small('p',`Captured ${x.volatility_index?.name||'Volatility'}: ${text(x.volatility_index?.value)} · RSI(14): ${text(x.rsi14)} · Index-specific healthy: ${isNum(x.index_specific_bearish)?9-x.index_specific_bearish:'—'}/9 · Shared macro healthy: ${isNum(x.shared_macro_bearish)?6-x.shared_macro_bearish:'—'}/6.`,'',card1);
       const b=x.breadth_1d;
       if(b)small('p',`Breadth 1D: ${text(b.state)} (${text(b.value)} ${text(b.units)}).`,'',card1);
     }
     small('p',`${row.symbol.toUpperCase()} ${money(d.previous_close)} → ${money(d.close)} (${signed(d.price_change_pct,'%')})`,'',card1);
-    small('p',`Bearish points: ${text(d.previous_score)} → ${text(d.score)} / ${text(d.total)}. 5D trend: ${text(d.trend_5d)}.`,'',card1);
+    small('p',`Market Health: ${text(d.previous_score)} → ${text(d.score)}${d.score_max!==d.score?'–'+d.score_max:''}/${text(d.total)}. 5D trend: ${text(d.trend_5d)}.`,'',card1);
     small('p',`Risk: ${text(d.previous_regime)} → ${text(d.regime)}. Swing: ${text(d.swing)}.`,'',card1);
     if(d.macd_info){const m=d.macd_info;small('p',`Daily MACD (12,26,9) · NOT SCORED: line ${text(m.macd)} · signal ${text(m.signal)} · histogram ${text(m.histogram)} · ${text(m.relation)}${m.crossover&&m.crossover!=='none'?' · '+text(m.crossover)+' crossover':''}.`,'',card1);}
     const conf=d.confirmation||{};
@@ -115,16 +151,16 @@
     const card3=make('div','journal-detail',cards);
     if(cs?.status==='complete'||cs?.status==='partial'){
       if(cs.status==='partial')small('p','Partial transcription: '+text(cs.note||'Some changes were not visible.'),'journal-muted',card3);
-      listChanges(card3,'Shared macro · new bearish',combined.new_bearish,'negative');
-      listChanges(card3,'Shared macro · eased',combined.eased,'positive');
+      listChanges(card3,'Shared macro · health lost',combined.new_bearish,'negative');
+      listChanges(card3,'Shared macro · health gained',combined.eased,'positive');
     }else{
       small('h4','Shared macro changes','',card3);
       small('p','Unavailable for these matched sessions','',card3);
     }
     const card4=make('div','journal-detail',cards);
     if(cs?.status==='complete'||cs?.status==='partial'){
-      listChanges(card4,`${row.symbol.toUpperCase()} · new bearish`,index.new_bearish,'negative');
-      listChanges(card4,`${row.symbol.toUpperCase()} · eased`,index.eased,'positive');
+      listChanges(card4,`${row.symbol.toUpperCase()} · health lost`,index.new_bearish,'negative');
+      listChanges(card4,`${row.symbol.toUpperCase()} · health gained`,index.eased,'positive');
       const others=[...(combined.other||[]),...(index.other||[])];
       if(others.length)listChanges(card4,'Other state changes',others,'');
     }else{
@@ -135,10 +171,10 @@
   }
   function renderTable(rows){
     const target=$('j-rows');target.replaceChildren();
-    $('j-matches').textContent=`${rows.length} ETF records shown`;
+    $('j-matches').textContent=`${rows.length} ${options.market.toUpperCase()} sessions shown`;
     $('j-export').disabled=!rows.length;
     if(!rows.length){
-      const tr=make('tr','',target);const td=make('td','journal-empty',tr);td.colSpan=9;
+      const tr=make('tr','',target);const td=make('td','journal-empty',tr);td.colSpan=8;
       td.textContent=entries.length?'No saved observations match these filters. Try “All” or turn off alert-only filtering.':'The archive begins after the first successful completed-EOD refresh with this upgrade.';
       return;
     }
@@ -147,11 +183,10 @@
       const date=make('td','journal-date',tr);small('strong',dateLabel(row.session),'',date);
       if(row.baseline)small('span','BASELINE · screenshot','journal-baseline-flag',date);
       small('span',`Prior scored: ${dateLabel(row.previous_session)}`,'journal-muted',date);
-      small('td',row.symbol.toUpperCase(),'journal-market',tr);
       const price=make('td','',tr);small('strong',money(d.close),'',price);small('span',`Prior ${money(d.previous_close)}`,'journal-muted',price);
       const change=make('td','',tr);small('span',signed(d.price_change_pct,'%'),'journal-percent '+(d.price_change_pct>0?'journal-up':d.price_change_pct<0?'journal-down':'journal-neutral'),change);
-      const score=make('td','',tr);small('strong',`${text(d.score)}/${text(d.total)}`,'',score);small('span',`${text(d.available)}/${text(d.total)} available · ${text(d.estimated_count)} est.`,'journal-muted',score);
-      const delta=make('td','',tr);small('strong',signed(d.score_delta_1d),'journal-percent '+(d.score_delta_1d<0?'journal-up':d.score_delta_1d>0?'journal-down':'journal-neutral'),delta);
+      const score=make('td','',tr);small('strong',`${text(d.score)}${d.score_max!==d.score?'–'+d.score_max:''}/${text(d.total)}`,'',score);small('span',`${text(d.available)}/${text(d.total)} available · ${text(d.estimated_count)} est.`,'journal-muted',score);
+      const delta=make('td','',tr);small('strong',signed(d.score_delta_1d),'journal-percent '+(d.score_delta_1d>0?'journal-up':d.score_delta_1d<0?'journal-down':'journal-neutral'),delta);
       if(d.score_delta_1d==null)small('span','Not confirmed','journal-muted',delta);
       const regime=make('td','',tr);pill(d.regime,d.regime.toLowerCase(),regime);
       const alert=make('td','journal-alert',tr);pill(row.baseline?'BASELINE':d.price_risk_status==='none'?'No alert':d.price_risk_status==='divergence'?'DIVERGENCE':d.price_risk_status.toUpperCase(),row.baseline?'baseline':d.price_risk_status,alert);
@@ -172,8 +207,8 @@
     };
     const x=i=>L+(entriesForChart.length<2?0:i/(entriesForChart.length-1))*(W-L-R);
     const y=v=>T+(15-v)/15*(H-T-B);
-    for(const n of [0,5,9,15]){
-      el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:n===5?'#887348':n===9?'#5f4052':'#30435a','stroke-width':1,'stroke-dasharray':n===5||n===9?'6 5':'1 0'});
+    for(const n of [0,5.5,10.5,15]){
+      el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:n===5.5?'#8f4856':n===10.5?'#887348':'#30435a','stroke-width':1,'stroke-dasharray':n===5.5||n===10.5?'6 5':'1 0'});
       const t=el('text',{x:8,y:y(n)+4,fill:'#93abc5','font-size':12});t.textContent=String(n);
     }
     if(!entriesForChart.length){
@@ -184,7 +219,7 @@
       const t=el('text',{x:x(i),y:H-14,'text-anchor':i===0?'start':i===entriesForChart.length-1?'end':'middle',fill:'#92a9c1','font-size':12});
       t.textContent=dateLabel(entriesForChart[i].date).replace(/, \d{4}$/,'');
     }
-    for(const [market,color]of [['spy','#34e2a4'],['qqq','#85bfff']]){
+    for(const [market,color]of [[options.market,options.market==='spy'?'#34e2a4':'#85bfff']]){
       let path='',started=false;
       entriesForChart.forEach((rec,i)=>{
         const d=rec[market],v=d?.score;
@@ -196,17 +231,27 @@
         const d=rec[market];if(!isNum(d?.score))return;
         const c=el('circle',{cx:x(i),cy:y(d.score),r:entriesForChart.length===1?5:3.5,
           fill:d.available===15?color:'#101b2b',stroke:color,'stroke-width':1.5});
-        const t=el('title',{},c);t.textContent=`${rec.date} · ${market.toUpperCase()} ${d.score}/15 · ${d.regime}`;
+        const t=el('title',{},c);t.textContent=`${rec.date} · ${market.toUpperCase()} ${d.score}${d.score_max!==d.score?'–'+d.score_max:''}/15 Market Health · ${d.regime}`;
       });
     }
   }
   function rerender(){
+    const market=options.market,display=market.toUpperCase();
+    $('j-market-panel').setAttribute('aria-labelledby','j-tab-'+market);
+    $('j-score-title').textContent=`${display} Market Health history`;
+    $('j-log-title').textContent=`${display} historical market log`;
+    $('j-chart-legend-label').textContent=display;
+    $('j-chart-legend').querySelector('i').className='j-key-dot '+market;
+    $('j-score-chart').setAttribute('aria-label',`${display} saved Market Health scores over completed daily sessions`);
+    $('j-count').textContent=entries.length.toLocaleString();
+    $('j-alerts').textContent=entries.filter(day=>healthView(day[market],day.baseline===true).price_risk_status==='divergence').length.toLocaleString();
+    $('j-alerts-note').textContent=`${display} sessions with a price/risk mismatch`;
     const rows=filterRows(entries,options);
     renderTable(rows);
     chart(chartRows(entries,options));
     $('j-message').textContent=entries.length?
-      'Showing saved completed-EOD observations. November 20 is a labeled, user-screenshot baseline; subsequent sessions are automatically recorded. Export visible CSV to keep a separate backup.':
-      'No journal entries yet. After the upgraded EOD updater completes and commits its first eligible market session, this page will populate automatically. Historical chart points are not retroactively converted into saved alerts.';
+      `Showing saved ${options.market.toUpperCase()} EOD observations. November 20 is a labeled screenshot baseline. Export visible CSV for an independent backup.`:
+      'No journal entries yet. New completed EOD sessions will appear automatically. Prior bearish scores are inverted only for display; original archived counts remain preserved.';
   }
   function setStatus(msg,ok){$('history-updated').textContent=msg;$('history-dot').className='status-dot '+(ok?'good':'warn');}
   async function load(){
@@ -219,7 +264,6 @@
       $('j-date-range').textContent=entries.length?`${dateLabel(entries[0].session)} – ${dateLabel(entries.at(-1).session)}`:'Tracking begins at installation';
       $('j-last').textContent=entries.length?dateLabel(entries.at(-1).session):'—';
       $('j-last-note').textContent=entries.length?`${entries.at(-1).previous_session} → ${entries.at(-1).session}`:'Waiting for the first eligible completed-EOD run';
-      $('j-alerts').textContent=entries.filter(day=>day.spy.price_risk_status==='divergence'||day.qqq.price_risk_status==='divergence').length.toLocaleString();
       const when=latest.generated_at?new Date(latest.generated_at).toLocaleString():'not timestamped';
       setStatus(`Updated ${when} · Latest scored: ${lastSession||'—'}`,true);
       rerender();
@@ -235,7 +279,30 @@
     for(const b of $('j-range').querySelectorAll('button'))b.classList.toggle('selected',b===button);
     rerender();
   });
-  $('j-market').addEventListener('change',event=>{options.market=event.target.value;rerender();});
+  function selectMarket(market,moveFocus=false){
+    if(!ALL_MARKETS.includes(market))return;
+    options.market=market;
+    for(const button of document.querySelectorAll('.journal-market-tabs button[role="tab"]')){
+      const active=button.dataset.market===market;
+      button.classList.toggle('active',active);
+      button.setAttribute('aria-selected',String(active));
+      button.tabIndex=active?0:-1;
+      if(active&&moveFocus)button.focus();
+    }
+    rerender();
+  }
+  const marketTabs=document.querySelector('.journal-market-tabs');
+  marketTabs.addEventListener('click',event=>{
+    const button=event.target.closest('button[data-market]');
+    if(button&&marketTabs.contains(button))selectMarket(button.dataset.market);
+  });
+  marketTabs.addEventListener('keydown',event=>{
+    if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+    event.preventDefault();
+    const current=event.target.closest('button[data-market]');if(!current)return;
+    const market=event.key==='Home'?'spy':event.key==='End'?'qqq':options.market==='spy'?'qqq':'spy';
+    selectMarket(market,true);
+  });
   $('j-alert-only').addEventListener('change',event=>{options.alertsOnly=event.target.checked;rerender();});
   $('j-export').addEventListener('click',()=>{
     const rows=filterRows(entries,options);if(!rows.length)return;
@@ -243,7 +310,7 @@
     const url=URL.createObjectURL(blob);
     try{
       const link=document.createElement('a');link.href=url;
-      link.download=`market-insights-${entries.at(-1).session}-${options.market}-${options.range}${options.alertsOnly?'-alerts':''}.csv`;
+      link.download=`${options.market}-history-${entries.at(-1).session}-${options.range}${options.alertsOnly?'-alerts':''}.csv`;
       document.body.appendChild(link);link.click();link.remove();
     }finally{setTimeout(()=>URL.revokeObjectURL(url),1000);}
   });

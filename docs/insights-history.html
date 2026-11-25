@@ -6,9 +6,9 @@
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Saved daily SPY and QQQ scores, close-to-close price changes, price-risk alerts, and market signal changes.">
   <title>Market Insights History | Macro Decision Dashboard</title>
-  <link rel="stylesheet" href="styles.css?v=macd-20261124a">
-  <link rel="stylesheet" href="insights-history.css?v=friday-baseline-20261123">
-  <script src="insights-history.js?v=macd-20261124a" defer></script>
+  <link rel="stylesheet" href="styles.css?v=market-health-20261125a">
+  <link rel="stylesheet" href="insights-history.css?v=market-health-20261125a">
+  <script src="insights-history.js?v=market-health-20261125a" defer></script>
 </head>
 <body>
   <div class="shell">
@@ -27,35 +27,40 @@
         <div>
           <div class="eyebrow">PERMANENT EOD JOURNAL · EXPERIMENTAL MODEL</div>
           <h2>Market Insights History</h2>
-          <p>Review completed trading sessions side by side. Track how prices move relative to the 15-point risk model, how bearish scores evolve, and which signals changed.</p>
+          <p>Choose SPY or QQQ to review its saved closing prices, Market Health Scores, risk alerts, and daily signal changes.</p>
         </div>
         <a class="journal-back" href="index.html">← Today's dashboard</a>
       </div>
       <p class="journal-policy" role="note">Automatically recorded after eligible end-of-day refreshes, with a <strong>clearly labeled November 20 screenshot baseline</strong>. The baseline includes only values visible in the saved screenshots; its Friday price-change alert is not evaluated. Later sessions are recorded automatically. No live intraday series is included.</p>
-      <section class="journal-stats" aria-label="Archive statistics">
+      <div class="journal-market-tabs" role="tablist" aria-label="Market history">
+        <button type="button" id="j-tab-spy" class="journal-market-tab active" role="tab" aria-selected="true" aria-controls="j-market-panel" tabindex="0" data-market="spy"><span class="journal-tab-dot spy" aria-hidden="true"></span>SPY History <small>S&amp;P 500</small></button>
+        <button type="button" id="j-tab-qqq" class="journal-market-tab" role="tab" aria-selected="false" aria-controls="j-market-panel" tabindex="-1" data-market="qqq"><span class="journal-tab-dot qqq" aria-hidden="true"></span>QQQ History <small>Nasdaq-100</small></button>
+      </div>
+      <div id="j-market-panel" role="tabpanel" aria-labelledby="j-tab-spy" tabindex="0">
+      <section class="journal-stats" aria-label="Selected ETF archive statistics">
         <div class="journal-stat"><span>Sessions saved</span><strong id="j-count">—</strong><small id="j-date-range">Starts with first EOD refresh</small></div>
         <div class="journal-stat"><span>Latest saved EOD</span><strong id="j-last">—</strong><small id="j-last-note">Not yet available</small></div>
-        <div class="journal-stat"><span>Price/risk divergence days</span><strong id="j-alerts">—</strong><small>Days when SPY or QQQ triggered a mismatch</small></div>
+        <div class="journal-stat"><span>Price/risk divergence days</span><strong id="j-alerts">—</strong><small id="j-alerts-note">SPY sessions with a price/risk mismatch</small></div>
       </section>
       <section class="journal-panel" aria-label="Risk-score trend of saved sessions">
-        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3>SPY and QQQ bearish scores</h3><p>Saved 15-point scores, including the labeled November 20 screenshot baseline; other past sessions are never imputed.</p></div><div class="journal-key"><span><i class="j-key-dot spy"></i>SPY</span><span><i class="j-key-dot qqq"></i>QQQ</span></div></div>
-        <svg id="j-score-chart" role="img" viewBox="0 0 900 230" aria-label="SPY and QQQ saved bearish scores over completed daily sessions"></svg>
-        <p class="j-chart-note">Scores reflect the daily saved snapshot. The faint guides show 5/15 and 9/15; Risk-Off begins at 9/15 for both markets.</p>
+        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3 id="j-score-title">SPY Market Health Score history</h3><p>Saved daily 15-point scores, including the November 20 screenshot baseline. Missing days are not fabricated.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
+        <svg id="j-score-chart" role="img" viewBox="0 0 900 230" aria-label="SPY saved Market Health Scores over completed daily sessions"></svg>
+        <p class="j-chart-note">Scores reflect the daily saved snapshot. The dashed guides mark the Market Health boundaries: Risk-Off 0–5, Neutral 6–10, Risk-On 11–15.</p>
       </section>
       <section class="journal-panel" aria-label="Historical daily insights">
-        <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">DAILY RECORDS</div><h3>Historical market log</h3><p>Lower bearish scores indicate improvement. A positive daily score change means deterioration.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export visible CSV</button></div>
+        <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">DAILY RECORDS</div><h3 id="j-log-title">SPY historical market log</h3><p>Higher Market Health Scores indicate improvement. A positive daily score change means improvement.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export visible CSV</button></div>
         <div class="journal-filters">
           <fieldset class="journal-filter-group"><legend>Sessions</legend><div class="journal-segments" id="j-range"><button class="selected" data-range="30" type="button">30</button><button data-range="90" type="button">90</button><button data-range="all" type="button">All</button></div></fieldset>
-          <label class="journal-select">Market <select id="j-market"><option value="both">Both ETFs</option><option value="spy">SPY only</option><option value="qqq">QQQ only</option></select></label>
           <label class="journal-check"><input id="j-alert-only" type="checkbox"> Divergence alerts only</label>
           <span id="j-matches" class="journal-matches" role="status">Loading…</span>
         </div>
         <div class="journal-table-wrap">
-          <table class="journal-table"><thead><tr><th scope="col">Session</th><th scope="col">ETF</th><th scope="col">Close</th><th scope="col">Day change</th><th scope="col">Bearish score</th><th scope="col">1D score Δ</th><th scope="col">Regime</th><th scope="col">Price / Risk</th><th scope="col">Signals</th></tr></thead><tbody id="j-rows"><tr><td colspan="9" class="journal-empty">Loading saved market insights…</td></tr></tbody></table>
+          <table class="journal-table"><thead><tr><th scope="col">Session</th><th scope="col">Close</th><th scope="col">Day change</th><th scope="col">Market Health Score</th><th scope="col">1D score Δ</th><th scope="col">Regime</th><th scope="col">Price / Risk</th><th scope="col">Signals</th></tr></thead><tbody id="j-rows"><tr><td colspan="8" class="journal-empty">Loading saved market insights…</td></tr></tbody></table>
         </div>
         <p id="j-message" class="journal-message" role="status">Loading history from the latest published snapshot…</p>
       </section>
-      <section class="journal-footnotes"><h3>How to use this archive</h3><p>Each dated row captures SPY or QQQ's completed close, day-over-day ETF price change when available, daily bearish score, daily change in bearish points, risk regime, 5-day trend, data coverage and matching price/risk alert. Select <strong>Signals</strong> to inspect the same-session changes available in the engine's snapshot.</p><p>Scores use the website's experimental 15-point model; Thinkorswim remains a separate 14-point reference. Constituent-derived breadth may be estimated, and observations are not proof of predictive accuracy. <strong>Archive persistence:</strong> data is stored in <code>docs/data/latest.json</code> and included in the existing GitHub Actions snapshot commit. November 20 is a user-screenshot backfill; its prior ETF close and price/risk alert are intentionally unavailable. Download a CSV periodically for a personal backup.</p></section>
+      </div>
+      <section class="journal-footnotes"><h3>How to use this archive</h3><p>Each dated row captures the selected ETF's completed close, day-over-day ETF price change when available, daily Market Health Score, daily change in Market Health points, risk regime, 5-day trend, data coverage and matching price/risk alert. Select <strong>Signals</strong> to inspect the same-session changes available in the engine's snapshot.</p><p>Scores use the website's experimental 15-point model; Thinkorswim is calculated independently and uses a 15-point study; price sources and timing may differ. Constituent-derived breadth may be estimated, and observations are not proof of predictive accuracy. <strong>Archive persistence:</strong> data is stored in <code>docs/data/latest.json</code> and included in the existing GitHub Actions snapshot commit. November 20 is a user-screenshot backfill; its prior ETF close and price/risk alert are intentionally unavailable. Download a CSV periodically for a personal backup.</p></section>
     </main>
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>Saved EOD observations · <a href="index.html">Dashboard</a></span></footer>
   </div>

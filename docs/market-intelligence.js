@@ -12,7 +12,7 @@
   const SHARED=['oil','usd','tnx','credit','copper','vix_curve'];
   const SP=['vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','rsp_spy','iwm_spy','sp_breadth1d'];
   const ND=['vxn','nd_def','nd_xle','nd_smh','qqq_trend','nd_rsi14','qqqe_qqq','iwm_qqq','nd_breadth1d'];
-  const RANK={'RISK-ON':0,'CAUTION':1,'RISK-OFF':2};
+  const RANK={'RISK-ON':0,'NEUTRAL':1,'RISK-OFF':2};
   const validNumber=n=>typeof n==='number' && Number.isInteger(n) && n>=0;
   const formatDate=s=>{
     if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return '—';
@@ -20,10 +20,10 @@
     if(!yr||mo<1||mo>12||day<1||day>31)return '—';
     return `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mo-1]} ${day}`;
   };
-  const regime=(v,market)=>v<=(market==='nd'?5:4)?'RISK-ON':v<=8?'CAUTION':'RISK-OFF';
+  const regime=v=>v<=5?'RISK-OFF':v<=10?'NEUTRAL':'RISK-ON';
   function bounds(bearish,available,total){
     if(!validNumber(bearish)||!validNumber(available)||!validNumber(total)||!total||available>total||bearish>available)return null;
-    return {min:bearish,max:bearish+total-available,available,total};
+    return {min:available-bearish,max:total-bearish,available,total};
   }
   function scoreRange(range){
     if(!range)return '—';
@@ -49,7 +49,7 @@
     // Refuse to compare history from an outdated/scaled snapshot.
     if(!today||!previous||!historicalToday||historicalToday.min!==today.min||historicalToday.max!==today.max)return null;
     const delta={min:today.min-previous.max,max:today.max-previous.min};
-    const direction=delta.max<0?'improving':delta.min>0?'deteriorating':delta.min===0&&delta.max===0?'unchanged':'uncertain';
+    const direction=delta.min>0?'improving':delta.max<0?'deteriorating':delta.min===0&&delta.max===0?'unchanged':'uncertain';
     const previousRegime=regimeForRange(previous,market);
     const currentRegime=regimeForRange(today,market);
     let transition='uncertain';
@@ -65,7 +65,7 @@
     const regimeSplit=knownRegimes&&sp.currentRegime!==nd.currentRegime;
     if(directionsOpposite)return {kind:'diverging',headline:'Opposite daily risk moves',detail:`SPY is ${sp.direction} while QQQ is ${nd.direction}.${regimeSplit?' The two benchmarks are also in different risk regimes.':''}`};
     if(regimeSplit)return {kind:'split',headline:'Risk regimes diverge',detail:`SPY: ${sp.currentRegime} · QQQ: ${nd.currentRegime}.`};
-    if(!knownRegimes||sp.direction==='uncertain'||nd.direction==='uncertain')return {kind:'uncertain',headline:'Divergence uncertain',detail:'Missing scored inputs prevent a definitive comparison; unavailable signals are not assumed bullish.'};
+    if(!knownRegimes||sp.direction==='uncertain'||nd.direction==='uncertain')return {kind:'uncertain',headline:'Divergence uncertain',detail:'Missing scored inputs prevent a definitive comparison; unavailable signals are not treated as healthy.'};
     return {kind:'aligned',headline:'No confirmed divergence',detail:`SPY ${sp.direction}; QQQ ${nd.direction}. Both risk regimes: ${sp.currentRegime}.`};
   }
   function quality(data,market){

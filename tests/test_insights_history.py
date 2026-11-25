@@ -118,13 +118,13 @@ class InsightsHistoryTests(unittest.TestCase):
         row=make_daily_entry(fresh)
         self.assertEqual(row['signal_changes']['status'],'unavailable')
 
-    def test_market_policies_at_five_are_distinct(self):
+    def test_both_markets_share_unified_neutral_band(self):
         fresh=synthetic_snapshot()
-        fresh['markets']['sp500']['score']={'bearish':5,'available':15,'total':15,'regime':'CAUTION'}
-        fresh['markets']['nasdaq100']['score']={'bearish':5,'available':15,'total':15,'regime':'RISK-ON'}
+        fresh['markets']['sp500']['score']={'bearish':5,'available':15,'total':15,'regime':'NEUTRAL'}
+        fresh['markets']['nasdaq100']['score']={'bearish':5,'available':15,'total':15,'regime':'NEUTRAL'}
         row=make_daily_entry(fresh)
         self.assertEqual(row['spy']['price_risk_status'],'watch')
-        self.assertEqual(row['qqq']['price_risk_status'],'aligned')
+        self.assertEqual(row['qqq']['price_risk_status'],'watch')
 
 
 if __name__=='__main__': unittest.main()
