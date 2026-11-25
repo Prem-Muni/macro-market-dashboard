@@ -16,8 +16,8 @@ from friday_baseline import FRIDAY_BASELINE_SESSION, friday_baseline_entry
 VERSION = 1
 ALERT_PCT = 2.0
 INDEX_KEYS = {
-    "spy": ("sp500", "sp", ["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "sp_rsi14", "rsp_spy", "iwm_spy", "sp_breadth1d"]),
-    "qqq": ("nasdaq100", "nd", ["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "nd_rsi14", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]),
+    "spy": ("sp500", "sp", ["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "sp_rsi14", "rsp_spy", "iwm_spy", "sp_breadth1d", "sp_macd"]),
+    "qqq": ("nasdaq100", "nd", ["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "nd_rsi14", "qqqe_qqq", "iwm_qqq", "nd_breadth1d", "nd_macd"]),
 }
 SHARED_KEYS = ["oil", "usd", "tnx", "credit", "copper", "vix_curve"]
 SOURCE_MARKER = re.compile(r"ESTIMAT|EXPERIMENTAL|PROXY|CONSTITUENT.DERIVED", re.I)
@@ -37,8 +37,9 @@ def _number(value: Any) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
 
 
-def _risk(score: int, symbol: str) -> str:
-    return "RISK-OFF" if 15 - score <= 5 else "NEUTRAL" if 15 - score <= 10 else "RISK-ON"
+def _risk(score: int, symbol: str, total: int = 15) -> str:
+    health=total-score
+    return "RISK-OFF" if health <= 5 else "NEUTRAL" if health <= 10 else "RISK-ON"
 
 
 def _score_now(result: dict, sym: str) -> dict:
@@ -47,10 +48,10 @@ def _score_now(result: dict, sym: str) -> dict:
     sc = model.get("score", {})
     available, total, bearish = (sc.get(k) for k in ("available", "total", "bearish"))
     if not all(isinstance(n, int) and not isinstance(n, bool) for n in (available, total, bearish)):
-        raise ValueError("Invalid 15-point score object")
-    if total != 15 or not 0 <= bearish <= available <= total:
-        raise ValueError("Not a valid 15-point score")
-    regime = _risk(bearish, sym) if available == total else "INCOMPLETE"
+        raise ValueError("Invalid 16-point score object")
+    if total not in (15, 16) or not 0 <= bearish <= available <= total or (str(result.get("model_version", "")).startswith("16-point") and total != 16):
+        raise ValueError("Not a valid 16-point score")
+    regime = _risk(bearish, sym, total) if available == total else "INCOMPLETE"
     actual = sc.get("regime")
     # An explicit engine regime must agree with our exact full-coverage policy.
     if available == total and actual != regime:
@@ -86,11 +87,12 @@ def _paired_prior(result: dict, previous_session: str, market: str) -> tuple[int
     now_avail = last.get(key + "_available")
     if not all(isinstance(n, int) and not isinstance(n, bool) for n in (prev, prev_available, now, now_avail)):
         return None, "unavailable"
-    if not (0 <= prev <= prev_available <= 15 and 0 <= now <= now_avail <= 15):
+    current_total = (result.get("markets", {}).get("sp500" if market == "spy" else "nasdaq100", {}).get("score", {}).get("total") or 16)
+    if not (0 <= prev <= prev_available <= current_total and 0 <= now <= now_avail <= current_total):
         return None, "unavailable"
-    if prev_available != 15 or now_avail != 15:
+    if prev_available != current_total or now_avail != current_total:
         return None, "incomplete"
-    return prev, _risk(prev, market)
+    return prev, _risk(prev, market, current_total)
 
 
 def _changes(result: dict, from_session: str, to_session: str) -> dict:
@@ -120,7 +122,7 @@ def make_daily_entry(result: dict) -> dict | None:
             not _valid_date(previous) or previous >= session or moves.get("session") != session):
         return None
     out = {
-        "session": session, "previous_session": previous, "model": "15-point experimental",
+        "session": session, "previous_session": previous, "model": ("16-point Market Health with scored MACD" if result.get("markets", {}).get("sp500", {}).get("score", {}).get("total") == 16 else "15-point legacy market health"),
         "spy": {}, "qqq": {}, "signal_changes": _changes(result, previous, session),
     }
     for sym in ("spy", "qqq"):
@@ -134,7 +136,7 @@ def make_daily_entry(result: dict) -> dict | None:
             return None
         now = _score_now(result, sym)
         prevscore, prevregime = _paired_prior(result, previous, sym)
-        if prevscore is not None and now["available"] == 15:
+        if prevscore is not None and now["available"] == now["total"]:
             delta = now["score"] - prevscore
         else:
             delta = None
@@ -164,7 +166,7 @@ def make_daily_entry(result: dict) -> dict | None:
             macd_snapshot = {name: macd.get(name) for name in
                              ("macd", "signal", "histogram", "relation", "crossover")}
         out[sym] = {
-            "macd_info": macd_snapshot,  # informational only, no scoring
+            "macd_info": macd_snapshot,  # also included among the 16 scored inputs
             "previous_close": round(p, 4), "close": round(c, 4), "price_change_pct": round(pct, 5),
             **now, "previous_score": prevscore, "score_delta_1d": delta,
             "previous_regime": prevregime, "risk_transition":

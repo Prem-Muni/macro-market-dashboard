@@ -56,21 +56,24 @@ test('rejects missing previous session or duplicate session dates',()=>{
  const d=mk();d.history=d.history.slice(1);assert.equal(mi.scoredHistory(d,'nd'),null);
  d.history=mk().history;d.history[0].date=d.history[1].date;assert.equal(mi.scoredHistory(d,'nd'),null);
 });
-test('preserves exact 15-point counts when all signals exist',()=>{
- const d=mk();d.signals={};
- const keys=['oil','usd','tnx','credit','copper','vix_curve','vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','rsp_spy','iwm_spy','sp_breadth1d','vxn','nd_def','nd_xle','nd_smh','qqq_trend','nd_rsi14','qqqe_qqq','iwm_qqq','nd_breadth1d'];
+test('preserves exact 16-point counts when all signals exist',()=>{
+ const d=mk();
+ for(const x of ['sp500','nasdaq100']){d.markets[x].score.total=16;d.markets[x].score.available=16;}d.signals={};
+ const keys=['oil','usd','tnx','credit','copper','vix_curve','vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','sp_macd','rsp_spy','iwm_spy','sp_breadth1d','vxn','nd_def','nd_xle','nd_smh','qqq_trend','nd_rsi14','nd_macd','qqqe_qqq','iwm_qqq','nd_breadth1d'];
  for(const k of keys)d.signals[k]={state:'bull',source:k.includes('breadth')?'EXPERIMENTAL constituent-derived series':'EOD'};
- let q=mi.quality(d,'sp');assert.equal(q.available,15);assert.equal(q.missing,0);assert.deepEqual(q.estimated,['sp_breadth1d']);assert.equal(q.mismatch,false);
- d.signals.sp_breadth1d.state='na';d.markets.sp500.score=mkScore(6,14);
+ let q=mi.quality(d,'sp');assert.equal(q.available,16);assert.equal(q.missing,0);assert.deepEqual(q.estimated,['sp_breadth1d']);assert.equal(q.mismatch,false);
+ d.signals.sp_breadth1d.state='na';d.markets.sp500.score={bearish:6,available:15,total:16,complete:false};
  q=mi.quality(d,'sp');assert.equal(q.missing,1);assert.equal(q.estimated.length,0);assert.equal(q.mismatch,false);
- assert.equal(mi.quality(d,'nd').available,15);
+ assert.equal(mi.quality(d,'nd').available,16);
 });
 test('flags mismatched score / raw-signal availability',()=>{
- const d=mk();d.signals={};const q=mi.quality(d,'sp');
+ const d=mk();
+ for(const x of ['sp500','nasdaq100']){d.markets[x].score.total=16;d.markets[x].score.available=16;}d.signals={};const q=mi.quality(d,'sp');
  assert.equal(q.mismatch,true);
 });
 test('wash state is recognized as available rather than missing',()=>{
- const d=mk();d.signals={};const keys=['oil','usd','tnx','credit','copper','vix_curve','vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','rsp_spy','iwm_spy','sp_breadth1d'];
+ const d=mk();
+ for(const x of ['sp500','nasdaq100']){d.markets[x].score.total=16;d.markets[x].score.available=16;}d.signals={};const keys=['oil','usd','tnx','credit','copper','vix_curve','vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','sp_macd','rsp_spy','iwm_spy','sp_breadth1d'];
  for(const k of keys)d.signals[k]={state:'bull',source:'EOD'};
  d.signals.oil.state='wash';const q=mi.quality(d,'sp');assert.equal(q.missing,0);assert.equal(q.mismatch,false);
 });

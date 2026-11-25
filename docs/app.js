@@ -10,7 +10,7 @@ const regimeHealth=s=>{
  const regime=v=>v<=5?'RISK-OFF':v<=10?'NEUTRAL':'RISK-ON';
  const a=regime(r.min),b=regime(r.max);return a===b?a:'INCOMPLETE';
 };
-const scoreFormat=s=>{const r=healthRange(s);return !r?'—/15':r.min===r.max?`${r.min}/${r.total}`:`${r.min}–${r.max}/${r.total}`};
+const scoreFormat=s=>{const r=healthRange(s);return !r?'—/16':r.min===r.max?`${r.min}/${r.total}`:`${r.min}–${r.max}/${r.total}`};
 const invertedRange=r=>Array.isArray(r)&&r.length===2&&r.every(v=>v!=null)?[-r[1],-r[0]]:null;
 const plus=n=>n==null?'—':`${n>0?'+':''}${n}`;
 const rangeText=r=>!Array.isArray(r)||r[0]==null?'—':r[0]===r[1]?plus(r[0]):`${plus(r[0])}…${plus(r[1])}`;
@@ -81,7 +81,7 @@ function plot(history){
   parent.appendChild(e);return e;
  };
  const x=i=>left+(data.length<=1?0:i/(data.length-1))*(W-left-right);
- const maxPts=Number(snapshot?.markets?.sp500?.score?.total)||14;
+ const maxPts=Number(snapshot?.markets?.sp500?.score?.total)||16;
  const y=v=>top+(maxPts-v)/maxPts*(H-top-bottom);
  const range=$('chart-range');
  if(range)range.textContent=data.length?
@@ -93,7 +93,7 @@ function plot(history){
   el('line',{x1:left,x2:W-right,y1:y(v),y2:y(v),stroke:'#2b394b','stroke-width':1});
   const t=el('text',{x:13,y:y(v)+4,fill:'#8092ac','font-size':11}); t.textContent=String(v);
  }
- // Market Health thresholds are between integer scores: 0–5 Off, 6–10 Neutral, 11–15 On.
+ // Market Health thresholds are between integer scores: 0–5 Off, 6–10 Neutral, 11–16 On.
  for(const [cut,label] of [[5.5,'RISK-OFF / NEUTRAL'],[10.5,'NEUTRAL / RISK-ON']]){
   el('line',{x1:left,x2:W-right,y1:y(cut),y2:y(cut),stroke:'#eac66e','stroke-width':1.6,'stroke-dasharray':'7 5',opacity:.88});
   const marker=el('text',{x:W-right-4,y:y(cut)-5,'text-anchor':'end',fill:'#f1d68d','font-size':10,'font-weight':650});marker.textContent=label;
@@ -184,7 +184,7 @@ function renderMovingAverages(data){
   marker.style.opacity=validRsi?'1':'0';
  }
 }
-// Informational-only daily MACD. Never adds a scoring signal.
+// Daily MACD is the 16th scored signal; displayed values come from same EOD session.
 function renderDailyMACD(data){
  const all=data.daily_macd||{};
  for(const sym of ['spy','qqq']){
@@ -199,17 +199,17 @@ function renderDailyMACD(data){
   if(!ready){status.textContent='MACD not available for this completed session';status.className='macd-status macd-neutral';hist.className='';continue;}
   const crossover=entry.crossover==='bullish'?' · Bullish crossover':entry.crossover==='bearish'?' · Bearish crossover':'';
   const relation=entry.relation==='above'?'MACD above signal':entry.relation==='below'?'MACD below signal':'MACD equals signal';
-  status.textContent=relation+crossover+' · Information only';
+  status.textContent=relation+crossover+' · SCORED (16th signal)';
   status.className='macd-status '+(entry.relation==='above'?'macd-positive':entry.relation==='below'?'macd-negative':'macd-neutral');
   hist.className=entry.histogram>0?'macd-positive':entry.histogram<0?'macd-negative':'macd-neutral';
  }
 }
-// Match the Python engine's six shared keys and nine scored index keys.
+// Match the Python engine's six shared keys and ten scored index keys.
 // Informational breadth 5D/200D rows are deliberately excluded.
 const SCORE_KEYS={
  shared:['oil','usd','tnx','credit','copper','vix_curve'],
- sp:['vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','rsp_spy','iwm_spy','sp_breadth1d'],
- nd:['vxn','nd_def','nd_xle','nd_smh','qqq_trend','nd_rsi14','qqqe_qqq','iwm_qqq','nd_breadth1d']
+ sp:['vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','sp_macd','rsp_spy','iwm_spy','sp_breadth1d'],
+ nd:['vxn','nd_def','nd_xle','nd_smh','qqq_trend','nd_rsi14','nd_macd','qqqe_qqq','iwm_qqq','nd_breadth1d']
 };
 function groupScore(data,keys){
  const sig=data.signals||{};
@@ -225,17 +225,17 @@ function groupScore(data,keys){
 function groupScoreLabel(s){const min=s.available-s.bearish,max=s.total-s.bearish;return min===max?`${min}/${s.total}`:`${min}–${max}/${s.total}`;}
 function renderScoreBreakdown(data){
  const shared=groupScore(data,SCORE_KEYS.shared);
- $('shared-subscore').textContent=groupScoreLabel(shared)+' healthy';
+ $('shared-subscore').textContent=groupScoreLabel(shared)+' non-bearish';
  $('shared-breakdown-equation').textContent=`${shared.available}/6 shared macro signals available · Included in both market totals.`;
  for(const [prefix,market] of [['sp','sp500'],['nd','nasdaq100']]){
   const local=groupScore(data,SCORE_KEYS[prefix]);
   const score=data.markets?.[market]?.score;
-  const total=score?scoreFormat(score):'—/15';
-  $(prefix+'-index-subscore').textContent=groupScoreLabel(local)+' healthy';
+  const total=score?scoreFormat(score):'—/16';
+  $(prefix+'-index-subscore').textContent=groupScoreLabel(local)+' non-bearish';
   $(prefix+'-breakdown-equation').textContent=`${groupScoreLabel(local)} index-specific + ${groupScoreLabel(shared)} shared macro = ${total} Market Health points (including neutral)`;
   // This is only a display check: the backend remains the authority on scoring.
   // Where complete, flag an unexpected discrepancy rather than hiding it.
-  if(score?.complete&&local.available===9&&shared.available===6&&local.bearish+shared.bearish!==score.bearish)
+  if(score?.complete&&local.available===10&&shared.available===6&&local.bearish+shared.bearish!==score.bearish)
    $(prefix+'-breakdown-equation').textContent+=' · VERIFY SCORE DATA';
  }
 }
@@ -457,7 +457,7 @@ function renderMarketIntelligence(data){
  $('intel-divergence').dataset.tone=diff.kind==='diverging'||diff.kind==='split'?'warn':'neutral';
  for(const key of ['sp','nd']){
   const q=mi.quality(data,key),score=$(`intel-${key}-quality`),bar=$(`intel-${key}-quality-bar`),note=$(`intel-${key}-quality-note`);
-  score.textContent=q?`${q.available}/${q.total}`:'—/15';
+  score.textContent=q?`${q.available}/${q.total}`:'—/16';
   bar.style.width=q?`${(q.available/q.total*100).toFixed(1)}%`:'0%';
   bar.dataset.tone=q?.missing?'warn':'bull';
   if(!q){note.textContent='Coverage unavailable';continue;}
@@ -484,7 +484,7 @@ function render(data){
  renderDailyMACD(data);
  $('coverage-note').textContent=data.explanation?.partial||'';
  const all=data.markets.sp500.score.complete && data.markets.nasdaq100.score.complete;
- $('warning').textContent=all?'15-point Market Health: 0–5 Risk-Off · 6–10 Neutral · 11–15 Risk-On. Higher is healthier; neutral inputs count as non-bearish. MACD and five SMAs are informational.':'PARTIAL DATA: health score shown as a possible range. 0–5 Risk-Off · 6–10 Neutral · 11–15 Risk-On. Missing signals are not assumed healthy.';
+ $('warning').textContent=all?'16-point Market Health: 0–5 Risk-Off · 6–10 Neutral · 11–16 Risk-On. Higher is healthier; daily MACD is scored. Five SMAs and Fear & Greed remain informational.':'PARTIAL DATA: health score shown as a possible range. 0–5 Risk-Off · 6–10 Neutral · 11–16 Risk-On. Missing signals are not assumed healthy.';
  $('diagnostics').textContent=JSON.stringify({sources:data.sources,warnings:data.warnings},null,2);
  plot(data.history);
 }

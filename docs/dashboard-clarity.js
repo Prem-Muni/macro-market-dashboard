@@ -37,8 +37,8 @@
     return el;
   }
   const overview = panel('overview');
-  const technicals = panel('technicals', 'Technical Analysis', 'Daily SPY and QQQ indicators · MACD and moving averages are informational unless labeled scored.');
-  const signals = panel('signals', 'Signals & Market Context', 'Full 15-point breakdown, market transitions and source details—unchanged from the existing model.');
+  const technicals = panel('technicals', 'Technical Analysis', 'Daily SPY and QQQ indicators · MACD is scored; moving averages remain informational.');
+  const signals = panel('signals', 'Signals & Market Context', 'Full 16-point breakdown, market transitions and source details—unchanged from the existing model.');
 
   const move = (selector, target) => {
     const el = document.querySelector(selector);
@@ -48,7 +48,7 @@
   const introductory = move('.section-intro', overview);
   if (introductory) {
     const paragraph = introductory.querySelector('p');
-    if (paragraph) paragraph.textContent = 'Market Health Score: higher is healthier · 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On.';
+    if (paragraph) paragraph.textContent = 'Market Health Score: higher is healthier · 0–5 Risk-Off, 6–10 Neutral, 11–16 Risk-On.';
   }
   move('.market-grid', overview);
   const brief = move('.decision-brief', overview);
@@ -96,12 +96,12 @@
 
   const actions = document.createElement('div');
   actions.className = 'clarity-next-actions';
-  actions.innerHTML = `<button type="button" data-open-view="technicals">View RSI, MACD &amp; charts <span aria-hidden="true">→</span></button><button type="button" data-open-view="signals">Explore all 15 signals <span aria-hidden="true">→</span></button><a href="insights-history.html">Insights History <span aria-hidden="true">↗</span></a>`;
+  actions.innerHTML = `<button type="button" data-open-view="technicals">View RSI, MACD &amp; charts <span aria-hidden="true">→</span></button><button type="button" data-open-view="signals">Explore all 16 signals <span aria-hidden="true">→</span></button><a href="insights-history.html">Insights History <span aria-hidden="true">↗</span></a>`;
   overview.appendChild(actions);
 
   const technicalSummary = document.createElement('section');
   technicalSummary.className = 'clarity-tech-summary';
-  technicalSummary.innerHTML = `<div class="clarity-summary-head"><h3>Technical pulse</h3><span>Daily close · MACD not scored</span></div><div class="clarity-tech-grid">
+  technicalSummary.innerHTML = `<div class="clarity-summary-head"><h3>Technical pulse</h3><span>Daily close · MACD scored</span></div><div class="clarity-tech-grid">
     <article class="clarity-tech-card"><div class="clarity-tech-card-title"><strong>SPY</strong><small>S&amp;P 500</small></div><div class="clarity-tech-metrics"><div><span>RSI (14)</span><strong id="clarity-spy-rsi">—</strong></div><div><span>MACD</span><strong id="clarity-spy-macd">—</strong></div><div><span>200D trend</span><strong id="clarity-spy-200">—</strong></div></div></article>
     <article class="clarity-tech-card"><div class="clarity-tech-card-title"><strong>QQQ</strong><small>Nasdaq-100</small></div><div class="clarity-tech-metrics"><div><span>RSI (14)</span><strong id="clarity-qqq-rsi">—</strong></div><div><span>MACD</span><strong id="clarity-qqq-macd">—</strong></div><div><span>200D trend</span><strong id="clarity-qqq-200">—</strong></div></div></article>
   </div>`;

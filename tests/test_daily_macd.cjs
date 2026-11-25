@@ -11,7 +11,7 @@ assert.equal(nodes['spy-macd-line'].textContent,'-1.235');
 assert.equal(nodes['spy-macd-signal'].textContent,'-2.123');
 assert.equal(nodes['spy-macd-histogram'].textContent,'0.889');
 assert.match(nodes['spy-macd-status'].textContent,/Bullish crossover/);
-assert.match(nodes['spy-macd-status'].textContent,/Information only/);
+assert.match(nodes['spy-macd-status'].textContent,/SCORED \(16th signal\)/);
 assert.match(nodes['qqq-macd-status'].textContent,/below signal/);
 context.synthetic={session:'2026-11-25',daily_macd:{spy:{as_of:'2026-11-24',status:'complete',macd:1,signal:.9,histogram:.1,relation:'above'},qqq:{status:'unavailable'}}};
 vm.runInContext('renderDailyMACD(synthetic)',context);

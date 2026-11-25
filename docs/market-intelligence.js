@@ -1,6 +1,6 @@
 /* Market Intelligence & Risk Transitions — presentation-only helpers.
  * Uses the same published EOD score/history and scored signal metadata.
- * Does not change the 15-point model, session calculation or workflows.
+ * Does not change the 16-point model, session calculation or workflows.
  */
 (function(root,factory){
   const api=factory();
@@ -10,8 +10,8 @@
   'use strict';
   const VALID_STATES=new Set(['bull','bear','warn','wash']);
   const SHARED=['oil','usd','tnx','credit','copper','vix_curve'];
-  const SP=['vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','rsp_spy','iwm_spy','sp_breadth1d'];
-  const ND=['vxn','nd_def','nd_xle','nd_smh','qqq_trend','nd_rsi14','qqqe_qqq','iwm_qqq','nd_breadth1d'];
+  const SP=['vix','sp_def','sp_xle','sp_smh','spy_trend','sp_rsi14','sp_macd','rsp_spy','iwm_spy','sp_breadth1d'];
+  const ND=['vxn','nd_def','nd_xle','nd_smh','qqq_trend','nd_rsi14','nd_macd','qqqe_qqq','iwm_qqq','nd_breadth1d'];
   const RANK={'RISK-ON':0,'NEUTRAL':1,'RISK-OFF':2};
   const validNumber=n=>typeof n==='number' && Number.isInteger(n) && n>=0;
   const formatDate=s=>{

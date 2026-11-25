@@ -52,9 +52,13 @@ test('archive preserves raw objects while display/CSV invert',()=>{
  assert.match(csv,/"5"/);
 });
 test('price risk uses health units and Neutral instead of Caution',()=>{
- const d=model(9,10);d.price_moves={status:'complete',session:d.session,previous_session:'2026-11-23',spy:{previous_close:100,close:103,change_pct:3}};
+ const d=model(10,11);
+ for(const x of ['sp500','nasdaq100']){d.markets[x].score.total=16;d.markets[x].score.available=16;}
+ for(const row of d.history){row.sp_available=16;row.nd_available=16;}
+ d.history[0].sp=11;d.history[0].nd=11;d.history[1].sp=10;d.history[1].nd=10;
+ d.price_moves={status:'complete',session:d.session,previous_session:'2026-11-23',spy:{previous_close:100,close:103,change_pct:3}};
  d.moving_averages={spy:{as_of:d.session,close:103}};
  const r=priceRisk.evaluate(d,'sp',mi.scoredHistory(d,'sp'));
- assert.equal(r.kind,'watch');assert.match(r.scoreLine,/6\/15 Market Health/);
+ assert.equal(r.kind,'watch');assert.match(r.scoreLine,/6\/16 Market Health/);
  assert.match(r.headline,/Neutral/);
 });

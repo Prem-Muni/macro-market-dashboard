@@ -185,8 +185,8 @@ def main():
     # Add EOD price context from the SAME SPY/QQQ sessions as the risk engine.
     # This does not alter any scored inputs, regimes, or past returns.
     result["price_moves"] = build_price_moves(df, result["session"])
-    # Closing-price MACD(12,26,9): informational only; do not modify analyze(),
-    # signal counts, regime cutoffs, or the original Thinkorswim study.
+    # EOD MACD(12,26,9), now the 16th scored signal, with additional
+    # display values derived from the same completed EOD close series.
     result["daily_macd"] = calculate_daily_macd(df, result["session"])
     result["sources"]={k:{"provider":v,"latest_session":prices[k].dropna().index.max().strftime("%Y-%m-%d")}
                        for k,v in sources.items() if k in prices and not prices[k].dropna().empty}

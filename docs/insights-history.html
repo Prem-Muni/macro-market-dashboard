@@ -6,9 +6,9 @@
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Saved daily SPY and QQQ scores, close-to-close price changes, price-risk alerts, and market signal changes.">
   <title>Market Insights History | Macro Decision Dashboard</title>
-  <link rel="stylesheet" href="styles.css?v=market-health-20261125a">
-  <link rel="stylesheet" href="insights-history.css?v=market-health-20261125a">
-  <script src="insights-history.js?v=market-health-20261125a" defer></script>
+  <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
+  <link rel="stylesheet" href="insights-history.css?v=macd16-20261125b">
+  <script src="insights-history.js?v=macd16-20261125b" defer></script>
 </head>
 <body>
   <div class="shell">
@@ -19,7 +19,7 @@
     <nav class="site-tabs" aria-label="Dashboard navigation">
       <a class="site-tab" href="index.html"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
       <a class="site-tab active" href="insights-history.html" aria-current="page"><span class="tab-icon" aria-hidden="true">▤</span> Insights History</a>
-      <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">15 signals</span></a>
+      <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">16 signals</span></a>
       <a class="site-tab" href="threshold-logic.html"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
     </nav>
     <main class="journal-main">
@@ -43,9 +43,9 @@
         <div class="journal-stat"><span>Price/risk divergence days</span><strong id="j-alerts">—</strong><small id="j-alerts-note">SPY sessions with a price/risk mismatch</small></div>
       </section>
       <section class="journal-panel" aria-label="Risk-score trend of saved sessions">
-        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3 id="j-score-title">SPY Market Health Score history</h3><p>Saved daily 15-point scores, including the November 20 screenshot baseline. Missing days are not fabricated.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
+        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3 id="j-score-title">SPY Market Health Score history</h3><p>Historical records retain their recorded 15- or 16-point denominator; the November 20 screenshot baseline remains 15-point. Missing days are not fabricated.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
         <svg id="j-score-chart" role="img" viewBox="0 0 900 230" aria-label="SPY saved Market Health Scores over completed daily sessions"></svg>
-        <p class="j-chart-note">Scores reflect the daily saved snapshot. The dashed guides mark the Market Health boundaries: Risk-Off 0–5, Neutral 6–10, Risk-On 11–15.</p>
+        <p class="j-chart-note">Scores reflect the daily saved snapshot. The dashed guides mark the Market Health boundaries: Risk-Off 0–5, Neutral 6–10, Risk-On 11–16.</p>
       </section>
       <section class="journal-panel" aria-label="Historical daily insights">
         <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">DAILY RECORDS</div><h3 id="j-log-title">SPY historical market log</h3><p>Higher Market Health Scores indicate improvement. A positive daily score change means improvement.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export visible CSV</button></div>
@@ -60,7 +60,7 @@
         <p id="j-message" class="journal-message" role="status">Loading history from the latest published snapshot…</p>
       </section>
       </div>
-      <section class="journal-footnotes"><h3>How to use this archive</h3><p>Each dated row captures the selected ETF's completed close, day-over-day ETF price change when available, daily Market Health Score, daily change in Market Health points, risk regime, 5-day trend, data coverage and matching price/risk alert. Select <strong>Signals</strong> to inspect the same-session changes available in the engine's snapshot.</p><p>Scores use the website's experimental 15-point model; Thinkorswim is calculated independently and uses a 15-point study; price sources and timing may differ. Constituent-derived breadth may be estimated, and observations are not proof of predictive accuracy. <strong>Archive persistence:</strong> data is stored in <code>docs/data/latest.json</code> and included in the existing GitHub Actions snapshot commit. November 20 is a user-screenshot backfill; its prior ETF close and price/risk alert are intentionally unavailable. Download a CSV periodically for a personal backup.</p></section>
+      <section class="journal-footnotes"><h3>How to use this archive</h3><p>Each dated row captures the selected ETF's completed close, day-over-day ETF price change when available, daily Market Health Score, daily change in Market Health points, risk regime, 5-day trend, data coverage and matching price/risk alert. Select <strong>Signals</strong> to inspect the same-session changes available in the engine's snapshot.</p><p>Scores use the website's experimental 16-point model; older archived sessions retain their original 15-point scale. Thinkorswim is calculated independently using its corresponding 16-point study; price sources and timing may differ. Constituent-derived breadth may be estimated, and observations are not proof of predictive accuracy. <strong>Archive persistence:</strong> data is stored in <code>docs/data/latest.json</code> and included in the existing GitHub Actions snapshot commit. November 20 is a user-screenshot backfill; its prior ETF close and price/risk alert are intentionally unavailable. Download a CSV periodically for a personal backup.</p></section>
     </main>
     <footer><span>Macro Decision Dashboard · Personal research build</span><span>Saved EOD observations · <a href="index.html">Dashboard</a></span></footer>
   </div>

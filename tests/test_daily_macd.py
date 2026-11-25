@@ -26,7 +26,7 @@ class MacdTests(unittest.TestCase):
             self.assertAlmostEqual(record['macd'],expected.iloc[-1],places=4)
             self.assertAlmostEqual(record['signal'],nine.iloc[-1],places=4)
             self.assertAlmostEqual(record['histogram'],expected.iloc[-1]-nine.iloc[-1],places=4)
-        self.assertIs(result['scored'],False)
+        self.assertIs(result['scored'],True)
     def test_mismatched_session_yields_na(self):
         after=str((self.dates[-1]+pd.Timedelta(days=3)).date())
         out=calculate_daily_macd(self.df,after)

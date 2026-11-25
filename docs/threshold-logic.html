@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Market Health scoring thresholds: both SPY and QQQ use 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On, with historical research, limitations, and model rules.">
+<meta name="description" content="Market Health scoring thresholds: both SPY and QQQ use 0–5 Risk-Off, 6–10 Neutral, 11–16 Risk-On, with historical research, limitations, and model rules.">
 <title>Scoring Logic | Macro Decision Dashboard</title>
-<link rel="stylesheet" href="styles.css?v=market-health-20261125a">
+<link rel="stylesheet" href="styles.css?v=macd16-20261125b">
 </head>
 <body>
 <div class="shell">
@@ -16,7 +16,7 @@
 </header>
 <nav class="site-tabs" aria-label="Dashboard navigation">
  <a class="site-tab" href="index.html"><span class="tab-icon" aria-hidden="true">▦</span> Dashboard</a>
- <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">15 signals</span></a>
+ <a class="site-tab" href="scoring-guide.html"><span class="tab-icon" aria-hidden="true">◫</span> Scoring Guide <span class="nav-counter">16 signals</span></a>
  <a class="site-tab active" href="threshold-logic.html" aria-current="page"><span class="tab-icon" aria-hidden="true">◎</span> Scoring Logic</a>
 </nav>
 
@@ -24,11 +24,11 @@
 <section class="threshold-intro" aria-label="Current Market Health methodology" style="margin:24px 0 18px">
  <div class="eyebrow">CURRENT MODEL · BOTH SPY AND QQQ</div>
  <h2>Market Health Score · Higher is healthier</h2>
- <p>Both benchmarks use the <strong>same 15-point scale</strong>: 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On. Each scored indicator contributes <strong>1 health point when it is not bearish</strong> and <strong>0 when bearish</strong>. Neutral signals count as non-bearish, so this is a health score—not a count of strictly bullish votes.</p>
- <div class="threshold-bands"><span class="off">0–5 · RISK-OFF</span><span>6–10 · NEUTRAL</span><span class="on">11–15 · RISK-ON</span></div>
- <p><strong>Score calculation:</strong> Market Health = 15 − archived bearish count. A higher daily change is improving; a lower daily change is deteriorating. With missing data, the website shows a range and will not assume absent inputs are healthy.</p>
- <p>Six shared macro signals plus nine index-specific signals remain unchanged. Daily MACD and five individual SMA rows are informational only. The November 20 baseline and historical records retain their underlying bearish counts; the website displays them on this inverted scale.</p>
- <p><strong>Research caveat:</strong> The new unified 0–5 / 6–10 / 11–15 classification has not been revalidated using forward returns. The earlier research sections below are archived analysis of the old bearish-score thresholds and should not be treated as evidence for the new bands.</p>
+ <p>Both benchmarks use the <strong>same 16-point scale</strong>: 0–5 Risk-Off, 6–10 Neutral, 11–16 Risk-On. Each scored indicator contributes <strong>1 health point when it is not bearish</strong> and <strong>0 when bearish</strong>. Neutral signals count as non-bearish, so this is a health score—not a count of strictly bullish votes.</p>
+ <div class="threshold-bands"><span class="off">0–5 · RISK-OFF</span><span>6–10 · NEUTRAL</span><span class="on">11–16 · RISK-ON</span></div>
+ <p><strong>Score calculation:</strong> Market Health = 16 − current bearish count. A higher daily change is improving; a lower daily change is deteriorating. With missing data, the website shows a range and will not assume absent inputs are healthy.</p>
+ <p>Six shared macro signals and ten index-specific signals are now scored. Daily MACD(12,26,9) adds one health point when its line is at/above the signal line; below the signal line adds zero. Fear &amp; Greed and five individual SMA rows remain informational. Older records retain their original 15-point denominator.</p>
+ <p><strong>Research caveat:</strong> The new unified 0–5 / 6–10 / 11–16 classification has not been revalidated using forward returns. The earlier research sections below are archived analysis of the old bearish-score thresholds and should not be treated as evidence for the new bands.</p>
 </section>
 <details class="threshold-evidence" style="margin:16px 0" aria-label="Archived previous bearish-score research"><summary><strong>Previous bearish-count methodology and historical research (archived)</strong> · expand to review</summary>
 <div class="info-line">ARCHIVED REFERENCE ONLY — these score ranges and conclusions refer to the former lower-is-better bearish-count model, not today's Market Health display.</div>

@@ -12,11 +12,11 @@ import pandas as pd
 
 S = {"bull":"BULLISH", "bear":"BEARISH", "warn":"CAUTION", "na":"N/A"}
 SHARED = ["oil", "usd", "tnx", "credit", "copper", "vix_curve"]
-SP = ["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "sp_rsi14", "rsp_spy", "iwm_spy", "sp_breadth1d"]
-ND = ["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "nd_rsi14", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
+SP = ["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "sp_rsi14", "rsp_spy", "iwm_spy", "sp_breadth1d", "sp_macd"]
+ND = ["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "nd_rsi14", "qqqe_qqq", "iwm_qqq", "nd_breadth1d", "nd_macd"]
 LABELS = {
  "vix":"VIX", "vxn":"VXN", "oil":"Crude Oil", "usd":"US Dollar", "tnx":"10Y Yield", "credit":"Credit HYG/IEF", "copper":"Copper", "vix_curve":"VIX Curve",
- "sp_rsi14":"SPY RSI (14)", "nd_rsi14":"QQQ RSI (14)",
+ "sp_rsi14":"SPY RSI (14)", "nd_rsi14":"QQQ RSI (14)", "sp_macd":"SPY MACD (12,26,9)", "nd_macd":"QQQ MACD (12,26,9)",
  "sp_def":"Defensives/SPY", "sp_xle":"XLE/SPY", "sp_smh":"SMH/SPY", "spy_trend":"SPY Trend", "rsp_spy":"RSP/SPY", "iwm_spy":"IWM/SPY", "sp_breadth1d":"S&P Breadth 1D", "sp_breadth5d":"S&P Breadth 5D", "sp_breadth200":"S&P Breadth 200D",
  "nd_def":"Defensives/QQQ", "nd_xle":"XLE/QQQ", "nd_smh":"SMH/QQQ", "qqq_trend":"QQQ Trend", "qqqe_qqq":"QQQE/QQQ", "iwm_qqq":"IWM/QQQ", "nd_breadth1d":"Nasdaq Breadth 1D", "nd_breadth5d":"Nasdaq Breadth 5D",
 }
@@ -123,6 +123,9 @@ def build_frames(prices: pd.DataFrame, extra: pd.DataFrame | None = None):
         for days in (5, 20, 50, 100, 200):
             f[f"{symbol}_ma{days}"] = ma(close_series, days)
         f[f"{symbol}_rsi14"] = wilder_rsi(close_series, 14)
+        macd_line = close_series.ewm(span=12, adjust=False, min_periods=12).mean() - close_series.ewm(span=26, adjust=False, min_periods=26).mean()
+        macd_signal = macd_line.ewm(span=9, adjust=False, min_periods=9).mean()
+        f[f"{symbol}_macd_hist"] = macd_line - macd_signal
     f["smh_ema20"],f["spy_ema20"],f["qqq_ema20"] = smh.ewm(span=20,adjust=False,min_periods=20).mean(), spy.ewm(span=20,adjust=False,min_periods=20).mean(), qqq.ewm(span=20,adjust=False,min_periods=20).mean()
     f["smh_sp_ma15"],f["smh_nd_ma15"] = ma(smh/spy,15),ma(smh/qqq,15)
     for name,ratio in (("rsp_spy",rsp/spy),("iwm_spy",iwm/spy),("qqqe_qqq",qqqe/qqq),("iwm_qqq",iwm/qqq)):
@@ -206,6 +209,13 @@ def build_day(f: pd.DataFrame, pos: int, sources:dict | None=None):
             st="bear" if v<45 else "bull" if v>55 else "warn"
             return st,S[st],v,"Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish"
         condition(key,[f"{bench}_rsi14"],rsiscore,bench.upper()+" EOD close")
+    # The 16th scored signal is the completed-session MACD(12,26,9) line
+    # versus its 9-day signal. Zero histogram counts as non-bearish.
+    for key,bench in (("sp_macd","spy"),("nd_macd","qqq")):
+        def macd_score(hist):
+            st = "bull" if hist >= 0 else "bear"
+            return st,S[st],hist,"Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero"
+        condition(key,[f"{bench}_macd_hist"],macd_score,bench.upper()+" EOD close · EMA(12,26,9)")
     for key in ("rsp_spy","iwm_spy","qqqe_qqq","iwm_qqq"):
         def relative(diff):
             st="bull" if diff>0.25 else "bear" if diff < -0.25 else "warn"
@@ -502,8 +512,8 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     indexpos=f.index.get_loc(d)
     records=[]
     # More days retained so 5D analytics compare the same available inputs.
-    # Keep original 14-point baseline (identical signals minus the new RSI
-    # point) for comparison; the 15-point model uses the original trend rule.
+    # Retain original 14-point and pre-MACD 15-point scores for comparison.
+    # The 16-point model adds one MACD signal but changes no prior signals.
     old_sp=["vix", "sp_def", "sp_xle", "sp_smh", "spy_trend", "rsp_spy", "iwm_spy", "sp_breadth1d"]
     old_nd=["vxn", "nd_def", "nd_xle", "nd_smh", "qqq_trend", "qqqe_qqq", "iwm_qqq", "nd_breadth1d"]
     # Reconstruct each historical session from EOD input series. The price
@@ -514,7 +524,9 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     for pos in range(max(0,history_start-8),indexpos+1):
         day,sigs=build_day(f,pos,sources)
         records.append({"date":day,"signals":sigs,
-                        "sp":score_of(sigs,SHARED+SP),"nd":score_of(sigs,SHARED+ND,risk_on_max=5),
+                        "sp":score_of(sigs,SHARED+SP),"nd":score_of(sigs,SHARED+ND),
+                        "sp_legacy15":score_of(sigs,SHARED+[key for key in SP if key!="sp_macd"]),
+                        "nd_legacy15":score_of(sigs,SHARED+[key for key in ND if key!="nd_macd"]),
                         "sp_legacy":score_of_legacy14(sigs,SHARED+old_sp),
                         "nd_legacy":score_of_legacy14(sigs,SHARED+old_nd)})
     latest=records[-1]
@@ -555,8 +567,7 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
             latest[index+"_confirmation"],latest["signals"][trend_key].state)
     latest["sp_swing"]=swing("sp")
     latest["nd_swing"]=swing("nd")
-    # All five ETF SMA rows remain informational; original 50D/200D Trend
-    # and RSI14 are the two scored technical signals.
+    # All five ETF SMA rows remain informational; trend, RSI and daily MACD are scored.
     def ma_context(symbol):
         close=safe(frow.get(symbol.upper()))
         averages={}
@@ -584,17 +595,22 @@ def analyze(prices:pd.DataFrame,extra:pd.DataFrame|None=None, sources:dict|None=
     latest["signals"]={k:v.json() for k,v in latest["signals"].items()}
     def prune_sc(x): return {k:v for k,v in x.items() if k!="available_keys"}
     latest["sp"]=prune_sc(latest["sp"]); latest["nd"]=prune_sc(latest["nd"])
+    legacy15_sp=prune_sc(latest["sp_legacy15"])
+    legacy15_nd=prune_sc(latest["nd_legacy15"])
     legacy_sp=prune_sc(latest["sp_legacy"])
     legacy_nd=prune_sc(latest["nd_legacy"])
     historical_records=[r for r in records if pd.Timestamp(r["date"]) >= first_date]
     history=[{"date":r["date"], "sp":r["sp"]["bearish"],"sp_available":r["sp"]["available"],
               "sp_max":r["sp"]["possible_max"], "nd":r["nd"]["bearish"],"nd_available":r["nd"]["available"],
               "nd_max":r["nd"]["possible_max"]} for r in historical_records]
-    backtest=historical_backtest(records,f,pd.Timestamp(d),history_months)  # include 8 warm-up sessions for score-trend classification
-    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"15-point-health-v1-neutral-6-10", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"signal_changes":signal_changes,"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,"history_storage":"legacy_bearish_counts_display_as_health",
+    # Existing score-5 backtest was researched on the *old* 15-point model.
+    # Do not silently relabel its results as a validated 16-point backtest.
+    old_research_records = [dict(r,sp=r["sp_legacy15"],nd=r["nd_legacy15"]) for r in records]
+    backtest=historical_backtest(old_research_records,f,pd.Timestamp(d),history_months)  # include 8 warm-up sessions for score-trend classification
+    return {"session":latest["date"],"generated_at":datetime.now(timezone.utc).isoformat(),"model_version":"16-point-health-v2-macd-neutral-6-10", "mode":"LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING", "method":"Daily-bar port of Thinkorswim rules; not a live brokerage feed", "markets":{"sp500":{"score":latest["sp"],"legacy_14":legacy_sp,"legacy_15":legacy15_sp,"momentum":latest["sp_momentum"],"confirmation":latest["sp_confirmation"],"swing":latest["sp_swing"]},"nasdaq100":{"score":latest["nd"],"legacy_14":legacy_nd,"legacy_15":legacy15_nd,"momentum":latest["nd_momentum"],"confirmation":latest["nd_confirmation"],"swing":latest["nd_swing"]}},"signals":latest["signals"],"signal_changes":signal_changes,"moving_averages":moving_averages,"history":history,"backtest":backtest,"history_window_months":history_months,"history_storage":"legacy_bearish_counts_display_as_health",
             "risk_policy":{"score_name":"Market Health", "direction":"higher_is_healthier",
-                            "formula":"15 minus bearish signal count; neutral/warning input counts as non-bearish",
+                            "formula":"16 minus bearish signal count; neutral/warning input counts as non-bearish; daily MACD line >= signal earns one health point",
                             "sp500":{"risk_off_max":5,"neutral_min":6,"neutral_max":10,"risk_on_min":11},
                             "nasdaq100":{"risk_off_max":5,"neutral_min":6,"neutral_max":10,"risk_on_min":11},
                             "legacy_backtest_policy":"Earlier forward-return research used bearish scores and different thresholds; not validated for this new policy.",
-                            "decision_date":"2026-11-25"},"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Health Score is an interval when inputs are missing. Missing points are never automatically counted as healthy.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 15-point Market Health model for both indexes: higher is healthier; 0–5 Risk-Off, 6–10 Neutral, 11–15 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. Only full 15/15 sessions enter score ≤4/5 backtest counts; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) adds one point; original 50D/200D trend rule is retained; five SMA readings are informational only."}}
+                            "decision_date":"2026-11-25","prior_model":"15-point-health-v1-neutral-6-10","macd_rule":"Daily MACD(12,26,9) histogram >=0: non-bearish (+1 health); <0: bearish (+0 health)","fear_greed_scored":False},"order":{"shared":SHARED,"sp500":SP+["sp_breadth5d","sp_breadth200"],"nasdaq100":ND+["nd_breadth5d"]},"names":LABELS,"explanation":{"missing":"Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.","partial":"Health Score is an interval when inputs are missing. Missing points are never automatically counted as healthy.","rights":"Confirm provider display and redistribution permissions before publishing derived data publicly.","model":"Experimental 16-point Market Health model for both indexes: higher is healthier; 0–5 Risk-Off, 6–10 Neutral, 11–16 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. The existing score ≤4/5 historical research still uses the archived 15-point model; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) and MACD(12,26,9) each add one point; original 50D/200D trend rule is retained; five SMA readings and external Fear & Greed remain informational only."}}

@@ -1,7 +1,7 @@
-"""Information-only daily SPY/QQQ MACD on unadjusted completed-session closes.
+"""Daily SPY/QQQ MACD on unadjusted completed-session closes.
 
 MACD line = EMA(12) - EMA(26); signal = EMA(9) of MACD; histogram = line - signal.
-Do not use this module for the 15-point or original 14-point score.
+The 16-point engine independently computes the same EMA series for each historical session.
 """
 from __future__ import annotations
 import math
@@ -12,7 +12,7 @@ def calculate_daily_macd(equity_sessions: pd.DataFrame, session: str) -> dict:
     """Produce session-aligned MACD readings or explicit N/A status, never guesses."""
     payload = {"parameters": {"fast": 12, "slow": 26, "signal": 9},
                "source": "unadjusted SPY/QQQ daily closes, same sessions as scored EOD model",
-               "scored": False}
+               "scored": True}
     end = pd.Timestamp(session)
     valid = equity_sessions.loc[equity_sessions.index <= end]
     for symbol in ("SPY", "QQQ"):

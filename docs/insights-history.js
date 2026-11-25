@@ -83,12 +83,12 @@
     return '"'+s.replace(/"/g,'""')+'"';
   }
   function toCSV(rows){
-    const head=['Session','Record origin','Source note','Previous session','ETF','Previous close','Close','Price change %','Market Health (min)','Points available','Total points','Previous Market Health','Health score max','Archived bearish points','1D score delta','Risk regime','Previous risk regime','Risk transition','5D score trend','5D score delta low','5D score delta high','Confirmations improving','Confirmations checked','Confirmation categories','Swing environment','Price/risk alert','Price/risk detail','Estimated signal count','Estimated signal names','Shared health losses','Shared health gains','Index health losses','Index health gains','SPY vs QQQ status (health policy)','RSI (14)','Volatility index','Volatility value','MACD 12-26','MACD signal 9','MACD histogram','MACD relation','MACD crossover'];
+    const head=['Session','Recorded model','Record origin','Source note','Previous session','ETF','Previous close','Close','Price change %','Market Health (min)','Points available','Total points','Previous Market Health','Health score max','Archived bearish points','1D score delta','Risk regime','Previous risk regime','Risk transition','5D score trend','5D score delta low','5D score delta high','Confirmations improving','Confirmations checked','Confirmation categories','Swing environment','Price/risk alert','Price/risk detail','Estimated signal count','Estimated signal names','Shared health losses','Shared health gains','Index health losses','Index health gains','SPY vs QQQ status (health policy)','RSI (14)','Volatility index','Volatility value','MACD 12-26','MACD signal 9','MACD histogram','MACD relation','MACD crossover'];
     const list=[head];
     for(const row of rows){
       const d=row.detail,c=row.changes?.groups||{},g=c[row.symbol==='spy'?'sp':'nd']||{},shared=c.shared||{};
       const labels=v=>Array.isArray(v)?v.map(x=>x.label||'').join('; '):'';
-      list.push([row.session,row.recordSource,row.sourceNote,row.previous_session,row.symbol.toUpperCase(),d.previous_close,d.close,d.price_change_pct,d.score,d.available,d.total,d.previous_score,d.score_max,d.archived_bearish,d.score_delta_1d,d.regime,d.previous_regime,d.risk_transition,d.trend_5d,d.five_day_delta_range?.[0],d.five_day_delta_range?.[1],d.confirmation?.confirmed,d.confirmation?.available,d.confirmation?.total,d.swing,d.price_risk_status,d.price_risk_label,d.estimated_count,(d.estimated_signals||[]).join('; '),labels(shared.new_bearish),labels(shared.eased),labels(g.new_bearish),labels(g.eased),row.marketDivergence,d.baseline_context?.rsi14,d.baseline_context?.volatility_index?.name,d.baseline_context?.volatility_index?.value,d.macd_info?.macd,d.macd_info?.signal,d.macd_info?.histogram,d.macd_info?.relation,d.macd_info?.crossover]);
+      list.push([row.session,`${d.total}-point`,row.recordSource,row.sourceNote,row.previous_session,row.symbol.toUpperCase(),d.previous_close,d.close,d.price_change_pct,d.score,d.available,d.total,d.previous_score,d.score_max,d.archived_bearish,d.score_delta_1d,d.regime,d.previous_regime,d.risk_transition,d.trend_5d,d.five_day_delta_range?.[0],d.five_day_delta_range?.[1],d.confirmation?.confirmed,d.confirmation?.available,d.confirmation?.total,d.swing,d.price_risk_status,d.price_risk_label,d.estimated_count,(d.estimated_signals||[]).join('; '),labels(shared.new_bearish),labels(shared.eased),labels(g.new_bearish),labels(g.eased),row.marketDivergence,d.baseline_context?.rsi14,d.baseline_context?.volatility_index?.name,d.baseline_context?.volatility_index?.value,d.macd_info?.macd,d.macd_info?.signal,d.macd_info?.histogram,d.macd_info?.relation,d.macd_info?.crossover]);
     }
     return '\uFEFF'+list.map(items=>items.map(csvField).join(',')).join('\r\n')+'\r\n';
   }
@@ -185,7 +185,7 @@
       small('span',`Prior scored: ${dateLabel(row.previous_session)}`,'journal-muted',date);
       const price=make('td','',tr);small('strong',money(d.close),'',price);small('span',`Prior ${money(d.previous_close)}`,'journal-muted',price);
       const change=make('td','',tr);small('span',signed(d.price_change_pct,'%'),'journal-percent '+(d.price_change_pct>0?'journal-up':d.price_change_pct<0?'journal-down':'journal-neutral'),change);
-      const score=make('td','',tr);small('strong',`${text(d.score)}${d.score_max!==d.score?'–'+d.score_max:''}/${text(d.total)}`,'',score);small('span',`${text(d.available)}/${text(d.total)} available · ${text(d.estimated_count)} est.`,'journal-muted',score);
+      const score=make('td','',tr);small('strong',`${text(d.score)}${d.score_max!==d.score?'–'+d.score_max:''}/${text(d.total)}`,'',score);small('span',`${text(d.available)}/${text(d.total)} available · ${text(d.estimated_count)} est. · ${text(d.total)}-point model`,'journal-muted',score);
       const delta=make('td','',tr);small('strong',signed(d.score_delta_1d),'journal-percent '+(d.score_delta_1d>0?'journal-up':d.score_delta_1d<0?'journal-down':'journal-neutral'),delta);
       if(d.score_delta_1d==null)small('span','Not confirmed','journal-muted',delta);
       const regime=make('td','',tr);pill(d.regime,d.regime.toLowerCase(),regime);
@@ -206,8 +206,8 @@
       parent.appendChild(node);return node;
     };
     const x=i=>L+(entriesForChart.length<2?0:i/(entriesForChart.length-1))*(W-L-R);
-    const y=v=>T+(15-v)/15*(H-T-B);
-    for(const n of [0,5.5,10.5,15]){
+    const y=v=>T+(16-v)/16*(H-T-B);
+    for(const n of [0,5.5,10.5,16]){
       el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:n===5.5?'#8f4856':n===10.5?'#887348':'#30435a','stroke-width':1,'stroke-dasharray':n===5.5||n===10.5?'6 5':'1 0'});
       const t=el('text',{x:8,y:y(n)+4,fill:'#93abc5','font-size':12});t.textContent=String(n);
     }
@@ -220,18 +220,20 @@
       t.textContent=dateLabel(entriesForChart[i].date).replace(/, \d{4}$/,'');
     }
     for(const [market,color]of [[options.market,options.market==='spy'?'#34e2a4':'#85bfff']]){
-      let path='',started=false;
+      let path='',started=false,priorTotal=null;
       entriesForChart.forEach((rec,i)=>{
         const d=rec[market],v=d?.score;
         if(!isNum(v)){started=false;return;}
+        if(priorTotal!==null && priorTotal!==d.total)started=false;
+        priorTotal=d.total;
         path+=(started?' L':' M')+x(i).toFixed(2)+','+y(v).toFixed(2);started=true;
       });
       if(path)el('path',{d:path,fill:'none',stroke:color,'stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});
       entriesForChart.forEach((rec,i)=>{
         const d=rec[market];if(!isNum(d?.score))return;
         const c=el('circle',{cx:x(i),cy:y(d.score),r:entriesForChart.length===1?5:3.5,
-          fill:d.available===15?color:'#101b2b',stroke:color,'stroke-width':1.5});
-        const t=el('title',{},c);t.textContent=`${rec.date} · ${market.toUpperCase()} ${d.score}${d.score_max!==d.score?'–'+d.score_max:''}/15 Market Health · ${d.regime}`;
+          fill:d.available===d.total?color:'#101b2b',stroke:color,'stroke-width':1.5});
+        const t=el('title',{},c);t.textContent=`${rec.date} · ${market.toUpperCase()} ${d.score}${d.score_max!==d.score?'–'+d.score_max:''}/${d.total} Market Health · ${d.regime}`;
       });
     }
   }
@@ -251,7 +253,7 @@
     chart(chartRows(entries,options));
     $('j-message').textContent=entries.length?
       `Showing saved ${options.market.toUpperCase()} EOD observations. November 20 is a labeled screenshot baseline. Export visible CSV for an independent backup.`:
-      'No journal entries yet. New completed EOD sessions will appear automatically. Prior bearish scores are inverted only for display; original archived counts remain preserved.';
+      'No journal entries yet. New completed EOD sessions will appear automatically. Prior bearish scores are inverted only for display; 15-point and 16-point snapshots retain their own denominators; original archived counts remain preserved.';
   }
   function setStatus(msg,ok){$('history-updated').textContent=msg;$('history-dot').className='status-dot '+(ok?'good':'warn');}
   async function load(){
