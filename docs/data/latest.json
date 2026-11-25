@@ -1,6 +1,6 @@
 {
-  "session": "2026-11-24",
-  "generated_at": "2026-11-25T06:12:30.435714+00:00",
+  "session": "2026-11-25",
+  "generated_at": "2026-11-25T16:55:23.100790+00:00",
   "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -69,78 +69,78 @@
     "nasdaq100": {
       "score": {
         "bearish": 11,
-        "possible_max": 11,
-        "health": 5,
+        "possible_max": 12,
+        "health": 4,
         "health_max": 5,
         "total": 16,
-        "available": 16,
-        "missing": 0,
+        "available": 15,
+        "missing": 1,
         "regime": "RISK-OFF",
-        "complete": true
+        "complete": false
       },
       "legacy_14": {
         "bearish": 9,
-        "possible_max": 9,
-        "health": 5,
+        "possible_max": 10,
+        "health": 4,
         "health_max": 5,
         "total": 14,
-        "available": 14,
-        "missing": 0,
+        "available": 13,
+        "missing": 1,
         "regime": "RISK-OFF",
-        "complete": true
+        "complete": false
       },
       "legacy_15": {
         "bearish": 10,
-        "possible_max": 10,
-        "health": 5,
+        "possible_max": 11,
+        "health": 4,
         "health_max": 5,
         "total": 15,
-        "available": 15,
-        "missing": 0,
+        "available": 14,
+        "missing": 1,
         "regime": "RISK-OFF",
-        "complete": true
+        "complete": false
       },
       "momentum": {
-        "d1": -1,
-        "d5": -1,
-        "state": "STABLE",
+        "d1": 0,
+        "d5": -2,
+        "state": "UNCERTAIN",
         "d1_range": [
-          -1,
-          -1
+          0,
+          1
         ],
         "d5_range": [
-          -1,
+          -2,
           -1
         ],
-        "partial": false
+        "partial": true
       },
       "confirmation": {
-        "confirmed": 0,
-        "available": 4,
+        "confirmed": 1,
+        "available": 3,
         "total": 4,
         "components": {
-          "volatility": false,
+          "volatility": null,
           "credit": false,
-          "breadth": false,
+          "breadth": true,
           "price": false
         }
       },
-      "swing": "BEARISH"
+      "swing": "N/A"
     }
   },
   "signals": {
     "vix": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 26.36,
+      "value": 33.81,
       "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
     },
     "vxn": {
-      "state": "bear",
-      "label": "BEARISH",
-      "value": 36.42,
-      "note": "Spot implied volatility",
+      "state": "na",
+      "label": "N/A",
+      "value": null,
+      "note": "Market data unavailable or stale",
       "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
     },
     "oil": {
@@ -181,7 +181,7 @@
     "vix_curve": {
       "state": "bear",
       "label": "BACKWARDATION",
-      "value": 1.035,
+      "value": 1.14,
       "note": "VIX / VIX3M implied-volatility ratio",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
     },
@@ -244,139 +244,102 @@
     "sp_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 40.471,
+      "value": 35.376,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "SPY EOD close"
     },
     "nd_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 39.45,
+      "value": 34.572,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "QQQ EOD close"
     },
     "sp_macd": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -3.529,
+      "value": -3.977,
       "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
       "source": "SPY EOD close \u00b7 EMA(12,26,9)"
     },
     "nd_macd": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -2.813,
+      "value": -3.901,
       "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
       "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
     },
     "rsp_spy": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 0.841,
+      "value": 2.366,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "RSP/SPY"
     },
     "iwm_spy": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 0.583,
+      "value": 1.592,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/SPY"
     },
     "qqqe_qqq": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 0.59,
+      "value": 1.765,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "QQQE/QQQ"
     },
     "iwm_qqq": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.796,
+      "value": 4.006,
       "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/QQQ"
     },
     "sp_breadth1d": {
       "state": "warn",
       "label": "STABLE",
-      "value": 0.0,
+      "value": -0.601,
       "note": "1D change in % of SPX constituents above 200D SMA; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth5d": {
       "state": "bear",
       "label": "CONTRACTING",
-      "value": -2.605,
+      "value": -3.206,
       "note": "5D change, percentage points",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth200": {
       "state": "warn",
       "label": "CAUTION",
-      "value": 55.711,
+      "value": 55.11,
       "note": "Current % of SPX constituents above own 200D SMA",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "nd_breadth1d": {
-      "state": "warn",
-      "label": "STABLE",
-      "value": 53.061,
+      "state": "bear",
+      "label": "CONTRACTING",
+      "value": 26.531,
       "note": "Today's advancing share % (not SPX 200D breadth)",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     },
     "nd_breadth5d": {
-      "state": "warn",
-      "label": "STABLE",
-      "value": 2.946,
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 5.394,
       "note": "Change in average advancing share between adjacent 5D windows; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     }
   },
   "signal_changes": {
-    "from_session": "2026-11-23",
-    "to_session": "2026-11-24",
+    "from_session": "2026-11-24",
+    "to_session": "2026-11-25",
     "groups": {
       "shared": {
-        "new_bearish": [
-          {
-            "key": "oil",
-            "label": "Crude Oil",
-            "before": "BULLISH",
-            "after": "BEARISH",
-            "kind": "new_bearish"
-          },
-          {
-            "key": "credit",
-            "label": "Credit HYG/IEF",
-            "before": "BULLISH",
-            "after": "BEARISH",
-            "kind": "new_bearish"
-          },
-          {
-            "key": "copper",
-            "label": "Copper",
-            "before": "BULLISH",
-            "after": "BEARISH",
-            "kind": "new_bearish"
-          }
-        ],
-        "eased": [
-          {
-            "key": "usd",
-            "label": "US Dollar",
-            "before": "BEARISH DIV",
-            "after": "BULLISH DIV",
-            "kind": "eased"
-          },
-          {
-            "key": "tnx",
-            "label": "10Y Yield",
-            "before": "BEARISH DIV",
-            "after": "BULLISH DIV",
-            "kind": "eased"
-          }
-        ],
+        "new_bearish": [],
+        "eased": [],
         "other": [],
         "compared": 6,
         "skipped": 0,
@@ -384,167 +347,110 @@
       },
       "sp": {
         "new_bearish": [],
-        "eased": [
-          {
-            "key": "iwm_spy",
-            "label": "IWM/SPY",
-            "before": "BEARISH",
-            "after": "BULLISH",
-            "kind": "eased"
-          }
-        ],
-        "other": [
-          {
-            "key": "rsp_spy",
-            "label": "RSP/SPY",
-            "before": "CAUTION",
-            "after": "BULLISH",
-            "kind": "other"
-          },
-          {
-            "key": "sp_breadth1d",
-            "label": "S&P Breadth 1D",
-            "before": "EXPANDING",
-            "after": "STABLE",
-            "kind": "other"
-          }
-        ],
+        "eased": [],
+        "other": [],
         "compared": 10,
         "skipped": 0,
         "total": 10
       },
       "nd": {
-        "new_bearish": [],
-        "eased": [
-          {
-            "key": "qqqe_qqq",
-            "label": "QQQE/QQQ",
-            "before": "BEARISH",
-            "after": "BULLISH",
-            "kind": "eased"
-          },
-          {
-            "key": "iwm_qqq",
-            "label": "IWM/QQQ",
-            "before": "BEARISH",
-            "after": "BULLISH",
-            "kind": "eased"
-          }
-        ],
-        "other": [
+        "new_bearish": [
           {
             "key": "nd_breadth1d",
             "label": "Nasdaq Breadth 1D",
-            "before": "EXPANDING",
-            "after": "STABLE",
-            "kind": "other"
+            "before": "STABLE",
+            "after": "CONTRACTING",
+            "kind": "new_bearish"
           }
         ],
-        "compared": 10,
-        "skipped": 0,
+        "eased": [],
+        "other": [],
+        "compared": 9,
+        "skipped": 1,
         "total": 10
       }
     },
     "by_key": {
-      "oil": "new_bearish",
-      "usd": "eased",
-      "tnx": "eased",
-      "credit": "new_bearish",
-      "copper": "new_bearish",
-      "rsp_spy": "other",
-      "iwm_spy": "eased",
-      "sp_breadth1d": "other",
-      "qqqe_qqq": "eased",
-      "iwm_qqq": "eased",
-      "nd_breadth1d": "other"
+      "nd_breadth1d": "new_bearish"
     }
   },
   "moving_averages": {
     "spy": {
       "symbol": "SPY",
-      "as_of": "2026-11-24",
-      "close": 718.78,
+      "as_of": "2026-11-25",
+      "close": 700.07,
       "averages": {
         "5": {
-          "value": 715.39,
-          "distance_pct": 0.47,
-          "state": "BULLISH"
+          "value": 709.364,
+          "distance_pct": -1.31,
+          "state": "BEARISH"
         },
         "20": {
-          "value": 743.109,
-          "distance_pct": -3.27,
+          "value": 739.497,
+          "distance_pct": -5.33,
           "state": "BEARISH"
         },
         "50": {
-          "value": 758.636,
-          "distance_pct": -5.25,
+          "value": 757.556,
+          "distance_pct": -7.59,
           "state": "BEARISH"
         },
         "100": {
-          "value": 758.848,
-          "distance_pct": -5.28,
+          "value": 758.372,
+          "distance_pct": -7.69,
           "state": "BEARISH"
         },
         "200": {
-          "value": 733.038,
-          "distance_pct": -1.95,
+          "value": 733.078,
+          "distance_pct": -4.5,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 40.47,
+        "value": 35.38,
         "state": "NEUTRAL"
       }
     },
     "qqq": {
       "symbol": "QQQ",
-      "as_of": "2026-11-24",
-      "close": 638.1,
+      "as_of": "2026-11-25",
+      "close": 611.97,
       "averages": {
         "5": {
-          "value": 640.426,
-          "distance_pct": -0.36,
+          "value": 630.918,
+          "distance_pct": -3.0,
           "state": "BEARISH"
         },
         "20": {
-          "value": 671.315,
-          "distance_pct": -4.95,
+          "value": 665.633,
+          "distance_pct": -8.06,
           "state": "BEARISH"
         },
         "50": {
-          "value": 708.465,
-          "distance_pct": -9.93,
+          "value": 706.61,
+          "distance_pct": -13.39,
           "state": "BEARISH"
         },
         "100": {
-          "value": 709.219,
-          "distance_pct": -10.03,
+          "value": 708.244,
+          "distance_pct": -13.59,
           "state": "BEARISH"
         },
         "200": {
-          "value": 683.387,
-          "distance_pct": -6.63,
+          "value": 683.389,
+          "distance_pct": -10.45,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 39.45,
+        "value": 34.57,
         "state": "NEUTRAL"
       }
     }
   },
   "history": [
-    {
-      "date": "2025-03-24",
-      "sp": 6,
-      "sp_available": 16,
-      "sp_max": 6,
-      "nd": 6,
-      "nd_available": 16,
-      "nd_max": 6
-    },
     {
       "date": "2025-03-25",
       "sp": 3,
@@ -4333,12 +4239,21 @@
       "nd": 11,
       "nd_available": 16,
       "nd_max": 11
+    },
+    {
+      "date": "2026-11-25",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 15,
+      "nd_max": 12
     }
   ],
   "backtest": {
     "year": {
-      "start": "2025-11-24",
-      "end": "2026-11-24",
+      "start": "2025-11-25",
+      "end": "2026-11-25",
       "sessions": 252,
       "markets": {
         "sp": {
@@ -4509,8 +4424,8 @@
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
-          "complete_days": 252,
-          "incomplete_days": 0,
+          "complete_days": 251,
+          "incomplete_days": 1,
           "zero_to_four": {
             "days": 69,
             "forward1_observations": 69,
@@ -4802,8 +4717,8 @@
       }
     },
     "twenty_months": {
-      "start": "2025-03-24",
-      "end": "2026-11-24",
+      "start": "2025-03-25",
+      "end": "2026-11-25",
       "sessions": 422,
       "markets": {
         "sp": {
@@ -4974,8 +4889,8 @@
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
-          "complete_days": 422,
-          "incomplete_days": 0,
+          "complete_days": 421,
+          "incomplete_days": 1,
           "zero_to_four": {
             "days": 138,
             "forward1_observations": 138,
@@ -5267,9 +5182,9 @@
         "halves": [
           {
             "label": "Earlier 10 months",
-            "start": "2025-03-24",
-            "end": "2026-01-23",
-            "sessions": 211,
+            "start": "2025-03-25",
+            "end": "2026-01-24",
+            "sessions": 210,
             "groups": {
               "zero_to_four": {
                 "days": 88,
@@ -5395,9 +5310,9 @@
           },
           {
             "label": "Later 10 months",
-            "start": "2026-01-24",
-            "end": "2026-11-24",
-            "sessions": 211,
+            "start": "2026-01-25",
+            "end": "2026-11-25",
+            "sessions": 212,
             "groups": {
               "zero_to_four": {
                 "days": 50,
@@ -5624,19 +5539,11 @@
     "model": "Experimental 16-point Market Health model for both indexes: higher is healthier; 0\u20135 Risk-Off, 6\u201310 Neutral, 11\u201316 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. The existing score \u22644/5 historical research still uses the archived 15-point model; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) and MACD(12,26,9) each add one point; original 50D/200D trend rule is retained; five SMA readings and external Fear & Greed remain informational only."
   },
   "price_moves": {
-    "session": "2026-11-24",
-    "previous_session": "2026-11-23",
-    "status": "complete",
-    "spy": {
-      "previous_close": 722.289978,
-      "close": 718.780029,
-      "change_pct": -0.48595
-    },
-    "qqq": {
-      "previous_close": 651.030029,
-      "close": 638.099976,
-      "change_pct": -1.98609
-    }
+    "session": "2026-11-25",
+    "previous_session": null,
+    "status": "awaiting_close",
+    "spy": null,
+    "qqq": null
   },
   "daily_macd": {
     "parameters": {
@@ -5647,20 +5554,20 @@
     "source": "unadjusted SPY/QQQ daily closes, same sessions as scored EOD model",
     "scored": true,
     "spy": {
-      "as_of": "2026-11-24",
+      "as_of": "2026-11-25",
       "status": "complete",
-      "macd": -12.86124,
-      "signal": -9.33189,
-      "histogram": -3.52935,
+      "macd": -14.30256,
+      "signal": -10.32602,
+      "histogram": -3.97653,
       "relation": "below",
       "crossover": "none"
     },
     "qqq": {
-      "as_of": "2026-11-24",
+      "as_of": "2026-11-25",
       "status": "complete",
-      "macd": -19.84865,
-      "signal": -17.0358,
-      "histogram": -2.81285,
+      "macd": -21.91214,
+      "signal": -18.01107,
+      "histogram": -3.90107,
       "relation": "below",
       "crossover": "none"
     }
@@ -5668,51 +5575,51 @@
   "sources": {
     "SPY": {
       "provider": "Yahoo Finance via yfinance (unofficial): SPY",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "QQQ": {
       "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "RSP": {
       "provider": "Yahoo Finance via yfinance (unofficial): RSP",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "QQQE": {
       "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "IWM": {
       "provider": "Yahoo Finance via yfinance (unofficial): IWM",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "SMH": {
       "provider": "Yahoo Finance via yfinance (unofficial): SMH",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "XLE": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLE",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "XLP": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLP",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "XLV": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLV",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "XLU": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLU",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "HYG": {
       "provider": "Yahoo Finance via yfinance (unofficial): HYG",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "IEF": {
       "provider": "Yahoo Finance via yfinance (unofficial): IEF",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "OIL": {
       "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
@@ -5728,11 +5635,11 @@
     },
     "TNX": {
       "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "VIX": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "VXN": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
@@ -5740,19 +5647,19 @@
     },
     "VIX3M": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "SPX_BREADTH200": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "NDX_ADV": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     },
     "NDX_DECL": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
-      "latest_session": "2026-11-24"
+      "latest_session": "2026-11-25"
     }
   },
   "warnings": [
