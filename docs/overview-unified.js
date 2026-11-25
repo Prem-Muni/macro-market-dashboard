@@ -82,12 +82,15 @@
 
   // The 16-point model is unchanged. Each visual label reads the existing
   // scored #sp-regime / #nd-regime text, never the reverse.
+  // Self-styled SVGs: older cached CSS must not turn line icons into
+  // solid black filled shapes. This style survives independent CSS caching.
+  const arrow = d => '<svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" style="display:block;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="'+d+'"/></svg>';
   const regimeArrow = {
-    bull: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m4 22 8-8 6 6 10-12M20 8h8v8"/></svg>',
-    bear: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m4 9 8 8 6-6 10 12M20 23h8v-8"/></svg>',
-    balanced: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 16h18"/></svg>',
-    mixed: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m5 11 8 8 6-6 8 8M20 21h7v-7"/></svg>',
-    pending: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 11v7M16 23v.5"/></svg>'
+    bull: arrow('m4 22 8-8 6 6 10-12M20 8h8v8'),
+    bear: arrow('m4 9 8 8 6-6 10 12M20 23h8v-8'),
+    balanced: arrow('M7 16h18'),
+    mixed: arrow('m5 11 8 8 6-6 8 8M20 21h7v-7'),
+    pending: '<svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" style="display:block;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round"><circle cx="16" cy="16" r="12"/><path d="M16 11v7M16 23v.5"/></svg>'
   };
   const marketMoods = {};
   for (const [prefix, sym] of [['sp', 'SPY'], ['nd', 'QQQ']]) {
@@ -96,6 +99,9 @@
     // Preserve the original node and its id: app.js continues to update it.
     original.classList.add('regime-source-only');
     original.setAttribute('aria-hidden','true');
+    // app.js rewrites className on each EOD refresh. The inline important
+    // display rule stays attached to the original element across updates.
+    original.style.setProperty('display', 'none', 'important');
     const mood = make('div','market-mood');
     mood.id = prefix + '-market-mood';
     mood.dataset.state = 'pending';
