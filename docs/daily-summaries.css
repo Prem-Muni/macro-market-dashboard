@@ -1,0 +1,27 @@
+/* Compact EOD summary + permanent archive views, no scoring mutations. */
+.daily-summary-overview{margin:12px 0 20px}
+.daily-summary-card{background:linear-gradient(160deg,#14253a,#0a1423);border:1px solid #304d67;border-radius:14px;padding:17px 20px;margin:0 0 12px;color:#e9f3ff}
+.daily-summary-card.current{border-color:#376888}
+.daily-summary-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.daily-summary-top .eyebrow{font-size:11px;letter-spacing:1.2px;color:#94b4ce;font-weight:750}
+.daily-summary-source{font-size:11px;color:#b8cbdc;background:#22354c;border:1px solid #344a62;border-radius:20px;padding:4px 9px}
+.daily-summary-card h3{font-size:21px;line-height:1.25;margin:3px 0 9px}
+.daily-summary-description{color:#b8cadb;font-size:13px;line-height:1.5;margin:0 0 12px}
+.daily-summary-etfs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.daily-summary-etf{background:#0b1727;border:1px solid #2a4057;border-radius:9px;padding:11px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.daily-summary-etf strong{font-size:13px}
+.daily-summary-pct{font-size:12px;color:#adc5d9;line-height:1.4}
+.daily-summary-footer{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:12px}
+.daily-summary-alert{color:#f4c383;font-weight:700}
+.daily-summary-muted{color:#a0b2c5;font-size:12px}
+.daily-summary-overview-link{font-size:12px;margin:6px 3px 0;display:inline-block;color:#9dc8e5}
+.summary-view-tabs{display:flex;gap:8px;margin:18px 0 16px;flex-wrap:wrap}
+.summary-view-tabs button{background:#111f30;border:1px solid #32506a;border-radius:9px;color:#b4c8de;cursor:pointer;padding:11px 16px;font:inherit;font-size:13px;font-weight:700}
+.summary-view-tabs button.active{background:#22445f;color:#fff;border-color:#6a9dbe}
+.summary-view-tabs button:focus-visible{outline:2px solid #9ccde9;outline-offset:2px}
+.summary-view-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0 10px}
+.summary-view-heading h3{margin:0}
+.summary-view-heading p{color:#9db2c9;font-size:13px;margin:4px 0}
+.summary-archive-grid{display:grid;gap:12px}
+#summary-view[hidden],#j-history-views[hidden]{display:none!important}
+@media(max-width:650px){.daily-summary-card{padding:14px}.daily-summary-card h3{font-size:18px}.daily-summary-etfs{grid-template-columns:1fr}.summary-view-tabs button{flex:1;padding:10px}}

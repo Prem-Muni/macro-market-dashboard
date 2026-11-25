@@ -1,0 +1,205 @@
+/* Daily summaries derived from the existing persistent market_insights_history.
+ * No external data feeds, no score changes and no fabricated prior-session returns.
+ * Historic dates/observations are read from latest.json's committed EOD journal.
+ */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  if (root) root.DailySummaries = api;
+})(typeof window !== 'undefined' ? window : null, function () {
+  'use strict';
+  const finite = n => typeof n === 'number' && Number.isFinite(n);
+  const date = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s + 'T12:00:00Z'));
+  const formatted = s => date(s) ? new Date(s+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}) : '—';
+  const signed = n => finite(n) ? `${n > 0 ? '+' : ''}${n.toFixed(2)}%` : '—';
+  const money = n => finite(n) && n>0 ? '$'+n.toFixed(2) : '—';
+  const regime = (lo,hi) => {
+    const zone = n => n<=5?'RISK-OFF':n<=10?'NEUTRAL':'RISK-ON';
+    return finite(lo) && finite(hi) && zone(lo)===zone(hi) ? zone(lo) : 'INCOMPLETE';
+  };
+  const scoreText = x => x && finite(x.low) && finite(x.high) ? `${x.low}${x.low!==x.high?'–'+x.high:''}/${x.total}` : '—';
+  const priceRisk = (pct,risk,baseline) => {
+    if(baseline) return {kind:'baseline',label:'Baseline only · no prior ETF close'};
+    if(!finite(pct)||risk==='INCOMPLETE')return {kind:'uncertain',label:'Price/risk comparison incomplete'};
+    if(pct>=2&&risk==='RISK-OFF')return {kind:'divergence',label:'Strong rally · Risk-Off persists'};
+    if(pct<=-2&&risk==='RISK-ON')return {kind:'divergence',label:'Sharp selloff · Risk-On persists'};
+    if(Math.abs(pct)>=2&&risk==='NEUTRAL')return {kind:'watch',label:'Large move · Neutral regime'};
+    return {kind:'none',label:'No price/risk divergence flagged'};
+  };
+  function fromArchivedMarket(item,baseline){
+    if(!item || !Number.isInteger(item.total)||!Number.isInteger(item.available)||!Number.isInteger(item.score)||
+       ![15,16].includes(item.total)||item.score<0||item.score>item.available||item.available>item.total)return null;
+    const low=item.available-item.score,high=item.total-item.score;
+    const risk=regime(low,high);
+    const pct=finite(item.price_change_pct)?item.price_change_pct:null;
+    const alert=(!baseline && item.available<item.total) ? {kind:'uncertain',label:'Scoring incomplete · alert not confirmed'} : priceRisk(pct,risk,baseline);
+    return {low,high,total:item.total,available:item.available,risk,
+      pct,close:finite(item.close)?item.close:null,
+      trend:typeof item.trend_5d==='string'?item.trend_5d:'N/A',
+      delta:finite(item.score_delta_1d)?-item.score_delta_1d:null,
+      alert};
+  }
+  function fromSnapshotMarket(item,move){
+    const sc=item?.score;
+    if(!sc||!Number.isInteger(sc.total)||!Number.isInteger(sc.available)||!Number.isInteger(sc.bearish)||
+        sc.total!==16||sc.available<sc.bearish||sc.available>sc.total)return null;
+    const low=sc.available-sc.bearish,high=sc.total-sc.bearish,risk=regime(low,high);
+    const pct=finite(move?.change_pct)?move.change_pct:null;
+    return {low,high,total:sc.total,available:sc.available,risk,
+      pct,close:finite(move?.close)?move.close:null,
+      trend:typeof item?.momentum?.state==='string'?item.momentum.state:'N/A',
+      delta:null,alert:sc.available<sc.total ? {kind:'uncertain',label:'Scoring incomplete · alert not confirmed'} : priceRisk(pct,risk,false)};
+  }
+  function makeSummary(day,previous,spy,qqq,origin){
+    if(!date(day)||!spy||!qqq)return null;
+    const both=spy.risk===qqq.risk && spy.risk!=='INCOMPLETE';
+    const names={'RISK-OFF':'Risk-Off','NEUTRAL':'Neutral','RISK-ON':'Risk-On'};
+    const headline=both?`Both benchmarks are ${names[spy.risk]}`:
+      spy.risk==='INCOMPLETE'||qqq.risk==='INCOMPLETE'?'Market scores are partially incomplete':'SPY and QQQ have different risk regimes';
+    const x=`SPY ${scoreText(spy)} (${names[spy.risk]||'incomplete'})`,y=`QQQ ${scoreText(qqq)} (${names[qqq.risk]||'incomplete'})`;
+    const moves=finite(spy.pct)&&finite(qqq.pct)?` SPY ${signed(spy.pct)} and QQQ ${signed(qqq.pct)} versus the prior completed session.`:'';
+    const gaps=[spy,qqq].filter(o=>o.available<o.total).length;
+    const coverage=gaps?` ${gaps===2?'Both benchmarks have':'One benchmark has'} missing scored inputs; scores are shown as ranges where necessary.`:'';
+    const summary=`${x}; ${y}.${moves}${coverage}`;
+    const alertCount=[spy,qqq].filter(x=>x.alert.kind==='divergence').length;
+    const alertHeadline=alertCount===2?'Price/risk divergence in both ETFs':alertCount===1?'Price/risk divergence in one ETF':
+      [spy,qqq].some(x=>x.alert.kind==='uncertain')?'Price/risk check incomplete':'No price/risk divergence flagged';
+    return {session:day,previousSession:date(previous)&&previous<day?previous:null,
+      origin,headline,summary,spy,qqq,alertCount,alertHeadline,partial:gaps>0};
+  }
+  function savedSummaries(data){
+    const archive=data?.market_insights_history;
+    if(archive?.version!==1||!Array.isArray(archive.entries))return [];
+    const out=[],seen=new Set();
+    for(const row of archive.entries){
+      if(!row || !date(row.session)||seen.has(row.session))continue;
+      const baseline=row.baseline===true;
+      const spy=fromArchivedMarket(row.spy,baseline),qqq=fromArchivedMarket(row.qqq,baseline);
+      const summary=makeSummary(row.session,row.previous_session,spy,qqq,baseline?'screenshot_baseline':'saved_eod');
+      if(!summary)continue;
+      seen.add(summary.session);out.push(summary);
+    }
+    return out.sort((a,b)=>a.session.localeCompare(b.session));
+  }
+  function latestSummary(data){
+    if(!date(data?.session))return null;
+    const archived=savedSummaries(data).find(x=>x.session===data.session);
+    const move=data.price_moves?.status==='complete' && data.price_moves.session===data.session?data.price_moves:null;
+    const spy=fromSnapshotMarket(data.markets?.sp500,move?.spy),qqq=fromSnapshotMarket(data.markets?.nasdaq100,move?.qqq);
+    const latest=makeSummary(data.session,move?.previous_session,spy,qqq,'current_eod');
+    if(!latest)return archived||null;
+    // A saved same-session price comparison may be richer than a partial current
+    // snapshot. Never mix mismatched scoring models or dates.
+    if(archived && archived.spy.total===latest.spy.total && archived.qqq.total===latest.qqq.total){
+      for(const key of ['spy','qqq']){
+        const candidate=archived[key],current=latest[key];
+        if(finite(candidate.pct)&&!finite(current.pct)){
+          current.pct=candidate.pct;current.close=candidate.close;
+          current.alert=current.available<current.total ? {kind:'uncertain',label:'Scoring incomplete · alert not confirmed'} : priceRisk(current.pct,current.risk,false);
+        }
+        if(finite(candidate.delta))current.delta=candidate.delta;
+      }
+      return makeSummary(latest.session,archived.previousSession||latest.previousSession,latest.spy,latest.qqq,'current_eod');
+    }
+    return latest;
+  }
+  function previousSummaries(data){
+    const latest=date(data?.session)?data.session:null;
+    return savedSummaries(data).filter(x=>!latest||x.session<latest).reverse();
+  }
+  function csv(rows){
+    const cols=['Date','Comparison from','Source','Headline','Summary','SPY Health','SPY Regime','SPY Price Change %','SPY Alert','QQQ Health','QQQ Regime','QQQ Price Change %','QQQ Alert','Signal Coverage Incomplete'];
+    const values=[cols,...rows.map(x=>[x.session,x.previousSession,x.origin,x.headline,x.summary,scoreText(x.spy),x.spy.risk,x.spy.pct,x.spy.alert.label,scoreText(x.qqq),x.qqq.risk,x.qqq.pct,x.qqq.alert.label,x.partial])];
+    const field=v=>{let s=v==null?'':String(v);if(/^[\s]*[=+@\-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};
+    return '\uFEFF'+values.map(row=>row.map(field).join(',')).join('\r\n')+'\r\n';
+  }
+  const api={savedSummaries,latestSummary,previousSummaries,scoreText,signed,money,formatted,csv};
+  if(typeof document==='undefined')return api;
+  const $=id=>document.getElementById(id);
+  const put=(parent,tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=value;parent.appendChild(e);return e;};
+  function etfTile(parent,name,entry){
+    const box=put(parent,'div','daily-summary-etf');
+    put(box,'strong','',`${name} · ${scoreText(entry)} · ${entry.risk.replace('-', '‑')}`);
+    put(box,'span','daily-summary-pct',`${signed(entry.pct)} day change · ${entry.alert.label}`);
+    return box;
+  }
+  function renderCard(parent,record,current){
+    const card=put(parent,'article',current?'daily-summary-card current':'daily-summary-card');
+    const top=put(card,'div','daily-summary-top');
+    put(top,'span','eyebrow',`${current?'LATEST COMPLETED EOD':'ARCHIVED EOD'} · ${formatted(record.session)}`);
+    put(top,'span','daily-summary-source',record.origin==='screenshot_baseline'?'SCREENSHOT BASELINE':record.previousSession?`${formatted(record.previousSession)} → ${formatted(record.session)}`:'EOD session');
+    put(card,'h3','',record.headline);
+    put(card,'p','daily-summary-description',record.summary);
+    const tiles=put(card,'div','daily-summary-etfs');etfTile(tiles,'SPY',record.spy);etfTile(tiles,'QQQ',record.qqq);
+    const footer=put(card,'div','daily-summary-footer');
+    const alert=put(footer,'span',record.alertCount?'daily-summary-alert':'daily-summary-muted',record.alertHeadline);
+    if(record.partial)put(footer,'span','daily-summary-muted','Partial scored coverage · no invented points');
+    if(record.origin==='screenshot_baseline')put(footer,'span','daily-summary-muted','No prior-day ETF price change was supplied');
+    return card;
+  }
+  async function loadData(){
+    const res=await fetch('data/latest.json?summary_refresh='+Date.now(),{cache:'no-store'});
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+  async function renderOverview(){
+    const target=$('daily-summary-overview');if(!target)return;
+    try{
+      const data=await loadData();const r=latestSummary(data);
+      target.replaceChildren();
+      if(!r){put(target,'p','daily-summary-muted','No verified completed EOD summary is available yet.');return;}
+      renderCard(target,r,true);
+    }catch(err){target.replaceChildren();put(target,'p','daily-summary-muted','Daily summary unavailable: '+err.message);}
+  }
+  let archive=[];
+  async function renderHistory(){
+    const panel=$('summary-view');if(!panel)return;
+    try{
+      const data=await loadData();const recent=latestSummary(data);
+      const summary=$('summary-latest'),old=$('summary-archive');
+      summary.replaceChildren();old.replaceChildren();
+      if(recent)renderCard(summary,recent,true);else put(summary,'p','daily-summary-muted','No completed EOD summary yet.');
+      archive=previousSummaries(data);
+      if(!archive.length){put(old,'p','daily-summary-muted','Earlier dated EOD summaries will appear here automatically after each new completed session.');}
+      else for(const day of archive)renderCard(old,day,false);
+      $('summary-count').textContent=archive.length+` previous session${archive.length===1?'':'s'} saved`;
+      $('summary-export').disabled=!archive.length;
+    }catch(err){$('summary-latest').textContent='Daily summaries unavailable: '+err.message;}
+  }
+  function initHistory(){
+    const host=$('summary-view');if(!host)return;
+    const summariesBtn=$('summary-tab-current'),historyBtn=$('summary-tab-etfs'),historyHost=$('j-history-views');
+    function show(which){
+      const showingSummary=which==='summaries';host.hidden=!showingSummary;historyHost.hidden=showingSummary;
+      summariesBtn.setAttribute('aria-selected',String(showingSummary));
+      historyBtn.setAttribute('aria-selected',String(!showingSummary));
+      summariesBtn.classList.toggle('active',showingSummary);historyBtn.classList.toggle('active',!showingSummary);
+      if(showingSummary)renderHistory();
+    }
+    summariesBtn.addEventListener('click',()=>{show('summaries');history.replaceState(null,'','#summaries');});
+    historyBtn.addEventListener('click',()=>{show('etfs');history.replaceState(null,'','#etfs');});
+    const fromHash=()=>show(location.hash==='#etfs'?'etfs':'summaries');
+    window.addEventListener('hashchange',fromHash);fromHash();
+    $('summary-export').addEventListener('click',()=>{
+      if(!archive.length)return;
+      const blob=new Blob([csv(archive)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download='market-daily-summaries-through-'+archive[0].session+'.csv';
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    });
+  }
+  const brief=document.querySelector('#clarity-overview .decision-brief')||document.querySelector('.decision-brief');
+  if(brief && !$('daily-summary-overview')){
+    const wrap=document.createElement('section');wrap.className='daily-summary-overview';wrap.setAttribute('aria-label','Latest completed daily market summary');
+    wrap.id='daily-summary-overview';
+    const link=document.createElement('a');link.href='insights-history.html#summaries';link.className='daily-summary-overview-link';link.textContent='View previous daily summaries →';
+    brief.insertAdjacentElement('afterend',wrap);wrap.insertAdjacentElement('afterend',link);
+  }
+  if($('daily-summary-overview')){
+    renderOverview();const refresh=$('refresh');if(refresh)refresh.addEventListener('click',renderOverview);
+    setInterval(renderOverview,10*60*1000);
+  }
+  if($('summary-view')){
+    initHistory();const refresh=$('refresh');if(refresh)refresh.addEventListener('click',renderHistory);
+  }
+  return api;
+});
