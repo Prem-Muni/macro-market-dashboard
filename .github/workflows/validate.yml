@@ -12,14 +12,10 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m pip install -r requirements.txt
+      - run: python -m pip install -r requirements.txt 'pytest>=8,<10'
       - name: Focused offline EOD and source regression tests
         run: |
-          python -m unittest discover -s tests -p 'test_eod_freshness_guard.py'
-          python -m unittest discover -s tests -p 'test_early_close_source_audit.py'
-          python -m unittest discover -s tests -p 'test_eod_snapshot_integrity.py'
-          python -m unittest discover -s tests -p 'test_snapshot_quality.py'
-          python -m unittest discover -s tests -p 'test_insights_history.py'
+          python -m pytest -q tests/test_eod_freshness_guard.py tests/test_early_close_source_audit.py tests/test_eod_snapshot_integrity.py tests/test_snapshot_quality.py tests/test_insights_history.py
       - name: JavaScript syntax
         run: |
           node --check docs/app.js
