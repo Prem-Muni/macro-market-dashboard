@@ -418,11 +418,11 @@ function renderPriceRisk(data,spHistory,ndHistory){
  const api=window.PriceRisk,mi=window.MarketIntel;
  if(!api||!mi)return;
  // An older price/risk divergence is not a new alert for the current EOD day.
- // Older observations remain accessible in the dated Insights History archive.
+ // Older observations remain accessible in the dated Market History archive.
  const freshness=eodStatus(data.session);
  if(freshness.kind==='pending'||freshness.kind==='stale'||freshness.kind==='unknown'){
    $('price-risk-headline').textContent='Awaiting the latest completed EOD session';
-   $('price-risk-summary').textContent=`Latest available comparison is through ${data.session||'an unknown date'}; previous-session alerts are archived under Insights History.`;
+   $('price-risk-summary').textContent=`Latest available comparison is through ${data.session||'an unknown date'}; previous-session alerts are archived under Market History.`;
    $('price-risk-dates').textContent=`As of ${data.session||'—'} · OUTDATED`;
    $('price-risk-panel')?.setAttribute('data-tone','neutral');
    for(const m of ['sp','nd']){
@@ -430,7 +430,7 @@ function renderPriceRisk(data,spHistory,ndHistory){
      $('price-risk-'+m+'-change').textContent='—';
      $('price-risk-'+m+'-title').textContent='New EOD price move pending';
      $('price-risk-'+m+'-detail').textContent='No current-session divergence can be confirmed until new scored prices are published.';
-     $('price-risk-'+m+'-evidence').textContent='Open Insights History for older observations';
+     $('price-risk-'+m+'-evidence').textContent='Open Market History for older observations';
    }
    return;
  }
