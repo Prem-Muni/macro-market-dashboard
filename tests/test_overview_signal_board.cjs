@@ -32,3 +32,5 @@ test("missing readings stay unavailable; partial score retains range",()=>{
  assert.equal(rows[3].cells[0].label,"5–6/16");
  assert.equal(rows[3].cells[0].value,"INCOMPLETE");
 });
+
+test("reference layout balances lanes without dropping or duplicating indicators",()=>{const groups=api.build(d,helpers);assert.deepEqual(groups.map(g=>api.splitRows(g).map(r=>r.length)),[[4],[7,5],[6],[4],[7,4]]);for(const g of groups)assert.deepEqual(api.splitRows(g).flat(),g.cells);});
