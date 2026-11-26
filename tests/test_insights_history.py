@@ -56,14 +56,51 @@ class InsightsHistoryTests(unittest.TestCase):
         self.assertTrue(archive['entries'][0]['baseline'])
         self.assertEqual(archive['entries'][1]['session'],fresh['session'])
 
-    def test_repeat_same_session_replaces_only_latest(self):
+    def test_complete_same_session_is_immutable(self):
+        # Finalized archive policy: even a revised provider reading must not
+        # replace a complete published session during an ordinary refresh.
         day=synthetic_snapshot()
         first=merge_daily_archive({},day)
         day['markets']['sp500']['momentum']['state']='IMPROVING'
+        day['markets']['sp500']['score']['bearish']=5
+        day['markets']['sp500']['score']['regime']='NEUTRAL'
+        fixed=merge_daily_archive({'market_insights_history':first},day)
+        self.assertEqual(fixed,first)
+        self.assertEqual(fixed['entries'][1]['spy']['trend_5d'],'STABLE')
+
+    def test_complete_16_point_session_cannot_change_regime_on_retry(self):
+        day=synthetic_snapshot()
+        day['model_version']='16-point-health-v2-macd-neutral-6-10'
+        for key in ('sp500','nasdaq100'):
+            day['markets'][key]['score']={'bearish':11,'available':16,'total':16,'regime':'RISK-OFF'}
+        first=merge_daily_archive({},day)
+        day['markets']['sp500']['score']={'bearish':10,'available':16,'total':16,'regime':'NEUTRAL'}
+        day['markets']['nasdaq100']['score']={'bearish':10,'available':16,'total':16,'regime':'NEUTRAL'}
+        fixed=merge_daily_archive({'market_insights_history':first},day)
+        self.assertEqual(fixed,first)
+        self.assertEqual(fixed['entries'][-1]['spy']['regime'],'RISK-OFF')
+
+    def test_incomplete_same_session_can_improve_without_coverage_loss(self):
+        day=synthetic_snapshot()
+        day['markets']['sp500']['score']['available']=14
+        first=merge_daily_archive({},day)
+        self.assertEqual(first['entries'][-1]['spy']['regime'],'INCOMPLETE')
+        day['markets']['sp500']['score']['available']=15
+        day['markets']['sp500']['momentum']['state']='IMPROVING'
         fixed=merge_daily_archive({'market_insights_history':first},day)
         self.assertEqual(len(fixed['entries']),2)
-        self.assertEqual(fixed['entries'][0]['session'],'2026-11-20')
-        self.assertEqual(fixed['entries'][1]['spy']['trend_5d'],'IMPROVING')
+        self.assertEqual(fixed['entries'][0],first['entries'][0])
+        self.assertEqual(fixed['entries'][-1]['spy']['available'],15)
+        self.assertEqual(fixed['entries'][-1]['spy']['trend_5d'],'IMPROVING')
+
+    def test_same_session_coverage_tradeoff_is_rejected(self):
+        day=synthetic_snapshot()
+        day['markets']['sp500']['score']['available']=14
+        first=merge_daily_archive({},day)
+        day['markets']['sp500']['score']['available']=15
+        day['markets']['nasdaq100']['score']['available']=14
+        fixed=merge_daily_archive({'market_insights_history':first},day)
+        self.assertEqual(fixed,first)
 
     def test_existing_day_is_never_rewritten_by_older_run(self):
         day=synthetic_snapshot()
