@@ -26,11 +26,13 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
 .mi-header-calendar .mi-calendar-line>strong[data-state="open"]{color:#78dfb4}
 .mi-header-calendar .mi-calendar-line>strong[data-state="closed"]{color:#ffa1a7}
 .mi-header-calendar .mi-calendar-line>strong[data-state="unknown"]{color:#e5c78c}
-.mi-header-calendar .mi-calendar-line>a{font-size:11px;color:#b9d8eb;text-decoration:none}
+.mi-header-calendar .mi-calendar-line>a{font-size:11px;color:#b9d8eb;text-decoration:none;margin-left:0}
 .mi-header-calendar .mi-calendar-line>a:hover{text-decoration:underline}
 .mi-header-calendar .mi-futures-start{border-left:1px solid #40576a;padding-left:11px}
 .mi-header-calendar .mi-futures-note{font-size:10px;color:#9cb3c5}
 .mi-header-calendar .mi-calendar-line>a.mi-calendar-source{margin-left:auto}
+.mi-header-calendar .mi-futures-embed{flex:1 0 300px;min-width:300px;max-width:700px;height:44px;border:0;display:block;border-radius:4px}
+.mi-header-calendar:has(.mi-futures-embed){padding-block:2px}
 @media(max-width:620px){.mi-grid,.mi-grid.four{grid-template-columns:1fr}.mi-extra,.mi-calendar{padding:12px}}
 `);document.head.append(style);
  // Equity session status is calculated locally, not fetched from a quote feed.
@@ -62,15 +64,25 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
    add(line,E("b","Market Calendar"),E("strong",null,"mi-market-status"),E("span",null,"mi-market-next"),E("span",null,"mi-market-eod"),E("b","Futures","mi-futures-start"),
     link("ES · S&P 500 ↗","https://finance.yahoo.com/quote/ES%3DF/"),
     link("NQ · Nasdaq-100 ↗","https://finance.yahoo.com/quote/NQ%3DF/"),
-    E("span","Yahoo quotes · delayed","mi-futures-note"),
+    E("span","Delayed · ~30m on trading days","mi-futures-note"),
     link("NYSE calendar ↗","https://www.nyse.com/trade/hours-calendars","mi-calendar-source"));
+   // Official provider-hosted iframe, not extracted or re-served quote data.
+   // Retain direct ES/NQ links as a fallback. Provider controls symbols and latency.
+   const ticker=E("iframe",null,"mi-futures-embed");
+   ticker.title="BrixNation delayed market ticker, including ES and NQ futures";
+   ticker.setAttribute("sandbox","allow-scripts allow-same-origin allow-popups");
+   ticker.setAttribute("referrerpolicy","no-referrer");
+   ticker.setAttribute("scrolling","no");
+   ticker.width="100%";ticker.height="44";
+   ticker.src="https://www.brixnation.com/brixnation-market-ticker.html";
+   line.insertBefore(ticker,line.querySelector(".mi-futures-note"));
    box.append(line);
   }
   const label=line.querySelector(".mi-market-status");
   label.textContent=status.label;label.dataset.state=status.state;
   line.querySelector(".mi-market-next").textContent=status.context;
   line.querySelector(".mi-market-eod").textContent=headerSession?"Last EOD: "+fmt(headerSession):"Last EOD pending";
-  box.title="NYSE regular equity session only; futures hours differ. Futures links are informational and do not affect the Market Health score.";
+  box.title="NYSE regular equity session only; futures hours differ. BrixNation hosted ticker: Yahoo-sourced delayed data, provider refresh approximately 30 minutes on trading days; includes other markets. Informational only; does not affect Market Health.";
  }
  function tile(title,body,cls=""){return add(E("div",null,"mi-tile"),E("b",title,cls),E("div",body))}
  function dashboard(d,rs){
@@ -122,7 +134,18 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
  }
  banner(null);
  async function load(){try{let res=await fetch("data/latest.json",{cache:"no-cache"});if(!res.ok)throw Error("HTTP "+res.status);let d=await res.json(),rs=M.rows(d);banner(d);dashboard(d,rs);history(d,rs);research(d,rs)}catch(err){console.warn("Market insights unavailable:",err);}}
- banner();load();document.getElementById("refresh")?.addEventListener("click",load);if(document.querySelector("header.topbar[data-market-ticker]"))setInterval(()=>banner(),60000);
+ banner();load();document.getElementById("refresh")?.addEventListener("click",load);if(document.querySelector("header.topbar[data-market-ticker]")){
+  setInterval(()=>banner(),60000);
+  // Reload only the external frame, never the dashboard or GitHub Actions.
+  let quoteRefresh=Date.now();
+  function refreshFuturesFrame(){
+   if(document.hidden||document.getElementById("clarity-overview")?.hidden||Date.now()-quoteRefresh<1800000)return;
+   const frame=document.querySelector("#mi-market-calendar .mi-futures-embed");
+   if(frame){frame.src="https://www.brixnation.com/brixnation-market-ticker.html";quoteRefresh=Date.now();}
+  }
+  setInterval(refreshFuturesFrame,1800000);
+  document.addEventListener("visibilitychange",refreshFuturesFrame);
+ }
 })((function model(calendar){
  const finite=x=>typeof x==="number"&&Number.isFinite(x);
  const dayDate=s=>new Date(s+"T12:00:00Z");
