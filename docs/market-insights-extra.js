@@ -17,23 +17,58 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
 .mi-extra h3,.mi-extra h4{margin:0 0 7px}.mi-note{font-size:.86rem;opacity:.78;margin:5px 0 13px;line-height:1.5}
 .mi-calendar{padding:12px 15px;margin:10px 0 15px}.mi-calendar strong{color:#e5c78c}.mi-calendar a{color:#a5cee6;text-decoration:underline}.mi-cal-items{display:flex;gap:8px;overflow-x:auto;padding:6px 0;white-space:nowrap}.mi-chip{display:inline-block;border:1px solid #40576a;border-radius:8px;padding:6px 10px;font-size:.8rem}.mi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mi-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}.mi-tile{border:1px solid #344e60;border-radius:10px;padding:12px;line-height:1.55}.mi-tile b{display:block;font-size:1.05rem}.mi-bull{color:#78dfb4}.mi-bear{color:#ffa1a7}.mi-warn{color:#e6cb89}.mi-na{color:#a5b2c1}
 .mi-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:10px 0}.mi-toolbar label{display:flex;gap:8px;align-items:center}.mi-toolbar select{font:inherit;color:inherit;background:#172b3c;border:1px solid #51687b;border-radius:7px;padding:6px}.mi-scroll{overflow:auto;max-width:100%}.mi-table{width:100%;border-collapse:separate;border-spacing:3px;font-size:.83rem;white-space:nowrap}.mi-table th,.mi-table td{text-align:center;padding:7px 9px;border-radius:4px}.mi-table th:first-child,.mi-table td:first-child{text-align:left;position:sticky;left:0;background:#182a3a;z-index:1}.mi-table th{font-weight:700}.mi-cell-bull{background:#245e4c;color:#c9fae3}.mi-cell-bear{background:#793942;color:#ffe0e3}.mi-cell-warn{background:#665727;color:#fff0b5}.mi-cell-na{background:#25394a;color:#b7c6d3}.mi-extra svg{display:block;width:100%;height:auto;min-width:400px}.mi-chart-wrap{overflow:auto}.mi-extra p{overflow-wrap:anywhere}
+.mi-calendar.mi-header-calendar{padding:4px 9px;margin:5px 0 7px;border-radius:6px;background:#142a39;min-height:28px}
+.mi-header-calendar .mi-calendar-line{display:flex;align-items:center;gap:11px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;font-size:11px;line-height:1.45;scrollbar-width:thin}
+.mi-header-calendar .mi-calendar-line>*{flex:none}
+.mi-header-calendar .mi-calendar-line>b{font-size:12px;color:#e4eff7}
+.mi-header-calendar .mi-calendar-line>span{color:#b6c9d6}
+.mi-header-calendar .mi-calendar-line>strong[data-state="open"]{color:#78dfb4}
+.mi-header-calendar .mi-calendar-line>strong[data-state="closed"]{color:#ffa1a7}
+.mi-header-calendar .mi-calendar-line>strong[data-state="unknown"]{color:#e5c78c}
+.mi-header-calendar .mi-calendar-line>a{font-size:11px;color:#b9d8eb;text-decoration:none}
+.mi-header-calendar .mi-calendar-line>a:hover{text-decoration:underline}
+.mi-header-calendar .mi-futures-start{border-left:1px solid #40576a;padding-left:11px}
+.mi-header-calendar .mi-futures-note{font-size:10px;color:#9cb3c5}
+.mi-header-calendar .mi-calendar-line>a.mi-calendar-source{margin-left:auto}
 @media(max-width:620px){.mi-grid,.mi-grid.four{grid-template-columns:1fr}.mi-extra,.mi-calendar{padding:12px}}
 `);document.head.append(style);
+ // Equity session status is calculated locally, not fetched from a quote feed.
+ function sessionStatus(now=new Date()){
+  const p=new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(now);
+  const v=Object.fromEntries(p.map(x=>[x.type,x.value])),t=[v.year,v.month,v.day].join("-"),minutes=Number(v.hour)*60+Number(v.minute);
+  if(!M.covered(t))return {day:t,state:"unknown",label:"NYSE status unverified",context:"See official calendar"};
+  const ev=M.event(t),early=!!ev?.[2],next=M.next(t),close=early?720:900;
+  const nextLabel=next?"Next: "+fmt(next)+(M.event(next)?.[2]?" · Noon CT close":" · 8:30 AM CT"):"See NYSE calendar";
+  if(!M.trading(t))return {day:t,state:"closed",label:"NYSE closed · "+(ev?.[1]||"Weekend"),context:nextLabel};
+  if(minutes<510)return {day:t,state:"closed",label:"NYSE closed · Pre-market",context:"Opens 8:30 AM CT"};
+  if(minutes<close)return {day:t,state:"open",label:"NYSE open"+(early?" · Early close":""),context:"Closes "+(early?"noon":"3 PM")+" CT"};
+  return {day:t,state:"closed",label:"NYSE closed · After hours",context:nextLabel};
+ }
+ let headerSession=null;
  function banner(d){
-  if(document.getElementById('summary-view')){document.getElementById('mi-market-calendar')?.remove();return;}
-  let nav=document.querySelector("nav.site-tabs");if(!nav)return;let box=document.getElementById("mi-market-calendar");if(!box){box=E("aside",null,"mi-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market calendar");nav.after(box)}box.replaceChildren();
-  let t=today();box.dataset.day=t;let ev=M.event(t),n=M.next(t),status=!M.covered(t)?"Calendar needs verification":ev&&!ev[2]?ev[1]+" · Market closed today":ev?.[2]?ev[1]+" · Early close at noon CT":!M.trading(t)?"Weekend · Market closed today":"Regular session · 8:30 AM–3 PM CT";
-  const compact=!!document.getElementById("daily-summary-overview");
-  const nextText=n?"Next: "+fmt(n)+(M.event(n)?.[2]?" · Noon CT close":" · Regular hours"):"See NYSE for the next session.";
-  if(compact){
-   box.classList.add("mi-calendar-compact");
-   let line=E("div",null,"mi-calendar-line");
-   add(line,E("b","Market Calendar"),E("strong",status),E("span",nextText),E("span",d?.session?"Last EOD: "+fmt(d.session):"Last EOD pending"));
+  const header=document.querySelector("header.topbar");if(!header)return;
+  if(d?.session)headerSession=d.session;
+  let box=document.getElementById("mi-market-calendar");
+  if(!box){box=E("aside",null,"mi-calendar mi-calendar-compact mi-header-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market status and futures quotes");header.after(box);}
+  else if(box.previousElementSibling!==header)header.after(box);
+  const status=sessionStatus();
+  box.dataset.day=status.day;
+  let line=box.querySelector(".mi-calendar-line");
+  if(!line){
+   line=E("div",null,"mi-calendar-line");line.tabIndex=0;
+   const link=(label,url,cls)=>{const a=E("a",label,cls);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a;};
+   add(line,E("b","Market Calendar"),E("strong",null,"mi-market-status"),E("span",null,"mi-market-next"),E("span",null,"mi-market-eod"),E("b","Futures","mi-futures-start"),
+    link("ES · S&P 500 ↗","https://www.tradingview.com/symbols/CME_MINI-ES1%21/"),
+    link("NQ · Nasdaq-100 ↗","https://www.tradingview.com/symbols/CME_MINI-NQ1%21/"),
+    E("span","External quotes · may be delayed","mi-futures-note"),
+    link("NYSE calendar ↗","https://www.nyse.com/trade/hours-calendars","mi-calendar-source"));
    box.append(line);
-  }else add(box,E("strong",status),E("p",n?"Next trading session: "+fmt(n)+(M.event(n)?.[2]?" · Early close at noon CT":" · Regular hours"):"See NYSE for the next verified session.","mi-note"));
-  if(d?.session&&!compact)add(box,E("p","Last published EOD: "+fmt(d.session)+". Equity calendar only; futures hours may differ. First scheduled refresh: 12:20 PM CT on listed early-close days; 3:20 PM CT on normal days. Provider availability may delay publication.","mi-note"));
-  let strip=E("div",null,"mi-cal-items");strip.tabIndex=0;strip.setAttribute("aria-label","Upcoming holidays and early closes; scroll horizontally");for(let e of calendar.filter(e=>e[0]>=t).slice(0,8)){let chip=E("span",fmt(e[0])+" · "+e[1]+" · "+(e[2]?"Noon CT close":"Closed"),"mi-chip "+(e[2]?"mi-warn":"mi-bear"));strip.append(chip)}if(strip.childNodes.length)box.append(strip);
-  let a=E("a","Official NYSE calendar · 2026–2028");a.href="https://www.nyse.com/trade/hours-calendars";a.target="_blank";a.rel="noopener noreferrer";if(compact){a.textContent="NYSE calendar ↗";let line=box.querySelector(".mi-calendar-line");line?.append(a);box.title="Equity calendar only; futures hours may differ. Scheduled refresh: 12:20 PM CT early close; 3:20 PM CT regular day. Provider availability may delay publication.";}else box.append(a);
+  }
+  const label=line.querySelector(".mi-market-status");
+  label.textContent=status.label;label.dataset.state=status.state;
+  line.querySelector(".mi-market-next").textContent=status.context;
+  line.querySelector(".mi-market-eod").textContent=headerSession?"Last EOD: "+fmt(headerSession):"Last EOD pending";
+  box.title="NYSE regular equity session only; futures hours differ. Futures links are informational and do not affect the Market Health score.";
  }
  function tile(title,body,cls=""){return add(E("div",null,"mi-tile"),E("b",title,cls),E("div",body))}
  function dashboard(d,rs){
@@ -85,7 +120,7 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
  }
  banner(null);
  async function load(){try{let res=await fetch("data/latest.json",{cache:"no-cache"});if(!res.ok)throw Error("HTTP "+res.status);let d=await res.json(),rs=M.rows(d);banner(d);dashboard(d,rs);history(d,rs);research(d,rs)}catch(err){console.warn("Market insights unavailable:",err);}}
- load();document.getElementById("refresh")?.addEventListener("click",load);setInterval(()=>{const box=document.getElementById("mi-market-calendar");if(box&&box.dataset.day!==today()){load();}},60000);
+ banner();load();document.getElementById("refresh")?.addEventListener("click",load);setInterval(()=>banner(),60000);
 })((function model(calendar){
  const finite=x=>typeof x==="number"&&Number.isFinite(x);
  const dayDate=s=>new Date(s+"T12:00:00Z");
