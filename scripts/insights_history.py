@@ -75,6 +75,15 @@ def _score_now(result: dict, sym: str) -> dict:
 
 
 def _paired_prior(result: dict, previous_session: str, market: str) -> tuple[int | None, str]:
+    published = result.get("published_comparison") or {}
+    current_model = "sp500" if market == "spy" else "nasdaq100"
+    saved_score = (published.get("markets") or {}).get(current_model, {})
+    current = result.get("markets", {}).get(current_model, {}).get("score", {})
+    if published.get("session") == previous_session and saved_score.get("total") == current.get("total"):
+        total = saved_score.get("total")
+        bearish = saved_score.get("bearish")
+        if isinstance(total, int) and isinstance(bearish, int) and saved_score.get("available") == total and 0 <= bearish <= total and current.get("available") == total:
+            return bearish, _risk(bearish, market, total)
     history = result.get("history") or []
     if not isinstance(history, list) or len(history) < 2:
         return None, "unavailable"
@@ -215,7 +224,7 @@ def merge_daily_archive(previous: dict, fresh: dict) -> dict:
 
     A Friday snapshot backfill is added once when missing, without touching
     existing Friday or subsequent records. Repeated live-session EOD runs can
-    replace only that day's last saved observation.
+    improve an incomplete record, never replace a finalized complete record.
     """
     old = previous.get("market_insights_history")
     if old is None:
@@ -256,5 +265,12 @@ def merge_daily_archive(previous: dict, fresh: dict) -> dict:
         if not entries or new["session"] > entries[-1]["session"]:
             entries.append(new)
         elif new["session"] == entries[-1]["session"]:
-            entries[-1] = new  # EOD correction during same session only
+            previous_row = entries[-1]
+            # Never rewrite a full saved EOD day. An incomplete same-session
+            # row can be repaired only if the model matches and coverage improves.
+            same_model = all(previous_row[sym].get("total") == new[sym].get("total") for sym in ("spy", "qqq"))
+            old_coverage = [previous_row[sym].get("available", 0) for sym in ("spy", "qqq")]
+            new_coverage = [new[sym]["available"] for sym in ("spy", "qqq")]
+            if same_model and all(n >= o for n, o in zip(new_coverage, old_coverage)) and any(n > o for n, o in zip(new_coverage, old_coverage)):
+                entries[-1] = new
     return {"version": VERSION, "entries": entries}

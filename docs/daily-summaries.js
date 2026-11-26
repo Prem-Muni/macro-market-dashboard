@@ -146,7 +146,7 @@
   }
   function previousSummaries(data){
     const latest=date(data?.session)?data.session:null;
-    return savedSummaries(data).filter(x=>!latest||x.session<latest).reverse();
+    return savedSummaries(data).filter(x=>!latest||x.session<=latest).reverse();
   }
   function csv(rows){
     const cols=['Date','Comparison from','Source','Headline','Summary','Improved internals','Weakened internals','SPY Health','SPY Regime','SPY Price Change %','SPY Alert','QQQ Health','QQQ Regime','QQQ Price Change %','QQQ Alert','Signal Coverage Incomplete'];
@@ -252,9 +252,9 @@
       const data=await loadData();
       const old=$('summary-archive');old.replaceChildren();
       archive=previousSummaries(data);
-      if(!archive.length){put(old,'p','daily-summary-muted','Earlier dated EOD summaries will appear here automatically after each new completed session.');}
+      if(!archive.length){put(old,'p','daily-summary-muted','Saved EOD summaries will appear here automatically after each completed session.');}
       else for(const day of archive)renderCard(old,day,false);
-      $('summary-count').textContent=archive.length+` previous session${archive.length===1?'':'s'} saved`;
+      $('summary-count').textContent=archive.length+` completed session${archive.length===1?'':'s'} saved`;
       $('summary-export').disabled=!archive.length;
     }catch(err){const old=$('summary-archive');if(old)old.textContent='Daily summaries unavailable: '+err.message;}
   }

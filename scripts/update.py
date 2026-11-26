@@ -11,9 +11,10 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from types import SimpleNamespace
 import pandas as pd
 import requests
-from engine import analyze
+from engine import analyze, scored_signal_changes, score_momentum_bounds
 from breadth import derive_breadth
 from price_risk import build_price_moves
 from insights_history import merge_daily_archive
@@ -166,26 +167,63 @@ def is_same_session_quality_regression(previous_snapshot: dict, candidate: dict)
     return False
 
 
+def is_finalized_snapshot(snapshot: dict) -> bool:
+    """A verified complete 16-point EOD record is immutable on normal refreshes."""
+    try:
+        check_completed_snapshot(snapshot)
+        if not all(snapshot["markets"][m]["score"].get("complete") is True and
+                   snapshot["markets"][m]["score"].get("available") == 16 and
+                   snapshot["markets"][m]["score"].get("missing") == 0
+                   for m in ("sp500", "nasdaq100")):
+            return False
+        return True
+    except (RuntimeError, TypeError, KeyError, ValueError):
+        return False
+
+
+def use_published_prior(previous: dict, fresh: dict) -> None:
+    """Compare the daily headline to the actual prior publication, not a rerun.
+
+    Leave reconstructed research history and five-day model momentum unchanged.
+    """
+    if (not is_finalized_snapshot(previous) or
+            previous.get("session") != fresh.get("price_moves", {}).get("previous_session") or
+            previous.get("model_version") != fresh.get("model_version")):
+        return
+    prior_scores = {}
+    for market in ("sp500", "nasdaq100"):
+        before = previous["markets"][market]["score"]
+        after = fresh["markets"][market]["score"]
+        prior_scores[market] = {key: before[key] for key in ("bearish", "possible_max", "total", "available")}
+        daily = score_momentum_bounds(after, before)
+        fresh["markets"][market]["momentum"].update(d1=daily["observed"], d1_range=[daily["min"], daily["max"]])
+    fresh["published_comparison"] = {"session": previous["session"], "markets": prior_scores, "basis": "saved complete EOD publication"}
+    prev_sigs = {k: SimpleNamespace(**v) for k, v in previous.get("signals", {}).items() if isinstance(v, dict)}
+    new_sigs = {k: SimpleNamespace(**v) for k, v in fresh.get("signals", {}).items() if isinstance(v, dict)}
+    fresh["signal_changes"] = scored_signal_changes(prev_sigs, new_sigs, previous["session"], fresh["session"])
+
+
 def main():
     DATA.mkdir(parents=True,exist_ok=True)
     needed = expected_close()
+    prior = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
+    prior_day = prior.get('session')
+    finalized = is_finalized_snapshot(prior)
+    # No provider requests on holidays/weekends/pre-close if the latest saved
+    # session is complete. Also skip ordinary same-session backup reruns.
+    if finalized and (needed is None or prior_day >= needed.isoformat()):
+        print(f'::notice::Finalized EOD session {prior_day} retained; no new completed session eligible.')
+        return
     if needed is None:
-        # On a market holiday, weekend, or before today's close, permit a
-        # *repair* of the already-saved incomplete session if it was genuinely
-        # an earlier completed NYSE session. Nov 26 Thanksgiving can therefore
-        # repair a Nov 25 incomplete close without publishing a fake Nov 26 bar.
-        prior = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
-        prior_day = prior.get('session')
-        prior_price = prior.get('price_moves') or {}
-        if (isinstance(prior_day,str) and
-              (prior_price.get('status') != 'complete' or prior_price.get('session') != prior_day)):
-            try:
-                prior_date = datetime.strptime(prior_day,'%Y-%m-%d').date()
-                if prior_date == most_recent_completed_session():
-                    needed = prior_date
-                    print(f'::notice::Repairing saved incomplete EOD session {needed} (not creating a new market session)')
-            except ValueError:
-                pass
+        # Allow repair of incomplete scores OR incomplete prices only for the
+        # most recent completed exchange session, never an intraday candle.
+        try:
+            prior_date = datetime.strptime(prior_day, '%Y-%m-%d').date()
+            if not finalized and prior_date == most_recent_completed_session():
+                needed = prior_date
+                print(f'::notice::Repairing incomplete saved EOD session {needed}')
+        except (ValueError, TypeError):
+            pass
         if needed is None:
             print('::notice::No new regular completed session eligible; existing published snapshot retained.')
             return
@@ -262,6 +300,8 @@ def main():
             errors.append(f"Estimated breadth not available: {type(exc).__name__}: {str(exc)[:120]}")
     # SPY session determines the website's EOD date; prevent a partial current-day candle.
     # Workflow scheduled after close; manual runs during market hours may include incomplete bars.
+    if "COPPER" in df and len(df) >= 2:
+        print(f"::notice::Copper aligned dates: {df.index[-2].date()}, {df.index[-1].date()}; daily change classification input: {df['COPPER'].iloc[-1] - df['COPPER'].iloc[-2]:.8g}")
     result=analyze(df,extra,sources,history_months=20)
     # Workflow jobs can succeed even when the provider hasn't published today's
     # common completed SPY/QQQ daily bar. Never publish a regressed or stale
@@ -275,12 +315,16 @@ def main():
     check_completed_snapshot(result, needed)
     # A same-session rerun must not erase a verified result with fewer signals.
     # Exception: a formerly *unverified* snapshot may be repaired in place.
+    if previous_snapshot.get("session") == result.get("session") and is_finalized_snapshot(previous_snapshot):
+        print("::notice::Finalized same-session snapshot retained; provider revisions require review.")
+        return
     if is_same_session_quality_regression(previous_snapshot, result):
         print("::warning::Same-session refresh has fewer validated signals than the "
               "already verified snapshot; preserving the more complete prior result.")
         return
     # EOD MACD(12,26,9), now the 16th scored signal, with additional
     # display values derived from the same completed EOD close series.
+    use_published_prior(previous_snapshot, result)
     result["daily_macd"] = calculate_daily_macd(df, result["session"])
     check_completed_snapshot(result, needed)
     result["sources"]={k:{"provider":v,"latest_session":prices[k].dropna().index.max().strftime("%Y-%m-%d")}

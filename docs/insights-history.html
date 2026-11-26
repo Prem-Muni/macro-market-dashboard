@@ -7,11 +7,11 @@
   <meta name="description" content="Saved daily SPY and QQQ scores, close-to-close price changes, price-risk alerts, and market signal changes.">
   <title>Market Insights History | Daily Market Intelligence</title>
   <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
-  <link rel="stylesheet" href="insights-history.css?v=history-full-20261125c">
+  <link rel="stylesheet" href="insights-history.css?v=integrity-20261126a">
   <link rel="stylesheet" href="daily-summaries.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="internals-recap.css?v=20261125-internals1">
-  <script src="insights-history.js?v=history-full-20261125c" defer></script>
-  <script src="daily-summaries.js?v=history-full-20261125c" defer></script>
+  <script src="insights-history.js?v=integrity-20261126a" defer></script>
+  <script src="daily-summaries.js?v=integrity-20261126a" defer></script>
   <script src="model-validation.js?v=validation-20w-20261125a" defer></script>
   <link rel="stylesheet" href="model-validation.css?v=validation-20w-20261125a">
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
@@ -48,7 +48,7 @@
         <button id="summary-tab-validation" type="button" role="tab" aria-selected="false" aria-controls="validation-view">Model Validation</button>
       </div>
       <section id="summary-view" role="tabpanel" aria-labelledby="summary-tab-current" aria-label="Saved EOD market summaries">
-        <div class="audit-archive-banner"><div><div class="eyebrow">PREVIOUS TRADING SESSIONS</div><h3>Daily Summary Archive</h3><p>Earlier saved sessions, newest first. The current completed session is shown on the Dashboard.</p><span class="daily-summary-muted" id="summary-count">Loading…</span></div><div class="audit-archive-actions"><a href="index.html#daily-summary-overview" class="audit-secondary-link">Today's summary →</a><button type="button" id="summary-export" class="journal-export" disabled>↓ Export archive CSV</button></div></div>
+        <div class="audit-archive-banner"><div><div class="eyebrow">SAVED TRADING SESSIONS</div><h3>Daily Summary Archive</h3><p>All saved sessions, newest first, including the latest completed session.</p><span class="daily-summary-muted" id="summary-count">Loading…</span></div><div class="audit-archive-actions"><a href="index.html#daily-summary-overview" class="audit-secondary-link">Latest dashboard summary →</a><button type="button" id="summary-export" class="journal-export" disabled>↓ Export archive CSV</button></div></div>
         <div class="summary-archive-grid" id="summary-archive" aria-live="polite"></div>
         <p class="daily-summary-muted">Summaries are reconstructed from dated, saved EOD journal records. If a source is missing, its reading stays unavailable rather than being guessed. The screenshot baseline has no previous ETF price change.</p>
       </section>

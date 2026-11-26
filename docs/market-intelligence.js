@@ -45,7 +45,11 @@
     if(!current)return null;
     const today=bounds(current.bearish,current.available,current.total);
     const historicalToday=bounds(last[key],last[key+'_available'],current.total);
-    const previous=bounds(prior[key],prior[key+'_available'],current.total);
+    const saved=data.published_comparison;
+    const stored=saved?.markets?.[market==='sp'?'sp500':'nasdaq100'];
+    const previous=saved?.session===prior.date && stored?.total===current.total && stored?.available===stored.total
+      ? bounds(stored.bearish,stored.available,stored.total)
+      : bounds(prior[key],prior[key+'_available'],current.total);
     // Refuse to compare history from an outdated/scaled snapshot.
     if(!today||!previous||!historicalToday||historicalToday.min!==today.min||historicalToday.max!==today.max)return null;
     const delta={min:today.min-previous.max,max:today.max-previous.min};

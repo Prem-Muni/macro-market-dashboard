@@ -258,9 +258,15 @@
     };
     const x=i=>L+(entriesForChart.length<2?0:i/(entriesForChart.length-1))*(W-L-R);
     const y=v=>T+(16-v)/16*(H-T-B);
-    for(const n of [0,5.5,10.5,16]){
-      el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:n===5.5?'#8f4856':n===10.5?'#887348':'#30435a','stroke-width':1,'stroke-dasharray':n===5.5||n===10.5?'6 5':'1 0'});
+    for(const [low,high,color] of [[0,5.5,'#d45b65'],[5.5,10.5,'#d4ae58'],[10.5,16,'#32bf8b']]){
+      el('rect',{x:L,y:y(high),width:W-L-R,height:y(low)-y(high),fill:color,'fill-opacity':0.075});
+    }
+    for(const n of [0,5,11,16]){
+      el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:'#30435a','stroke-width':1});
       const t=el('text',{x:8,y:y(n)+4,fill:'#93abc5','font-size':12});t.textContent=String(n);
+    }
+    for(const [n,color] of [[5.5,'#8f4856'],[10.5,'#887348']]){
+      el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:color,'stroke-width':1,'stroke-dasharray':'6 5'});
     }
     if(!entriesForChart.length){
       const t=el('text',{x:W/2,y:113,'text-anchor':'middle',fill:'#9aadc4','font-size':17});t.textContent='Saved daily scores will appear after the next eligible EOD refresh';return;
