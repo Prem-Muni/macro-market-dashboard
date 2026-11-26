@@ -1,0 +1,26 @@
+/* Compact overview only; no scoring or data transformations. */
+.mi-calendar.mi-calendar-compact{padding:7px 12px;margin:8px 0;border-radius:10px}
+.mi-calendar-compact .mi-calendar-line{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;font-size:12px;line-height:1.4}
+.mi-calendar-compact .mi-calendar-line>b{font-size:14px;color:#edf3f9}
+.mi-calendar-compact .mi-calendar-line>span{color:#b6c9d6}
+.mi-calendar-compact .mi-calendar-line>a{margin-left:auto;font-size:11px}
+.mi-calendar-compact .mi-cal-items{padding:4px 0 0;gap:5px}
+.mi-calendar-compact .mi-chip{font-size:11px;padding:3px 7px;border-radius:5px}
+.overview-signal-board{display:grid;gap:6px}
+.board-meta{display:flex;align-items:center;flex-wrap:wrap;gap:5px 9px;color:#b7cbd8;font-size:11px;margin:0 0 4px}
+.board-legend{font-size:10px;font-weight:750;border-radius:4px;padding:2px 6px}
+.board-legend.bull,.board-bull{background:#0a8d49;color:#fff}
+.board-legend.bear,.board-bear{background:#bf293b;color:#fff}
+.board-legend.warn,.board-warn{background:#f2cc3c;color:#171c22}
+.board-legend.info,.board-info{background:#067eae;color:#fff}
+.board-legend.na,.board-na{background:#354757;color:#e2eaf2}
+.board-row{display:grid;grid-template-columns:135px minmax(0,1fr);gap:5px;align-items:stretch}
+.board-group{margin:0!important;display:flex;align-items:center;padding:8px 10px;border-radius:6px;background:#263849;color:#e5edf5;font-size:12px!important;line-height:1.25}
+.board-cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(106px,1fr));gap:4px}
+.board-cell{display:flex;flex-direction:column;justify-content:center;text-align:center;min-height:52px;padding:6px 4px;gap:2px;border-radius:6px;line-height:1.15;overflow-wrap:anywhere}
+.board-cell strong{font-size:11px;font-weight:750}.board-cell b{font-size:12px;font-weight:800}.board-cell small{font-size:10px;line-height:1.15}
+.board-cell .board-info-mark{background:#006995;color:#fff;padding:2px 4px;border-radius:3px;align-self:center;font-size:9px;font-weight:750}
+.board-note{font-size:11px;color:#9db4c5;line-height:1.4;margin:3px 0}
+.mi-overview-details{border:1px solid #304a5b;border-radius:9px;padding:8px 12px;margin:12px 0;color:#b9d4e5}
+.mi-overview-details>summary{font-size:12px;cursor:pointer}
+@media(max-width:700px){.board-row{grid-template-columns:1fr}.board-group{padding:6px 9px}.board-cells{grid-template-columns:repeat(auto-fit,minmax(95px,1fr))}.mi-calendar-compact .mi-calendar-line>a{margin-left:0}}
