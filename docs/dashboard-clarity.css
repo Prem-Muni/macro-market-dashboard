@@ -115,3 +115,14 @@
 .clarity-brief-more{margin:8px 0 0;padding:0;border:0}
 .clarity-brief-more>summary{font-size:11px;font-weight:650;color:#9ec6e7}
 .clarity-brief-more #brief-detail{display:block!important;overflow:visible!important;-webkit-line-clamp:unset!important;margin:8px 0 0}
+
+/* Streamlined secondary tabs only. Original calculation targets remain mounted. */
+#retired-risk-presentation{display:none!important}
+.clarity-technicals .market-price-panel>.embedded-technical-pulse{margin:0 0 12px;padding:11px 12px;border:1px solid #344d60;border-radius:9px;background:#142536;box-shadow:none}
+.clarity-technicals .embedded-technical-pulse .clarity-tech-card-title{flex-wrap:wrap;gap:5px 9px;margin:0 0 9px;align-items:baseline}
+.clarity-technicals .embedded-technical-pulse .clarity-tech-card-title>strong{font-size:13px}
+.clarity-technicals .embedded-technical-pulse .technical-close{margin-left:auto;font-size:11px;white-space:normal;text-align:right}
+.clarity-technicals .embedded-technical-pulse .clarity-tech-metrics{gap:7px}
+.clarity-technicals .embedded-technical-pulse .clarity-tech-metrics strong{font-size:12px}
+.clarity-signals>#market-indicators{margin-top:0}
+@media(max-width:600px){.clarity-technicals .embedded-technical-pulse .technical-close{margin-left:0;text-align:left}}

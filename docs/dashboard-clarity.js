@@ -16,7 +16,7 @@
     <div class="clarity-nav-buttons" role="tablist" aria-label="Dashboard views">
       <button type="button" role="tab" id="clarity-tab-overview" aria-controls="clarity-overview" aria-selected="true" data-clarity-tab="overview"><span aria-hidden="true">◈</span> Overview</button>
       <button type="button" role="tab" id="clarity-tab-technicals" aria-controls="clarity-technicals" aria-selected="false" tabindex="-1" data-clarity-tab="technicals"><span aria-hidden="true">⌁</span> Technicals</button>
-      <button type="button" role="tab" id="clarity-tab-signals" aria-controls="clarity-signals" aria-selected="false" tabindex="-1" data-clarity-tab="signals"><span aria-hidden="true">▤</span> Signals &amp; Context</button>
+      <button type="button" role="tab" id="clarity-tab-signals" aria-controls="clarity-signals" aria-selected="false" tabindex="-1" data-clarity-tab="signals"><span aria-hidden="true">▤</span> Market Internals Data</button>
     </div>`;
   main.parentNode.insertBefore(nav, main);
 
@@ -27,7 +27,7 @@
     el.dataset.clarityView = name;
     el.setAttribute('role', 'tabpanel');
     el.setAttribute('aria-labelledby', 'clarity-tab-' + name);
-    if (name !== 'overview') {
+    if (name === 'technicals') {
       const heading = document.createElement('div');
       heading.className = 'clarity-view-heading';
       heading.innerHTML = `<div class="eyebrow">${name === 'technicals' ? 'PRICE & MOMENTUM' : 'THE FULL PICTURE'}</div><h2>${title}</h2><p>${subtitle}</p>`;
@@ -38,7 +38,7 @@
   }
   const overview = panel('overview');
   const technicals = panel('technicals', 'Technical Analysis', 'Daily SPY and QQQ indicators · MACD is scored; moving averages remain informational.');
-  const signals = panel('signals', 'Signals & Market Context', 'Full 16-point breakdown, market transitions and source details—unchanged from the existing model.');
+  const signals = panel('signals', 'Market Internals Data', 'Detailed market indicators and source diagnostics.');
 
   const move = (selector, target) => {
     const el = document.querySelector(selector);
@@ -85,18 +85,23 @@
   // divergence-alert days. Keep it between the takeaway and any special alert.
   move('#daily-summary-overview', overview);
 
-  // The dated daily summary is always on Overview. The original detailed
-  // alert panel moves to Signals & Context to avoid duplicate alert cards.
+  // Keep the original alert nodes available to app.js, but remove the
+  // duplicate Daily Risk Transitions presentation from Market Internals Data.
+  const retired = document.createElement('div');
+  retired.id = 'retired-risk-presentation';
+  retired.hidden = true;
+  retired.setAttribute('aria-hidden','true');
+  main.appendChild(retired);
   const alert = $('price-risk-panel');
   if (alert) {
     alert.classList.add('clarity-price-risk');
-    signals.appendChild(alert);
+    retired.appendChild(alert);
   }
   const alertEmpty = document.createElement('div');
   alertEmpty.className = 'clarity-alert-empty';
   alertEmpty.id = 'clarity-alert-empty';
   alertEmpty.textContent = 'Price/risk alert check pending';
-  signals.appendChild(alertEmpty);
+  retired.appendChild(alertEmpty);
 
   const actions = document.createElement('div');
   actions.className = 'clarity-next-actions';
@@ -109,18 +114,33 @@
     <article class="clarity-tech-card"><div class="clarity-tech-card-title"><strong>SPY</strong><small>S&amp;P 500</small></div><div class="clarity-tech-metrics"><div><span>RSI (14)</span><strong id="clarity-spy-rsi">—</strong></div><div><span>MACD</span><strong id="clarity-spy-macd">—</strong></div><div><span>200D trend</span><strong id="clarity-spy-200">—</strong></div></div></article>
     <article class="clarity-tech-card"><div class="clarity-tech-card-title"><strong>QQQ</strong><small>Nasdaq-100</small></div><div class="clarity-tech-metrics"><div><span>RSI (14)</span><strong id="clarity-qqq-rsi">—</strong></div><div><span>MACD</span><strong id="clarity-qqq-macd">—</strong></div><div><span>200D trend</span><strong id="clarity-qqq-200">—</strong></div></div></article>
   </div>`;
-  technicals.appendChild(technicalSummary);
-  move('.market-prices', technicals);
+  const priceSection = move('.market-prices', technicals);
+  // Embed the existing pulse nodes in the matching ETF card. No duplicate
+  // IDs, chart rebuild, or extra data fetch; syncTechnical still owns values.
+  const pricePanels = priceSection?.querySelectorAll('.market-price-panel');
+  const pulseCards = technicalSummary.querySelectorAll('.clarity-tech-card');
+  const targets = ['spy','qqq'].map(sym => [...(pricePanels || [])].find(card => card.querySelector('#'+sym+'-ma-close')));
+  if(targets.every(card=>card?.querySelector('.tv-frame')) && pulseCards.length===2){
+    for(let i=0;i<targets.length;i++){
+      pulseCards[i].classList.add('embedded-technical-pulse');
+      pulseCards[i].setAttribute('aria-label',i===0?'SPY Technical Pulse':'QQQ Technical Pulse');
+      targets[i].insertBefore(pulseCards[i],targets[i].querySelector('.tv-frame'));
+    }
+  }else{
+    // If the chart structure changes, preserve the original visible pulse.
+    technicals.insertBefore(technicalSummary,priceSection||technicals.firstChild);
+  }
   move('.context-chart-grid', technicals);
   move('.research-link-inline', technicals);
 
-  move('#market-intelligence', signals);
+  move('#market-intelligence', retired);
   move('#market-indicators', signals);
   move('#shared-breakdown', signals);
   const changeSection = move('#session-changes', signals);
   if (changeSection) {
     const fold = document.createElement('details');
     fold.className = 'clarity-fold';
+    fold.open = true;
     fold.innerHTML = '<summary><span>Recent signal changes</span><small>What flipped since the prior EOD close</small></summary>';
     signals.insertBefore(fold, changeSection);
     fold.appendChild(changeSection);
@@ -179,7 +199,7 @@
     const unknown = states.every(s => s === 'neutral' || s === 'uncertain');
     alert.hidden = !active;
     alertEmpty.hidden = active;
-    alertEmpty.textContent = unknown ? 'Price/risk comparison pending or incomplete · check Signals & Context for details' : 'No notable price/risk mismatch in the latest EOD session';
+    alertEmpty.textContent = unknown ? 'Price/risk comparison pending or incomplete · see archived price/risk comparisons in Insights History' : 'No notable price/risk mismatch in the latest EOD session';
   }
   for (const sym of ['sp','nd']) {
     const card = $('price-risk-' + sym);
