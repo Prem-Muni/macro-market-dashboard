@@ -1,27 +1,27 @@
 {
   "session": "2026-11-25",
-  "generated_at": "2026-11-25T23:20:15.772210+00:00",
+  "generated_at": "2026-11-26T04:11:23.337240+00:00",
   "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
     "sp500": {
       "score": {
-        "bearish": 10,
-        "possible_max": 10,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 11,
+        "possible_max": 11,
+        "health": 5,
+        "health_max": 5,
         "total": 16,
         "available": 16,
         "missing": 0,
-        "regime": "NEUTRAL",
+        "regime": "RISK-OFF",
         "complete": true
       },
       "legacy_14": {
-        "bearish": 8,
-        "possible_max": 8,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 9,
+        "possible_max": 9,
+        "health": 5,
+        "health_max": 5,
         "total": 14,
         "available": 14,
         "missing": 0,
@@ -29,27 +29,27 @@
         "complete": true
       },
       "legacy_15": {
-        "bearish": 9,
-        "possible_max": 9,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 10,
+        "possible_max": 10,
+        "health": 5,
+        "health_max": 5,
         "total": 15,
         "available": 15,
         "missing": 0,
-        "regime": "NEUTRAL",
+        "regime": "RISK-OFF",
         "complete": true
       },
       "momentum": {
-        "d1": -1,
-        "d5": -1,
+        "d1": 0,
+        "d5": 0,
         "state": "STABLE",
         "d1_range": [
-          -1,
-          -1
+          0,
+          0
         ],
         "d5_range": [
-          -1,
-          -1
+          0,
+          0
         ],
         "partial": false
       },
@@ -68,21 +68,21 @@
     },
     "nasdaq100": {
       "score": {
-        "bearish": 10,
-        "possible_max": 10,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 11,
+        "possible_max": 11,
+        "health": 5,
+        "health_max": 5,
         "total": 16,
         "available": 16,
         "missing": 0,
-        "regime": "NEUTRAL",
+        "regime": "RISK-OFF",
         "complete": true
       },
       "legacy_14": {
-        "bearish": 8,
-        "possible_max": 8,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 9,
+        "possible_max": 9,
+        "health": 5,
+        "health_max": 5,
         "total": 14,
         "available": 14,
         "missing": 0,
@@ -90,27 +90,27 @@
         "complete": true
       },
       "legacy_15": {
-        "bearish": 9,
-        "possible_max": 9,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 10,
+        "possible_max": 10,
+        "health": 5,
+        "health_max": 5,
         "total": 15,
         "available": 15,
         "missing": 0,
-        "regime": "NEUTRAL",
+        "regime": "RISK-OFF",
         "complete": true
       },
       "momentum": {
-        "d1": -1,
-        "d5": -3,
+        "d1": 0,
+        "d5": -2,
         "state": "IMPROVING",
         "d1_range": [
-          -1,
-          -1
+          0,
+          0
         ],
         "d5_range": [
-          -3,
-          -3
+          -2,
+          -2
         ],
         "partial": false
       },
@@ -172,8 +172,8 @@
       "source": "HYG / IEF"
     },
     "copper": {
-      "state": "bull",
-      "label": "BULLISH",
+      "state": "bear",
+      "label": "BEARISH",
       "value": null,
       "note": "Daily copper change",
       "source": "Yahoo Finance via yfinance (unofficial): HG=F"
@@ -321,14 +321,14 @@
     "nd_breadth1d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 56.122,
+      "value": 57.143,
       "note": "Today's advancing share % (not SPX 200D breadth)",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     },
     "nd_breadth5d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 11.313,
+      "value": 11.517,
       "note": "Change in average advancing share between adjacent 5D windows; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     }
@@ -339,15 +339,7 @@
     "groups": {
       "shared": {
         "new_bearish": [],
-        "eased": [
-          {
-            "key": "copper",
-            "label": "Copper",
-            "before": "BEARISH",
-            "after": "BULLISH",
-            "kind": "eased"
-          }
-        ],
+        "eased": [],
         "other": [],
         "compared": 6,
         "skipped": 0,
@@ -387,7 +379,6 @@
       }
     },
     "by_key": {
-      "copper": "eased",
       "sp_breadth1d": "other",
       "nd_breadth1d": "other"
     }
@@ -4260,12 +4251,12 @@
     },
     {
       "date": "2026-11-25",
-      "sp": 10,
+      "sp": 11,
       "sp_available": 16,
-      "sp_max": 10,
-      "nd": 10,
+      "sp_max": 11,
+      "nd": 11,
       "nd_available": 16,
-      "nd_max": 10
+      "nd_max": 11
     }
   ],
   "backtest": {
@@ -5487,7 +5478,7 @@
         "incomplete_or_missing_sessions": 0,
         "regimes": {
           "RISK-OFF": {
-            "signal_sessions": 11,
+            "signal_sessions": 12,
             "horizons": {
               "1": {
                 "n": 11,
@@ -5534,7 +5525,7 @@
             }
           },
           "NEUTRAL": {
-            "signal_sessions": 61,
+            "signal_sessions": 60,
             "horizons": {
               "1": {
                 "n": 60,
@@ -5681,7 +5672,7 @@
         "incomplete_or_missing_sessions": 0,
         "regimes": {
           "RISK-OFF": {
-            "signal_sessions": 14,
+            "signal_sessions": 15,
             "horizons": {
               "1": {
                 "n": 14,
@@ -5728,7 +5719,7 @@
             }
           },
           "NEUTRAL": {
-            "signal_sessions": 61,
+            "signal_sessions": 60,
             "horizons": {
               "1": {
                 "n": 60,
@@ -6070,15 +6061,15 @@
     },
     "OIL": {
       "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-26"
     },
     "COPPER": {
       "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-26"
     },
     "USD": {
       "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-26"
     },
     "TNX": {
       "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
@@ -6669,8 +6660,8 @@
                 "source": "HYG / IEF"
               },
               "copper": {
-                "state": "bull",
-                "label": "BULLISH",
+                "state": "bear",
+                "label": "BEARISH",
                 "value": null,
                 "note": "Daily copper change",
                 "source": "Yahoo Finance via yfinance (unofficial): HG=F"
@@ -6875,15 +6866,15 @@
               },
               "OIL": {
                 "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
-                "latest_session": "2026-11-25"
+                "latest_session": "2026-11-26"
               },
               "COPPER": {
                 "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
-                "latest_session": "2026-11-25"
+                "latest_session": "2026-11-26"
               },
               "USD": {
                 "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
-                "latest_session": "2026-11-25"
+                "latest_session": "2026-11-26"
               },
               "TNX": {
                 "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
@@ -6939,18 +6930,18 @@
           "previous_close": 718.78,
           "close": 716.7,
           "price_change_pct": -0.28938,
-          "score": 10,
+          "score": 11,
           "available": 16,
           "total": 16,
-          "regime": "NEUTRAL",
+          "regime": "RISK-OFF",
           "estimated_count": 1,
           "estimated_signals": [
             "sp_breadth1d"
           ],
           "trend_5d": "STABLE",
           "five_day_delta_range": [
-            -1,
-            -1
+            0,
+            0
           ],
           "confirmation": {
             "confirmed": 0,
@@ -6959,9 +6950,9 @@
           },
           "swing": "BEARISH",
           "previous_score": 11,
-          "score_delta_1d": -1,
+          "score_delta_1d": 0,
           "previous_regime": "RISK-OFF",
-          "risk_transition": "changed",
+          "risk_transition": "unchanged",
           "price_risk_status": "none",
           "price_risk_label": "No price/risk alert"
         },
@@ -6997,8 +6988,8 @@
                 "source": "HYG / IEF"
               },
               "copper": {
-                "state": "bull",
-                "label": "BULLISH",
+                "state": "bear",
+                "label": "BEARISH",
                 "value": null,
                 "note": "Daily copper change",
                 "source": "Yahoo Finance via yfinance (unofficial): HG=F"
@@ -7069,7 +7060,7 @@
               "nd_breadth1d": {
                 "state": "bull",
                 "label": "EXPANDING",
-                "value": 56.122,
+                "value": 57.143,
                 "note": "Today's advancing share % (not SPX 200D breadth)",
                 "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
               },
@@ -7083,7 +7074,7 @@
               "nd_breadth5d": {
                 "state": "bull",
                 "label": "EXPANDING",
-                "value": 11.313,
+                "value": 11.517,
                 "note": "Change in average advancing share between adjacent 5D windows; pp",
                 "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
               }
@@ -7195,15 +7186,15 @@
               },
               "OIL": {
                 "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
-                "latest_session": "2026-11-25"
+                "latest_session": "2026-11-26"
               },
               "COPPER": {
                 "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
-                "latest_session": "2026-11-25"
+                "latest_session": "2026-11-26"
               },
               "USD": {
                 "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
-                "latest_session": "2026-11-25"
+                "latest_session": "2026-11-26"
               },
               "TNX": {
                 "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
@@ -7259,18 +7250,18 @@
           "previous_close": 638.1,
           "close": 633.93,
           "price_change_pct": -0.6535,
-          "score": 10,
+          "score": 11,
           "available": 16,
           "total": 16,
-          "regime": "NEUTRAL",
+          "regime": "RISK-OFF",
           "estimated_count": 1,
           "estimated_signals": [
             "nd_breadth1d"
           ],
           "trend_5d": "IMPROVING",
           "five_day_delta_range": [
-            -3,
-            -3
+            -2,
+            -2
           ],
           "confirmation": {
             "confirmed": 1,
@@ -7279,9 +7270,9 @@
           },
           "swing": "BEARISH",
           "previous_score": 11,
-          "score_delta_1d": -1,
+          "score_delta_1d": 0,
           "previous_regime": "RISK-OFF",
-          "risk_transition": "changed",
+          "risk_transition": "unchanged",
           "price_risk_status": "none",
           "price_risk_label": "No price/risk alert"
         },
@@ -7290,13 +7281,7 @@
           "groups": {
             "shared": {
               "new_bearish": [],
-              "eased": [
-                {
-                  "label": "Copper",
-                  "before": "BEARISH",
-                  "after": "BULLISH"
-                }
-              ],
+              "eased": [],
               "other": []
             },
             "sp": {
