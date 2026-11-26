@@ -31,8 +31,9 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
 .mi-header-calendar .mi-futures-start{border-left:1px solid #40576a;padding-left:11px}
 .mi-header-calendar .mi-futures-note{font-size:10px;color:#9cb3c5}
 .mi-header-calendar .mi-calendar-line>a.mi-calendar-source{margin-left:auto}
-.mi-header-calendar .mi-futures-embed{flex:1 0 300px;min-width:300px;max-width:700px;height:44px;border:0;display:block;border-radius:4px}
-.mi-header-calendar:has(.mi-futures-embed){padding-block:2px}
+.mi-header-calendar .mi-futures-row{width:100%;min-width:0;max-width:none;margin-top:4px}
+.mi-header-calendar .mi-futures-embed{width:100%;min-width:0;max-width:none;height:44px;border:0;display:block;border-radius:4px}
+.mi-header-calendar:has(.mi-futures-embed){padding:4px 9px}
 @media(max-width:620px){.mi-grid,.mi-grid.four{grid-template-columns:1fr}.mi-extra,.mi-calendar{padding:12px}}
 `);document.head.append(style);
  // Equity session status is calculated locally, not fetched from a quote feed.
@@ -61,10 +62,10 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
   if(!line){
    line=E("div",null,"mi-calendar-line");line.tabIndex=0;
    const link=(label,url,cls)=>{const a=E("a",label,cls);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a;};
-   add(line,E("b","Market Calendar"),E("strong",null,"mi-market-status"),E("span",null,"mi-market-next"),E("span",null,"mi-market-eod"),E("b","Futures","mi-futures-start"),
-    link("ES · S&P 500 ↗","https://finance.yahoo.com/quote/ES%3DF/"),
-    link("NQ · Nasdaq-100 ↗","https://finance.yahoo.com/quote/NQ%3DF/"),
-    E("span","Delayed · ~30m on trading days","mi-futures-note"),
+   add(line,E("b","Market Calendar"),E("strong",null,"mi-market-status"),E("span",null,"mi-market-next"),E("span",null,"mi-market-eod"),
+    E("span","Futures · delayed · ~30m on trading days","mi-futures-note"),
+    link("ES ↗","https://finance.yahoo.com/quote/ES%3DF/"),
+    link("NQ ↗","https://finance.yahoo.com/quote/NQ%3DF/"),
     link("NYSE calendar ↗","https://www.nyse.com/trade/hours-calendars","mi-calendar-source"));
    // Official provider-hosted iframe, not extracted or re-served quote data.
    // Retain direct ES/NQ links as a fallback. Provider controls symbols and latency.
@@ -75,8 +76,9 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
    ticker.setAttribute("scrolling","no");
    ticker.width="100%";ticker.height="44";
    ticker.src="https://www.brixnation.com/brixnation-market-ticker.html";
-   line.insertBefore(ticker,line.querySelector(".mi-futures-note"));
-   box.append(line);
+   const tickerRow=E("div",null,"mi-futures-row");
+   tickerRow.append(ticker);
+   box.append(line,tickerRow);
   }
   const label=line.querySelector(".mi-market-status");
   label.textContent=status.label;label.dataset.state=status.state;
