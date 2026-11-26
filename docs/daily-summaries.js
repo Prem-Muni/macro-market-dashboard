@@ -34,7 +34,7 @@
     const pct=finite(item.price_change_pct)?item.price_change_pct:null;
     const alert=(!baseline && item.available<item.total) ? {kind:'uncertain',label:'Scoring incomplete · alert not confirmed'} : priceRisk(pct,risk,baseline);
     return {low,high,total:item.total,available:item.available,risk,
-      pct,close:finite(item.close)?item.close:null,
+      pct,close:finite(item.close)?item.close:null,previousClose:finite(item.previous_close)?item.previous_close:null,
       trend:typeof item.trend_5d==='string'?item.trend_5d:'N/A',
       delta:finite(item.score_delta_1d)?-item.score_delta_1d:null,
       previousRisk: !baseline && item.available===item.total && finite(item.previous_score) ? regime(item.total-item.previous_score,item.total-item.previous_score) : null,
@@ -258,7 +258,37 @@
       label.dateTime=record.session;
       put(title,'span','',' - Market Summary');
       const body=put(row,'div','market-archive-body');
-      renderCard(body,record,false);
+      const compact=put(body,'div','archive-compact-row');
+      for(const [symbol,name,m] of [['SPY','S&P 500 ETF',record.spy],['QQQ','Nasdaq-100 ETF',record.qqq]]){
+        const tile=put(compact,'article','archive-compact-etf');
+        const quote=put(tile,'div','archive-compact-quote');
+        put(quote,'strong','archive-compact-ticker',symbol);
+        put(quote,'small','archive-compact-name',name);
+        put(quote,'small','archive-compact-name','Completed EOD');
+        put(quote,'strong','archive-compact-price',money(m.close));
+        const change=finite(m.pct)&&finite(m.previousClose)&&finite(m.close)?m.close-m.previousClose:null;
+        const dollars=finite(change)?' · '+(change<0?'−':change>0?'+':'')+'$'+Math.abs(change).toFixed(2):'';
+        const priceMove=put(quote,'small','archive-compact-move',finite(m.pct)?signed(m.pct)+dollars:'Daily change unavailable');
+        priceMove.dataset.direction=!finite(m.pct)?'missing':m.pct>0?'up':m.pct<0?'down':'flat';
+        const score=put(tile,'div','archive-compact-score');
+        score.dataset.regime=m.risk;
+        put(score,'strong','archive-compact-health',scoreText(m));
+        put(score,'small','archive-compact-name',m.available+'/'+m.total+' signals available');
+        put(score,'b','archive-compact-regime',({'RISK-OFF':'Risk-Off','NEUTRAL':'Neutral','RISK-ON':'Risk-On'})[m.risk]||'Incomplete');
+      }
+      const summary=put(compact,'section','archive-compact-summary');
+      put(summary,'h3','','Daily Market Summary');
+      put(summary,'p','archive-compact-description',record.summary);
+      const changes=record.internals;
+      if(changes?.available){
+        if(changes.improvedCount)put(summary,'p','daily-summary-internal-up','Improved: '+changes.improved);
+        if(changes.worsenedCount)put(summary,'p','daily-summary-internal-down','Weakened: '+changes.worsened);
+        if(changes.partial)put(summary,'p','daily-summary-muted','Partial historical comparison.');
+      }
+      if(record.origin==='screenshot_baseline')put(summary,'p','daily-summary-muted','Screenshot baseline · prior ETF closes unavailable.');
+      const details=put(body,'details','archive-full-details');
+      put(details,'summary','','Full market summary & price/risk details');
+      renderCard(details,record,false);
     }
   }
   api.renderArchiveRows=renderArchiveRows;
