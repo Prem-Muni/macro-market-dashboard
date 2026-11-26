@@ -135,6 +135,7 @@ def capture_metrics(result: dict, sym: str) -> dict:
         "sources": result.get("sources", {}),
         "warnings": result.get("warnings", []),
         "confirmation_components": result.get("markets", {}).get(model, {}).get("confirmation", {}).get("components", {}),
+        "source_audit": result.get("source_audit", {}),
     })
 
 

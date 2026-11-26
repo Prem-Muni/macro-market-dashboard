@@ -2,6 +2,9 @@ name: Refresh EOD dashboard
 
 on:
   schedule:
+    # Early-close attempt; only official shortened sessions proceed.
+    - cron: '20 12 * 7,11,12 1-5'
+      timezone: 'America/Chicago'
     # Primary at 3:20pm CT (4:20pm ET) after verified regular market close.
     - cron: '20 15 * * 1-5'
       timezone: 'America/Chicago'
@@ -24,6 +27,8 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    outputs:
+      publish: ${{ steps.schedule_gate.outputs.publish }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -34,11 +39,29 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
+      - name: Check scheduled early-close eligibility
+        id: schedule_gate
+        env:
+          EARLY_PROBE: ${{ github.event_name == 'schedule' && github.event.schedule == '20 12 * 7,11,12 1-5' }}
+        shell: bash
+        run: |
+          if [ "$EARLY_PROBE" = "true" ]; then
+            if python -c 'import sys; sys.path.insert(0,"scripts"); from datetime import datetime; from eod_freshness import CENTRAL,is_early_close; sys.exit(0 if is_early_close(datetime.now(CENTRAL).date()) else 1)'; then
+              echo "publish=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "Not a scheduled early-close session; no publication."
+              echo "publish=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Generate latest EOD data
+        if: steps.schedule_gate.outputs.publish == 'true'
         env:
           SUPPLEMENTAL_DATA_URL: ${{ secrets.SUPPLEMENTAL_DATA_URL }}
         run: python scripts/update.py
-      - name: Save snapshot to GitHub history (non-blocking if repository changes)
+      - name: Save snapshot to GitHub history (fail closed on conflict)
+        if: steps.schedule_gate.outputs.publish == 'true'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -55,19 +78,32 @@ jobs:
                 echo "Saved market snapshot after synchronizing"
               else
                 git rebase --abort 2>/dev/null || true
-                echo "::warning::Could not save JSON to Git history. Pages will still deploy this run's generated snapshot; investigate any remote changes."
+                echo "::error::Could not safely save JSON to Git history; refusing to deploy a divergent snapshot."
+                exit 1
               fi
             fi
           fi
+      - name: Verify publication is synchronized with main
+        if: steps.schedule_gate.outputs.publish == 'true'
+        shell: bash
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo "::error::Repository changed during publication; retry from current main."
+            exit 1
+          fi
       - name: Configure GitHub Pages
+        if: steps.schedule_gate.outputs.publish == 'true'
         uses: actions/configure-pages@v6
       - name: Upload website artifact
+        if: steps.schedule_gate.outputs.publish == 'true'
         uses: actions/upload-pages-artifact@v5
         with:
           path: docs
   deploy:
     name: Deploy published dashboard
     needs: update
+    if: needs.update.outputs.publish == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

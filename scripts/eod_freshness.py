@@ -43,10 +43,23 @@ def nyse_regular_holidays(year: int) -> set[date]:
 def is_regular_session(day: date) -> bool:
     return day.weekday()<5 and day not in nyse_regular_holidays(day.year)
 
+# Official NYSE published early-close schedule, 2026–2028.
+# https://www.nyse.com/trade/hours-calendars
+EARLY_CLOSE_DATES = frozenset(date.fromisoformat(d) for d in (
+    "2026-11-27", "2026-12-24", "2027-11-26", "2028-07-03", "2028-11-24",
+))
+
+def is_early_close(day: date) -> bool:
+    return is_regular_session(day) and day in EARLY_CLOSE_DATES
+
+def eod_cutoff(day: date) -> tuple[int, int]:
+    # Equity core-session close plus 15-minute provider buffer, Central time.
+    return (12, 15) if is_early_close(day) else (15, 15)
+
 def expected_close(now: datetime | None = None) -> date | None:
     now = now.astimezone(CENTRAL) if now is not None else datetime.now(CENTRAL)
     today=now.date()
-    if not is_regular_session(today) or (now.hour,now.minute)<(15,15):
+    if not is_regular_session(today) or (now.hour,now.minute)<eod_cutoff(today):
         return None
     return today
 
@@ -67,7 +80,7 @@ def most_recent_completed_session(now: datetime | None = None) -> date:
     """
     now = now.astimezone(CENTRAL) if now is not None else datetime.now(CENTRAL)
     day = now.date()
-    if not is_regular_session(day) or (now.hour, now.minute) < (15, 15):
+    if not is_regular_session(day) or (now.hour, now.minute) < eod_cutoff(day):
         day -= timedelta(days=1)
     while not is_regular_session(day):
         day -= timedelta(days=1)
