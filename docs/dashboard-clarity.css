@@ -126,3 +126,10 @@
 .clarity-technicals .embedded-technical-pulse .clarity-tech-metrics strong{font-size:12px}
 .clarity-signals>#market-indicators{margin-top:0}
 @media(max-width:600px){.clarity-technicals .embedded-technical-pulse .technical-close{margin-left:0;text-align:left}}
+
+/* Technicals: remove duplicate headers and pulse; retain chart and source caveats. */
+.clarity-technicals .market-prices>.extras-header{display:none!important}
+.clarity-technicals .market-prices{margin-top:0}
+.clarity-technicals .market-chart-heading .technical-close{display:block;margin:5px 0 0;font-size:15px;font-weight:750;color:#cce4f3;text-align:left;white-space:normal}
+.clarity-technicals .macd-classification{margin:5px 0 10px}
+.clarity-technicals .macd-classification .rsi-state{display:inline-block;padding:3px 6px;border-radius:4px;background:#1b2b3d}
