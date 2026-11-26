@@ -17,23 +17,42 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
 .mi-extra h3,.mi-extra h4{margin:0 0 7px}.mi-note{font-size:.86rem;opacity:.78;margin:5px 0 13px;line-height:1.5}
 .mi-calendar{padding:12px 15px;margin:10px 0 15px}.mi-calendar strong{color:#e5c78c}.mi-calendar a{color:#a5cee6;text-decoration:underline}.mi-cal-items{display:flex;gap:8px;overflow-x:auto;padding:6px 0;white-space:nowrap}.mi-chip{display:inline-block;border:1px solid #40576a;border-radius:8px;padding:6px 10px;font-size:.8rem}.mi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mi-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}.mi-tile{border:1px solid #344e60;border-radius:10px;padding:12px;line-height:1.55}.mi-tile b{display:block;font-size:1.05rem}.mi-bull{color:#78dfb4}.mi-bear{color:#ffa1a7}.mi-warn{color:#e6cb89}.mi-na{color:#a5b2c1}
 .mi-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:10px 0}.mi-toolbar label{display:flex;gap:8px;align-items:center}.mi-toolbar select{font:inherit;color:inherit;background:#172b3c;border:1px solid #51687b;border-radius:7px;padding:6px}.mi-scroll{overflow:auto;max-width:100%}.mi-table{width:100%;border-collapse:separate;border-spacing:3px;font-size:.83rem;white-space:nowrap}.mi-table th,.mi-table td{text-align:center;padding:7px 9px;border-radius:4px}.mi-table th:first-child,.mi-table td:first-child{text-align:left;position:sticky;left:0;background:#182a3a;z-index:1}.mi-table th{font-weight:700}.mi-cell-bull{background:#245e4c;color:#c9fae3}.mi-cell-bear{background:#793942;color:#ffe0e3}.mi-cell-warn{background:#665727;color:#fff0b5}.mi-cell-na{background:#25394a;color:#b7c6d3}.mi-extra svg{display:block;width:100%;height:auto;min-width:400px}.mi-chart-wrap{overflow:auto}.mi-extra p{overflow-wrap:anywhere}
+.mi-calendar.mi-header-calendar{padding:7px 10px;margin:6px 0 8px;border-radius:9px;background:#142a39}
+.mi-header-calendar .mi-calendar-line{display:flex;align-items:center;gap:5px 13px;flex-wrap:wrap;font-size:12px;line-height:1.4}
+.mi-header-calendar .mi-calendar-line>b,.mi-header-calendar .mi-futures-links>b{font-size:13px;color:#e4eff7}
+.mi-header-calendar .mi-calendar-line>span{color:#b6c9d6}
+.mi-header-calendar .mi-calendar-line>a{margin-left:auto;font-size:11px}
+.mi-header-calendar .mi-cal-items{padding:4px 0 2px;gap:5px}
+.mi-header-calendar .mi-chip{font-size:11px;padding:3px 7px;border-radius:5px}
+.mi-header-calendar .mi-futures-links{display:flex;align-items:center;flex-wrap:wrap;gap:5px 9px;margin-top:5px;font-size:12px}
+.mi-header-calendar .mi-futures-links>a{border:1px solid #385367;border-radius:5px;padding:3px 7px;text-decoration:none;font-weight:700}
+.mi-header-calendar .mi-futures-note{color:#9cb3c5;font-size:11px}
+@media(max-width:620px){.mi-header-calendar .mi-calendar-line>a{margin-left:0}}
 @media(max-width:620px){.mi-grid,.mi-grid.four{grid-template-columns:1fr}.mi-extra,.mi-calendar{padding:12px}}
 `);document.head.append(style);
  function banner(d){
-  if(document.getElementById('summary-view')){document.getElementById('mi-market-calendar')?.remove();return;}
-  let nav=document.querySelector("nav.site-tabs");if(!nav)return;let box=document.getElementById("mi-market-calendar");if(!box){box=E("aside",null,"mi-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market calendar");nav.after(box)}box.replaceChildren();
-  let t=today();box.dataset.day=t;let ev=M.event(t),n=M.next(t),status=!M.covered(t)?"Calendar needs verification":ev&&!ev[2]?ev[1]+" · Market closed today":ev?.[2]?ev[1]+" · Early close at noon CT":!M.trading(t)?"Weekend · Market closed today":"Regular session · 8:30 AM–3 PM CT";
-  const compact=!!document.getElementById("daily-summary-overview");
+  // A single shared header component; never move it into tab content.
+  const header=document.querySelector("header.topbar");if(!header)return;
+  let box=document.getElementById("mi-market-calendar");
+  if(!box){box=E("aside",null,"mi-calendar mi-calendar-compact mi-header-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market calendar and futures quote links");header.after(box);}
+  else if(box.previousElementSibling!==header)header.after(box);
+  box.replaceChildren();
+  const t=today();box.dataset.day=t;
+  const ev=M.event(t),n=M.next(t),status=!M.covered(t)?"Calendar needs verification":ev&&!ev[2]?ev[1]+" · Market closed today":ev?.[2]?ev[1]+" · Early close at noon CT":!M.trading(t)?"Weekend · Market closed today":"Regular session · 8:30 AM–3 PM CT";
   const nextText=n?"Next: "+fmt(n)+(M.event(n)?.[2]?" · Noon CT close":" · Regular hours"):"See NYSE for the next session.";
-  if(compact){
-   box.classList.add("mi-calendar-compact");
-   let line=E("div",null,"mi-calendar-line");
-   add(line,E("b","Market Calendar"),E("strong",status),E("span",nextText),E("span",d?.session?"Last EOD: "+fmt(d.session):"Last EOD pending"));
-   box.append(line);
-  }else add(box,E("strong",status),E("p",n?"Next trading session: "+fmt(n)+(M.event(n)?.[2]?" · Early close at noon CT":" · Regular hours"):"See NYSE for the next verified session.","mi-note"));
-  if(d?.session&&!compact)add(box,E("p","Last published EOD: "+fmt(d.session)+". Equity calendar only; futures hours may differ. First scheduled refresh: 12:20 PM CT on listed early-close days; 3:20 PM CT on normal days. Provider availability may delay publication.","mi-note"));
-  let strip=E("div",null,"mi-cal-items");strip.tabIndex=0;strip.setAttribute("aria-label","Upcoming holidays and early closes; scroll horizontally");for(let e of calendar.filter(e=>e[0]>=t).slice(0,8)){let chip=E("span",fmt(e[0])+" · "+e[1]+" · "+(e[2]?"Noon CT close":"Closed"),"mi-chip "+(e[2]?"mi-warn":"mi-bear"));strip.append(chip)}if(strip.childNodes.length)box.append(strip);
-  let a=E("a","Official NYSE calendar · 2026–2028");a.href="https://www.nyse.com/trade/hours-calendars";a.target="_blank";a.rel="noopener noreferrer";if(compact){a.textContent="NYSE calendar ↗";let line=box.querySelector(".mi-calendar-line");line?.append(a);box.title="Equity calendar only; futures hours may differ. Scheduled refresh: 12:20 PM CT early close; 3:20 PM CT regular day. Provider availability may delay publication.";}else box.append(a);
+  const line=E("div",null,"mi-calendar-line");
+  add(line,E("b","Market Calendar"),E("strong",status),E("span",nextText),E("span",d?.session?"Last EOD: "+fmt(d.session):"Last EOD pending"));
+  const link=(label,url)=>{const a=E("a",label);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a;};
+  line.append(link("NYSE calendar ↗","https://www.nyse.com/trade/hours-calendars"));box.append(line);
+  const strip=E("div",null,"mi-cal-items");strip.tabIndex=0;strip.setAttribute("aria-label","Upcoming holidays and early closes; scroll horizontally");
+  for(const e of calendar.filter(e=>e[0]>=t).slice(0,8))strip.append(E("span",fmt(e[0])+" · "+e[1]+" · "+(e[2]?"Noon CT close":"Closed"),"mi-chip "+(e[2]?"mi-warn":"mi-bear")));
+  if(strip.childNodes.length)box.append(strip);
+  // CME ES/NQ are not in TradingView's listed free website-widget markets.
+  // Link directly to the actual contracts rather than show a CFD or invent quotes.
+  const futures=E("div",null,"mi-futures-links");
+  add(futures,E("b","Index Futures"),link("S&P 500 · ES ↗","https://www.tradingview.com/symbols/CME_MINI-ES1%21/"),link("Nasdaq-100 · NQ ↗","https://www.tradingview.com/symbols/CME_MINI-NQ1%21/"),E("span","External quotes · may be delayed · info only","mi-futures-note"));
+  box.append(futures);
+  box.title="Equity calendar only; futures hours may differ. Scheduled EOD refresh: 12:20 PM CT on early closes; 3:20 PM CT regular days. Provider availability may delay publication. Futures links do not affect Market Health.";
  }
  function tile(title,body,cls=""){return add(E("div",null,"mi-tile"),E("b",title,cls),E("div",body))}
  function dashboard(d,rs){
