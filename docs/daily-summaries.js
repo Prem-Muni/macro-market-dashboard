@@ -245,18 +245,39 @@
       renderCard(target,r,true);
     }catch(err){target.replaceChildren();put(target,'p','daily-summary-muted','Daily summary unavailable: '+err.message);}
   }
+  // Archive-only layout; reuse the same card and all existing saved data.
+  function renderArchiveRows(parent, records, expanded=new Set()){
+    parent.replaceChildren();
+    for(const record of records){
+      const [year,month,day]=record.session.split('-');
+      const row=put(parent,'details','market-archive-day');
+      row.dataset.session=record.session;
+      row.open=expanded.has(record.session);
+      const title=put(row,'summary','market-archive-date');
+      const label=put(title,'time','',`${month}/${day}/${year}`);
+      label.dateTime=record.session;
+      put(title,'span','',' - Market Summary');
+      const body=put(row,'div','market-archive-body');
+      renderCard(body,record,false);
+    }
+  }
+  api.renderArchiveRows=renderArchiveRows;
   let archive=[];
+  let historyRequest=0;
   async function renderHistory(){
     const panel=$('summary-view');if(!panel)return;
+    const request=++historyRequest;
     try{
       const data=await loadData();
-      const old=$('summary-archive');old.replaceChildren();
+      if(request!==historyRequest)return;
+      const old=$('summary-archive');
+      const expanded=new Set([...old.querySelectorAll('details.market-archive-day[open]')].map(row=>row.dataset.session));
       archive=previousSummaries(data);
+      renderArchiveRows(old,archive,expanded);
       if(!archive.length){put(old,'p','daily-summary-muted','Saved EOD summaries will appear here automatically after each completed session.');}
-      else for(const day of archive)renderCard(old,day,false);
       $('summary-count').textContent=archive.length+` completed session${archive.length===1?'':'s'} saved`;
       $('summary-export').disabled=!archive.length;
-    }catch(err){const old=$('summary-archive');if(old)old.textContent='Daily summaries unavailable: '+err.message;}
+    }catch(err){if(request!==historyRequest)return;const old=$('summary-archive');if(old)old.textContent='Daily summaries unavailable: '+err.message;}
   }
   function initHistory(){
     const host=$('summary-view');if(!host)return;
