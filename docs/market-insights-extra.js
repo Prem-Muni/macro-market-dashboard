@@ -21,7 +21,7 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
 `);document.head.append(style);
  function banner(d){
   let nav=document.querySelector("nav.site-tabs");if(!nav)return;let box=document.getElementById("mi-market-calendar");if(!box){box=E("aside",null,"mi-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market calendar");nav.after(box)}box.replaceChildren();
-  let t=today(),ev=M.event(t),n=M.next(t),status=!M.covered(t)?"Calendar needs verification":ev&&!ev[2]?ev[1]+" · Market closed today":ev?.[2]?ev[1]+" · Early close at noon CT":!M.trading(t)?"Weekend · Market closed today":"Regular session · 8:30 AM–3 PM CT";
+  let t=today();box.dataset.day=t;let ev=M.event(t),n=M.next(t),status=!M.covered(t)?"Calendar needs verification":ev&&!ev[2]?ev[1]+" · Market closed today":ev?.[2]?ev[1]+" · Early close at noon CT":!M.trading(t)?"Weekend · Market closed today":"Regular session · 8:30 AM–3 PM CT";
   add(box,E("strong",status),E("p",n?"Next trading session: "+fmt(n)+(M.event(n)?.[2]?" · Early close at noon CT":" · Regular hours"):"See NYSE for the next verified session.","mi-note"));
   if(d?.session)add(box,E("p","Last published EOD: "+fmt(d.session)+". Equity calendar only; futures hours may differ. Scheduled dashboard refresh begins at 3:20 PM CT, including shortened sessions.","mi-note"));
   let strip=E("div",null,"mi-cal-items");strip.tabIndex=0;strip.setAttribute("aria-label","Upcoming holidays and early closes; scroll horizontally");for(let e of calendar.filter(e=>e[0]>=t).slice(0,8)){let chip=E("span",fmt(e[0])+" · "+e[1]+" · "+(e[2]?"Noon CT close":"Closed"),"mi-chip "+(e[2]?"mi-warn":"mi-bear"));strip.append(chip)}if(strip.childNodes.length)box.append(strip);
@@ -63,7 +63,7 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
   function render(){out.replaceChildren();let recent=rs.slice(-range);let ids=[...(d.order?.shared||[]),...(d.order?.[key==="spy"?"sp500":"nasdaq100"]||[])];let scored=ids.slice(0,16);let data=scored.map(id=>[d.names?.[id]||id,...recent.map(r=>{let sig=r[key]?.metrics?.signals?.[id];let state=sig?.state;let cls=["bull","bear","warn"].includes(state)?state:"na";return {text:cls==="bull"?"▲":cls==="bear"?"▼":cls==="warn"?"•":"—",cls:"mi-cell-"+cls,title:r.session+" · "+(sig?.label||"Not recorded")+(M.finite(sig?.value)?" · "+sig.value:"")}})]);out.append(E("h4",key.toUpperCase()+" · 16 scored indicators"),E("p","▲ Bullish   ▼ Bearish   • Caution   — Unavailable · "+recent.filter(r=>r[key]?.metrics?.signals).length+"/"+recent.length+" sessions with detailed indicators","mi-note"),table(["Indicator",...recent.map(r=>r.session.slice(5))],data),E("h4","Closing price vs. Market Health"),chart(recent,key),E("p","Aligned saved sessions; price and score have separate scales. Legacy scores retain their original denominator. Gaps remain where consecutive sessions are not saved.","mi-note"));}
   function selected(){key=document.getElementById("summary-tab-qqq")?.getAttribute("aria-selected")==="true"?"qqq":"spy";render()}
   let trend=document.getElementById("j-score-chart")?.closest("section");(trend||host.lastElementChild)?.after(p);if(!p.isConnected)host.append(p);
-  for(let id of ["summary-tab-spy","summary-tab-qqq"]){let tab=document.getElementById(id);if(tab)tab.addEventListener("click",()=>{key=id.endsWith("qqq")?"qqq":"spy";render()});}selected();
+  for(let id of ["summary-tab-spy","summary-tab-qqq"]){let tab=document.getElementById(id);if(tab){if(tab.miExtraHistoryListener)tab.removeEventListener("click",tab.miExtraHistoryListener);tab.miExtraHistoryListener=()=>{key=id.endsWith("qqq")?"qqq":"spy";render()};tab.addEventListener("click",tab.miExtraHistoryListener);}}selected();
  }
  function research(d,rs){
   let host=document.querySelector("main.guide-main");if(!host||!location.pathname.endsWith("threshold-logic.html"))return;
@@ -73,7 +73,7 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
  }
  banner(null);
  async function load(){try{let res=await fetch("data/latest.json",{cache:"no-cache"});if(!res.ok)throw Error("HTTP "+res.status);let d=await res.json(),rs=M.rows(d);banner(d);dashboard(d,rs);history(d,rs);research(d,rs)}catch(err){console.warn("Market insights unavailable:",err);}}
- load();document.getElementById("refresh")?.addEventListener("click",load);
+ load();document.getElementById("refresh")?.addEventListener("click",load);setInterval(()=>{const box=document.getElementById("mi-market-calendar");if(box&&box.dataset.day!==today()){load();}},60000);
 })((function model(calendar){
  const finite=x=>typeof x==="number"&&Number.isFinite(x);
  const dayDate=s=>new Date(s+"T12:00:00Z");
