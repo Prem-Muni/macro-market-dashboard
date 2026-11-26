@@ -222,8 +222,8 @@
   }
   panel.appendChild(footer);
 
-  // Retain the full original price/risk view under detailed Signals & Context;
-  // the Overview gets only the appropriate concise status in each scorecard.
+  // Preserve calculation target nodes inside the retired presentation;
+  // only the concise daily transition recap remains on Overview.
   const sourcePriceRisk = $('price-risk-panel');
   const intelligence = $('market-intelligence');
   if (sourcePriceRisk && intelligence) intelligence.insertBefore(sourcePriceRisk, intelligence.querySelector('.intel-grid'));
