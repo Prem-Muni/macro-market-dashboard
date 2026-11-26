@@ -26,7 +26,7 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
 .mi-header-calendar .mi-calendar-line>strong[data-state="open"]{color:#78dfb4}
 .mi-header-calendar .mi-calendar-line>strong[data-state="closed"]{color:#ffa1a7}
 .mi-header-calendar .mi-calendar-line>strong[data-state="unknown"]{color:#e5c78c}
-.mi-header-calendar .mi-calendar-line>a{font-size:11px;color:#b9d8eb;text-decoration:none}
+.mi-header-calendar .mi-calendar-line>a{font-size:11px;color:#b9d8eb;text-decoration:none;margin-left:0}
 .mi-header-calendar .mi-calendar-line>a:hover{text-decoration:underline}
 .mi-header-calendar .mi-futures-start{border-left:1px solid #40576a;padding-left:11px}
 .mi-header-calendar .mi-futures-note{font-size:10px;color:#9cb3c5}
@@ -64,7 +64,7 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
    add(line,E("b","Market Calendar"),E("strong",null,"mi-market-status"),E("span",null,"mi-market-next"),E("span",null,"mi-market-eod"),E("b","Futures","mi-futures-start"),
     link("ES · S&P 500 ↗","https://finance.yahoo.com/quote/ES%3DF/"),
     link("NQ · Nasdaq-100 ↗","https://finance.yahoo.com/quote/NQ%3DF/"),
-    E("span","Delayed · provider updates ~30m","mi-futures-note"),
+    E("span","Delayed · ~30m on trading days","mi-futures-note"),
     link("NYSE calendar ↗","https://www.nyse.com/trade/hours-calendars","mi-calendar-source"));
    // Official provider-hosted iframe, not extracted or re-served quote data.
    // Retain direct ES/NQ links as a fallback. Provider controls symbols and latency.
@@ -139,11 +139,11 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
   // Reload only the external frame, never the dashboard or GitHub Actions.
   let quoteRefresh=Date.now();
   function refreshFuturesFrame(){
-   if(document.hidden||document.getElementById("clarity-overview")?.hidden||Date.now()-quoteRefresh<900000)return;
+   if(document.hidden||document.getElementById("clarity-overview")?.hidden||Date.now()-quoteRefresh<1800000)return;
    const frame=document.querySelector("#mi-market-calendar .mi-futures-embed");
    if(frame){frame.src="https://www.brixnation.com/brixnation-market-ticker.html";quoteRefresh=Date.now();}
   }
-  setInterval(refreshFuturesFrame,900000);
+  setInterval(refreshFuturesFrame,1800000);
   document.addEventListener("visibilitychange",refreshFuturesFrame);
  }
 })((function model(calendar){
