@@ -105,7 +105,7 @@
 
   const actions = document.createElement('div');
   actions.className = 'clarity-next-actions';
-  actions.innerHTML = `<button type="button" data-open-view="technicals">View RSI, MACD &amp; charts <span aria-hidden="true">→</span></button><button type="button" data-open-view="signals">Explore all 16 signals <span aria-hidden="true">→</span></button><a href="insights-history.html">Insights History <span aria-hidden="true">↗</span></a>`;
+  actions.innerHTML = `<button type="button" data-open-view="technicals">View RSI, MACD &amp; charts <span aria-hidden="true">→</span></button><button type="button" data-open-view="signals">Explore all 16 signals <span aria-hidden="true">→</span></button><a href="insights-history.html">Market History <span aria-hidden="true">↗</span></a>`;
   overview.appendChild(actions);
 
   const technicalSummary = document.createElement('section');
@@ -199,7 +199,7 @@
     const unknown = states.every(s => s === 'neutral' || s === 'uncertain');
     alert.hidden = !active;
     alertEmpty.hidden = active;
-    alertEmpty.textContent = unknown ? 'Price/risk comparison pending or incomplete · see archived price/risk comparisons in Insights History' : 'No notable price/risk mismatch in the latest EOD session';
+    alertEmpty.textContent = unknown ? 'Price/risk comparison pending or incomplete · see archived price/risk comparisons in Market History' : 'No notable price/risk mismatch in the latest EOD session';
   }
   for (const sym of ['sp','nd']) {
     const card = $('price-risk-' + sym);
