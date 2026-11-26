@@ -20,7 +20,10 @@ test('archive date accordion retains every saved session and complete summary ca
  assert.equal(item.children[0].tag,'summary');
  assert.equal(item.children[0].children[0].textContent,parts[1]+'/'+parts[2]+'/'+parts[0]);
  assert.equal(item.children[0].children[1].textContent,' - Market Summary');
- const card=item.children[1].children[0];assert.equal(card.tag,'article');
+ const compact=item.children[1].children[0];assert.equal(compact.className,'archive-compact-row');assert.equal(compact.children.length,3);
+ for(const [idx,m] of [[0,r.spy],[1,r.qqq]]){const tile=compact.children[idx];assert.equal(tile.children[0].children[3].textContent,api.money(m.close));assert.equal(tile.children[1].children[0].textContent,api.scoreText(m));if(!Number.isFinite(m.pct))assert.equal(tile.children[0].children[4].textContent,'Daily change unavailable');}
+ const full=item.children[1].children[1];assert.equal(full.tag,'details');assert.equal(full.open,false);
+ const card=full.children[1];assert.equal(card.tag,'article');
  assert.ok(card.children.some(c=>c.className==='daily-summary-description'&&c.textContent===r.summary));
  assert.equal(card.children.find(c=>c.className==='daily-summary-etfs').children.length,2);
  });
