@@ -35,14 +35,15 @@
   {title:"Nasdaq-100 Summary",cells:summary(data,"nasdaq100",f)},
   {title:"Nasdaq-100 Internals",cells:nd.map(x=>signal(data,x))}
  ];}
+ function splitRows(group){return group.title.endsWith('Internals')?[group.cells.slice(0,7),group.cells.slice(7)].filter(r=>r.length):[group.cells];}
  let host=null,latest=null;
  const node=(tag,text,cls)=>{const e=document.createElement(tag);if(text!=null)e.textContent=text;if(cls)e.className=cls;return e;};
  function paint(){if(!host||!latest)return;const {data,f}=latest;host.replaceChildren();
   const top=node("div",null,"board-meta");
   top.append(node("span","As of "+(data.session||"—")+" · completed EOD"),node("span","Green Bullish","board-legend bull"),node("span","Red Bearish","board-legend bear"),node("span","Yellow Caution / Neutral","board-legend warn"),node("span","Blue Info only","board-legend info"),node("span","Gray Unavailable","board-legend na"));host.append(top);
-  for(const group of build(data,f)){const row=node("section",null,"board-row"),title=node("h4",group.title,"board-group"),cells=node("div",null,"board-cells");row.append(title,cells);for(const c of group.cells){const tile=node("div",null,"board-cell board-"+c.state);tile.title=c.detail||c.label;tile.dataset.signalKey=c.key;tile.dataset.state=c.state;tile.append(node("strong",c.title),node("b",c.label),...(c.value?[node("small",c.value)]:[]),...(c.info?[node("small","INFO ONLY","board-info-mark")]:[]));cells.append(tile);}host.append(row);}
+  for(const group of build(data,f)){const row=node("section",null,"board-row"),title=node("h4",group.title,"board-group"),cells=node("div",null,"board-cells");row.append(title,cells);for(const line of splitRows(group)){const lane=node("div",null,"board-lane");lane.dataset.count=String(line.length);for(const c of line){const tile=node("div",null,"board-cell board-"+c.state);tile.title=c.detail||c.label;tile.dataset.signalKey=c.key;tile.dataset.state=c.state;tile.append(node("strong",c.title),node("b",c.label),...(c.value?[node("small",c.value)]:[]),...(c.info?[node("small","INFO ONLY","board-info-mark")]:[]));lane.append(tile);}cells.append(lane);}host.append(row);}
   host.append(node("p","Each tile shows the published signal state; blue tags identify unscored context. Breadth may be estimated. Gray means unavailable. Health includes neutral states; not every green tile is a separate scored point.","board-note"));
  }
- const api={build,render(data,f){latest={data,f};paint();},mount(el){host=el;paint();}};
+ const api={build,splitRows,render(data,f){latest={data,f};paint();},mount(el){host=el;paint();}};
  if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.OverviewSignalBoard=api;
 })(typeof window!=="undefined"?window:globalThis);

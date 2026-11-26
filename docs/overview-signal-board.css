@@ -24,3 +24,66 @@
 .mi-overview-details{border:1px solid #304a5b;border-radius:9px;padding:8px 12px;margin:12px 0;color:#b9d4e5}
 .mi-overview-details>summary{font-size:12px;cursor:pointer}
 @media(max-width:700px){.board-row{grid-template-columns:1fr}.board-group{padding:6px 9px}.board-cells{grid-template-columns:repeat(auto-fit,minmax(95px,1fr))}.mi-calendar-compact .mi-calendar-line>a{margin-left:0}}
+
+/* Reference layout: preserve original source IDs and calculations; only rearrange Overview. */
+body.compact-overview-ready:has(#clarity-overview:not([hidden])) .shell{max-width:1760px;width:min(100%,1760px)}
+body.compact-overview-ready:has(#clarity-overview:not([hidden])) .clarity-nav{padding-block:4px;margin-block:4px 6px}
+body.compact-overview-ready:has(#clarity-overview:not([hidden])) .clarity-nav-label{font-size:11px}
+#unified-snapshot.reference-overview-layout{padding:12px!important;margin:8px 0 12px;border-radius:13px;background:#101f2d;border-color:#304756;box-shadow:none}
+#unified-snapshot.reference-overview-layout .unified-top{align-items:center;margin:0 0 10px;gap:10px}
+#unified-snapshot.reference-overview-layout .unified-title-with-art{gap:8px;margin:0}
+#unified-snapshot.reference-overview-layout .unified-kicker{font-size:clamp(17px,1.4vw,23px)!important;line-height:1.2}
+#unified-snapshot.reference-overview-layout .market-condition-art{width:29px;height:29px;flex-basis:29px;border-radius:6px}
+#unified-snapshot.reference-overview-layout .market-condition-art svg{width:20px;height:20px}
+#unified-snapshot.reference-overview-layout .unified-guide{font-size:11px}
+#unified-snapshot.reference-overview-layout .unified-session-date{font-size:12px;padding:5px 9px}
+#unified-snapshot .compact-snapshot-row{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:9px;align-items:start}
+#unified-snapshot .compact-snapshot-row>.market-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px;align-items:stretch}
+#unified-snapshot .compact-market-card{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(78px,.75fr);align-content:start;align-items:start;gap:7px;padding:12px!important;border-radius:10px!important;min-height:0;min-width:0;box-shadow:none!important}
+#unified-snapshot .compact-market-card .market-head{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin:0}
+#unified-snapshot .compact-market-card .market-head>div:first-child{flex:0 0 auto}
+#unified-snapshot .compact-market-card .market-head .eyebrow{font-size:11px!important}
+#unified-snapshot .compact-market-card .market-head h3{font-size:14px!important}
+#unified-snapshot .compact-market-card .overview-etf-quote{align-items:flex-start;text-align:left;margin:0;min-width:0;gap:3px}
+#unified-snapshot .compact-market-card .overview-quote-value{font-size:clamp(22px,1.9vw,30px)!important;line-height:1.05}
+#unified-snapshot .compact-market-card .overview-quote-delta{white-space:normal;font-size:11px}
+#unified-snapshot .compact-market-card .score-zone{border-left:1px solid #385060;margin:0;padding-left:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;min-width:0}
+#unified-snapshot .compact-market-card .score{font-size:clamp(25px,2.25vw,37px)!important;line-height:1.05;letter-spacing:-.045em}
+#unified-snapshot .compact-market-card[data-regime="NEUTRAL"] .score{color:#f5ce37}
+#unified-snapshot .compact-market-card[data-regime="RISK-ON"] .score{color:#42dc8b}
+#unified-snapshot .compact-market-card[data-regime="RISK-OFF"] .score{color:#ff8290}
+#unified-snapshot .compact-market-card .market-mood{min-width:0!important;padding:5px 8px!important;gap:0!important;border-radius:7px!important}
+#unified-snapshot .compact-market-card .market-mood-symbol,#unified-snapshot .compact-market-card .market-mood-copy strong{display:none!important}
+#unified-snapshot .compact-market-card .market-mood-copy small{font-size:12px;color:inherit}
+#unified-snapshot .compact-market-card .detail-caption{font-size:10px;line-height:1.2}
+#unified-snapshot .compact-market-card .score-daily-compare,#unified-snapshot .compact-market-card .score-breakdown-jump,#unified-snapshot .compact-market-card .risk-meter,#unified-snapshot .compact-market-card .stats,#unified-snapshot .compact-market-card .unified-market-note,#unified-snapshot .compact-market-card .clarity-score-more{display:none!important}
+#unified-snapshot .compact-snapshot-row .unified-recap{margin:0!important;padding:12px!important;min-width:0;border-radius:10px;background:#152939;align-self:stretch}
+#unified-snapshot .compact-snapshot-row .unified-recap-heading{margin:0 0 6px;gap:5px}
+#unified-snapshot .compact-snapshot-row .unified-recap-title{font-size:17px!important}
+#unified-snapshot .compact-snapshot-row .unified-recap-date{display:none}
+#unified-snapshot .compact-snapshot-row .unified-recap-text{font-size:12px;line-height:1.45}
+.compact-recap-details{margin-top:7px;font-size:11px;color:#accbdc}
+.compact-recap-details>summary{cursor:pointer}
+#unified-snapshot .compact-recap-details .unified-regime-transition,#unified-snapshot .compact-recap-details .unified-internal-changes{margin:7px 0 0;padding:8px}
+#unified-snapshot .mi-calendar-compact{margin:9px 0;padding:6px 9px!important;background:#112b3d;border-radius:8px}
+#unified-snapshot .mi-calendar-compact .mi-calendar-line{gap:5px 12px;font-size:12px}
+#unified-snapshot .mi-calendar-compact .mi-cal-items{padding:3px 0 0;gap:5px}
+#unified-snapshot.reference-overview-layout .unified-divider{margin:8px 0 0;padding:10px;border:1px solid #20394c;border-radius:10px;background:#0e2434}
+#unified-snapshot.reference-overview-layout .unified-driver-heading{margin:0 0 7px}
+#unified-snapshot.reference-overview-layout .unified-driver-heading h3{font-size:20px!important}
+#unified-snapshot .board-row{grid-template-columns:clamp(110px,13vw,180px) minmax(0,1fr)}
+#unified-snapshot .board-cells{display:flex;flex-direction:column;gap:4px}
+#unified-snapshot .board-lane{display:flex;gap:4px;flex:1}
+#unified-snapshot .board-lane>.board-cell{flex:1 1 0;min-width:0;min-height:52px;padding:6px 3px}
+#unified-snapshot .board-group{font-size:clamp(11px,.9vw,14px)!important;text-transform:uppercase}
+#unified-snapshot .board-cell strong{font-size:clamp(11px,.9vw,14px);text-transform:uppercase}
+#unified-snapshot .board-cell b{font-size:clamp(11px,.9vw,14px)}
+#unified-snapshot .board-cell small{font-size:clamp(10px,.75vw,12px)}
+#unified-snapshot .board-bull{background:#078c45}
+#unified-snapshot .board-bear{background:#c92336}
+#unified-snapshot .board-warn{background:#efc72e;color:#111820}
+#unified-snapshot .board-note{margin:2px 0}
+#unified-snapshot.reference-overview-layout .unified-why{margin-top:8px}
+#unified-snapshot.reference-overview-layout .unified-footer{margin-top:8px;padding-top:8px}
+@media(max-width:1100px){#unified-snapshot .compact-snapshot-row{grid-template-columns:1fr}#unified-snapshot .compact-snapshot-row>.market-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}#unified-snapshot .board-lane{flex-wrap:wrap}#unified-snapshot .board-lane>.board-cell{flex:1 1 90px}}
+@media(max-width:600px){#unified-snapshot .compact-snapshot-row>.market-grid{grid-template-columns:1fr!important}#unified-snapshot .board-row{grid-template-columns:1fr}#unified-snapshot .board-lane>.board-cell{flex:1 1 85px}#unified-snapshot.reference-overview-layout{padding:8px!important}}
