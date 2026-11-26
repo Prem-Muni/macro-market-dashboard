@@ -515,6 +515,7 @@ function render(data){
  // Freshness badge and dot reflect the latest expected NYSE EOD session.
  if(!data.markets?.sp500 || !data.markets?.nasdaq100){$('warning').textContent='The website is installed, but no market update has run. Open GitHub → Actions → Refresh EOD dashboard → Run workflow.';return;}
  summary('sp',data.markets.sp500); summary('nd',data.markets.nasdaq100);
+ window.OverviewSignalBoard?.render(data,{scoreFormat,regimeHealth,invertedRange,rangeText});
  renderDecisionBrief(data);
  renderSignalChanges(data);
  renderScoreBreakdown(data);
