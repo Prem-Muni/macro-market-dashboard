@@ -54,3 +54,15 @@
 @media(max-width:750px){.daily-summary-etfs{grid-template-columns:1fr}.daily-summary-card{padding:17px}.daily-summary-headline{font-size:20px}.daily-summary-move{font-size:30px}}
 @media(max-width:480px){.daily-summary-card{padding:15px 13px}.daily-summary-etf{padding:14px}.daily-summary-top .eyebrow{font-size:10px;letter-spacing:1.1px}.daily-summary-source{white-space:normal}.daily-summary-move{font-size:29px}.daily-summary-description{font-size:12px}.daily-summary-etf-evidence{font-size:12px}.summary-view-tabs button{flex:1;padding:10px}}
 @media(prefers-reduced-motion:reduce){.daily-summary-card,.daily-summary-etf{transition:none}}
+
+/* Market History: native, keyboard-accessible dated disclosure rows. */
+#summary-archive.summary-archive-grid{gap:8px}
+#summary-archive .market-archive-day{border:1px solid #344d60;border-radius:10px;background:#142434;min-width:0}
+#summary-archive .market-archive-date{padding:13px 16px;cursor:pointer;font-weight:750;font-size:14px;line-height:1.4;color:#e1edf5;list-style-position:inside}
+#summary-archive .market-archive-date::marker{color:#9bc7dd}
+#summary-archive .market-archive-date:hover{background:#1b3346;border-radius:10px}
+#summary-archive .market-archive-date:focus-visible{outline:2px solid #9bc7dd;outline-offset:2px;border-radius:9px}
+#summary-archive .market-archive-day[open]>.market-archive-date{border-bottom:1px solid #344d60;background:#1a2d3e;border-radius:9px 9px 0 0}
+#summary-archive .market-archive-body{padding:10px;min-width:0}
+#summary-archive .market-archive-body>.daily-summary-card{margin:0;box-shadow:none}
+@media(max-width:600px){#summary-archive .market-archive-date{padding:12px;font-size:13px}#summary-archive .market-archive-body{padding:6px}}
