@@ -66,3 +66,28 @@
 #summary-archive .market-archive-body{padding:10px;min-width:0}
 #summary-archive .market-archive-body>.daily-summary-card{margin:0;box-shadow:none}
 @media(max-width:600px){#summary-archive .market-archive-date{padding:12px;font-size:13px}#summary-archive .market-archive-body{padding:6px}}
+
+/* Archive-only compact snapshot; original summary preserved below. */
+#summary-archive .archive-compact-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr);gap:9px}
+#summary-archive .archive-compact-etf,#summary-archive .archive-compact-summary{border:1px solid #344f62;background:#162b3a;border-radius:10px;padding:12px;min-width:0}
+#summary-archive .archive-compact-etf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:9px;align-items:start}
+#summary-archive .archive-compact-quote,#summary-archive .archive-compact-score{display:flex;flex-direction:column;gap:4px;min-width:0}
+#summary-archive .archive-compact-ticker{font-size:17px;color:#e8f0f7}
+#summary-archive .archive-compact-price{font-size:clamp(20px,2vw,30px);line-height:1.1;letter-spacing:-.03em;color:#f0f6fb}
+#summary-archive .archive-compact-name{font-size:10px;color:#abc2d1;line-height:1.35}
+#summary-archive .archive-compact-move{font-size:11px;font-weight:750;color:#afc3d4}
+#summary-archive .archive-compact-move[data-direction=down]{color:#ff9ba6}
+#summary-archive .archive-compact-move[data-direction=up]{color:#6bdfac}
+#summary-archive .archive-compact-score{text-align:center;border-left:1px solid #395466;padding-left:8px;align-items:center;color:#a8bfd0}
+#summary-archive .archive-compact-health{font-size:clamp(24px,2.5vw,38px);line-height:1.1;letter-spacing:-.04em}
+#summary-archive .archive-compact-score[data-regime=NEUTRAL]{color:#f2cc3c}
+#summary-archive .archive-compact-score[data-regime=RISK-OFF]{color:#ff929e}
+#summary-archive .archive-compact-score[data-regime=RISK-ON]{color:#69dbb0}
+#summary-archive .archive-compact-regime{font-size:12px;border:1px solid currentColor;border-radius:6px;padding:3px 7px}
+#summary-archive .archive-compact-summary h3{font-size:16px;margin:0 0 6px}
+#summary-archive .archive-compact-summary p{font-size:12px;line-height:1.5;margin:4px 0}
+#summary-archive .archive-full-details{margin-top:8px;padding:8px 10px;border:1px solid #344d60;border-radius:8px}
+#summary-archive .archive-full-details>summary{font-size:12px;color:#b5d0e3;cursor:pointer}
+#summary-archive .archive-full-details>.daily-summary-card{margin:10px 0 0;box-shadow:none}
+@media(max-width:950px){#summary-archive .archive-compact-row{grid-template-columns:repeat(2,minmax(0,1fr))}#summary-archive .archive-compact-summary{grid-column:1/-1}}
+@media(max-width:550px){#summary-archive .archive-compact-row{grid-template-columns:1fr}}
