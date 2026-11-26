@@ -249,25 +249,15 @@
   let currentRequest=0;
   let lastSignature='';
 
-  // Keep the secondary Technicals view consistent with visitor-facing titles.
-  const pulseHeader = document.querySelector('.clarity-summary-head');
-  if (pulseHeader) {
-    const pulseTitle = pulseHeader.querySelector('h3');
-    const pulseCaption = pulseHeader.querySelector('span');
-    if (pulseTitle) pulseTitle.textContent = 'Technical Pulse';
-    if (pulseCaption) pulseCaption.textContent = 'Market Closed · MACD Scored';
-  }
-
-  // The Technical pulse is created by dashboard-clarity.js; add the closing
-  // price to its ticker header while retaining all existing RSI/MACD IDs.
+  // Reuse the validated saved ETF close in the original chart heading.
   for (const sym of ['spy','qqq']) {
-    const card = $('clarity-'+sym+'-rsi')?.closest('.clarity-tech-card');
-    const heading = card?.querySelector('.clarity-tech-card-title');
+    const card = $(sym+'-ma-close')?.closest('.market-price-panel');
+    const heading = card?.querySelector('.market-chart-heading');
     if (!heading || $('technical-close-'+sym)) continue;
     const quote=make('span','technical-close','— · EOD price pending');
     quote.id='technical-close-'+sym;
     quote.setAttribute('aria-label',sym.toUpperCase()+' latest completed closing price');
-    heading.appendChild(quote);
+    heading.querySelector('div')?.appendChild(quote);
   }
 
   function resetMarket(sym){
@@ -437,7 +427,7 @@
           : 'Daily change pending';
         $('overview-quote-delta-'+sym).dataset.direction=isNum(pct)?(pct>0?'up':pct<0?'down':'flat'):'missing';
         const technical=$('technical-close-'+sym);
-        if(technical)technical.textContent=currency(close)+' · '+dateLabel(session)+' · Market Closed';
+        if(technical)technical.textContent=currency(close)+' · '+dateLabel(session)+' close';
       }
       writeRecap();
     }catch(err){

@@ -20,6 +20,7 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
 @media(max-width:620px){.mi-grid,.mi-grid.four{grid-template-columns:1fr}.mi-extra,.mi-calendar{padding:12px}}
 `);document.head.append(style);
  function banner(d){
+  if(document.getElementById('summary-view')){document.getElementById('mi-market-calendar')?.remove();return;}
   let nav=document.querySelector("nav.site-tabs");if(!nav)return;let box=document.getElementById("mi-market-calendar");if(!box){box=E("aside",null,"mi-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market calendar");nav.after(box)}box.replaceChildren();
   let t=today();box.dataset.day=t;let ev=M.event(t),n=M.next(t),status=!M.covered(t)?"Calendar needs verification":ev&&!ev[2]?ev[1]+" · Market closed today":ev?.[2]?ev[1]+" · Early close at noon CT":!M.trading(t)?"Weekend · Market closed today":"Regular session · 8:30 AM–3 PM CT";
   const compact=!!document.getElementById("daily-summary-overview");

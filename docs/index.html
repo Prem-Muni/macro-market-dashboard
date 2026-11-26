@@ -7,7 +7,7 @@
   <title>Daily Market Intelligence | SPY & QQQ</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
   <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
-  <link rel="stylesheet" href="dashboard-clarity.css?v=streamlined-tabs-20261126">
+  <link rel="stylesheet" href="dashboard-clarity.css?v=compact-technicals-20261126">
   <link rel="stylesheet" href="daily-summaries.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="audit-cleanup.css?v=20261125a">
@@ -168,6 +168,7 @@
               </div>
               <div class="macd-strip" aria-label="SPY daily MACD 12, 26, 9; scored 16th signal">
                 <div class="macd-caption"><strong>MACD (12, 26, 9) · Daily</strong><span>SCORED · latest completed close</span></div>
+                <div class="macd-classification"><span class="rsi-state" id="spy-macd-state">Awaiting EOD data</span></div>
                 <div class="macd-readings">
                   <div><span>MACD</span><strong id="spy-macd-line">—</strong></div>
                   <div><span>Signal</span><strong id="spy-macd-signal">—</strong></div>
@@ -207,6 +208,7 @@
               </div>
               <div class="macd-strip" aria-label="QQQ daily MACD 12, 26, 9; scored 16th signal">
                 <div class="macd-caption"><strong>MACD (12, 26, 9) · Daily</strong><span>SCORED · latest completed close</span></div>
+                <div class="macd-classification"><span class="rsi-state" id="qqq-macd-state">Awaiting EOD data</span></div>
                 <div class="macd-readings">
                   <div><span>MACD</span><strong id="qqq-macd-line">—</strong></div>
                   <div><span>Signal</span><strong id="qqq-macd-signal">—</strong></div>
@@ -248,10 +250,10 @@
   </div>
   <script src="market-intelligence.js?v=integrity-20261126a" defer></script>
   <script src="price-risk.js?v=macd16-20261125b-price-risk-20261123a" defer></script>
-  <script src="app.js?v=market-history-20261126" defer></script>
+  <script src="app.js?v=macd-label-20261126" defer></script>
   <script src="market-extras.js?v=context-20261122b" defer></script>
-  <script src="dashboard-clarity.js?v=market-history-20261126" defer></script>
+  <script src="dashboard-clarity.js?v=compact-technicals-20261126" defer></script>
   <script src="daily-summaries.js?v=integrity-20261126a" defer></script>
-  <script src="overview-unified.js?v=streamlined-tabs-20261126" defer></script>
+  <script src="overview-unified.js?v=compact-technicals-20261126" defer></script>
 </body>
 </html>

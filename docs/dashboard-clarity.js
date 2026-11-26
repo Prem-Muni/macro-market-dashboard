@@ -27,12 +27,6 @@
     el.dataset.clarityView = name;
     el.setAttribute('role', 'tabpanel');
     el.setAttribute('aria-labelledby', 'clarity-tab-' + name);
-    if (name === 'technicals') {
-      const heading = document.createElement('div');
-      heading.className = 'clarity-view-heading';
-      heading.innerHTML = `<div class="eyebrow">${name === 'technicals' ? 'PRICE & MOMENTUM' : 'THE FULL PICTURE'}</div><h2>${title}</h2><p>${subtitle}</p>`;
-      el.appendChild(heading);
-    }
     main.appendChild(el);
     return el;
   }
@@ -108,28 +102,7 @@
   actions.innerHTML = `<button type="button" data-open-view="technicals">View RSI, MACD &amp; charts <span aria-hidden="true">→</span></button><button type="button" data-open-view="signals">Explore all 16 signals <span aria-hidden="true">→</span></button><a href="insights-history.html">Market History <span aria-hidden="true">↗</span></a>`;
   overview.appendChild(actions);
 
-  const technicalSummary = document.createElement('section');
-  technicalSummary.className = 'clarity-tech-summary';
-  technicalSummary.innerHTML = `<div class="clarity-summary-head"><h3>Technical pulse</h3><span>Daily close · MACD scored</span></div><div class="clarity-tech-grid">
-    <article class="clarity-tech-card"><div class="clarity-tech-card-title"><strong>SPY</strong><small>S&amp;P 500</small></div><div class="clarity-tech-metrics"><div><span>RSI (14)</span><strong id="clarity-spy-rsi">—</strong></div><div><span>MACD</span><strong id="clarity-spy-macd">—</strong></div><div><span>200D trend</span><strong id="clarity-spy-200">—</strong></div></div></article>
-    <article class="clarity-tech-card"><div class="clarity-tech-card-title"><strong>QQQ</strong><small>Nasdaq-100</small></div><div class="clarity-tech-metrics"><div><span>RSI (14)</span><strong id="clarity-qqq-rsi">—</strong></div><div><span>MACD</span><strong id="clarity-qqq-macd">—</strong></div><div><span>200D trend</span><strong id="clarity-qqq-200">—</strong></div></div></article>
-  </div>`;
-  const priceSection = move('.market-prices', technicals);
-  // Embed the existing pulse nodes in the matching ETF card. No duplicate
-  // IDs, chart rebuild, or extra data fetch; syncTechnical still owns values.
-  const pricePanels = priceSection?.querySelectorAll('.market-price-panel');
-  const pulseCards = technicalSummary.querySelectorAll('.clarity-tech-card');
-  const targets = ['spy','qqq'].map(sym => [...(pricePanels || [])].find(card => card.querySelector('#'+sym+'-ma-close')));
-  if(targets.every(card=>card?.querySelector('.tv-frame')) && pulseCards.length===2){
-    for(let i=0;i<targets.length;i++){
-      pulseCards[i].classList.add('embedded-technical-pulse');
-      pulseCards[i].setAttribute('aria-label',i===0?'SPY Technical Pulse':'QQQ Technical Pulse');
-      targets[i].insertBefore(pulseCards[i],targets[i].querySelector('.tv-frame'));
-    }
-  }else{
-    // If the chart structure changes, preserve the original visible pulse.
-    technicals.insertBefore(technicalSummary,priceSection||technicals.firstChild);
-  }
+  move('.market-prices', technicals);
   move('.context-chart-grid', technicals);
   move('.research-link-inline', technicals);
 
@@ -206,30 +179,6 @@
     if (card) new MutationObserver(updateAlerts).observe(card, {attributes:true,attributeFilter:['data-tone']});
   }
   updateAlerts();
-
-  function syncTechnical() {
-    for (const sym of ['spy','qqq']) {
-      const rsi = $(sym + '-rsi14');
-      const macd = $(sym + '-macd-status');
-      const gap = $(sym + '-ma200-gap');
-      const rsiText = rsi?.textContent?.trim() || '—';
-      const relation = macd?.textContent || '';
-      const macdText = /above signal/i.test(relation) ? 'Above signal' : /below signal/i.test(relation) ? 'Below signal' : /equals signal/i.test(relation) ? 'At signal' : 'Unavailable';
-      const gapText = gap?.textContent || '';
-      const trend = /BULLISH/i.test(gapText) ? 'Above 200D' : /BEARISH/i.test(gapText) ? 'Below 200D' : 'Unavailable';
-      $('clarity-' + sym + '-rsi').textContent = rsiText;
-      $('clarity-' + sym + '-macd').textContent = macdText;
-      $('clarity-' + sym + '-200').textContent = trend;
-      $('clarity-' + sym + '-macd').dataset.tone = macdText === 'Below signal' ? 'bear' : macdText === 'Above signal' ? 'bull' : 'neutral';
-      $('clarity-' + sym + '-200').dataset.tone = trend === 'Below 200D' ? 'bear' : trend === 'Above 200D' ? 'bull' : 'neutral';
-    }
-  }
-  const syncIds = ['spy-rsi14','qqq-rsi14','spy-macd-status','qqq-macd-status','spy-ma200-gap','qqq-ma200-gap'];
-  for (const id of syncIds) {
-    const source = $(id);
-    if (source) new MutationObserver(syncTechnical).observe(source, {childList:true,characterData:true,subtree:true});
-  }
-  syncTechnical();
 
   let current = 'overview';
   function activate(view, options = {}) {
