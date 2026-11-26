@@ -20,6 +20,7 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
 .mi-calendar.mi-header-calendar{padding:4px 9px;margin:5px 0 7px;border-radius:6px;background:#142a39;min-height:28px}
 .mi-header-calendar .mi-calendar-line{display:flex;align-items:center;gap:11px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;font-size:11px;line-height:1.45;scrollbar-width:thin}
 .mi-header-calendar .mi-calendar-line>*{flex:none}
+body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
 .mi-header-calendar .mi-calendar-line>b{font-size:12px;color:#e4eff7}
 .mi-header-calendar .mi-calendar-line>span{color:#b6c9d6}
 .mi-header-calendar .mi-calendar-line>strong[data-state="open"]{color:#78dfb4}
@@ -46,7 +47,8 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
  }
  let headerSession=null;
  function banner(d){
-  const header=document.querySelector("header.topbar");if(!header)return;
+  const header=document.querySelector("header.topbar[data-market-ticker]");
+  if(!header){document.getElementById("mi-market-calendar")?.remove();return;}
   if(d?.session)headerSession=d.session;
   let box=document.getElementById("mi-market-calendar");
   if(!box){box=E("aside",null,"mi-calendar mi-calendar-compact mi-header-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market status and futures quotes");header.after(box);}
@@ -58,9 +60,9 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
    line=E("div",null,"mi-calendar-line");line.tabIndex=0;
    const link=(label,url,cls)=>{const a=E("a",label,cls);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a;};
    add(line,E("b","Market Calendar"),E("strong",null,"mi-market-status"),E("span",null,"mi-market-next"),E("span",null,"mi-market-eod"),E("b","Futures","mi-futures-start"),
-    link("ES · S&P 500 ↗","https://www.tradingview.com/symbols/CME_MINI-ES1%21/"),
-    link("NQ · Nasdaq-100 ↗","https://www.tradingview.com/symbols/CME_MINI-NQ1%21/"),
-    E("span","External quotes · may be delayed","mi-futures-note"),
+    link("ES · S&P 500 ↗","https://finance.yahoo.com/quote/ES%3DF/"),
+    link("NQ · Nasdaq-100 ↗","https://finance.yahoo.com/quote/NQ%3DF/"),
+    E("span","Yahoo quotes · delayed","mi-futures-note"),
     link("NYSE calendar ↗","https://www.nyse.com/trade/hours-calendars","mi-calendar-source"));
    box.append(line);
   }
@@ -120,7 +122,7 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
  }
  banner(null);
  async function load(){try{let res=await fetch("data/latest.json",{cache:"no-cache"});if(!res.ok)throw Error("HTTP "+res.status);let d=await res.json(),rs=M.rows(d);banner(d);dashboard(d,rs);history(d,rs);research(d,rs)}catch(err){console.warn("Market insights unavailable:",err);}}
- banner();load();document.getElementById("refresh")?.addEventListener("click",load);setInterval(()=>banner(),60000);
+ banner();load();document.getElementById("refresh")?.addEventListener("click",load);if(document.querySelector("header.topbar[data-market-ticker]"))setInterval(()=>banner(),60000);
 })((function model(calendar){
  const finite=x=>typeof x==="number"&&Number.isFinite(x);
  const dayDate=s=>new Date(s+"T12:00:00Z");
