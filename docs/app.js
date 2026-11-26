@@ -198,6 +198,9 @@ function renderDailyMACD(data){
   $(sym+'-macd-signal').textContent=val(entry.signal);
   const hist=$(sym+'-macd-histogram');hist.textContent=val(entry.histogram);
   const status=$(sym+'-macd-status');
+  const state=$(sym+'-macd-state');
+  const published=data.signals?.[sym==='spy'?'sp_macd':'nd_macd']?.state;
+  if(state){const tone=ready&&published==='bull'?'bull':ready&&published==='bear'?'bear':null;state.textContent=tone?'SCORED '+(tone==='bull'?'BULLISH':'BEARISH'):'UNAVAILABLE';state.className='rsi-state '+(tone==='bull'?'macd-positive':tone==='bear'?'macd-negative':'macd-neutral');}
   if(!ready){status.textContent='MACD not available for this completed session';status.className='macd-status macd-neutral';hist.className='';continue;}
   const crossover=entry.crossover==='bullish'?' · Bullish crossover':entry.crossover==='bearish'?' · Bearish crossover':'';
   const relation=entry.relation==='above'?'MACD above signal':entry.relation==='below'?'MACD below signal':'MACD equals signal';
