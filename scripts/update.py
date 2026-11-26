@@ -19,7 +19,8 @@ from breadth import derive_breadth
 from price_risk import build_price_moves
 from insights_history import merge_daily_archive
 from daily_macd import calculate_daily_macd
-from eod_freshness import check_snapshot_session, expected_close, most_recent_completed_session
+from eod_freshness import check_snapshot_session, expected_close, most_recent_completed_session, is_early_close
+from source_audit import build_source_audit
 from snapshot_integrity import check_completed_snapshot
 from eod_recovery import recover_missing_equity_closes
 from public_eod import recover_public_etf_closes
@@ -268,6 +269,9 @@ def main():
     # Crucial: use ONLY common SPY/QQQ equity sessions. Futures can have
     # separate Sunday bars; those must not count as extra daily lookback bars.
     df=df.loc[df["SPY"].notna() & df["QQQ"].notna()]
+    # Score only through the eligible completed equity session. A future-dated
+    # vendor bar must not leak into the lookback or today's signal classification.
+    df=df.loc[df.index <= pd.Timestamp(needed)]
     # Optional constituent-derived breadth from current index membership and ETF
     # session-aligned historical closes. Estimate only; no official index feed.
     licensed_cols = set(extra.columns) if extra is not None else set()
@@ -327,6 +331,8 @@ def main():
     use_published_prior(previous_snapshot, result)
     result["daily_macd"] = calculate_daily_macd(df, result["session"])
     check_completed_snapshot(result, needed)
+    result["source_audit"] = build_source_audit(df, extra, prices, sources, cboe, result["session"])
+    result["source_audit"]["early_equity_close"] = is_early_close(needed)
     result["sources"]={k:{"provider":v,"latest_session":prices[k].dropna().index.max().strftime("%Y-%m-%d")}
                        for k,v in sources.items() if k in prices and not prices[k].dropna().empty}
     for key in ("SPX_BREADTH200", "NDX_ADV", "NDX_DECL"):
@@ -339,7 +345,7 @@ def main():
     if central_now.weekday() < 5 and (central_now.hour, central_now.minute) >= (15, 15) and result["session"] < central_now.date().isoformat():
         message = (f"EOD provider lag / possible exchange holiday: latest priced session "
                    f"{result['session']} vs calendar date {central_now.date().isoformat()}. "
-                   "A 4:15pm Central backup refresh is also scheduled on weekdays.")
+                   "A 4:20pm Central backup refresh is also scheduled on weekdays.")
         errors.insert(0, message)
         print("::warning::" + message)
     result["warnings"]=(errors[:12] + ["Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.", "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.", "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
