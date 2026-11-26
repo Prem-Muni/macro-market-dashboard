@@ -179,12 +179,17 @@
 
   const divider = make('div','unified-divider');
   const driversHeader = make('div','unified-driver-heading');
-  driversHeader.appendChild(make('h3','','Key Market Signals'));
-  driversHeader.appendChild(make('span','','Volatility · breadth · credit'));
+  driversHeader.appendChild(make('h3','','Market Signal Heatmap'));
+  driversHeader.appendChild(make('span','','Latest completed EOD'));
   divider.appendChild(driversHeader);
   const stats = brief.querySelector('.decision-brief-stats');
-  if (stats) divider.appendChild(stats); // Live-updating score confirmation tiles.
+  // Keep source nodes available to existing summary calculations, but hide the old cards.
+  if (stats) { stats.hidden=true; stats.style.setProperty('display','none','important'); divider.appendChild(stats); }
+  const board = make('div','overview-signal-board');
+  board.id='overview-signal-board';
+  divider.appendChild(board);
   panel.appendChild(divider);
+  window.OverviewSignalBoard?.mount(board);
 
   const why = make('details','unified-why');
   why.appendChild(make('summary','','What is driving these conditions?'));
