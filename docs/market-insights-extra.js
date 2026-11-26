@@ -22,31 +22,36 @@ const miCalendar=[["2026-01-01","New Year's Day"],["2026-01-19","Martin Luther K
  function banner(d){
   let nav=document.querySelector("nav.site-tabs");if(!nav)return;let box=document.getElementById("mi-market-calendar");if(!box){box=E("aside",null,"mi-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market calendar");nav.after(box)}box.replaceChildren();
   let t=today();box.dataset.day=t;let ev=M.event(t),n=M.next(t),status=!M.covered(t)?"Calendar needs verification":ev&&!ev[2]?ev[1]+" · Market closed today":ev?.[2]?ev[1]+" · Early close at noon CT":!M.trading(t)?"Weekend · Market closed today":"Regular session · 8:30 AM–3 PM CT";
-  add(box,E("strong",status),E("p",n?"Next trading session: "+fmt(n)+(M.event(n)?.[2]?" · Early close at noon CT":" · Regular hours"):"See NYSE for the next verified session.","mi-note"));
-  if(d?.session)add(box,E("p","Last published EOD: "+fmt(d.session)+". Equity calendar only; futures hours may differ. First scheduled refresh: 12:20 PM CT on listed early-close days; 3:20 PM CT on normal days. Provider availability may delay publication.","mi-note"));
+  const compact=!!document.getElementById("daily-summary-overview");
+  const nextText=n?"Next: "+fmt(n)+(M.event(n)?.[2]?" · Noon CT close":" · Regular hours"):"See NYSE for the next session.";
+  if(compact){
+   box.classList.add("mi-calendar-compact");
+   let line=E("div",null,"mi-calendar-line");
+   add(line,E("b","Market Calendar"),E("strong",status),E("span",nextText),E("span",d?.session?"Last EOD: "+fmt(d.session):"Last EOD pending"));
+   box.append(line);
+  }else add(box,E("strong",status),E("p",n?"Next trading session: "+fmt(n)+(M.event(n)?.[2]?" · Early close at noon CT":" · Regular hours"):"See NYSE for the next verified session.","mi-note"));
+  if(d?.session&&!compact)add(box,E("p","Last published EOD: "+fmt(d.session)+". Equity calendar only; futures hours may differ. First scheduled refresh: 12:20 PM CT on listed early-close days; 3:20 PM CT on normal days. Provider availability may delay publication.","mi-note"));
   let strip=E("div",null,"mi-cal-items");strip.tabIndex=0;strip.setAttribute("aria-label","Upcoming holidays and early closes; scroll horizontally");for(let e of calendar.filter(e=>e[0]>=t).slice(0,8)){let chip=E("span",fmt(e[0])+" · "+e[1]+" · "+(e[2]?"Noon CT close":"Closed"),"mi-chip "+(e[2]?"mi-warn":"mi-bear"));strip.append(chip)}if(strip.childNodes.length)box.append(strip);
-  let a=E("a","Official NYSE calendar · 2026–2028");a.href="https://www.nyse.com/trade/hours-calendars";a.target="_blank";a.rel="noopener noreferrer";box.append(a);
+  let a=E("a","Official NYSE calendar · 2026–2028");a.href="https://www.nyse.com/trade/hours-calendars";a.target="_blank";a.rel="noopener noreferrer";if(compact){a.textContent="NYSE calendar ↗";let line=box.querySelector(".mi-calendar-line");line?.append(a);box.title="Equity calendar only; futures hours may differ. Scheduled refresh: 12:20 PM CT early close; 3:20 PM CT regular day. Provider availability may delay publication.";}else box.append(a);
  }
  function tile(title,body,cls=""){return add(E("div",null,"mi-tile"),E("b",title,cls),E("div",body))}
  function dashboard(d,rs){
   let host=document.getElementById("daily-summary-overview");if(!host)return;
-  let prev=document.getElementById("mi-regime-context");if(prev)prev.remove();
-  let p=panel("Regime duration & threshold distance","Based on consecutive, complete saved 16-point sessions; not intraday changes.");p.id="mi-regime-context";let grid=E("div",null,"mi-grid");
-  for(let [k,id] of [["spy","sp500"],["qqq","nasdaq100"]]){let m=d.markets?.[id]?.score,q=M.duration(rs,k),same=q&&rs.at(-1)?.session===d.session&&m?.complete&&m.health===q.score;let t=E("div",null,"mi-tile");t.append(E("b",k.toUpperCase()+" · "+name(m?.regime),"mi-"+stateColor(m?.regime)));if(!same)t.append(E("p","Complete matching archive required for duration."));else{t.append(E("p",(q.known?"Day "+q.count:"At least "+q.count+" saved session"+(q.count===1?"":"s"))+" · since "+fmt(q.start)+(q.prior?" · previously "+name(q.prior):"")));let up=Math.max(0,11-q.score),down=Math.max(0,q.score-5);t.append(E("p",(up?up+" point"+(up===1?"":"s")+" to Risk-On":"Risk-On threshold met")+" · "+(down?down+" point"+(down===1?"":"s")+" above Risk-Off":"Risk-Off threshold met")));}grid.append(t);}
-  p.append(grid);host.after(p);
+  document.getElementById("mi-regime-context")?.remove();
   let b=panel("Daily interpretation","Rule-based explanation of the latest published session; no buy/sell recommendation.");b.id="mi-structured-summary";let old=document.getElementById(b.id);if(old)old.remove();let g=E("div",null,"mi-grid four");
   let changes=d.signal_changes?.to_session===d.session?d.signal_changes.groups:null;
   let eased=[],worsened=[];for(let [group,x] of Object.entries(changes||{})){let prefix=({shared:"Shared",sp:"SPY",nd:"QQQ"})[group]||group;for(let q of x.eased||[])eased.push(prefix+": "+q.label);for(let q of x.new_bearish||[])worsened.push(prefix+": "+q.label);}
   let transition=[];let a=rs.at(-1);for(let k of ["spy","qqq"]){let m=a?.[k];if(a?.session===d.session&&M.complete(m)&&m.previous_regime&&m.previous_regime!==m.regime)transition.push(k.toUpperCase()+": "+name(m.previous_regime)+" → "+name(m.regime));}
   let concerns=["vix","vxn","credit","spy_trend","qqq_trend"].filter(k=>d.signals?.[k]?.state==="bear").map(k=>d.names?.[k]||k);
   g.append(tile("What improved",changes?(eased.join("; ")||"No newly eased bearish signals."):"Paired signal comparison unavailable.","mi-bull"),tile("Remaining concerns",[worsened.length?"New bearish: "+worsened.join("; "):"",concerns.length?"Still bearish: "+concerns.join(", "):""].filter(Boolean).join(". ")||"No bearish flags among the highlighted indicators; review full scoring breakdown.","mi-bear"),tile("Market interpretation",(transition.join("; ")||"No confirmed regime transition in the saved comparison.")+" Current scores: SPY "+(d.markets?.sp500?.score?.health??"—")+"/16, QQQ "+(d.markets?.nasdaq100?.score?.health??"—")+"/16.","mi-warn"),tile("What to watch next","Check whether volatility, credit, breadth and trend improve together on the next completed equity session."));
-  b.append(g);p.after(b);
+  b.append(g);
   document.getElementById("mi-source-verification")?.remove();
   let audit=panel("Data-source verification","Observation date and actual provider for the published session. Same-date does not independently certify a final settlement or price accuracy.");audit.id="mi-source-verification";
   let evidence=d.source_audit;
   if(!evidence||evidence.session!==d.session){audit.append(E("p","Detailed source audit starts with the next newly completed session. The current snapshot is unchanged.","mi-note"));}
   else{let obs=evidence.observations||{};let ordered=["SPY","QQQ","COPPER","OIL","VIX","VXN","VIX3M",...Object.keys(obs).filter(k=>!["SPY","QQQ","COPPER","OIL","VIX","VXN","VIX3M"].includes(k))];let details=ordered.map(k=>{let x=obs[k]||{};return [k,x.provider||"Unavailable",x.observation_session||"—",x.previous_observation_session||"—",x.latest_vendor_session||"—",x.status==="same_date_observation"?"Present":"Missing",M.finite(x.change_pct)?pct(x.change_pct):"—",["OIL","COPPER"].includes(k)?"Settlement not independently verified":"—"]});audit.append(table(["Input","Provider used","Observation","Prior observation","Latest vendor date","Availability","Futures Δ","Settlement"],details),E("p","Futures daily bars may be provisional when equities close, particularly on shortened sessions. Derived changes are recorded; raw price histories are not added. A newer vendor date is not used in the scored session.","mi-note"));}
-  b.after(audit);
+  document.getElementById("mi-overview-details")?.remove();
+  let extra=E("details",null,"mi-overview-details");extra.id="mi-overview-details";extra.append(E("summary","More daily context & source verification"),b,audit);host.after(extra);
  }
  function table(headers,body){let wrap=E("div",null,"mi-scroll"),t=E("table",null,"mi-table"),head=E("thead"),hr=E("tr");for(let h of headers){let th=E("th",h);th.scope="col";hr.append(th)}head.append(hr);t.append(head);let tb=E("tbody");for(let row of body){let tr=E("tr");row.forEach((v,i)=>{let c=i===0?E("th"):E("td");if(i===0)c.scope="row";if(typeof v==="object"){c.textContent=v.text;c.className=v.cls||"";if(v.title)c.title=v.title;}else c.textContent=v;tr.append(c)});tb.append(tr)}t.append(tb);wrap.append(t);return wrap;}
  function chart(rs,key){
