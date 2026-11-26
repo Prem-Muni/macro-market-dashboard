@@ -179,16 +179,7 @@
   recapDetails.append(make('summary','','Regime transition & internal changes'),transitionBox,internalBox,recapFootnote);
   recap.append(recapHeading,recapBody,recapDetails);
   scoreRow.appendChild(recap);
-  // Calendar follows the top snapshot on Overview, but remains in its original
-  // location when viewing another dashboard subtab.
-  function placeCalendar(){
-    const cal=$('mi-market-calendar'),nav=document.querySelector('nav.site-tabs');
-    if(!cal||!nav)return;
-    if(overview.hidden){if(cal.previousElementSibling!==nav)nav.after(cal);}
-    else if(cal.previousElementSibling!==scoreRow)scoreRow.after(cal);
-  }
-  placeCalendar();
-  new MutationObserver(placeCalendar).observe(overview,{attributes:true,attributeFilter:['hidden']});
+  // The shared calendar stays under the site title on every page.
 
   const divider = make('div','unified-divider');
   const driversHeader = make('div','unified-driver-heading');
