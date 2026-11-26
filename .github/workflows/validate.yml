@@ -22,4 +22,5 @@ jobs:
           node --check docs/market-insights-extra.js
           node --check docs/overview-unified.js
           node --check docs/dashboard-clarity.js
-          node --test tests/test_overview_signal_board.cjs
+          node --check docs/daily-summaries.js
+          node --test tests/test_overview_signal_board.cjs tests/test_market_history_accordion.cjs
