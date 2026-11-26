@@ -323,7 +323,9 @@ function easterSunday(y){
 function nyseHolidays(year){
  const holidays=new Set();
  for(const y of [year-1,year,year+1]){
-  for(const [m,d] of [[1,1],[6,19],[7,4],[12,25]])holidays.add(observedFixedHoliday(y,m,d));
+  for(const [m,d] of [[6,19],[7,4],[12,25]])holidays.add(observedFixedHoliday(y,m,d));
+  // NYSE does not observe a Saturday January 1 on the preceding Friday.
+  const ny=utcDay(y,1,1);holidays.add(dayString(offsetDay(ny,weekday(ny)===0?1:0)));
   holidays.add(nthWeekday(y,1,1,3)); // MLK
   holidays.add(nthWeekday(y,2,1,3)); // Presidents
   holidays.add(dayString(offsetDay(easterSunday(y),-2))); // Good Friday
@@ -344,13 +346,16 @@ function eodStatus(session, now=new Date()){
  const holidays=nyseHolidays(today.getUTCFullYear());
  // After 4:00 PM New York time the latest completed equity session is
  // expected; do not hide a failed EOD update behind the old 8 PM cutoff.
- let expected=nyseSession(today,holidays)&&hour>=16?today:offsetDay(today,-1);
+ const earlyClose=new Set(['2026-11-27','2026-12-24','2027-11-26','2028-07-03','2028-11-24']);
+ const closingHour=earlyClose.has(dayString(today))?13:16;
+ let expected=nyseSession(today,holidays)&&hour>=closingHour?today:offsetDay(today,-1);
  while(!nyseSession(expected,holidays))expected=offsetDay(expected,-1);
  const observed=utcDay(...session.split('-').map(Number));
  if(!Number.isFinite(observed.getTime()))return {kind:'unknown',text:'Invalid session date',lag:null};
  let lag=0,walk=offsetDay(observed,1);
  while(walk<=expected && lag<100){if(nyseSession(walk,holidays))lag++;walk=offsetDay(walk,1);}
- if(observed>expected||lag===0)return {kind:'current',text:'Current completed EOD session',lag:0};
+ if(observed>expected)return {kind:'unknown',text:'Published date is later than expected completed session',lag:null};
+ if(lag===0)return {kind:'current',text:'Current completed EOD session',lag:0};
  if(lag===1)return {kind:'pending',text:'One market session behind',lag};
  return {kind:'stale',text:`${lag} market sessions behind`,lag};
 }
