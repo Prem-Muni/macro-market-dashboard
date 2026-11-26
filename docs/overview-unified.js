@@ -53,7 +53,7 @@
   }
   panel.appendChild(head);
 
-  const scoreRow = make('div', 'unified-score-row');
+  const scoreRow = make('div', 'unified-score-row compact-snapshot-row');
   scoreRow.appendChild(grid);
   panel.appendChild(scoreRow);
   overview.insertBefore(panel, intro); // Attach before looking up IDs inside the moved cards.
@@ -64,6 +64,7 @@
     const card = $(prefix + '-card');
     const head = card?.querySelector('.market-head');
     if (!head) continue;
+    card.classList.add('compact-market-card');
     const oldPill = head.querySelector('.tiny-pill');
     if (oldPill) oldPill.remove();
     const quote = make('div','overview-etf-quote');
@@ -174,8 +175,20 @@
   internalDown.id='unified-internals-down';
   internalBox.append(internalHead,internalUp,internalDown);
   const recapFootnote = make('p','unified-recap-note','Rule-based daily snapshot, not a forecast or trading recommendation.');
-  recap.append(recapHeading,transitionBox,recapBody,internalBox,recapFootnote);
-  panel.appendChild(recap);
+  const recapDetails=make('details','compact-recap-details');
+  recapDetails.append(make('summary','','Regime transition & internal changes'),transitionBox,internalBox,recapFootnote);
+  recap.append(recapHeading,recapBody,recapDetails);
+  scoreRow.appendChild(recap);
+  // Calendar follows the top snapshot on Overview, but remains in its original
+  // location when viewing another dashboard subtab.
+  function placeCalendar(){
+    const cal=$('mi-market-calendar'),nav=document.querySelector('nav.site-tabs');
+    if(!cal||!nav)return;
+    if(overview.hidden){if(cal.previousElementSibling!==nav)nav.after(cal);}
+    else if(cal.previousElementSibling!==scoreRow)scoreRow.after(cal);
+  }
+  placeCalendar();
+  new MutationObserver(placeCalendar).observe(overview,{attributes:true,attributeFilter:['hidden']});
 
   const divider = make('div','unified-divider');
   const driversHeader = make('div','unified-driver-heading');
@@ -191,6 +204,7 @@
   panel.appendChild(divider);
   window.OverviewSignalBoard?.mount(board);
 
+  panel.classList.add('reference-overview-layout');
   const why = make('details','unified-why');
   why.appendChild(make('summary','','What is driving these conditions?'));
   const whyDetail = $('brief-detail');
@@ -459,4 +473,5 @@
   watchSession();
   updateArt();
   document.body.classList.add('unified-ready');
+  document.body.classList.add('compact-overview-ready');
 })();
