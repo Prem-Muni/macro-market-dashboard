@@ -18,7 +18,9 @@ def build_source_audit(frame, extra, prices, providers, cboe, session):
         raise ValueError("Source audit is not aligned with the scored session")
     previous=frame.index[-2] if len(frame)>1 else None
     observed={}
-    for key, provider in providers.items():
+    expected = ("SPY","QQQ","RSP","QQQE","IWM","SMH","XLE","XLP","XLV","XLU","HYG","IEF","OIL","COPPER","USD","TNX","VIX","VXN","VIX3M","SPX_BREADTH200","NDX_ADV","NDX_DECL")
+    for key in dict.fromkeys((*expected, *providers)):
+        provider = providers.get(key, "No provider available")
         series=extra[key] if extra is not None and key in extra else frame[key] if key in frame else None
         actual=_finite(series.get(day)) if series is not None else None
         prior=_finite(series.get(previous)) if series is not None and previous is not None else None
