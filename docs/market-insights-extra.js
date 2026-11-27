@@ -48,11 +48,11 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
   if(minutes<close)return {day:t,state:"open",label:"NYSE open"+(early?" · Early close":""),context:"Closes "+(early?"noon":"3 PM")+" CT"};
   return {day:t,state:"closed",label:"NYSE closed · After hours",context:nextLabel};
  }
- let headerSession=null;
+ let headerSession=null,headerIncomplete=false;
  function banner(d){
   const header=document.querySelector("header.topbar[data-market-ticker]");
   if(!header){document.getElementById("mi-market-calendar")?.remove();return;}
-  if(d?.session)headerSession=d.session;
+  if(d?.session){headerSession=d.session;headerIncomplete=Object.values(d.markets||{}).some(m=>m.score?.complete===false);}
   let box=document.getElementById("mi-market-calendar");
   if(!box){box=E("aside",null,"mi-calendar mi-calendar-compact mi-header-calendar");box.id="mi-market-calendar";box.setAttribute("aria-label","US equity market status and futures quotes");header.after(box);}
   else if(box.previousElementSibling!==header)header.after(box);
@@ -83,7 +83,12 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
   const label=line.querySelector(".mi-market-status");
   label.textContent=status.label;label.dataset.state=status.state;
   line.querySelector(".mi-market-next").textContent=status.context;
-  line.querySelector(".mi-market-eod").textContent=headerSession?"Last EOD: "+fmt(headerSession):"Last EOD pending";
+  const eod=line.querySelector(".mi-market-eod");
+  const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).map(x=>[x.type,x.value]));
+  const min=Number(p.hour)*60+Number(p.minute),due=M.trading(status.day)&&min>=(M.event(status.day)?.[2]?12*60+35:15*60+35);
+  const delayed=due&&(!headerSession||headerSession<status.day);
+  eod.textContent=(headerSession?"Last EOD: "+fmt(headerSession):"Last EOD pending")+(delayed?" · UPDATE DELAYED":headerIncomplete?" · PARTIAL SIGNALS":"");
+  eod.style.color=delayed||headerIncomplete?"#efc72e":"";
   box.title="NYSE regular equity session only; futures hours differ. BrixNation hosted ticker: Yahoo-sourced delayed data, provider refresh approximately 30 minutes on trading days; includes other markets. Informational only; does not affect Market Health.";
  }
  function tile(title,body,cls=""){return add(E("div",null,"mi-tile"),E("b",title,cls),E("div",body))}
