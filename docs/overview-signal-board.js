@@ -10,7 +10,7 @@
  const states=new Set(["bull","bear","warn","info"]);
  const tone=s=>({ "RISK-ON":"bull","RISK-OFF":"bear","NEUTRAL":"warn","IMPROVING":"bull","STABLE":"warn","DETERIORATING":"bear","BULLISH":"bull","BEARISH":"bear","CAUTION":"warn","SELECTIVE":"warn","EARLY IMPROVEMENT":"warn","UNCERTAIN":"na" }[s]||"na");
  function signal(data,[key,title]){
-  const s=data.signals?.[key],state=states.has(s?.state)?s.state:"na";
+  const s=data.signals?.[key],state=s?.state==="wash"?"bear":states.has(s?.state)?s.state:"na";
   let value="";
   if(state!=="na"&&finite(s?.value)){const suffix=relative.has(key)||key==="sp_breadth200"||key==="nd_breadth1d"?"%":key.includes("breadth")?" pp":"";value=(relative.has(key)&&s.value>0?"+":"")+s.value.toFixed(2)+suffix;if(key.endsWith("_macd"))value="Hist "+value;}
   else if(state!=="na"&&s?.note&&["spy_trend","qqq_trend"].includes(key))value=s.note;
