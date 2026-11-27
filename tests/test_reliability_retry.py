@@ -45,10 +45,14 @@ def test_published_prior_recovery_and_protection():
     markets={m:{"score":score(b,a),"momentum":{},"confirmation":{"components":{}}} for m,b,a in [("sp500",7,16),("nasdaq100",8,15)]}
     prices={"status":"complete","session":"2026-11-27","previous_session":"2026-11-25","spy":{"close":110,"previous_close":100,"change_pct":10},"qqq":{"close":110,"previous_close":100,"change_pct":10}}
     old={"session":"2026-11-27","model_version":"16-point","markets":markets,"price_moves":prices,"signals":{"copper":{"state":"bull","label":"BULLISH","value":None},"vxn":{"state":"na"}},"order":{"shared":["copper"],"sp500":[],"nasdaq100":["vxn"]},"market_insights_history":{"entries":[{"session":"2026-11-25","spy":{"score":10,"available":16,"total":16},"qqq":{"score":10,"available":16,"total":16}}]}}
+    old["market_insights_history"]["entries"][0]["spy"]["metrics"]={"signals":{"copper":{"state":"bull","label":"BULLISH","value":None}}}
+    old["market_insights_history"]["entries"][0]["qqq"]["metrics"]={"signals":{"vxn":{"state":"bear","label":"BEARISH","value":38.53}}}
     candidate=copy.deepcopy(old)
     use_published_prior(old,candidate)
     assert candidate["markets"]["sp500"]["momentum"]["d1_range"]==[-3,-3]
     assert candidate["markets"]["nasdaq100"]["momentum"]["d1_range"]==[-2,-1]
+    assert "copper" not in candidate["signal_changes"]["by_key"]
+    assert candidate["published_comparison"]["session"]=="2026-11-25"
     candidate["signals"]["copper"]["state"]="bear"
     result,reason=protect_retry(old,candidate)
     assert result==old and "copper" in reason
