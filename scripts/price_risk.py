@@ -6,7 +6,7 @@ No additional provider request, scoring adjustment, or synthesized price history
 from __future__ import annotations
 
 from datetime import datetime
-from zoneinfo import ZoneInfo
+from eod_freshness import CENTRAL, eod_cutoff, is_regular_session
 import math
 
 import pandas as pd
@@ -15,7 +15,7 @@ import pandas as pd
 def build_price_moves(df: pd.DataFrame, session: str, *, now: datetime | None = None) -> dict:
     """Return the prior/current *common equity-session* closes and percentage changes.
 
-    Suppress incomplete-session data when this function is run before 16:10 ET.
+    Use the shared NYSE session calendar and 15-minute EOD safety buffer.
     Return an explicit unavailable status if session/prices/history don't align.
     """
     base = {"session": session, "previous_session": None, "status": "unavailable", "spy": None, "qqq": None}
@@ -23,11 +23,14 @@ def build_price_moves(df: pd.DataFrame, session: str, *, now: datetime | None = 
         target = pd.Timestamp(session).normalize()
         if not session or target.strftime("%Y-%m-%d") != session:
             return base
-        current_et = now or datetime.now(ZoneInfo("America/New_York"))
-        if current_et.tzinfo is None:
+        current = now or datetime.now(CENTRAL)
+        if current.tzinfo is None:
             return base  # Do not silently interpret naive clock datetimes.
-        current_et = current_et.astimezone(ZoneInfo("America/New_York"))
-        if target.date() == current_et.date() and (current_et.hour, current_et.minute) < (16, 10):
+        current = current.astimezone(CENTRAL)
+        day = target.date()
+        if day > current.date() or not is_regular_session(day):
+            return base
+        if day == current.date() and (current.hour, current.minute) < eod_cutoff(day):
             return {**base, "status": "awaiting_close"}
         if not {"SPY", "QQQ"}.issubset(df.columns):
             return base
