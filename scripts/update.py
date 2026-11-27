@@ -223,8 +223,9 @@ def use_published_prior(previous: dict, fresh: dict) -> None:
         daily = score_momentum_bounds(fresh["markets"][market]["score"], before)
         fresh["markets"][market]["momentum"].update(d1=daily["observed"], d1_range=[daily["min"],daily["max"]])
     fresh["published_comparison"] = {"session":day,"markets":prior_scores,"basis":"saved complete EOD publication"}
-    expected = set(fresh["order"]["shared"] + fresh["order"]["sp500"] + fresh["order"]["nasdaq100"])
-    if expected.issubset(prior_signals) and all(isinstance(prior_signals[k],dict) for k in expected):
+    order=fresh.get("order",{})
+    expected = set(order.get("shared",[]) + order.get("sp500",[]) + order.get("nasdaq100",[]))
+    if expected and expected.issubset(prior_signals) and all(isinstance(prior_signals[k],dict) for k in expected):
         prev_sigs = {k:SimpleNamespace(**v) for k,v in prior_signals.items() if isinstance(v,dict)}
         new_sigs = {k:SimpleNamespace(**v) for k,v in fresh.get("signals",{}).items() if isinstance(v,dict)}
         fresh["signal_changes"] = scored_signal_changes(prev_sigs,new_sigs,day,fresh["session"])
@@ -241,7 +242,7 @@ def protect_retry(previous: dict, candidate: dict):
     if previous["price_moves"] != candidate["price_moves"]:
         return deepcopy(previous), "existing close comparison changed"
     for key, old in previous.get("signals",{}).items():
-        if not isinstance(old,dict) or old.get("state") not in ("bull","bear","warn","info"):
+        if not isinstance(old,dict) or old.get("state") not in ("bull","bear","warn","wash","info"):
             continue
         new = candidate.get("signals",{}).get(key,{})
         if any(old.get(field) != new.get(field) for field in ("state","label","value")):
@@ -258,7 +259,8 @@ def protect_retry(previous: dict, candidate: dict):
     # Freeze the original reconstructed five-session anchor for this publication.
     rows = previous.get("history",[])
     if len(rows) >= 6 and rows[-1].get("date") == previous["session"]:
-        anchor = rows[-6]
+        saved_anchor = previous.get("retry_five_day_basis") or {}
+        anchor = ({"date":saved_anchor["session"],**saved_anchor["markets"]} if saved_anchor.get("session") and saved_anchor.get("markets") else rows[-6])
         for market,key,trend in (("sp500","sp","spy_trend"),("nasdaq100","nd","qqq_trend")):
             old_score = dict(bearish=anchor[key],possible_max=anchor[key+"_max"],available=anchor[key+"_available"],total=16)
             m = candidate["markets"][market]
@@ -266,11 +268,8 @@ def protect_retry(previous: dict, candidate: dict):
             m["momentum"].update(d5=bound["observed"],d5_range=[bound["min"],bound["max"]],state=bound["state"],partial=not m["score"]["complete"] or old_score["available"]!=16)
             m["swing"] = swing_from_bounds(m["score"],old_score,m["confirmation"],candidate["signals"][trend]["state"])
         candidate["retry_five_day_basis"] = {"session":anchor["date"],"markets":{k:anchor[k] for k in ("sp","nd","sp_max","nd_max","sp_available","nd_available")},"basis":"original reconstructed anchor, not a saved brokerage reading"}
-        # Preserve the previous reconstructed anchor in the candidate history so another retry cannot drift.
-        for i,row in enumerate(candidate.get("history",[])):
-            if row.get("date")==anchor["date"]:
-                candidate["history"][i]=deepcopy(anchor)
-                break
+        # The research history remains a separately reconstructed series; the
+        # frozen display anchor is carried forward via retry_five_day_basis.
     return candidate,None
 
 
