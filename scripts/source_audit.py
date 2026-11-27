@@ -31,7 +31,12 @@ def build_source_audit(frame, extra, prices, providers, cboe, session):
         source=provider
         if key in ("VIX","VXN","VIX3M") and actual is not None:
             official=cboe.get(key)
-            source=("Cboe official historical CSV" if official is not None and _finite(official.get(day)) is not None else "Yahoo fallback (unofficial)")
+            if official is not None and _finite(official.get(day)) is not None:
+                source="Cboe official historical CSV"
+            elif key=="VXN" and "recovery" in provider:
+                source=provider
+            else:
+                source="Yahoo fallback (unofficial)"
         item={"provider":source,"requested_session":session,"observation_session":session if actual is not None else None,
               "previous_observation_session":previous.strftime("%Y-%m-%d") if prior is not None else None,
               "latest_vendor_session":latest,"status":"same_date_observation" if actual is not None else "missing_for_session"}

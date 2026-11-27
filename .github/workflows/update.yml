@@ -2,18 +2,10 @@ name: Refresh EOD dashboard
 
 on:
   schedule:
-    # Early-close attempt; only official shortened sessions proceed.
-    - cron: '20 12 * 7,11,12 1-5'
-      timezone: 'America/Chicago'
-    # Primary at 3:20pm CT (4:20pm ET) after verified regular market close.
-    - cron: '20 15 * * 1-5'
-      timezone: 'America/Chicago'
-    # Backup at 4:20pm CT when unofficial providers have published more bars.
-    - cron: '20 16 * * 1-5'
-      timezone: 'America/Chicago'
-    # Late backup at 7:20pm CT for delayed vendors; same-day archives upsert.
-    - cron: '20 19 * * 1-5'
-      timezone: 'America/Chicago'
+    # UTC probes cover both CST and CDT. Python gate uses the NYSE calendar.
+    - cron: '20,50 17,18 * 7,11,12 1-5'
+    - cron: '20 20,21,22 * * 1-5'
+    - cron: '20 0,1 * * 2-6'
   workflow_dispatch:
 
 permissions:
@@ -28,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
-      publish: ${{ steps.schedule_gate.outputs.publish }}
+      publish: ${{ steps.save_snapshot.outputs.deploy }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -39,28 +31,19 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
-      - name: Check scheduled early-close eligibility
+      - name: Check scheduled session eligibility
         id: schedule_gate
         env:
-          EARLY_PROBE: ${{ github.event_name == 'schedule' && github.event.schedule == '20 12 * 7,11,12 1-5' }}
-        shell: bash
-        run: |
-          if [ "$EARLY_PROBE" = "true" ]; then
-            if python -c 'import sys; sys.path.insert(0,"scripts"); from datetime import datetime; from eod_freshness import CENTRAL,is_early_close; sys.exit(0 if is_early_close(datetime.now(CENTRAL).date()) else 1)'; then
-              echo "publish=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "Not a scheduled early-close session; no publication."
-              echo "publish=false" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "publish=true" >> "$GITHUB_OUTPUT"
-          fi
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_CRON: ${{ github.event.schedule }}
+        run: python scripts/schedule_gate.py
       - name: Generate latest EOD data
         if: steps.schedule_gate.outputs.publish == 'true'
         env:
           SUPPLEMENTAL_DATA_URL: ${{ secrets.SUPPLEMENTAL_DATA_URL }}
         run: python scripts/update.py
       - name: Save snapshot to GitHub history (fail closed on conflict)
+        id: save_snapshot
         if: steps.schedule_gate.outputs.publish == 'true'
         shell: bash
         run: |
@@ -69,7 +52,9 @@ jobs:
           git add docs/data/latest.json
           if git diff --cached --quiet; then
             echo "No new data"
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "deploy=true" >> "$GITHUB_OUTPUT"; else echo "deploy=false" >> "$GITHUB_OUTPUT"; fi
           else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
             git commit -m "Update market dashboard [skip ci]"
             if ! git push origin HEAD:main; then
               echo "Repository changed during refresh; attempting a safe rebase, never a force push."
@@ -84,7 +69,7 @@ jobs:
             fi
           fi
       - name: Verify publication is synchronized with main
-        if: steps.schedule_gate.outputs.publish == 'true'
+        if: steps.save_snapshot.outputs.deploy == 'true'
         shell: bash
         run: |
           git fetch origin main
@@ -93,10 +78,10 @@ jobs:
             exit 1
           fi
       - name: Configure GitHub Pages
-        if: steps.schedule_gate.outputs.publish == 'true'
+        if: steps.save_snapshot.outputs.deploy == 'true'
         uses: actions/configure-pages@v6
       - name: Upload website artifact
-        if: steps.schedule_gate.outputs.publish == 'true'
+        if: steps.save_snapshot.outputs.deploy == 'true'
         uses: actions/upload-pages-artifact@v5
         with:
           path: docs

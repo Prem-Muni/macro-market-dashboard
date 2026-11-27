@@ -5,6 +5,7 @@ Never inserts guessed market data. On failure, retains last verified snapshot on
 """
 from __future__ import annotations
 import io
+from copy import deepcopy
 import json
 import os
 import sys
@@ -14,7 +15,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import pandas as pd
 import requests
-from engine import analyze, scored_signal_changes, score_momentum_bounds
+from engine import analyze, scored_signal_changes, score_momentum_bounds, swing_from_bounds
 from breadth import derive_breadth
 from price_risk import build_price_moves
 from insights_history import merge_daily_archive
@@ -22,7 +23,7 @@ from daily_macd import calculate_daily_macd
 from eod_freshness import check_snapshot_session, expected_close, most_recent_completed_session, is_early_close
 from source_audit import build_source_audit
 from snapshot_integrity import check_completed_snapshot
-from eod_recovery import recover_missing_equity_closes
+from eod_recovery import recover_missing_equity_closes, recover_vxn_close
 from public_eod import recover_public_etf_closes
 from zoneinfo import ZoneInfo
 
@@ -86,11 +87,13 @@ def download_yahoo():
     return series,sources,errors
 
 
-def official_cboe():
+def official_cboe(keys=None, *, fresh=False):
     result={}; sources={}; errors=[]
     session=requests.Session()
     session.headers.update({"User-Agent":"MacroMarketDashboard/0.1 personal-research"})
+    if fresh: session.headers.update({'Cache-Control':'no-cache','Pragma':'no-cache'})
     for key,url in CBOE.items():
+        if keys is not None and key not in keys: continue
         try:
             r=session.get(url,timeout=30); r.raise_for_status()
             raw=r.text.splitlines()
@@ -182,26 +185,92 @@ def is_finalized_snapshot(snapshot: dict) -> bool:
         return False
 
 
-def use_published_prior(previous: dict, fresh: dict) -> None:
-    """Compare the daily headline to the actual prior publication, not a rerun.
+def published_prior(previous: dict, fresh: dict):
+    """Return exact previous published scores and available saved signal states."""
+    day = fresh.get("price_moves", {}).get("previous_session")
+    if not day or day >= fresh.get("session", ""):
+        return None
+    keys = ("bearish", "possible_max", "total", "available")
+    if (previous.get("session") == day and previous.get("model_version") == fresh.get("model_version")
+            and is_finalized_snapshot(previous)):
+        return ({m: {k: previous["markets"][m]["score"][k] for k in keys}
+                 for m in ("sp500", "nasdaq100")}, previous.get("signals", {}))
+    if previous.get("model_version") != fresh.get("model_version"):
+        return None
+    rows = (previous.get("market_insights_history") or {}).get("entries", [])
+    row = next((x for x in rows if x.get("session") == day), None)
+    if not row:
+        return None
+    scores, signals = {}, {}
+    for sym, market in (("spy","sp500"),("qqq","nasdaq100")):
+        saved = row.get(sym, {})
+        count, available, total = (saved.get(k) for k in ("score","available","total"))
+        if not (type(count) is int and total == available == fresh["markets"][market]["score"]["total"] == 16 and 0 <= count <= total):
+            return None
+        scores[market] = dict(bearish=count,possible_max=count,total=total,available=available)
+        signals.update((saved.get("metrics") or {}).get("signals") or {})
+    return scores, signals
 
-    Leave reconstructed research history and five-day model momentum unchanged.
-    """
-    if (not is_finalized_snapshot(previous) or
-            previous.get("session") != fresh.get("price_moves", {}).get("previous_session") or
-            previous.get("model_version") != fresh.get("model_version")):
+
+def use_published_prior(previous: dict, fresh: dict) -> None:
+    """Compare against immutable prior publications, including same-day retries."""
+    baseline = published_prior(previous, fresh)
+    if baseline is None:
         return
-    prior_scores = {}
-    for market in ("sp500", "nasdaq100"):
-        before = previous["markets"][market]["score"]
-        after = fresh["markets"][market]["score"]
-        prior_scores[market] = {key: before[key] for key in ("bearish", "possible_max", "total", "available")}
-        daily = score_momentum_bounds(after, before)
-        fresh["markets"][market]["momentum"].update(d1=daily["observed"], d1_range=[daily["min"], daily["max"]])
-    fresh["published_comparison"] = {"session": previous["session"], "markets": prior_scores, "basis": "saved complete EOD publication"}
-    prev_sigs = {k: SimpleNamespace(**v) for k, v in previous.get("signals", {}).items() if isinstance(v, dict)}
-    new_sigs = {k: SimpleNamespace(**v) for k, v in fresh.get("signals", {}).items() if isinstance(v, dict)}
-    fresh["signal_changes"] = scored_signal_changes(prev_sigs, new_sigs, previous["session"], fresh["session"])
+    prior_scores, prior_signals = baseline
+    day = fresh["price_moves"]["previous_session"]
+    for market, before in prior_scores.items():
+        daily = score_momentum_bounds(fresh["markets"][market]["score"], before)
+        fresh["markets"][market]["momentum"].update(d1=daily["observed"], d1_range=[daily["min"],daily["max"]])
+    fresh["published_comparison"] = {"session":day,"markets":prior_scores,"basis":"saved complete EOD publication"}
+    order=fresh.get("order",{})
+    expected = set(order.get("shared",[]) + order.get("sp500",[]) + order.get("nasdaq100",[]))
+    if expected and expected.issubset(prior_signals) and all(isinstance(prior_signals[k],dict) for k in expected):
+        prev_sigs = {k:SimpleNamespace(**v) for k,v in prior_signals.items() if isinstance(v,dict)}
+        new_sigs = {k:SimpleNamespace(**v) for k,v in fresh.get("signals",{}).items() if isinstance(v,dict)}
+        fresh["signal_changes"] = scored_signal_changes(prev_sigs,new_sigs,day,fresh["session"])
+
+
+def protect_retry(previous: dict, candidate: dict):
+    """Only accept additional inputs; never silently replace an observed signal or price."""
+    if previous.get("session") != candidate.get("session") or previous.get("model_version") != candidate.get("model_version"):
+        return candidate, None
+    try:
+        check_completed_snapshot(previous)
+    except (RuntimeError,TypeError,KeyError,ValueError):
+        return candidate, None
+    if previous["price_moves"] != candidate["price_moves"]:
+        return deepcopy(previous), "existing close comparison changed"
+    for key, old in previous.get("signals",{}).items():
+        if not isinstance(old,dict) or old.get("state") not in ("bull","bear","warn","wash","info"):
+            continue
+        new = candidate.get("signals",{}).get(key,{})
+        if any(old.get(field) != new.get(field) for field in ("state","label","value")):
+            return deepcopy(previous), "previously observed signal changed: "+key
+    for market in ("sp500","nasdaq100"):
+        old = previous["markets"][market]["confirmation"].get("components",{})
+        new = candidate["markets"][market]["confirmation"].get("components",{})
+        if any(v is not None and new.get(k) != v for k,v in old.items()):
+            return deepcopy(previous), "previously observed confirmation changed: "+market
+    if any(candidate["markets"][m]["score"]["available"] < previous["markets"][m]["score"]["available"] for m in ("sp500","nasdaq100")):
+        return deepcopy(previous), "coverage regressed"
+    if not any(candidate["markets"][m]["score"]["available"] > previous["markets"][m]["score"]["available"] for m in ("sp500","nasdaq100")):
+        return deepcopy(previous), "no additional scored signals"
+    # Freeze the original reconstructed five-session anchor for this publication.
+    rows = previous.get("history",[])
+    if len(rows) >= 6 and rows[-1].get("date") == previous["session"]:
+        saved_anchor = previous.get("retry_five_day_basis") or {}
+        anchor = ({"date":saved_anchor["session"],**saved_anchor["markets"]} if saved_anchor.get("session") and saved_anchor.get("markets") else rows[-6])
+        for market,key,trend in (("sp500","sp","spy_trend"),("nasdaq100","nd","qqq_trend")):
+            old_score = dict(bearish=anchor[key],possible_max=anchor[key+"_max"],available=anchor[key+"_available"],total=16)
+            m = candidate["markets"][market]
+            bound = score_momentum_bounds(m["score"],old_score)
+            m["momentum"].update(d5=bound["observed"],d5_range=[bound["min"],bound["max"]],state=bound["state"],partial=not m["score"]["complete"] or old_score["available"]!=16)
+            m["swing"] = swing_from_bounds(m["score"],old_score,m["confirmation"],candidate["signals"][trend]["state"])
+        candidate["retry_five_day_basis"] = {"session":anchor["date"],"markets":{k:anchor[k] for k in ("sp","nd","sp_max","nd_max","sp_available","nd_available")},"basis":"original reconstructed anchor, not a saved brokerage reading"}
+        # The research history remains a separately reconstructed series; the
+        # frozen display anchor is carried forward via retry_five_day_basis.
+    return candidate,None
 
 
 def main():
@@ -262,6 +331,19 @@ def main():
             sources[key]=f"Cboe historical; Yahoo fallback on missing dates ({key})"
         else:
             prices[key]=s; sources[key]=cb_sources[key]
+    # Targeted exact-date retry when the Cboe/Yahoo batch is stale.
+    if needed is not None:
+        target=pd.Timestamp(needed)
+        if target not in prices.get("VXN",pd.Series(dtype=float)).dropna().index:
+            retry,_,retry_errors=official_cboe(("VXN",),fresh=True)
+            errors.extend(retry_errors)
+            if target in retry.get("VXN",pd.Series(dtype=float)).dropna().index:
+                cboe["VXN"]=retry["VXN"]
+                prices["VXN"]=retry["VXN"].combine_first(prices.get("VXN",pd.Series(dtype=float))).sort_index()
+                sources["VXN"]="Cboe official historical CSV: VXN (targeted retry)"
+            else:
+                outcome=recover_vxn_close(prices,sources,errors,needed)
+                print("::notice::VXN exact-date recovery: "+outcome)
     extra,e_err=load_extra();errors+=e_err
     if not all(k in prices and len(prices[k])>200 for k in ("SPY","QQQ")):
         raise RuntimeError("SPY and QQQ daily histories are required; keeping prior snapshot")
@@ -328,7 +410,6 @@ def main():
         return
     # EOD MACD(12,26,9), now the 16th scored signal, with additional
     # display values derived from the same completed EOD close series.
-    use_published_prior(previous_snapshot, result)
     result["daily_macd"] = calculate_daily_macd(df, result["session"])
     check_completed_snapshot(result, needed)
     result["source_audit"] = build_source_audit(df, extra, prices, sources, cboe, result["session"])
@@ -353,7 +434,18 @@ def main():
     # GitHub's existing workflow commits only docs/data/latest.json, so preserve
     # the append-only insight journal inside this file (no workflow edits needed).
     # Do not reconstruct earlier alerts from historical data.
-    result["market_insights_history"] = merge_daily_archive(previous_snapshot, result)
+    result, retry_reason = protect_retry(previous_snapshot, result)
+    use_published_prior(previous_snapshot, result)
+    if retry_reason:
+        if result == previous_snapshot:
+            print("::notice::Saved EOD retained: "+retry_reason)
+            return
+        # Correct comparison metadata only; retain all prior observations and archive.
+        result["comparison_corrected_at"] = datetime.now(timezone.utc).isoformat()
+        print("::notice::Prior-publication comparison corrected; original observations retained: "+retry_reason)
+    else:
+        result["market_insights_history"] = merge_daily_archive(previous_snapshot, result)
+    check_completed_snapshot(result, needed)
     temporary=OUT.with_name("latest.json.tmp")
     try:
         temporary.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")

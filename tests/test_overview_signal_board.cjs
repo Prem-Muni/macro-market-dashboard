@@ -9,8 +9,8 @@ test("all saved signal labels and states are copied, no invented values or put/c
  const tiles=rows.filter(r=>!r.title.endsWith("Summary")).flatMap(r=>r.cells);
  assert.equal(tiles.length,29);
  assert.deepEqual(new Set(tiles.map(c=>c.key)),new Set([...d.order.shared,...d.order.sp500,...d.order.nasdaq100]));
- for(const c of tiles){assert.equal(c.state,d.signals[c.key].state);assert.equal(c.label,d.signals[c.key].label);}
- assert.equal(tiles.find(c=>c.key==="sp_breadth200").value,d.signals.sp_breadth200.value.toFixed(2)+"%");
+ for(const c of tiles){const saved=d.signals[c.key];const state=saved?.state==="wash"?"bear":["bull","bear","warn","info"].includes(saved?.state)?saved.state:"na";assert.equal(c.state,state);assert.equal(c.label,state==="na"?"Unavailable":saved.label||state);}
+ if(Number.isFinite(d.signals.sp_breadth200?.value))assert.equal(tiles.find(c=>c.key==="sp_breadth200").value,d.signals.sp_breadth200.value.toFixed(2)+"%");
  assert.equal(tiles.filter(c=>c.info).length,3);
 });
 test("score and signed momentum use the same app formatters; no data mutation",()=>{
@@ -34,3 +34,5 @@ test("missing readings stay unavailable; partial score retains range",()=>{
 });
 
 test("reference layout balances lanes without dropping or duplicating indicators",()=>{const groups=api.build(d,helpers);assert.deepEqual(groups.map(g=>api.splitRows(g).map(r=>r.length)),[[4],[7,5],[6],[4],[7,4]]);for(const g of groups)assert.deepEqual(api.splitRows(g).flat(),g.cells);});
+
+test("confirmation and swing colors follow Thinkorswim labels",()=>{const x=JSON.parse(JSON.stringify(d));x.markets.sp500.confirmation={confirmed:3,available:4,total:4};x.markets.sp500.swing="SELECTIVE";x.markets.nasdaq100.swing="EARLY IMPROVEMENT";const rows=api.build(x,helpers);assert.equal(rows[0].cells[2].state,"bull");assert.equal(rows[0].cells[2].label,"3/4 BROAD");assert.equal(rows[0].cells[3].state,"warn");assert.equal(rows[3].cells[3].state,"warn");});

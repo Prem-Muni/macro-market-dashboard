@@ -8,9 +8,9 @@
  const info=new Set(["sp_breadth5d","sp_breadth200","nd_breadth5d"]);
  const finite=n=>typeof n==="number"&&Number.isFinite(n);
  const states=new Set(["bull","bear","warn","info"]);
- const tone=s=>({ "RISK-ON":"bull","RISK-OFF":"bear","NEUTRAL":"warn","IMPROVING":"bull","STABLE":"warn","DETERIORATING":"bear","BULLISH":"bull","BEARISH":"bear","CAUTION":"warn" }[s]||"na");
+ const tone=s=>({ "RISK-ON":"bull","RISK-OFF":"bear","NEUTRAL":"warn","IMPROVING":"bull","STABLE":"warn","DETERIORATING":"bear","BULLISH":"bull","BEARISH":"bear","CAUTION":"warn","SELECTIVE":"warn","EARLY IMPROVEMENT":"warn","UNCERTAIN":"na" }[s]||"na");
  function signal(data,[key,title]){
-  const s=data.signals?.[key],state=states.has(s?.state)?s.state:"na";
+  const s=data.signals?.[key],state=s?.state==="wash"?"bear":states.has(s?.state)?s.state:"na";
   let value="";
   if(state!=="na"&&finite(s?.value)){const suffix=relative.has(key)||key==="sp_breadth200"||key==="nd_breadth1d"?"%":key.includes("breadth")?" pp":"";value=(relative.has(key)&&s.value>0?"+":"")+s.value.toFixed(2)+suffix;if(key.endsWith("_macd"))value="Hist "+value;}
   else if(state!=="na"&&s?.note&&["spy_trend","qqq_trend"].includes(key))value=s.note;
@@ -20,11 +20,11 @@
   const m=data.markets?.[key];if(!m)return [];
   const s=m.score||{},t=m.momentum||{},c=m.confirmation||{},r=f.regimeHealth(s);
   const coverage=finite(c.available)&&finite(c.total)&&c.available===c.total&&finite(c.confirmed);
-  const confirmation=coverage?c.confirmed+"/"+c.total+" improving":finite(c.confirmed)&&finite(c.available)&&finite(c.total)?c.confirmed+"/"+c.available+" improving · "+c.available+"/"+c.total+" checked":"Unavailable";
+  const confirmation=coverage?c.confirmed+"/"+c.total+" "+(c.confirmed>=3?"BROAD":c.confirmed<=1?"LIMITED":"MIXED"):finite(c.confirmed)&&finite(c.available)&&finite(c.total)?c.confirmed+"/"+c.available+" improving · "+c.available+"/"+c.total+" checked":"Unavailable";
   return [
    {key:key+"-health",title:"Market Health",state:tone(r),label:f.scoreFormat(s),value:r,detail:s.complete?"Complete scored session":"Partial coverage; displayed score is a range"},
    {key:key+"-momentum",title:"Health Trend",state:tone(t.state),label:t.state||"Unavailable",value:"1D "+f.rangeText(f.invertedRange(t.d1_range))+" · 5D "+f.rangeText(f.invertedRange(t.d5_range))+(t.partial?" · bounded":""),detail:"Health-point change, not price return"},
-   {key:key+"-confirmation",title:"Confirmation 5D",state:coverage?(c.confirmed<=1?"bear":c.confirmed===c.total?"bull":"warn"):"na",label:confirmation,value:"",detail:"Confirmation count; color indicates limited, mixed or full confirmation, not a scored input"},
+   {key:key+"-confirmation",title:"Confirmation 5D",state:coverage?(c.confirmed<=1?"bear":c.confirmed>=3?"bull":"warn"):"na",label:confirmation,value:"",detail:"Confirmation count; color indicates limited, mixed or full confirmation, not a scored input"},
    {key:key+"-swing",title:"Swing",state:tone(m.swing),label:m.swing||"Unavailable",value:"",detail:"Published swing classification"}
   ];
  }
