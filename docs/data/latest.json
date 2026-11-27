@@ -40,12 +40,12 @@
         "complete": true
       },
       "momentum": {
-        "d1": -4,
+        "d1": -3,
         "d5": -6,
         "state": "IMPROVING",
         "d1_range": [
-          -4,
-          -4
+          -3,
+          -3
         ],
         "d5_range": [
           -6,
@@ -101,12 +101,12 @@
         "complete": false
       },
       "momentum": {
-        "d1": -3,
+        "d1": -2,
         "d5": -3,
         "state": "IMPROVING",
         "d1_range": [
-          -3,
-          -2
+          -2,
+          -1
         ],
         "d5_range": [
           -3,
@@ -370,13 +370,6 @@
             "kind": "eased"
           },
           {
-            "key": "copper",
-            "label": "Copper",
-            "before": "BEARISH",
-            "after": "BULLISH",
-            "kind": "eased"
-          },
-          {
             "key": "vix_curve",
             "label": "VIX Curve",
             "before": "BACKWARDATION",
@@ -426,7 +419,6 @@
       "usd": "new_bearish",
       "tnx": "new_bearish",
       "credit": "eased",
-      "copper": "eased",
       "vix_curve": "eased",
       "sp_xle": "eased",
       "sp_rsi14": "eased"
@@ -10372,5 +10364,24 @@
         "spy_qqq_divergence": "uncertain"
       }
     ]
-  }
+  },
+  "published_comparison": {
+    "session": "2026-11-25",
+    "markets": {
+      "sp500": {
+        "bearish": 10,
+        "possible_max": 10,
+        "total": 16,
+        "available": 16
+      },
+      "nasdaq100": {
+        "bearish": 10,
+        "possible_max": 10,
+        "total": 16,
+        "available": 16
+      }
+    },
+    "basis": "saved complete EOD publication"
+  },
+  "comparison_corrected_at": "2026-11-27T22:43:22.883341+00:00"
 }
