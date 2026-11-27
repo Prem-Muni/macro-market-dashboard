@@ -34,3 +34,5 @@ test("missing readings stay unavailable; partial score retains range",()=>{
 });
 
 test("reference layout balances lanes without dropping or duplicating indicators",()=>{const groups=api.build(d,helpers);assert.deepEqual(groups.map(g=>api.splitRows(g).map(r=>r.length)),[[4],[7,5],[6],[4],[7,4]]);for(const g of groups)assert.deepEqual(api.splitRows(g).flat(),g.cells);});
+
+test("confirmation and swing colors follow Thinkorswim labels",()=>{const x=JSON.parse(JSON.stringify(d));x.markets.sp500.confirmation={confirmed:3,available:4,total:4};x.markets.sp500.swing="SELECTIVE";x.markets.nasdaq100.swing="EARLY IMPROVEMENT";const rows=api.build(x,helpers);assert.equal(rows[0].cells[2].state,"bull");assert.equal(rows[0].cells[2].label,"3/4 BROAD");assert.equal(rows[0].cells[3].state,"warn");assert.equal(rows[3].cells[3].state,"warn");});
