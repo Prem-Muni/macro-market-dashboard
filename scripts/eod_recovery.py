@@ -99,3 +99,30 @@ def recover_missing_equity_closes(prices: dict, sources: dict, diagnostics: list
             status[symbol] = f'recovered {required_day} using {label}'
             break
     return status
+
+
+def recover_vxn_close(prices, sources, diagnostics, required_day, ticker_factory=None, download=None):
+    """Exact-date retry of the existing Yahoo index, never a proxy or carry-forward."""
+    target=pd.Timestamp(required_day)
+    old=prices.get("VXN",pd.Series(dtype=float))
+    if target in old.dropna().index:
+        return "already current"
+    if ticker_factory is None or download is None:
+        import yfinance as yf
+        ticker_factory=ticker_factory or yf.Ticker
+        download=download or yf.download
+    for label, fetch in (
+        ("single-symbol history",lambda:ticker_factory("^VXN").history(period="10d",interval="1d",auto_adjust=False,actions=False,timeout=25)),
+        ("single-symbol download",lambda:download(tickers="^VXN",period="10d",interval="1d",auto_adjust=False,threads=False,progress=False,timeout=25)),
+    ):
+        try:
+            series=_close_series(fetch(),"^VXN")
+            if target not in series.index or not math.isfinite(float(series.loc[target])) or float(series.loc[target])<=0:
+                diagnostics.append("VXN "+label+": no valid exact-date close for "+str(required_day))
+                continue
+            prices["VXN"]=pd.concat([old.drop(index=target,errors="ignore"),series.loc[[target]]]).sort_index()
+            sources["VXN"]="Yahoo Finance (unofficial): ^VXN "+label+" recovery"
+            return "recovered "+str(required_day)+" via "+label
+        except Exception as exc:
+            diagnostics.append("VXN "+label+": "+type(exc).__name__)
+    return "unavailable for "+str(required_day)
