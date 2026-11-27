@@ -1,16 +1,16 @@
 {
-  "session": "2026-11-25",
-  "generated_at": "2026-11-25T23:20:15.772210+00:00",
+  "session": "2026-11-27",
+  "generated_at": "2026-11-27T19:06:43.021491+00:00",
   "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
   "markets": {
     "sp500": {
       "score": {
-        "bearish": 10,
-        "possible_max": 10,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 7,
+        "possible_max": 7,
+        "health": 9,
+        "health_max": 9,
         "total": 16,
         "available": 16,
         "missing": 0,
@@ -18,21 +18,21 @@
         "complete": true
       },
       "legacy_14": {
-        "bearish": 8,
-        "possible_max": 8,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 6,
+        "possible_max": 6,
+        "health": 8,
+        "health_max": 8,
         "total": 14,
         "available": 14,
         "missing": 0,
-        "regime": "RISK-OFF",
+        "regime": "CAUTION",
         "complete": true
       },
       "legacy_15": {
-        "bearish": 9,
-        "possible_max": 9,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 6,
+        "possible_max": 6,
+        "health": 9,
+        "health_max": 9,
         "total": 15,
         "available": 15,
         "missing": 0,
@@ -40,135 +40,135 @@
         "complete": true
       },
       "momentum": {
-        "d1": -1,
-        "d5": -1,
-        "state": "STABLE",
+        "d1": -3,
+        "d5": -6,
+        "state": "IMPROVING",
         "d1_range": [
-          -1,
-          -1
+          -3,
+          -3
         ],
         "d5_range": [
-          -1,
-          -1
+          -6,
+          -6
         ],
         "partial": false
       },
       "confirmation": {
-        "confirmed": 0,
+        "confirmed": 3,
         "available": 4,
         "total": 4,
         "components": {
-          "volatility": false,
+          "volatility": true,
           "credit": false,
-          "breadth": false,
-          "price": false
+          "breadth": true,
+          "price": true
         }
       },
-      "swing": "BEARISH"
+      "swing": "SELECTIVE"
     },
     "nasdaq100": {
       "score": {
-        "bearish": 10,
-        "possible_max": 10,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 8,
+        "possible_max": 9,
+        "health": 7,
+        "health_max": 8,
         "total": 16,
-        "available": 16,
-        "missing": 0,
+        "available": 15,
+        "missing": 1,
         "regime": "NEUTRAL",
-        "complete": true
+        "complete": false
       },
       "legacy_14": {
-        "bearish": 8,
-        "possible_max": 8,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 6,
+        "possible_max": 7,
+        "health": 7,
+        "health_max": 8,
         "total": 14,
-        "available": 14,
-        "missing": 0,
-        "regime": "RISK-OFF",
-        "complete": true
+        "available": 13,
+        "missing": 1,
+        "regime": "CAUTION",
+        "complete": false
       },
       "legacy_15": {
-        "bearish": 9,
-        "possible_max": 9,
-        "health": 6,
-        "health_max": 6,
+        "bearish": 7,
+        "possible_max": 8,
+        "health": 7,
+        "health_max": 8,
         "total": 15,
-        "available": 15,
-        "missing": 0,
+        "available": 14,
+        "missing": 1,
         "regime": "NEUTRAL",
-        "complete": true
+        "complete": false
       },
       "momentum": {
-        "d1": -1,
+        "d1": -2,
         "d5": -3,
         "state": "IMPROVING",
         "d1_range": [
-          -1,
+          -2,
           -1
         ],
         "d5_range": [
           -3,
-          -3
+          -2
         ],
-        "partial": false
+        "partial": true
       },
       "confirmation": {
-        "confirmed": 1,
-        "available": 4,
+        "confirmed": 2,
+        "available": 3,
         "total": 4,
         "components": {
-          "volatility": false,
+          "volatility": null,
           "credit": false,
           "breadth": true,
-          "price": false
+          "price": true
         }
       },
-      "swing": "BEARISH"
+      "swing": "N/A"
     }
   },
   "signals": {
     "vix": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 28.29,
+      "value": 23.81,
       "note": "Spot implied volatility",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
     },
     "vxn": {
-      "state": "bear",
-      "label": "BEARISH",
-      "value": 38.53,
-      "note": "Spot implied volatility",
+      "state": "na",
+      "label": "N/A",
+      "value": null,
+      "note": "Market data unavailable or stale",
       "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
     },
     "oil": {
-      "state": "bear",
-      "label": "BEARISH",
+      "state": "bull",
+      "label": "BULLISH",
       "value": null,
       "note": "Daily direction vs SPY",
       "source": "Yahoo Finance via yfinance (unofficial): CL=F"
     },
     "usd": {
-      "state": "bull",
-      "label": "BULLISH DIV",
+      "state": "bear",
+      "label": "BEARISH DIV",
       "value": null,
       "note": "Daily direction vs SPY",
       "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
     },
     "tnx": {
-      "state": "bull",
-      "label": "BULLISH DIV",
+      "state": "bear",
+      "label": "BEARISH DIV",
       "value": null,
       "note": "Daily direction vs SPY",
       "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
     },
     "credit": {
-      "state": "bear",
-      "label": "BEARISH",
+      "state": "bull",
+      "label": "BULLISH",
       "value": null,
-      "note": "HYG daily return below IEF",
+      "note": "HYG daily return at least IEF",
       "source": "HYG / IEF"
     },
     "copper": {
@@ -179,9 +179,9 @@
       "source": "Yahoo Finance via yfinance (unofficial): HG=F"
     },
     "vix_curve": {
-      "state": "bear",
-      "label": "BACKWARDATION",
-      "value": 1.076,
+      "state": "warn",
+      "label": "SHALLOW CONTANGO",
+      "value": 1.0,
       "note": "VIX / VIX3M implied-volatility ratio",
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
     },
@@ -200,10 +200,10 @@
       "source": "XLP / XLV / XLU"
     },
     "sp_xle": {
-      "state": "bear",
-      "label": "BEARISH",
+      "state": "bull",
+      "label": "BULLISH",
       "value": null,
-      "note": "XLE leads 10D",
+      "note": "Benchmark leads 10D",
       "source": "XLE"
     },
     "nd_xle": {
@@ -242,109 +242,138 @@
       "source": "QQQ"
     },
     "sp_rsi14": {
-      "state": "bear",
-      "label": "BEARISH",
-      "value": 39.833,
+      "state": "warn",
+      "label": "CAUTION",
+      "value": 45.043,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "SPY EOD close"
     },
     "nd_rsi14": {
       "state": "bear",
       "label": "BEARISH",
-      "value": 38.581,
+      "value": 44.013,
       "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
       "source": "QQQ EOD close"
     },
     "sp_macd": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -2.915,
+      "value": -1.544,
       "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
-      "source": "SPY EOD close · EMA(12,26,9)"
+      "source": "SPY EOD close \u00b7 EMA(12,26,9)"
     },
     "nd_macd": {
       "state": "bear",
       "label": "BEARISH",
-      "value": -2.5,
+      "value": -0.923,
       "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
-      "source": "QQQ EOD close · EMA(12,26,9)"
+      "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
     },
     "rsp_spy": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.7,
-      "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+      "value": 1.019,
+      "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "RSP/SPY"
     },
     "iwm_spy": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.458,
-      "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+      "value": 1.442,
+      "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/SPY"
     },
     "qqqe_qqq": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 1.327,
-      "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+      "value": 0.86,
+      "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "QQQE/QQQ"
     },
     "iwm_qqq": {
       "state": "bull",
       "label": "BULLISH",
-      "value": 2.777,
-      "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+      "value": 1.522,
+      "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
       "source": "IWM/QQQ"
     },
     "sp_breadth1d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 2.806,
+      "value": 3.808,
       "note": "1D change in % of SPX constituents above 200D SMA; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth5d": {
-      "state": "warn",
-      "label": "STABLE",
-      "value": 0.2,
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 9.82,
       "note": "5D change, percentage points",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "sp_breadth200": {
-      "state": "warn",
-      "label": "CAUTION",
-      "value": 58.517,
+      "state": "bull",
+      "label": "BULLISH",
+      "value": 62.325,
       "note": "Current % of SPX constituents above own 200D SMA",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
     },
     "nd_breadth1d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 56.122,
+      "value": 92.857,
       "note": "Today's advancing share % (not SPX 200D breadth)",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     },
     "nd_breadth5d": {
       "state": "bull",
       "label": "EXPANDING",
-      "value": 11.313,
+      "value": 32.609,
       "note": "Change in average advancing share between adjacent 5D windows; pp",
       "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
     }
   },
   "signal_changes": {
-    "from_session": "2026-11-24",
-    "to_session": "2026-11-25",
+    "from_session": "2026-11-25",
+    "to_session": "2026-11-27",
     "groups": {
       "shared": {
-        "new_bearish": [],
+        "new_bearish": [
+          {
+            "key": "usd",
+            "label": "US Dollar",
+            "before": "BULLISH DIV",
+            "after": "BEARISH DIV",
+            "kind": "new_bearish"
+          },
+          {
+            "key": "tnx",
+            "label": "10Y Yield",
+            "before": "BULLISH DIV",
+            "after": "BEARISH DIV",
+            "kind": "new_bearish"
+          }
+        ],
         "eased": [
           {
-            "key": "copper",
-            "label": "Copper",
+            "key": "oil",
+            "label": "Crude Oil",
             "before": "BEARISH",
             "after": "BULLISH",
+            "kind": "eased"
+          },
+          {
+            "key": "credit",
+            "label": "Credit HYG/IEF",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          },
+          {
+            "key": "vix_curve",
+            "label": "VIX Curve",
+            "before": "BACKWARDATION",
+            "after": "SHALLOW CONTANGO",
             "kind": "eased"
           }
         ],
@@ -355,16 +384,23 @@
       },
       "sp": {
         "new_bearish": [],
-        "eased": [],
-        "other": [
+        "eased": [
           {
-            "key": "sp_breadth1d",
-            "label": "S&P Breadth 1D",
-            "before": "STABLE",
-            "after": "EXPANDING",
-            "kind": "other"
+            "key": "sp_xle",
+            "label": "XLE/SPY",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          },
+          {
+            "key": "sp_rsi14",
+            "label": "SPY RSI (14)",
+            "before": "BEARISH",
+            "after": "CAUTION",
+            "kind": "eased"
           }
         ],
+        "other": [],
         "compared": 10,
         "skipped": 0,
         "total": 10
@@ -372,121 +408,99 @@
       "nd": {
         "new_bearish": [],
         "eased": [],
-        "other": [
-          {
-            "key": "nd_breadth1d",
-            "label": "Nasdaq Breadth 1D",
-            "before": "STABLE",
-            "after": "EXPANDING",
-            "kind": "other"
-          }
-        ],
-        "compared": 10,
-        "skipped": 0,
+        "other": [],
+        "compared": 9,
+        "skipped": 1,
         "total": 10
       }
     },
     "by_key": {
-      "copper": "eased",
-      "sp_breadth1d": "other",
-      "nd_breadth1d": "other"
+      "oil": "eased",
+      "usd": "new_bearish",
+      "tnx": "new_bearish",
+      "credit": "eased",
+      "vix_curve": "eased",
+      "sp_xle": "eased",
+      "sp_rsi14": "eased"
     }
   },
   "moving_averages": {
     "spy": {
       "symbol": "SPY",
-      "as_of": "2026-11-25",
-      "close": 716.7,
+      "as_of": "2026-11-27",
+      "close": 728.32,
       "averages": {
         "5": {
-          "value": 712.69,
-          "distance_pct": 0.56,
+          "value": 715.18,
+          "distance_pct": 1.84,
           "state": "BULLISH"
         },
         "20": {
-          "value": 740.329,
-          "distance_pct": -3.19,
+          "value": 738.277,
+          "distance_pct": -1.35,
           "state": "BEARISH"
         },
         "50": {
-          "value": 757.889,
-          "distance_pct": -5.43,
+          "value": 757.203,
+          "distance_pct": -3.81,
           "state": "BEARISH"
         },
         "100": {
-          "value": 758.538,
-          "distance_pct": -5.52,
+          "value": 758.367,
+          "distance_pct": -3.96,
           "state": "BEARISH"
         },
         "200": {
-          "value": 733.161,
-          "distance_pct": -2.25,
+          "value": 733.342,
+          "distance_pct": -0.68,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 39.83,
+        "value": 45.04,
         "state": "NEUTRAL"
       }
     },
     "qqq": {
       "symbol": "QQQ",
-      "as_of": "2026-11-25",
-      "close": 633.93,
+      "as_of": "2026-11-27",
+      "close": 650.99,
       "averages": {
         "5": {
-          "value": 635.31,
-          "distance_pct": -0.22,
-          "state": "BEARISH"
+          "value": 636.5,
+          "distance_pct": 2.28,
+          "state": "BULLISH"
         },
         "20": {
-          "value": 666.731,
-          "distance_pct": -4.92,
+          "value": 663.513,
+          "distance_pct": -1.89,
           "state": "BEARISH"
         },
         "50": {
-          "value": 707.05,
-          "distance_pct": -10.34,
+          "value": 705.731,
+          "distance_pct": -7.76,
           "state": "BEARISH"
         },
         "100": {
-          "value": 708.464,
-          "distance_pct": -10.52,
+          "value": 707.859,
+          "distance_pct": -8.03,
           "state": "BEARISH"
         },
         "200": {
-          "value": 683.499,
-          "distance_pct": -7.25,
+          "value": 683.688,
+          "distance_pct": -4.78,
           "state": "BEARISH"
         }
       },
       "rsi": {
         "period": 14,
-        "value": 38.58,
+        "value": 44.01,
         "state": "NEUTRAL"
       }
     }
   },
   "history": [
-    {
-      "date": "2025-03-25",
-      "sp": 3,
-      "sp_available": 16,
-      "sp_max": 3,
-      "nd": 5,
-      "nd_available": 16,
-      "nd_max": 5
-    },
-    {
-      "date": "2025-03-26",
-      "sp": 8,
-      "sp_available": 16,
-      "sp_max": 8,
-      "nd": 9,
-      "nd_available": 16,
-      "nd_max": 9
-    },
     {
       "date": "2025-03-27",
       "sp": 10,
@@ -4260,41 +4274,50 @@
     },
     {
       "date": "2026-11-25",
-      "sp": 10,
+      "sp": 11,
       "sp_available": 16,
-      "sp_max": 10,
-      "nd": 10,
+      "sp_max": 11,
+      "nd": 11,
       "nd_available": 16,
-      "nd_max": 10
+      "nd_max": 11
+    },
+    {
+      "date": "2026-11-27",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 8,
+      "nd_available": 15,
+      "nd_max": 9
     }
   ],
   "backtest": {
     "year": {
-      "start": "2025-11-25",
-      "end": "2026-11-25",
-      "sessions": 252,
+      "start": "2025-11-27",
+      "end": "2026-11-27",
+      "sessions": 251,
       "markets": {
         "sp": {
-          "complete_days": 252,
+          "complete_days": 251,
           "incomplete_days": 0,
           "zero_to_four": {
-            "days": 87,
-            "forward1_observations": 87,
-            "forward1_mean_pct": -0.079,
-            "forward5_observations": 87,
-            "forward5_mean_pct": 0.286,
-            "forward5_median_pct": 0.374,
-            "forward5_stddev_pct": 1.538,
-            "forward5_p10_pct": -1.777,
+            "days": 85,
+            "forward1_observations": 85,
+            "forward1_mean_pct": -0.095,
+            "forward5_observations": 85,
+            "forward5_mean_pct": 0.269,
+            "forward5_median_pct": 0.356,
+            "forward5_stddev_pct": 1.551,
+            "forward5_p10_pct": -1.799,
             "forward5_worst_pct": -2.965,
-            "forward5_positive_pct": 62.1,
-            "forward5_worst_close_mean_pct": -0.853,
+            "forward5_positive_pct": 61.2,
+            "forward5_worst_close_mean_pct": -0.873,
             "forward5_worst_close_pct": -4.409,
-            "forward5_worst_close_median_pct": -0.388,
-            "forward5_below_minus2_pct": 12.6,
+            "forward5_worst_close_median_pct": -0.457,
+            "forward5_below_minus2_pct": 12.9,
             "nonoverlap_observations": 32,
-            "nonoverlap_mean_pct": 0.285,
-            "nonoverlap_median_pct": 0.375,
+            "nonoverlap_mean_pct": 0.312,
+            "nonoverlap_median_pct": 0.355,
             "nonoverlap_positive_pct": 65.6
           },
           "exactly_five": {
@@ -4318,24 +4341,24 @@
             "nonoverlap_positive_pct": 37.5
           },
           "zero_to_five": {
-            "days": 132,
-            "forward1_observations": 132,
-            "forward1_mean_pct": -0.059,
-            "forward5_observations": 132,
-            "forward5_mean_pct": 0.136,
-            "forward5_median_pct": 0.252,
-            "forward5_stddev_pct": 1.637,
-            "forward5_p10_pct": -1.987,
+            "days": 130,
+            "forward1_observations": 130,
+            "forward1_mean_pct": -0.07,
+            "forward5_observations": 130,
+            "forward5_mean_pct": 0.123,
+            "forward5_median_pct": 0.216,
+            "forward5_stddev_pct": 1.646,
+            "forward5_p10_pct": -2.018,
             "forward5_worst_pct": -4.726,
-            "forward5_positive_pct": 53.8,
-            "forward5_worst_close_mean_pct": -0.936,
+            "forward5_positive_pct": 53.1,
+            "forward5_worst_close_mean_pct": -0.951,
             "forward5_worst_close_pct": -4.726,
-            "forward5_worst_close_median_pct": -0.591,
-            "forward5_below_minus2_pct": 14.4,
+            "forward5_worst_close_median_pct": -0.614,
+            "forward5_below_minus2_pct": 14.6,
             "nonoverlap_observations": 40,
-            "nonoverlap_mean_pct": 0.059,
+            "nonoverlap_mean_pct": 0.053,
             "nonoverlap_median_pct": 0.016,
-            "nonoverlap_positive_pct": 50
+            "nonoverlap_positive_pct": 50.0
           },
           "score_five_trend": {
             "improving": {
@@ -4372,7 +4395,7 @@
               "forward5_worst_close_mean_pct": -1.055,
               "forward5_worst_close_pct": -4.726,
               "forward5_worst_close_median_pct": -0.568,
-              "forward5_below_minus2_pct": 19,
+              "forward5_below_minus2_pct": 19.0,
               "nonoverlap_observations": 17,
               "nonoverlap_mean_pct": 0.03,
               "nonoverlap_median_pct": -0.222,
@@ -4420,48 +4443,48 @@
             }
           },
           "zero_to_four_plus_five_improving": {
-            "days": 100,
-            "forward1_observations": 100,
-            "forward1_mean_pct": -0.089,
-            "forward5_observations": 100,
-            "forward5_mean_pct": 0.254,
-            "forward5_median_pct": 0.353,
-            "forward5_stddev_pct": 1.572,
-            "forward5_p10_pct": -1.745,
+            "days": 98,
+            "forward1_observations": 98,
+            "forward1_mean_pct": -0.103,
+            "forward5_observations": 98,
+            "forward5_mean_pct": 0.239,
+            "forward5_median_pct": 0.344,
+            "forward5_stddev_pct": 1.584,
+            "forward5_p10_pct": -1.767,
             "forward5_worst_pct": -2.965,
-            "forward5_positive_pct": 59,
-            "forward5_worst_close_mean_pct": -0.876,
+            "forward5_positive_pct": 58.2,
+            "forward5_worst_close_mean_pct": -0.894,
             "forward5_worst_close_pct": -4.409,
-            "forward5_worst_close_median_pct": -0.556,
-            "forward5_below_minus2_pct": 12,
+            "forward5_worst_close_median_pct": -0.576,
+            "forward5_below_minus2_pct": 12.2,
             "nonoverlap_observations": 34,
-            "nonoverlap_mean_pct": 0.29,
-            "nonoverlap_median_pct": 0.375,
+            "nonoverlap_mean_pct": 0.315,
+            "nonoverlap_median_pct": 0.355,
             "nonoverlap_positive_pct": 64.7
           },
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
-          "complete_days": 252,
-          "incomplete_days": 0,
+          "complete_days": 250,
+          "incomplete_days": 1,
           "zero_to_four": {
-            "days": 69,
-            "forward1_observations": 69,
-            "forward1_mean_pct": 0.038,
-            "forward5_observations": 69,
-            "forward5_mean_pct": 0.369,
-            "forward5_median_pct": 0.452,
-            "forward5_stddev_pct": 2.535,
-            "forward5_p10_pct": -3.072,
+            "days": 67,
+            "forward1_observations": 67,
+            "forward1_mean_pct": 0.014,
+            "forward5_observations": 67,
+            "forward5_mean_pct": 0.324,
+            "forward5_median_pct": 0.419,
+            "forward5_stddev_pct": 2.558,
+            "forward5_p10_pct": -3.097,
             "forward5_worst_pct": -5.137,
-            "forward5_positive_pct": 56.5,
-            "forward5_worst_close_mean_pct": -1.285,
+            "forward5_positive_pct": 55.2,
+            "forward5_worst_close_mean_pct": -1.323,
             "forward5_worst_close_pct": -6.489,
-            "forward5_worst_close_median_pct": -0.473,
-            "forward5_below_minus2_pct": 24.6,
+            "forward5_worst_close_median_pct": -0.561,
+            "forward5_below_minus2_pct": 25.4,
             "nonoverlap_observations": 27,
-            "nonoverlap_mean_pct": 0.495,
-            "nonoverlap_median_pct": 0.419,
+            "nonoverlap_mean_pct": 0.474,
+            "nonoverlap_median_pct": 0.225,
             "nonoverlap_positive_pct": 55.6
           },
           "exactly_five": {
@@ -4474,7 +4497,7 @@
             "forward5_stddev_pct": 2.517,
             "forward5_p10_pct": -3.297,
             "forward5_worst_pct": -4.987,
-            "forward5_positive_pct": 50,
+            "forward5_positive_pct": 50.0,
             "forward5_worst_close_mean_pct": -1.589,
             "forward5_worst_close_pct": -5.568,
             "forward5_worst_close_median_pct": -1.405,
@@ -4485,24 +4508,24 @@
             "nonoverlap_positive_pct": 42.9
           },
           "zero_to_five": {
-            "days": 115,
-            "forward1_observations": 115,
-            "forward1_mean_pct": -0.065,
-            "forward5_observations": 115,
-            "forward5_mean_pct": 0.281,
-            "forward5_median_pct": 0.225,
-            "forward5_stddev_pct": 2.519,
-            "forward5_p10_pct": -3.191,
+            "days": 113,
+            "forward1_observations": 113,
+            "forward1_mean_pct": -0.081,
+            "forward5_observations": 113,
+            "forward5_mean_pct": 0.252,
+            "forward5_median_pct": 0.195,
+            "forward5_stddev_pct": 2.531,
+            "forward5_p10_pct": -3.198,
             "forward5_worst_pct": -5.137,
-            "forward5_positive_pct": 53.9,
-            "forward5_worst_close_mean_pct": -1.407,
+            "forward5_positive_pct": 53.1,
+            "forward5_worst_close_mean_pct": -1.431,
             "forward5_worst_close_pct": -6.489,
-            "forward5_worst_close_median_pct": -0.953,
-            "forward5_below_minus2_pct": 27,
+            "forward5_worst_close_median_pct": -0.998,
+            "forward5_below_minus2_pct": 27.4,
             "nonoverlap_observations": 38,
-            "nonoverlap_mean_pct": 0.176,
-            "nonoverlap_median_pct": -0.001,
-            "nonoverlap_positive_pct": 50
+            "nonoverlap_mean_pct": 0.196,
+            "nonoverlap_median_pct": 0.115,
+            "nonoverlap_positive_pct": 52.6
           },
           "score_five_trend": {
             "improving": {
@@ -4555,15 +4578,15 @@
               "forward5_stddev_pct": 1.684,
               "forward5_p10_pct": -0.094,
               "forward5_worst_pct": -0.86,
-              "forward5_positive_pct": 75,
+              "forward5_positive_pct": 75.0,
               "forward5_worst_close_mean_pct": -1.246,
               "forward5_worst_close_pct": -1.998,
               "forward5_worst_close_median_pct": -1.493,
-              "forward5_below_minus2_pct": 0,
+              "forward5_below_minus2_pct": 0.0,
               "nonoverlap_observations": 4,
               "nonoverlap_mean_pct": 1.499,
               "nonoverlap_median_pct": 1.873,
-              "nonoverlap_positive_pct": 75
+              "nonoverlap_positive_pct": 75.0
             },
             "unavailable": {
               "days": 0,
@@ -4587,23 +4610,23 @@
             }
           },
           "zero_to_four_plus_five_improving": {
-            "days": 78,
-            "forward1_observations": 78,
-            "forward1_mean_pct": 0.051,
-            "forward5_observations": 78,
-            "forward5_mean_pct": 0.497,
-            "forward5_median_pct": 0.471,
-            "forward5_stddev_pct": 2.598,
-            "forward5_p10_pct": -2.935,
+            "days": 76,
+            "forward1_observations": 76,
+            "forward1_mean_pct": 0.03,
+            "forward5_observations": 76,
+            "forward5_mean_pct": 0.46,
+            "forward5_median_pct": 0.436,
+            "forward5_stddev_pct": 2.621,
+            "forward5_p10_pct": -2.967,
             "forward5_worst_pct": -5.137,
-            "forward5_positive_pct": 56.4,
-            "forward5_worst_close_mean_pct": -1.252,
+            "forward5_positive_pct": 55.3,
+            "forward5_worst_close_mean_pct": -1.285,
             "forward5_worst_close_pct": -6.489,
-            "forward5_worst_close_median_pct": -0.517,
-            "forward5_below_minus2_pct": 24.4,
+            "forward5_worst_close_median_pct": -0.567,
+            "forward5_below_minus2_pct": 25.0,
             "nonoverlap_observations": 28,
-            "nonoverlap_mean_pct": 0.675,
-            "nonoverlap_median_pct": 0.538,
+            "nonoverlap_mean_pct": 0.654,
+            "nonoverlap_median_pct": 0.322,
             "nonoverlap_positive_pct": 57.1
           },
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
@@ -4612,23 +4635,23 @@
       "qqq_risk": {
         "groups": {
           "zero_to_four": {
-            "days": 69,
-            "forward1_observations": 69,
-            "forward1_mean_pct": 0.038,
-            "forward5_observations": 69,
-            "forward5_mean_pct": 0.369,
-            "forward5_median_pct": 0.452,
-            "forward5_stddev_pct": 2.535,
-            "forward5_p10_pct": -3.072,
+            "days": 67,
+            "forward1_observations": 67,
+            "forward1_mean_pct": 0.014,
+            "forward5_observations": 67,
+            "forward5_mean_pct": 0.324,
+            "forward5_median_pct": 0.419,
+            "forward5_stddev_pct": 2.558,
+            "forward5_p10_pct": -3.097,
             "forward5_worst_pct": -5.137,
-            "forward5_positive_pct": 56.5,
-            "forward5_worst_close_mean_pct": -1.285,
+            "forward5_positive_pct": 55.2,
+            "forward5_worst_close_mean_pct": -1.323,
             "forward5_worst_close_pct": -6.489,
-            "forward5_worst_close_median_pct": -0.473,
-            "forward5_below_minus2_pct": 24.6,
+            "forward5_worst_close_median_pct": -0.561,
+            "forward5_below_minus2_pct": 25.4,
             "nonoverlap_observations": 27,
-            "nonoverlap_mean_pct": 0.495,
-            "nonoverlap_median_pct": 0.419,
+            "nonoverlap_mean_pct": 0.474,
+            "nonoverlap_median_pct": 0.225,
             "nonoverlap_positive_pct": 55.6
           },
           "exactly_five": {
@@ -4641,7 +4664,7 @@
             "forward5_stddev_pct": 2.517,
             "forward5_p10_pct": -3.297,
             "forward5_worst_pct": -4.987,
-            "forward5_positive_pct": 50,
+            "forward5_positive_pct": 50.0,
             "forward5_worst_close_mean_pct": -1.589,
             "forward5_worst_close_pct": -5.568,
             "forward5_worst_close_median_pct": -1.405,
@@ -4701,66 +4724,66 @@
             "forward5_stddev_pct": 1.684,
             "forward5_p10_pct": -0.094,
             "forward5_worst_pct": -0.86,
-            "forward5_positive_pct": 75,
+            "forward5_positive_pct": 75.0,
             "forward5_worst_close_mean_pct": -1.246,
             "forward5_worst_close_pct": -1.998,
             "forward5_worst_close_median_pct": -1.493,
-            "forward5_below_minus2_pct": 0,
+            "forward5_below_minus2_pct": 0.0,
             "nonoverlap_observations": 4,
             "nonoverlap_mean_pct": 1.499,
             "nonoverlap_median_pct": 1.873,
-            "nonoverlap_positive_pct": 75
+            "nonoverlap_positive_pct": 75.0
           },
           "selective": {
-            "days": 78,
-            "forward1_observations": 78,
-            "forward1_mean_pct": 0.051,
-            "forward5_observations": 78,
-            "forward5_mean_pct": 0.497,
-            "forward5_median_pct": 0.471,
-            "forward5_stddev_pct": 2.598,
-            "forward5_p10_pct": -2.935,
+            "days": 76,
+            "forward1_observations": 76,
+            "forward1_mean_pct": 0.03,
+            "forward5_observations": 76,
+            "forward5_mean_pct": 0.46,
+            "forward5_median_pct": 0.436,
+            "forward5_stddev_pct": 2.621,
+            "forward5_p10_pct": -2.967,
             "forward5_worst_pct": -5.137,
-            "forward5_positive_pct": 56.4,
-            "forward5_worst_close_mean_pct": -1.252,
+            "forward5_positive_pct": 55.3,
+            "forward5_worst_close_mean_pct": -1.285,
             "forward5_worst_close_pct": -6.489,
-            "forward5_worst_close_median_pct": -0.517,
-            "forward5_below_minus2_pct": 24.4,
+            "forward5_worst_close_median_pct": -0.567,
+            "forward5_below_minus2_pct": 25.0,
             "nonoverlap_observations": 28,
-            "nonoverlap_mean_pct": 0.675,
-            "nonoverlap_median_pct": 0.538,
+            "nonoverlap_mean_pct": 0.654,
+            "nonoverlap_median_pct": 0.322,
             "nonoverlap_positive_pct": 57.1
           }
         }
       }
     },
     "twenty_months": {
-      "start": "2025-03-25",
-      "end": "2026-11-25",
-      "sessions": 422,
+      "start": "2025-03-27",
+      "end": "2026-11-27",
+      "sessions": 421,
       "markets": {
         "sp": {
-          "complete_days": 422,
+          "complete_days": 421,
           "incomplete_days": 0,
           "zero_to_four": {
-            "days": 159,
-            "forward1_observations": 159,
-            "forward1_mean_pct": -0.011,
-            "forward5_observations": 159,
-            "forward5_mean_pct": 0.387,
-            "forward5_median_pct": 0.403,
-            "forward5_stddev_pct": 1.438,
-            "forward5_p10_pct": -1.618,
+            "days": 158,
+            "forward1_observations": 158,
+            "forward1_mean_pct": -0.003,
+            "forward5_observations": 158,
+            "forward5_mean_pct": 0.405,
+            "forward5_median_pct": 0.413,
+            "forward5_stddev_pct": 1.424,
+            "forward5_p10_pct": -1.578,
             "forward5_worst_pct": -2.965,
-            "forward5_positive_pct": 65.4,
-            "forward5_worst_close_mean_pct": -0.743,
+            "forward5_positive_pct": 65.8,
+            "forward5_worst_close_mean_pct": -0.726,
             "forward5_worst_close_pct": -4.409,
-            "forward5_worst_close_median_pct": -0.366,
-            "forward5_below_minus2_pct": 10.7,
-            "nonoverlap_observations": 56,
-            "nonoverlap_mean_pct": 0.437,
-            "nonoverlap_median_pct": 0.491,
-            "nonoverlap_positive_pct": 66.1
+            "forward5_worst_close_median_pct": -0.364,
+            "forward5_below_minus2_pct": 10.1,
+            "nonoverlap_observations": 55,
+            "nonoverlap_mean_pct": 0.491,
+            "nonoverlap_median_pct": 0.508,
+            "nonoverlap_positive_pct": 67.3
           },
           "exactly_five": {
             "days": 73,
@@ -4783,24 +4806,24 @@
             "nonoverlap_positive_pct": 48.8
           },
           "zero_to_five": {
-            "days": 232,
-            "forward1_observations": 232,
-            "forward1_mean_pct": 0.005,
-            "forward5_observations": 232,
-            "forward5_mean_pct": 0.302,
-            "forward5_median_pct": 0.396,
-            "forward5_stddev_pct": 1.538,
-            "forward5_p10_pct": -1.718,
+            "days": 231,
+            "forward1_observations": 231,
+            "forward1_mean_pct": 0.01,
+            "forward5_observations": 231,
+            "forward5_mean_pct": 0.315,
+            "forward5_median_pct": 0.397,
+            "forward5_stddev_pct": 1.53,
+            "forward5_p10_pct": -1.693,
             "forward5_worst_pct": -4.726,
-            "forward5_positive_pct": 60.8,
-            "forward5_worst_close_mean_pct": -0.804,
+            "forward5_positive_pct": 61.0,
+            "forward5_worst_close_mean_pct": -0.793,
             "forward5_worst_close_pct": -4.726,
-            "forward5_worst_close_median_pct": -0.472,
-            "forward5_below_minus2_pct": 12.5,
-            "nonoverlap_observations": 67,
-            "nonoverlap_mean_pct": 0.313,
-            "nonoverlap_median_pct": 0.538,
-            "nonoverlap_positive_pct": 59.7
+            "forward5_worst_close_median_pct": -0.461,
+            "forward5_below_minus2_pct": 12.1,
+            "nonoverlap_observations": 66,
+            "nonoverlap_mean_pct": 0.356,
+            "nonoverlap_median_pct": 0.618,
+            "nonoverlap_positive_pct": 60.6
           },
           "score_five_trend": {
             "improving": {
@@ -4885,30 +4908,30 @@
             }
           },
           "zero_to_four_plus_five_improving": {
-            "days": 178,
-            "forward1_observations": 178,
-            "forward1_mean_pct": -0.012,
-            "forward5_observations": 178,
-            "forward5_mean_pct": 0.371,
+            "days": 177,
+            "forward1_observations": 177,
+            "forward1_mean_pct": -0.005,
+            "forward5_observations": 177,
+            "forward5_mean_pct": 0.387,
             "forward5_median_pct": 0.398,
-            "forward5_stddev_pct": 1.472,
-            "forward5_p10_pct": -1.627,
+            "forward5_stddev_pct": 1.46,
+            "forward5_p10_pct": -1.581,
             "forward5_worst_pct": -2.965,
-            "forward5_positive_pct": 64,
-            "forward5_worst_close_mean_pct": -0.759,
+            "forward5_positive_pct": 64.4,
+            "forward5_worst_close_mean_pct": -0.744,
             "forward5_worst_close_pct": -4.409,
-            "forward5_worst_close_median_pct": -0.448,
-            "forward5_below_minus2_pct": 10.7,
-            "nonoverlap_observations": 59,
-            "nonoverlap_mean_pct": 0.505,
-            "nonoverlap_median_pct": 0.508,
-            "nonoverlap_positive_pct": 67.8
+            "forward5_worst_close_median_pct": -0.447,
+            "forward5_below_minus2_pct": 10.2,
+            "nonoverlap_observations": 58,
+            "nonoverlap_mean_pct": 0.557,
+            "nonoverlap_median_pct": 0.523,
+            "nonoverlap_positive_pct": 69.0
           },
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         },
         "nd": {
-          "complete_days": 422,
-          "incomplete_days": 0,
+          "complete_days": 420,
+          "incomplete_days": 1,
           "zero_to_four": {
             "days": 138,
             "forward1_observations": 138,
@@ -4930,65 +4953,65 @@
             "nonoverlap_positive_pct": 61.2
           },
           "exactly_five": {
-            "days": 72,
-            "forward1_observations": 72,
-            "forward1_mean_pct": -0.126,
-            "forward5_observations": 72,
-            "forward5_mean_pct": 0.389,
-            "forward5_median_pct": 0.521,
-            "forward5_stddev_pct": 2.402,
-            "forward5_p10_pct": -3.061,
+            "days": 71,
+            "forward1_observations": 71,
+            "forward1_mean_pct": -0.102,
+            "forward5_observations": 71,
+            "forward5_mean_pct": 0.454,
+            "forward5_median_pct": 0.619,
+            "forward5_stddev_pct": 2.355,
+            "forward5_p10_pct": -2.353,
             "forward5_worst_pct": -4.987,
-            "forward5_positive_pct": 55.6,
-            "forward5_worst_close_mean_pct": -1.363,
+            "forward5_positive_pct": 56.3,
+            "forward5_worst_close_mean_pct": -1.312,
             "forward5_worst_close_pct": -5.568,
-            "forward5_worst_close_median_pct": -1.047,
-            "forward5_below_minus2_pct": 26.4,
-            "nonoverlap_observations": 45,
-            "nonoverlap_mean_pct": 0.1,
-            "nonoverlap_median_pct": 0,
-            "nonoverlap_positive_pct": 48.9
+            "forward5_worst_close_median_pct": -1.024,
+            "forward5_below_minus2_pct": 25.4,
+            "nonoverlap_observations": 44,
+            "nonoverlap_mean_pct": 0.198,
+            "nonoverlap_median_pct": 0.098,
+            "nonoverlap_positive_pct": 50.0
           },
           "zero_to_five": {
-            "days": 210,
-            "forward1_observations": 210,
-            "forward1_mean_pct": 0.011,
-            "forward5_observations": 210,
-            "forward5_mean_pct": 0.442,
-            "forward5_median_pct": 0.679,
-            "forward5_stddev_pct": 2.183,
-            "forward5_p10_pct": -2.419,
+            "days": 209,
+            "forward1_observations": 209,
+            "forward1_mean_pct": 0.02,
+            "forward5_observations": 209,
+            "forward5_mean_pct": 0.465,
+            "forward5_median_pct": 0.681,
+            "forward5_stddev_pct": 2.164,
+            "forward5_p10_pct": -2.365,
             "forward5_worst_pct": -5.137,
-            "forward5_positive_pct": 59,
-            "forward5_worst_close_mean_pct": -1.124,
+            "forward5_positive_pct": 59.3,
+            "forward5_worst_close_mean_pct": -1.105,
             "forward5_worst_close_pct": -6.489,
-            "forward5_worst_close_median_pct": -0.569,
-            "forward5_below_minus2_pct": 21.9,
-            "nonoverlap_observations": 64,
-            "nonoverlap_mean_pct": 0.384,
-            "nonoverlap_median_pct": 0.733,
-            "nonoverlap_positive_pct": 57.8
+            "forward5_worst_close_median_pct": -0.563,
+            "forward5_below_minus2_pct": 21.5,
+            "nonoverlap_observations": 63,
+            "nonoverlap_mean_pct": 0.457,
+            "nonoverlap_median_pct": 0.747,
+            "nonoverlap_positive_pct": 58.7
           },
           "score_five_trend": {
             "improving": {
-              "days": 16,
-              "forward1_observations": 16,
-              "forward1_mean_pct": 0.084,
-              "forward5_observations": 16,
-              "forward5_mean_pct": 0.957,
-              "forward5_median_pct": 1.447,
-              "forward5_stddev_pct": 2.939,
-              "forward5_p10_pct": -2.436,
-              "forward5_worst_pct": -4.207,
-              "forward5_positive_pct": 56.2,
-              "forward5_worst_close_mean_pct": -1.166,
-              "forward5_worst_close_pct": -4.973,
-              "forward5_worst_close_median_pct": -0.317,
-              "forward5_below_minus2_pct": 25,
-              "nonoverlap_observations": 13,
-              "nonoverlap_mean_pct": 0.397,
-              "nonoverlap_median_pct": -0.176,
-              "nonoverlap_positive_pct": 46.2
+              "days": 15,
+              "forward1_observations": 15,
+              "forward1_mean_pct": 0.212,
+              "forward5_observations": 15,
+              "forward5_mean_pct": 1.301,
+              "forward5_median_pct": 1.781,
+              "forward5_stddev_pct": 2.688,
+              "forward5_p10_pct": -1.668,
+              "forward5_worst_pct": -3.14,
+              "forward5_positive_pct": 60.0,
+              "forward5_worst_close_mean_pct": -0.912,
+              "forward5_worst_close_pct": -3.161,
+              "forward5_worst_close_median_pct": 0.0,
+              "forward5_below_minus2_pct": 20.0,
+              "nonoverlap_observations": 12,
+              "nonoverlap_mean_pct": 0.78,
+              "nonoverlap_median_pct": 0.803,
+              "nonoverlap_positive_pct": 50.0
             },
             "stable": {
               "days": 45,
@@ -5028,7 +5051,7 @@
               "nonoverlap_observations": 10,
               "nonoverlap_mean_pct": 0.923,
               "nonoverlap_median_pct": 1.069,
-              "nonoverlap_positive_pct": 60
+              "nonoverlap_positive_pct": 60.0
             },
             "unavailable": {
               "days": 0,
@@ -5052,24 +5075,24 @@
             }
           },
           "zero_to_four_plus_five_improving": {
-            "days": 154,
-            "forward1_observations": 154,
-            "forward1_mean_pct": 0.083,
-            "forward5_observations": 154,
-            "forward5_mean_pct": 0.521,
-            "forward5_median_pct": 0.689,
-            "forward5_stddev_pct": 2.167,
-            "forward5_p10_pct": -2.368,
+            "days": 153,
+            "forward1_observations": 153,
+            "forward1_mean_pct": 0.096,
+            "forward5_observations": 153,
+            "forward5_mean_pct": 0.552,
+            "forward5_median_pct": 0.69,
+            "forward5_stddev_pct": 2.14,
+            "forward5_p10_pct": -2.255,
             "forward5_worst_pct": -5.137,
-            "forward5_positive_pct": 60.4,
-            "forward5_worst_close_mean_pct": -1.016,
+            "forward5_positive_pct": 60.8,
+            "forward5_worst_close_mean_pct": -0.99,
             "forward5_worst_close_pct": -6.489,
-            "forward5_worst_close_median_pct": -0.401,
-            "forward5_below_minus2_pct": 20.1,
-            "nonoverlap_observations": 53,
-            "nonoverlap_mean_pct": 0.673,
-            "nonoverlap_median_pct": 0.747,
-            "nonoverlap_positive_pct": 60.4
+            "forward5_worst_close_median_pct": -0.38,
+            "forward5_below_minus2_pct": 19.6,
+            "nonoverlap_observations": 52,
+            "nonoverlap_mean_pct": 0.767,
+            "nonoverlap_median_pct": 0.77,
+            "nonoverlap_positive_pct": 61.5
           },
           "trend_rule": "5-session bearish score delta: <= -2 improving, -1 to +1 stable, >= +2 deteriorating"
         }
@@ -5097,44 +5120,44 @@
             "nonoverlap_positive_pct": 61.2
           },
           "exactly_five": {
-            "days": 72,
-            "forward1_observations": 72,
-            "forward1_mean_pct": -0.126,
-            "forward5_observations": 72,
-            "forward5_mean_pct": 0.389,
-            "forward5_median_pct": 0.521,
-            "forward5_stddev_pct": 2.402,
-            "forward5_p10_pct": -3.061,
+            "days": 71,
+            "forward1_observations": 71,
+            "forward1_mean_pct": -0.102,
+            "forward5_observations": 71,
+            "forward5_mean_pct": 0.454,
+            "forward5_median_pct": 0.619,
+            "forward5_stddev_pct": 2.355,
+            "forward5_p10_pct": -2.353,
             "forward5_worst_pct": -4.987,
-            "forward5_positive_pct": 55.6,
-            "forward5_worst_close_mean_pct": -1.363,
+            "forward5_positive_pct": 56.3,
+            "forward5_worst_close_mean_pct": -1.312,
             "forward5_worst_close_pct": -5.568,
-            "forward5_worst_close_median_pct": -1.047,
-            "forward5_below_minus2_pct": 26.4,
-            "nonoverlap_observations": 45,
-            "nonoverlap_mean_pct": 0.1,
-            "nonoverlap_median_pct": 0,
-            "nonoverlap_positive_pct": 48.9
+            "forward5_worst_close_median_pct": -1.024,
+            "forward5_below_minus2_pct": 25.4,
+            "nonoverlap_observations": 44,
+            "nonoverlap_mean_pct": 0.198,
+            "nonoverlap_median_pct": 0.098,
+            "nonoverlap_positive_pct": 50.0
           },
           "five_improving": {
-            "days": 16,
-            "forward1_observations": 16,
-            "forward1_mean_pct": 0.084,
-            "forward5_observations": 16,
-            "forward5_mean_pct": 0.957,
-            "forward5_median_pct": 1.447,
-            "forward5_stddev_pct": 2.939,
-            "forward5_p10_pct": -2.436,
-            "forward5_worst_pct": -4.207,
-            "forward5_positive_pct": 56.2,
-            "forward5_worst_close_mean_pct": -1.166,
-            "forward5_worst_close_pct": -4.973,
-            "forward5_worst_close_median_pct": -0.317,
-            "forward5_below_minus2_pct": 25,
-            "nonoverlap_observations": 13,
-            "nonoverlap_mean_pct": 0.397,
-            "nonoverlap_median_pct": -0.176,
-            "nonoverlap_positive_pct": 46.2
+            "days": 15,
+            "forward1_observations": 15,
+            "forward1_mean_pct": 0.212,
+            "forward5_observations": 15,
+            "forward5_mean_pct": 1.301,
+            "forward5_median_pct": 1.781,
+            "forward5_stddev_pct": 2.688,
+            "forward5_p10_pct": -1.668,
+            "forward5_worst_pct": -3.14,
+            "forward5_positive_pct": 60.0,
+            "forward5_worst_close_mean_pct": -0.912,
+            "forward5_worst_close_pct": -3.161,
+            "forward5_worst_close_median_pct": 0.0,
+            "forward5_below_minus2_pct": 20.0,
+            "nonoverlap_observations": 12,
+            "nonoverlap_mean_pct": 0.78,
+            "nonoverlap_median_pct": 0.803,
+            "nonoverlap_positive_pct": 50.0
           },
           "five_stable": {
             "days": 45,
@@ -5174,95 +5197,95 @@
             "nonoverlap_observations": 10,
             "nonoverlap_mean_pct": 0.923,
             "nonoverlap_median_pct": 1.069,
-            "nonoverlap_positive_pct": 60
+            "nonoverlap_positive_pct": 60.0
           },
           "selective": {
-            "days": 154,
-            "forward1_observations": 154,
-            "forward1_mean_pct": 0.083,
-            "forward5_observations": 154,
-            "forward5_mean_pct": 0.521,
-            "forward5_median_pct": 0.689,
-            "forward5_stddev_pct": 2.167,
-            "forward5_p10_pct": -2.368,
+            "days": 153,
+            "forward1_observations": 153,
+            "forward1_mean_pct": 0.096,
+            "forward5_observations": 153,
+            "forward5_mean_pct": 0.552,
+            "forward5_median_pct": 0.69,
+            "forward5_stddev_pct": 2.14,
+            "forward5_p10_pct": -2.255,
             "forward5_worst_pct": -5.137,
-            "forward5_positive_pct": 60.4,
-            "forward5_worst_close_mean_pct": -1.016,
+            "forward5_positive_pct": 60.8,
+            "forward5_worst_close_mean_pct": -0.99,
             "forward5_worst_close_pct": -6.489,
-            "forward5_worst_close_median_pct": -0.401,
-            "forward5_below_minus2_pct": 20.1,
-            "nonoverlap_observations": 53,
-            "nonoverlap_mean_pct": 0.673,
-            "nonoverlap_median_pct": 0.747,
-            "nonoverlap_positive_pct": 60.4
+            "forward5_worst_close_median_pct": -0.38,
+            "forward5_below_minus2_pct": 19.6,
+            "nonoverlap_observations": 52,
+            "nonoverlap_mean_pct": 0.767,
+            "nonoverlap_median_pct": 0.77,
+            "nonoverlap_positive_pct": 61.5
           }
         },
         "halves": [
           {
             "label": "Earlier 10 months",
-            "start": "2025-03-25",
-            "end": "2026-01-24",
-            "sessions": 210,
+            "start": "2025-03-27",
+            "end": "2026-01-26",
+            "sessions": 209,
             "groups": {
               "zero_to_four": {
-                "days": 88,
-                "forward1_observations": 88,
-                "forward1_mean_pct": 0.152,
-                "forward5_observations": 88,
-                "forward5_mean_pct": 0.475,
-                "forward5_median_pct": 0.725,
-                "forward5_stddev_pct": 1.593,
-                "forward5_p10_pct": -1.966,
+                "days": 89,
+                "forward1_observations": 89,
+                "forward1_mean_pct": 0.161,
+                "forward5_observations": 89,
+                "forward5_mean_pct": 0.471,
+                "forward5_median_pct": 0.704,
+                "forward5_stddev_pct": 1.585,
+                "forward5_p10_pct": -1.942,
                 "forward5_worst_pct": -4.334,
-                "forward5_positive_pct": 65.9,
-                "forward5_worst_close_mean_pct": -0.767,
+                "forward5_positive_pct": 66.3,
+                "forward5_worst_close_mean_pct": -0.765,
                 "forward5_worst_close_pct": -4.334,
-                "forward5_worst_close_median_pct": -0.313,
-                "forward5_below_minus2_pct": 15.9,
+                "forward5_worst_close_median_pct": -0.325,
+                "forward5_below_minus2_pct": 15.7,
                 "nonoverlap_observations": 29,
                 "nonoverlap_mean_pct": 0.684,
                 "nonoverlap_median_pct": 1.166,
-                "nonoverlap_positive_pct": 69
+                "nonoverlap_positive_pct": 69.0
               },
               "exactly_five": {
-                "days": 39,
-                "forward1_observations": 39,
-                "forward1_mean_pct": -0.011,
-                "forward5_observations": 39,
-                "forward5_mean_pct": 0.514,
-                "forward5_median_pct": 0.619,
-                "forward5_stddev_pct": 1.97,
-                "forward5_p10_pct": -1.826,
-                "forward5_worst_pct": -4.207,
-                "forward5_positive_pct": 61.5,
-                "forward5_worst_close_mean_pct": -1.044,
-                "forward5_worst_close_pct": -4.973,
-                "forward5_worst_close_median_pct": -0.93,
-                "forward5_below_minus2_pct": 17.9,
-                "nonoverlap_observations": 22,
-                "nonoverlap_mean_pct": 0.3,
-                "nonoverlap_median_pct": 0.364,
-                "nonoverlap_positive_pct": 59.1
+                "days": 38,
+                "forward1_observations": 38,
+                "forward1_mean_pct": 0.037,
+                "forward5_observations": 38,
+                "forward5_mean_pct": 0.638,
+                "forward5_median_pct": 0.669,
+                "forward5_stddev_pct": 1.835,
+                "forward5_p10_pct": -1.397,
+                "forward5_worst_pct": -3.14,
+                "forward5_positive_pct": 63.2,
+                "forward5_worst_close_mean_pct": -0.94,
+                "forward5_worst_close_pct": -3.14,
+                "forward5_worst_close_median_pct": -0.928,
+                "forward5_below_minus2_pct": 15.8,
+                "nonoverlap_observations": 21,
+                "nonoverlap_mean_pct": 0.515,
+                "nonoverlap_median_pct": 0.424,
+                "nonoverlap_positive_pct": 61.9
               },
               "five_improving": {
-                "days": 8,
-                "forward1_observations": 8,
-                "forward1_mean_pct": 0.005,
-                "forward5_observations": 8,
-                "forward5_mean_pct": 0.036,
-                "forward5_median_pct": 0.803,
-                "forward5_stddev_pct": 2.796,
-                "forward5_p10_pct": -3.46,
-                "forward5_worst_pct": -4.207,
-                "forward5_positive_pct": 50,
-                "forward5_worst_close_mean_pct": -1.42,
-                "forward5_worst_close_pct": -4.973,
-                "forward5_worst_close_median_pct": -0.759,
-                "forward5_below_minus2_pct": 25,
-                "nonoverlap_observations": 7,
-                "nonoverlap_mean_pct": -0.367,
-                "nonoverlap_median_pct": -0.176,
-                "nonoverlap_positive_pct": 42.9
+                "days": 7,
+                "forward1_observations": 7,
+                "forward1_mean_pct": 0.268,
+                "forward5_observations": 7,
+                "forward5_mean_pct": 0.643,
+                "forward5_median_pct": 1.781,
+                "forward5_stddev_pct": 2.386,
+                "forward5_p10_pct": -2.296,
+                "forward5_worst_pct": -3.14,
+                "forward5_positive_pct": 57.1,
+                "forward5_worst_close_mean_pct": -0.913,
+                "forward5_worst_close_pct": -3.14,
+                "forward5_worst_close_median_pct": 0.0,
+                "forward5_below_minus2_pct": 14.3,
+                "nonoverlap_observations": 6,
+                "nonoverlap_mean_pct": 0.273,
+                "nonoverlap_median_pct": 0.803,
+                "nonoverlap_positive_pct": 50.0
               },
               "five_stable": {
                 "days": 22,
@@ -5302,55 +5325,55 @@
                 "nonoverlap_observations": 8,
                 "nonoverlap_mean_pct": 0.508,
                 "nonoverlap_median_pct": 0.176,
-                "nonoverlap_positive_pct": 50
+                "nonoverlap_positive_pct": 50.0
               },
               "selective": {
                 "days": 96,
                 "forward1_observations": 96,
-                "forward1_mean_pct": 0.14,
+                "forward1_mean_pct": 0.169,
                 "forward5_observations": 96,
-                "forward5_mean_pct": 0.438,
+                "forward5_mean_pct": 0.483,
                 "forward5_median_pct": 0.725,
-                "forward5_stddev_pct": 1.707,
-                "forward5_p10_pct": -2.144,
+                "forward5_stddev_pct": 1.639,
+                "forward5_p10_pct": -2.012,
                 "forward5_worst_pct": -4.334,
-                "forward5_positive_pct": 64.6,
-                "forward5_worst_close_mean_pct": -0.822,
-                "forward5_worst_close_pct": -4.973,
+                "forward5_positive_pct": 65.6,
+                "forward5_worst_close_mean_pct": -0.776,
+                "forward5_worst_close_pct": -4.334,
                 "forward5_worst_close_median_pct": -0.313,
-                "forward5_below_minus2_pct": 16.7,
-                "nonoverlap_observations": 32,
-                "nonoverlap_mean_pct": 0.579,
-                "nonoverlap_median_pct": 0.98,
-                "nonoverlap_positive_pct": 65.6
+                "forward5_below_minus2_pct": 15.6,
+                "nonoverlap_observations": 31,
+                "nonoverlap_mean_pct": 0.733,
+                "nonoverlap_median_pct": 1.166,
+                "nonoverlap_positive_pct": 67.7
               }
             }
           },
           {
             "label": "Later 10 months",
-            "start": "2026-01-25",
-            "end": "2026-11-25",
+            "start": "2026-01-27",
+            "end": "2026-11-27",
             "sessions": 212,
             "groups": {
               "zero_to_four": {
-                "days": 50,
-                "forward1_observations": 50,
-                "forward1_mean_pct": -0.039,
-                "forward5_observations": 50,
-                "forward5_mean_pct": 0.462,
-                "forward5_median_pct": 0.167,
-                "forward5_stddev_pct": 2.729,
-                "forward5_p10_pct": -3.177,
+                "days": 49,
+                "forward1_observations": 49,
+                "forward1_mean_pct": -0.059,
+                "forward5_observations": 49,
+                "forward5_mean_pct": 0.47,
+                "forward5_median_pct": 0.225,
+                "forward5_stddev_pct": 2.756,
+                "forward5_p10_pct": -3.183,
                 "forward5_worst_pct": -5.137,
-                "forward5_positive_pct": 52,
-                "forward5_worst_close_mean_pct": -1.407,
+                "forward5_positive_pct": 51.0,
+                "forward5_worst_close_mean_pct": -1.424,
                 "forward5_worst_close_pct": -6.489,
-                "forward5_worst_close_median_pct": -0.641,
-                "forward5_below_minus2_pct": 26,
-                "nonoverlap_observations": 21,
-                "nonoverlap_mean_pct": 0.561,
-                "nonoverlap_median_pct": 0.109,
-                "nonoverlap_positive_pct": 52.4
+                "forward5_worst_close_median_pct": -0.666,
+                "forward5_below_minus2_pct": 26.5,
+                "nonoverlap_observations": 20,
+                "nonoverlap_mean_pct": 0.583,
+                "nonoverlap_median_pct": 0.047,
+                "nonoverlap_positive_pct": 50.0
               },
               "exactly_five": {
                 "days": 33,
@@ -5386,11 +5409,11 @@
                 "forward5_worst_close_mean_pct": -0.911,
                 "forward5_worst_close_pct": -3.161,
                 "forward5_worst_close_median_pct": -0.317,
-                "forward5_below_minus2_pct": 25,
+                "forward5_below_minus2_pct": 25.0,
                 "nonoverlap_observations": 6,
                 "nonoverlap_mean_pct": 1.288,
                 "nonoverlap_median_pct": 1.076,
-                "nonoverlap_positive_pct": 50
+                "nonoverlap_positive_pct": 50.0
               },
               "five_stable": {
                 "days": 23,
@@ -5422,35 +5445,35 @@
                 "forward5_stddev_pct": 0.75,
                 "forward5_p10_pct": 2.158,
                 "forward5_worst_pct": 2.052,
-                "forward5_positive_pct": 100,
+                "forward5_positive_pct": 100.0,
                 "forward5_worst_close_mean_pct": -0.999,
                 "forward5_worst_close_pct": -1.998,
                 "forward5_worst_close_median_pct": -0.999,
-                "forward5_below_minus2_pct": 0,
+                "forward5_below_minus2_pct": 0.0,
                 "nonoverlap_observations": 2,
                 "nonoverlap_mean_pct": 2.582,
                 "nonoverlap_median_pct": 2.582,
-                "nonoverlap_positive_pct": 100
+                "nonoverlap_positive_pct": 100.0
               },
               "selective": {
-                "days": 58,
-                "forward1_observations": 58,
-                "forward1_mean_pct": -0.011,
-                "forward5_observations": 58,
-                "forward5_mean_pct": 0.658,
-                "forward5_median_pct": 0.322,
-                "forward5_stddev_pct": 2.778,
-                "forward5_p10_pct": -2.973,
+                "days": 57,
+                "forward1_observations": 57,
+                "forward1_mean_pct": -0.028,
+                "forward5_observations": 57,
+                "forward5_mean_pct": 0.667,
+                "forward5_median_pct": 0.419,
+                "forward5_stddev_pct": 2.802,
+                "forward5_p10_pct": -3.001,
                 "forward5_worst_pct": -5.137,
-                "forward5_positive_pct": 53.4,
-                "forward5_worst_close_mean_pct": -1.338,
+                "forward5_positive_pct": 52.6,
+                "forward5_worst_close_mean_pct": -1.352,
                 "forward5_worst_close_pct": -6.489,
-                "forward5_worst_close_median_pct": -0.625,
-                "forward5_below_minus2_pct": 25.9,
-                "nonoverlap_observations": 22,
-                "nonoverlap_mean_pct": 0.786,
-                "nonoverlap_median_pct": 0.167,
-                "nonoverlap_positive_pct": 54.5
+                "forward5_worst_close_median_pct": -0.633,
+                "forward5_below_minus2_pct": 26.3,
+                "nonoverlap_observations": 21,
+                "nonoverlap_mean_pct": 0.818,
+                "nonoverlap_median_pct": 0.225,
+                "nonoverlap_positive_pct": 52.4
               }
             }
           }
@@ -5461,8 +5484,8 @@
   "validation_20w": {
     "version": 1,
     "model": "16-point-health-v2-macd-neutral-6-10",
-    "start": "2026-07-08",
-    "end": "2026-11-25",
+    "start": "2026-07-10",
+    "end": "2026-11-27",
     "weeks": 20,
     "method": "reconstructed_historical_EOD_not_point_in_time_saved_signals",
     "outcome": "positive ETF close-to-close return after 1/5/10 trading sessions",
@@ -5483,146 +5506,146 @@
     "markets": {
       "sp": {
         "symbol": "SPY",
-        "eligible_signal_sessions": 100,
+        "eligible_signal_sessions": 99,
         "incomplete_or_missing_sessions": 0,
         "regimes": {
           "RISK-OFF": {
-            "signal_sessions": 11,
+            "signal_sessions": 12,
             "horizons": {
               "1": {
-                "n": 11,
-                "positive_n": 5,
-                "positive_pct": 45.455,
-                "negative_pct": 54.545,
-                "mean_pct": 0.142,
-                "median_pct": -0.289,
+                "n": 12,
+                "positive_n": 6,
+                "positive_pct": 50.0,
+                "negative_pct": 50.0,
+                "mean_pct": 0.265,
+                "median_pct": 0.012,
                 "p10_pct": -1.962,
                 "worst_pct": -3.64,
-                "stdev_pct": 2.151,
-                "nonoverlap_n": 11,
-                "nonoverlap_positive_pct": 45.455,
-                "nonoverlap_median_pct": -0.289
+                "stdev_pct": 2.095,
+                "nonoverlap_n": 12,
+                "nonoverlap_positive_pct": 50.0,
+                "nonoverlap_median_pct": 0.012
               },
               "5": {
-                "n": 7,
-                "positive_n": 5,
-                "positive_pct": 71.429,
-                "negative_pct": 28.571,
-                "mean_pct": 0.713,
-                "median_pct": 0.629,
+                "n": 8,
+                "positive_n": 6,
+                "positive_pct": 75.0,
+                "negative_pct": 25.0,
+                "mean_pct": 0.842,
+                "median_pct": 1.184,
                 "p10_pct": -1.865,
                 "worst_pct": -1.865,
-                "stdev_pct": 2.072,
+                "stdev_pct": 1.952,
                 "nonoverlap_n": 4,
-                "nonoverlap_positive_pct": 75,
+                "nonoverlap_positive_pct": 75.0,
                 "nonoverlap_median_pct": 0.355
               },
               "10": {
                 "n": 5,
                 "positive_n": 2,
-                "positive_pct": 40,
-                "negative_pct": 60,
+                "positive_pct": 40.0,
+                "negative_pct": 60.0,
                 "mean_pct": -1.481,
                 "median_pct": -1.015,
                 "p10_pct": -6.185,
                 "worst_pct": -6.185,
                 "stdev_pct": 3.005,
                 "nonoverlap_n": 2,
-                "nonoverlap_positive_pct": 0,
+                "nonoverlap_positive_pct": 0.0,
                 "nonoverlap_median_pct": -1.676
               }
             }
           },
           "NEUTRAL": {
-            "signal_sessions": 61,
+            "signal_sessions": 60,
             "horizons": {
               "1": {
-                "n": 60,
-                "positive_n": 30,
-                "positive_pct": 50,
-                "negative_pct": 50,
-                "mean_pct": 0.008,
-                "median_pct": 0.005,
+                "n": 59,
+                "positive_n": 29,
+                "positive_pct": 49.153,
+                "negative_pct": 50.847,
+                "mean_pct": -0.006,
+                "median_pct": -0.012,
                 "p10_pct": -1.107,
                 "worst_pct": -1.912,
-                "stdev_pct": 0.809,
-                "nonoverlap_n": 60,
-                "nonoverlap_positive_pct": 50,
-                "nonoverlap_median_pct": 0.005
+                "stdev_pct": 0.808,
+                "nonoverlap_n": 59,
+                "nonoverlap_positive_pct": 49.153,
+                "nonoverlap_median_pct": -0.012
               },
               "5": {
-                "n": 60,
-                "positive_n": 22,
-                "positive_pct": 36.667,
-                "negative_pct": 63.333,
-                "mean_pct": -0.358,
-                "median_pct": -0.41,
+                "n": 59,
+                "positive_n": 21,
+                "positive_pct": 35.593,
+                "negative_pct": 64.407,
+                "mean_pct": -0.386,
+                "median_pct": -0.416,
                 "p10_pct": -2.402,
                 "worst_pct": -8.558,
-                "stdev_pct": 2.153,
-                "nonoverlap_n": 16,
-                "nonoverlap_positive_pct": 37.5,
-                "nonoverlap_median_pct": -0.27
+                "stdev_pct": 2.16,
+                "nonoverlap_n": 15,
+                "nonoverlap_positive_pct": 33.333,
+                "nonoverlap_median_pct": -0.34
               },
               "10": {
                 "n": 57,
-                "positive_n": 28,
-                "positive_pct": 49.123,
-                "negative_pct": 50.877,
-                "mean_pct": 0.045,
-                "median_pct": -0.179,
-                "p10_pct": -2.904,
+                "positive_n": 27,
+                "positive_pct": 47.368,
+                "negative_pct": 52.632,
+                "mean_pct": -0.026,
+                "median_pct": -0.315,
+                "p10_pct": -3.247,
                 "worst_pct": -5.674,
-                "stdev_pct": 2.321,
-                "nonoverlap_n": 9,
-                "nonoverlap_positive_pct": 55.556,
-                "nonoverlap_median_pct": 0.27
+                "stdev_pct": 2.376,
+                "nonoverlap_n": 8,
+                "nonoverlap_positive_pct": 25.0,
+                "nonoverlap_median_pct": -0.635
               }
             }
           },
           "RISK-ON": {
-            "signal_sessions": 28,
+            "signal_sessions": 27,
             "horizons": {
               "1": {
-                "n": 28,
-                "positive_n": 9,
-                "positive_pct": 32.143,
-                "negative_pct": 67.857,
-                "mean_pct": -0.193,
-                "median_pct": -0.199,
+                "n": 27,
+                "positive_n": 8,
+                "positive_pct": 29.63,
+                "negative_pct": 70.37,
+                "mean_pct": -0.216,
+                "median_pct": -0.2,
                 "p10_pct": -0.84,
                 "worst_pct": -4.409,
-                "stdev_pct": 1.028,
-                "nonoverlap_n": 28,
-                "nonoverlap_positive_pct": 32.143,
-                "nonoverlap_median_pct": -0.199
+                "stdev_pct": 1.041,
+                "nonoverlap_n": 27,
+                "nonoverlap_positive_pct": 29.63,
+                "nonoverlap_median_pct": -0.2
               },
               "5": {
-                "n": 28,
+                "n": 27,
                 "positive_n": 9,
-                "positive_pct": 32.143,
-                "negative_pct": 67.857,
-                "mean_pct": -0.275,
-                "median_pct": -0.305,
+                "positive_pct": 33.333,
+                "negative_pct": 66.667,
+                "mean_pct": -0.28,
+                "median_pct": -0.387,
                 "p10_pct": -1.693,
                 "worst_pct": -1.964,
-                "stdev_pct": 1.217,
-                "nonoverlap_n": 13,
-                "nonoverlap_positive_pct": 46.154,
-                "nonoverlap_median_pct": -0.132
+                "stdev_pct": 1.24,
+                "nonoverlap_n": 12,
+                "nonoverlap_positive_pct": 50.0,
+                "nonoverlap_median_pct": -0.071
               },
               "10": {
-                "n": 28,
+                "n": 27,
                 "positive_n": 6,
-                "positive_pct": 21.429,
-                "negative_pct": 78.571,
-                "mean_pct": -0.797,
-                "median_pct": -0.886,
+                "positive_pct": 22.222,
+                "negative_pct": 77.778,
+                "mean_pct": -0.76,
+                "median_pct": -0.872,
                 "p10_pct": -2.122,
                 "worst_pct": -4.774,
-                "stdev_pct": 1.726,
+                "stdev_pct": 1.747,
                 "nonoverlap_n": 8,
-                "nonoverlap_positive_pct": 25,
+                "nonoverlap_positive_pct": 25.0,
                 "nonoverlap_median_pct": -1.281
               }
             }
@@ -5631,146 +5654,146 @@
         "all_eligible": {
           "horizons": {
             "1": {
-              "n": 99,
-              "positive_n": 44,
-              "positive_pct": 44.444,
-              "negative_pct": 55.556,
-              "mean_pct": -0.034,
-              "median_pct": -0.116,
+              "n": 98,
+              "positive_n": 43,
+              "positive_pct": 43.878,
+              "negative_pct": 56.122,
+              "mean_pct": -0.031,
+              "median_pct": -0.118,
               "p10_pct": -1.081,
               "worst_pct": -4.409,
-              "stdev_pct": 1.081,
-              "nonoverlap_n": 99,
-              "nonoverlap_positive_pct": 44.444,
-              "nonoverlap_median_pct": -0.116
+              "stdev_pct": 1.095,
+              "nonoverlap_n": 98,
+              "nonoverlap_positive_pct": 43.878,
+              "nonoverlap_median_pct": -0.118
             },
             "5": {
-              "n": 95,
+              "n": 94,
               "positive_n": 36,
-              "positive_pct": 37.895,
-              "negative_pct": 62.105,
-              "mean_pct": -0.255,
-              "median_pct": -0.34,
+              "positive_pct": 38.298,
+              "negative_pct": 61.702,
+              "mean_pct": -0.251,
+              "median_pct": -0.364,
               "p10_pct": -1.968,
               "worst_pct": -8.558,
-              "stdev_pct": 1.92,
+              "stdev_pct": 1.934,
               "nonoverlap_n": 19,
-              "nonoverlap_positive_pct": 42.105,
-              "nonoverlap_median_pct": -0.277
+              "nonoverlap_positive_pct": 47.368,
+              "nonoverlap_median_pct": -0.145
             },
             "10": {
-              "n": 90,
-              "positive_n": 36,
-              "positive_pct": 40,
-              "negative_pct": 60,
-              "mean_pct": -0.302,
-              "median_pct": -0.665,
-              "p10_pct": -2.904,
+              "n": 89,
+              "positive_n": 35,
+              "positive_pct": 39.326,
+              "negative_pct": 60.674,
+              "mean_pct": -0.331,
+              "median_pct": -0.727,
+              "p10_pct": -3.247,
               "worst_pct": -6.185,
-              "stdev_pct": 2.221,
+              "stdev_pct": 2.258,
               "nonoverlap_n": 9,
               "nonoverlap_positive_pct": 44.444,
-              "nonoverlap_median_pct": -0.095
+              "nonoverlap_median_pct": -0.975
             }
           }
         }
       },
       "nd": {
         "symbol": "QQQ",
-        "eligible_signal_sessions": 100,
-        "incomplete_or_missing_sessions": 0,
+        "eligible_signal_sessions": 98,
+        "incomplete_or_missing_sessions": 1,
         "regimes": {
           "RISK-OFF": {
-            "signal_sessions": 14,
+            "signal_sessions": 15,
             "horizons": {
               "1": {
-                "n": 14,
-                "positive_n": 7,
-                "positive_pct": 50,
-                "negative_pct": 50,
-                "mean_pct": -0.201,
-                "median_pct": -0.314,
+                "n": 15,
+                "positive_n": 8,
+                "positive_pct": 53.333,
+                "negative_pct": 46.667,
+                "mean_pct": -0.008,
+                "median_pct": 0.026,
                 "p10_pct": -2.668,
                 "worst_pct": -5.673,
-                "stdev_pct": 2.965,
-                "nonoverlap_n": 14,
-                "nonoverlap_positive_pct": 50,
-                "nonoverlap_median_pct": -0.314
+                "stdev_pct": 2.953,
+                "nonoverlap_n": 15,
+                "nonoverlap_positive_pct": 53.333,
+                "nonoverlap_median_pct": 0.026
               },
               "5": {
-                "n": 10,
-                "positive_n": 4,
-                "positive_pct": 40,
-                "negative_pct": 60,
-                "mean_pct": -0.904,
-                "median_pct": -1.406,
-                "p10_pct": -10.508,
+                "n": 11,
+                "positive_n": 5,
+                "positive_pct": 45.455,
+                "negative_pct": 54.545,
+                "mean_pct": -0.738,
+                "median_pct": -1.215,
+                "p10_pct": -6.267,
                 "worst_pct": -10.508,
-                "stdev_pct": 5.385,
-                "nonoverlap_n": 5,
-                "nonoverlap_positive_pct": 60,
-                "nonoverlap_median_pct": 1.225
+                "stdev_pct": 5.138,
+                "nonoverlap_n": 6,
+                "nonoverlap_positive_pct": 66.667,
+                "nonoverlap_median_pct": 1.074
               },
               "10": {
-                "n": 6,
+                "n": 7,
                 "positive_n": 2,
-                "positive_pct": 33.333,
-                "negative_pct": 66.667,
-                "mean_pct": -0.171,
-                "median_pct": -0.362,
+                "positive_pct": 28.571,
+                "negative_pct": 71.429,
+                "mean_pct": -0.918,
+                "median_pct": -0.413,
                 "p10_pct": -7.263,
                 "worst_pct": -7.263,
-                "stdev_pct": 4.175,
+                "stdev_pct": 4.294,
                 "nonoverlap_n": 3,
-                "nonoverlap_positive_pct": 0,
+                "nonoverlap_positive_pct": 0.0,
                 "nonoverlap_median_pct": -0.413
               }
             }
           },
           "NEUTRAL": {
-            "signal_sessions": 61,
+            "signal_sessions": 58,
             "horizons": {
               "1": {
-                "n": 60,
-                "positive_n": 29,
-                "positive_pct": 48.333,
-                "negative_pct": 51.667,
-                "mean_pct": -0.001,
-                "median_pct": -0.012,
+                "n": 58,
+                "positive_n": 27,
+                "positive_pct": 46.552,
+                "negative_pct": 53.448,
+                "mean_pct": -0.035,
+                "median_pct": -0.049,
                 "p10_pct": -1.898,
                 "worst_pct": -3.474,
-                "stdev_pct": 1.385,
-                "nonoverlap_n": 60,
-                "nonoverlap_positive_pct": 48.333,
-                "nonoverlap_median_pct": -0.012
+                "stdev_pct": 1.39,
+                "nonoverlap_n": 58,
+                "nonoverlap_positive_pct": 46.552,
+                "nonoverlap_median_pct": -0.049
               },
               "5": {
-                "n": 60,
-                "positive_n": 23,
-                "positive_pct": 38.333,
-                "negative_pct": 61.667,
-                "mean_pct": -0.61,
+                "n": 58,
+                "positive_n": 22,
+                "positive_pct": 37.931,
+                "negative_pct": 62.069,
+                "mean_pct": -0.605,
                 "median_pct": -0.638,
                 "p10_pct": -4.722,
                 "worst_pct": -9.547,
-                "stdev_pct": 3.263,
-                "nonoverlap_n": 17,
-                "nonoverlap_positive_pct": 35.294,
-                "nonoverlap_median_pct": -0.299
+                "stdev_pct": 3.306,
+                "nonoverlap_n": 16,
+                "nonoverlap_positive_pct": 31.25,
+                "nonoverlap_median_pct": -0.407
               },
               "10": {
-                "n": 59,
+                "n": 57,
                 "positive_n": 24,
-                "positive_pct": 40.678,
-                "negative_pct": 59.322,
-                "mean_pct": -0.817,
+                "positive_pct": 42.105,
+                "negative_pct": 57.895,
+                "mean_pct": -0.755,
                 "median_pct": -1.012,
                 "p10_pct": -6.239,
                 "worst_pct": -8.177,
-                "stdev_pct": 4.344,
-                "nonoverlap_n": 9,
-                "nonoverlap_positive_pct": 44.444,
-                "nonoverlap_median_pct": -0.521
+                "stdev_pct": 4.396,
+                "nonoverlap_n": 8,
+                "nonoverlap_positive_pct": 37.5,
+                "nonoverlap_median_pct": -2.772
               }
             }
           },
@@ -5780,22 +5803,22 @@
               "1": {
                 "n": 25,
                 "positive_n": 10,
-                "positive_pct": 40,
-                "negative_pct": 60,
+                "positive_pct": 40.0,
+                "negative_pct": 60.0,
                 "mean_pct": -0.289,
                 "median_pct": -0.254,
                 "p10_pct": -1.415,
                 "worst_pct": -6.489,
                 "stdev_pct": 1.612,
                 "nonoverlap_n": 25,
-                "nonoverlap_positive_pct": 40,
+                "nonoverlap_positive_pct": 40.0,
                 "nonoverlap_median_pct": -0.254
               },
               "5": {
                 "n": 25,
                 "positive_n": 10,
-                "positive_pct": 40,
-                "negative_pct": 60,
+                "positive_pct": 40.0,
+                "negative_pct": 60.0,
                 "mean_pct": -0.427,
                 "median_pct": -0.433,
                 "p10_pct": -3.227,
@@ -5808,15 +5831,15 @@
               "10": {
                 "n": 25,
                 "positive_n": 8,
-                "positive_pct": 32,
-                "negative_pct": 68,
+                "positive_pct": 32.0,
+                "negative_pct": 68.0,
                 "mean_pct": -1.239,
                 "median_pct": -1.326,
                 "p10_pct": -5.004,
                 "worst_pct": -5.533,
                 "stdev_pct": 2.684,
                 "nonoverlap_n": 5,
-                "nonoverlap_positive_pct": 20,
+                "nonoverlap_positive_pct": 20.0,
                 "nonoverlap_median_pct": -0.955
               }
             }
@@ -5825,46 +5848,46 @@
         "all_eligible": {
           "horizons": {
             "1": {
-              "n": 99,
-              "positive_n": 46,
-              "positive_pct": 46.465,
-              "negative_pct": 53.535,
-              "mean_pct": -0.102,
-              "median_pct": -0.102,
+              "n": 98,
+              "positive_n": 45,
+              "positive_pct": 45.918,
+              "negative_pct": 54.082,
+              "mean_pct": -0.095,
+              "median_pct": -0.116,
               "p10_pct": -1.966,
               "worst_pct": -6.489,
-              "stdev_pct": 1.724,
-              "nonoverlap_n": 99,
-              "nonoverlap_positive_pct": 46.465,
-              "nonoverlap_median_pct": -0.102
+              "stdev_pct": 1.747,
+              "nonoverlap_n": 98,
+              "nonoverlap_positive_pct": 45.918,
+              "nonoverlap_median_pct": -0.116
             },
             "5": {
-              "n": 95,
+              "n": 94,
               "positive_n": 37,
-              "positive_pct": 38.947,
-              "negative_pct": 61.053,
-              "mean_pct": -0.593,
-              "median_pct": -0.658,
+              "positive_pct": 39.362,
+              "negative_pct": 60.638,
+              "mean_pct": -0.573,
+              "median_pct": -0.586,
               "p10_pct": -4.471,
               "worst_pct": -10.508,
-              "stdev_pct": 3.249,
+              "stdev_pct": 3.261,
               "nonoverlap_n": 19,
-              "nonoverlap_positive_pct": 47.368,
-              "nonoverlap_median_pct": -0.078
+              "nonoverlap_positive_pct": 36.842,
+              "nonoverlap_median_pct": -0.858
             },
             "10": {
-              "n": 90,
+              "n": 89,
               "positive_n": 34,
-              "positive_pct": 37.778,
-              "negative_pct": 62.222,
-              "mean_pct": -0.891,
-              "median_pct": -1.034,
+              "positive_pct": 38.202,
+              "negative_pct": 61.798,
+              "mean_pct": -0.904,
+              "median_pct": -1.056,
               "p10_pct": -5.767,
               "worst_pct": -8.177,
-              "stdev_pct": 3.911,
+              "stdev_pct": 3.945,
               "nonoverlap_n": 9,
-              "nonoverlap_positive_pct": 33.333,
-              "nonoverlap_median_pct": -0.856
+              "nonoverlap_positive_pct": 44.444,
+              "nonoverlap_median_pct": -1.326
             }
           }
         }
@@ -5975,22 +5998,40 @@
     "missing": "Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
     "partial": "Health Score is an interval when inputs are missing. Missing points are never automatically counted as healthy.",
     "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly.",
-    "model": "Experimental 16-point Market Health model for both indexes: higher is healthier; 0–5 Risk-Off, 6–10 Neutral, 11–16 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. The existing score ≤4/5 historical research still uses the archived 15-point model; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) and MACD(12,26,9) each add one point; original 50D/200D trend rule is retained; five SMA readings and external Fear & Greed remain informational only."
+    "model": "Experimental 16-point Market Health model for both indexes: higher is healthier; 0\u20135 Risk-Off, 6\u201310 Neutral, 11\u201316 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. The existing score \u22644/5 historical research still uses the archived 15-point model; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) and MACD(12,26,9) each add one point; original 50D/200D trend rule is retained; five SMA readings and external Fear & Greed remain informational only."
   },
   "price_moves": {
-    "session": "2026-11-25",
-    "previous_session": "2026-11-24",
+    "session": "2026-11-27",
+    "previous_session": "2026-11-25",
     "status": "complete",
     "spy": {
-      "previous_close": 718.780029,
-      "close": 716.700012,
-      "change_pct": -0.28938
+      "previous_close": 716.700012,
+      "close": 728.320007,
+      "change_pct": 1.62132
     },
     "qqq": {
-      "previous_close": 638.099976,
-      "close": 633.929993,
-      "change_pct": -0.6535
+      "previous_close": 633.929993,
+      "close": 650.98999,
+      "change_pct": 2.69115
     }
+  },
+  "published_comparison": {
+    "session": "2026-11-25",
+    "markets": {
+      "sp500": {
+        "bearish": 10,
+        "possible_max": 10,
+        "total": 16,
+        "available": 16
+      },
+      "nasdaq100": {
+        "bearish": 10,
+        "possible_max": 10,
+        "total": 16,
+        "available": 16
+      }
+    },
+    "basis": "saved complete EOD publication"
   },
   "daily_macd": {
     "parameters": {
@@ -6001,92 +6042,285 @@
     "source": "unadjusted SPY/QQQ daily closes, same sessions as scored EOD model",
     "scored": true,
     "spy": {
-      "as_of": "2026-11-25",
+      "as_of": "2026-11-27",
       "status": "complete",
-      "macd": -12.97595,
-      "signal": -10.0607,
-      "histogram": -2.91525,
+      "macd": -11.99099,
+      "signal": -10.44676,
+      "histogram": -1.54423,
       "relation": "below",
       "crossover": "none"
     },
     "qqq": {
-      "as_of": "2026-11-25",
+      "as_of": "2026-11-27",
       "status": "complete",
-      "macd": -20.16034,
-      "signal": -17.66071,
-      "histogram": -2.49963,
+      "macd": -18.81388,
+      "signal": -17.89134,
+      "histogram": -0.92254,
       "relation": "below",
       "crossover": "none"
     }
   },
+  "source_audit": {
+    "version": 1,
+    "session": "2026-11-27",
+    "previous_session": "2026-11-25",
+    "observations": {
+      "SPY": {
+        "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "QQQ": {
+        "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "RSP": {
+        "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "QQQE": {
+        "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "IWM": {
+        "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "SMH": {
+        "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "XLE": {
+        "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "XLP": {
+        "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "XLV": {
+        "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "XLU": {
+        "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "HYG": {
+        "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "IEF": {
+        "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "OIL": {
+        "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation",
+        "daily_change": -0.7399978637695312,
+        "change_pct": -0.8843186676276349,
+        "direction": "down",
+        "settlement_verified": false
+      },
+      "COPPER": {
+        "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation",
+        "daily_change": 0.26800012588500977,
+        "change_pct": 5.025787657639056,
+        "direction": "up",
+        "settlement_verified": false
+      },
+      "USD": {
+        "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "TNX": {
+        "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "VIX": {
+        "provider": "Yahoo fallback (unofficial)",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "VXN": {
+        "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+        "requested_session": "2026-11-27",
+        "observation_session": null,
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-25",
+        "status": "missing_for_session"
+      },
+      "VIX3M": {
+        "provider": "Yahoo fallback (unofficial)",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "SPX_BREADTH200": {
+        "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "NDX_ADV": {
+        "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "NDX_DECL": {
+        "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      }
+    },
+    "method": "Same-date provider bars; futures session and settlement can differ from equities. Source provenance is not independent price verification.",
+    "early_equity_close": true
+  },
   "sources": {
     "SPY": {
       "provider": "Yahoo Finance via yfinance (unofficial): SPY",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "QQQ": {
       "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "RSP": {
       "provider": "Yahoo Finance via yfinance (unofficial): RSP",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "QQQE": {
       "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "IWM": {
       "provider": "Yahoo Finance via yfinance (unofficial): IWM",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "SMH": {
       "provider": "Yahoo Finance via yfinance (unofficial): SMH",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "XLE": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLE",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "XLP": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLP",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "XLV": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLV",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "XLU": {
       "provider": "Yahoo Finance via yfinance (unofficial): XLU",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "HYG": {
       "provider": "Yahoo Finance via yfinance (unofficial): HYG",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "IEF": {
       "provider": "Yahoo Finance via yfinance (unofficial): IEF",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "OIL": {
       "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "COPPER": {
       "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "USD": {
       "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "TNX": {
       "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "VIX": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "VXN": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
@@ -6094,19 +6328,19 @@
     },
     "VIX3M": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "SPX_BREADTH200": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "NDX_ADV": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     },
     "NDX_DECL": {
       "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
-      "latest_session": "2026-11-25"
+      "latest_session": "2026-11-27"
     }
   },
   "warnings": [
@@ -6155,7 +6389,7 @@
           "previous_regime": "RISK-OFF",
           "risk_transition": "unchanged",
           "price_risk_status": "uncertain",
-          "price_risk_label": "Baseline only · previous ETF close unavailable; price/risk alert not evaluated",
+          "price_risk_label": "Baseline only \u00b7 previous ETF close unavailable; price/risk alert not evaluated",
           "baseline_context": {
             "volatility_index": {
               "name": "VIX",
@@ -6278,14 +6512,14 @@
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 2.021,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "RSP/SPY"
               },
               "iwm_spy": {
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 0.407,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "IWM/SPY"
               },
               "sp_breadth1d": {
@@ -6505,7 +6739,7 @@
           "previous_regime": "RISK-OFF",
           "risk_transition": "unchanged",
           "price_risk_status": "uncertain",
-          "price_risk_label": "Baseline only · previous ETF close unavailable; price/risk alert not evaluated",
+          "price_risk_label": "Baseline only \u00b7 previous ETF close unavailable; price/risk alert not evaluated",
           "baseline_context": {
             "volatility_index": {
               "name": "VXN",
@@ -6623,14 +6857,14 @@
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 1.535,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "QQQE/QQQ"
               },
               "iwm_qqq": {
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 2.428,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "IWM/QQQ"
               },
               "nd_breadth1d": {
@@ -6924,7 +7158,7 @@
           "previous_regime": "RISK-OFF",
           "risk_transition": "unchanged",
           "price_risk_status": "divergence",
-          "price_risk_label": "Strong rally · Risk-Off persists",
+          "price_risk_label": "Strong rally \u00b7 Risk-Off persists",
           "metrics": {
             "signals": {
               "oil": {
@@ -7015,14 +7249,14 @@
                 "state": "warn",
                 "label": "CAUTION",
                 "value": -0.077,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "RSP/SPY"
               },
               "iwm_spy": {
                 "state": "bear",
                 "label": "BEARISH",
                 "value": -0.497,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "IWM/SPY"
               },
               "sp_breadth1d": {
@@ -7242,7 +7476,7 @@
           "previous_regime": "RISK-OFF",
           "risk_transition": "unchanged",
           "price_risk_status": "divergence",
-          "price_risk_label": "Strong rally · Risk-Off persists",
+          "price_risk_label": "Strong rally \u00b7 Risk-Off persists",
           "metrics": {
             "signals": {
               "oil": {
@@ -7333,14 +7567,14 @@
                 "state": "bear",
                 "label": "BEARISH",
                 "value": -0.406,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "QQQE/QQQ"
               },
               "iwm_qqq": {
                 "state": "bear",
                 "label": "BEARISH",
                 "value": -0.681,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "IWM/QQQ"
               },
               "nd_breadth1d": {
@@ -7738,14 +7972,14 @@
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 0.841,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "RSP/SPY"
               },
               "iwm_spy": {
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 0.583,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "IWM/SPY"
               },
               "sp_breadth1d": {
@@ -7760,7 +7994,7 @@
                 "label": "BEARISH",
                 "value": -3.529,
                 "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
-                "source": "SPY EOD close · EMA(12,26,9)"
+                "source": "SPY EOD close \u00b7 EMA(12,26,9)"
               },
               "sp_breadth5d": {
                 "state": "bear",
@@ -8073,14 +8307,14 @@
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 0.59,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "QQQE/QQQ"
               },
               "iwm_qqq": {
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 1.796,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "IWM/QQQ"
               },
               "nd_breadth1d": {
@@ -8095,7 +8329,7 @@
                 "label": "BEARISH",
                 "value": -2.813,
                 "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
-                "source": "QQQ EOD close · EMA(12,26,9)"
+                "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
               },
               "nd_breadth5d": {
                 "state": "warn",
@@ -8452,14 +8686,14 @@
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 1.7,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "RSP/SPY"
               },
               "iwm_spy": {
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 1.458,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "IWM/SPY"
               },
               "sp_breadth1d": {
@@ -8474,7 +8708,7 @@
                 "label": "BEARISH",
                 "value": -2.915,
                 "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
-                "source": "SPY EOD close · EMA(12,26,9)"
+                "source": "SPY EOD close \u00b7 EMA(12,26,9)"
               },
               "sp_breadth5d": {
                 "state": "warn",
@@ -8780,14 +9014,14 @@
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 1.327,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "QQQE/QQQ"
               },
               "iwm_qqq": {
                 "state": "bull",
                 "label": "BULLISH",
                 "value": 2.777,
-                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
                 "source": "IWM/QQQ"
               },
               "nd_breadth1d": {
@@ -8802,7 +9036,7 @@
                 "label": "BEARISH",
                 "value": -2.5,
                 "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
-                "source": "QQQ EOD close · EMA(12,26,9)"
+                "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
               },
               "nd_breadth5d": {
                 "state": "bull",
@@ -9048,6 +9282,1104 @@
           }
         },
         "spy_qqq_divergence": "none"
+      },
+      {
+        "session": "2026-11-27",
+        "previous_session": "2026-11-25",
+        "model": "16-point Market Health with scored MACD",
+        "spy": {
+          "metrics": {
+            "signals": {
+              "oil": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+              },
+              "usd": {
+                "state": "bear",
+                "label": "BEARISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+              },
+              "tnx": {
+                "state": "bear",
+                "label": "BEARISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+              },
+              "credit": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "HYG daily return at least IEF",
+                "source": "HYG / IEF"
+              },
+              "copper": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily copper change",
+                "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+              },
+              "vix_curve": {
+                "state": "warn",
+                "label": "SHALLOW CONTANGO",
+                "value": 1.0,
+                "note": "VIX / VIX3M implied-volatility ratio",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+              },
+              "vix": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 23.81,
+                "note": "Spot implied volatility",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
+              },
+              "sp_def": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Defensives lead on 10D",
+                "source": "XLP / XLV / XLU"
+              },
+              "sp_xle": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Benchmark leads 10D",
+                "source": "XLE"
+              },
+              "sp_smh": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "SMH below 20D EMA",
+                "source": "SMH"
+              },
+              "spy_trend": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Below 200D SMA",
+                "source": "SPY"
+              },
+              "sp_rsi14": {
+                "state": "warn",
+                "label": "CAUTION",
+                "value": 45.043,
+                "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+                "source": "SPY EOD close"
+              },
+              "rsp_spy": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.019,
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
+                "source": "RSP/SPY"
+              },
+              "iwm_spy": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.442,
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
+                "source": "IWM/SPY"
+              },
+              "sp_breadth1d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 3.808,
+                "note": "1D change in % of SPX constituents above 200D SMA; pp",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              },
+              "sp_macd": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": -1.544,
+                "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+                "source": "SPY EOD close \u00b7 EMA(12,26,9)"
+              },
+              "sp_breadth5d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 9.82,
+                "note": "5D change, percentage points",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              },
+              "sp_breadth200": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 62.325,
+                "note": "Current % of SPX constituents above own 200D SMA",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              }
+            },
+            "names": {
+              "oil": "Crude Oil",
+              "usd": "US Dollar",
+              "tnx": "10Y Yield",
+              "credit": "Credit HYG/IEF",
+              "copper": "Copper",
+              "vix_curve": "VIX Curve",
+              "vix": "VIX",
+              "sp_def": "Defensives/SPY",
+              "sp_xle": "XLE/SPY",
+              "sp_smh": "SMH/SPY",
+              "spy_trend": "SPY Trend",
+              "sp_rsi14": "SPY RSI (14)",
+              "rsp_spy": "RSP/SPY",
+              "iwm_spy": "IWM/SPY",
+              "sp_breadth1d": "S&P Breadth 1D",
+              "sp_macd": "SPY MACD (12,26,9)",
+              "sp_breadth5d": "S&P Breadth 5D",
+              "sp_breadth200": "S&P Breadth 200D"
+            },
+            "moving_averages": {
+              "symbol": "SPY",
+              "as_of": "2026-11-27",
+              "close": 728.32,
+              "averages": {
+                "5": {
+                  "value": 715.18,
+                  "distance_pct": 1.84,
+                  "state": "BULLISH"
+                },
+                "20": {
+                  "value": 738.277,
+                  "distance_pct": -1.35,
+                  "state": "BEARISH"
+                },
+                "50": {
+                  "value": 757.203,
+                  "distance_pct": -3.81,
+                  "state": "BEARISH"
+                },
+                "100": {
+                  "value": 758.367,
+                  "distance_pct": -3.96,
+                  "state": "BEARISH"
+                },
+                "200": {
+                  "value": 733.342,
+                  "distance_pct": -0.68,
+                  "state": "BEARISH"
+                }
+              },
+              "rsi": {
+                "period": 14,
+                "value": 45.04,
+                "state": "NEUTRAL"
+              }
+            },
+            "sources": {
+              "SPY": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                "latest_session": "2026-11-27"
+              },
+              "QQQ": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                "latest_session": "2026-11-27"
+              },
+              "RSP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                "latest_session": "2026-11-27"
+              },
+              "QQQE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                "latest_session": "2026-11-27"
+              },
+              "IWM": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                "latest_session": "2026-11-27"
+              },
+              "SMH": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                "latest_session": "2026-11-27"
+              },
+              "XLE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                "latest_session": "2026-11-27"
+              },
+              "XLP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                "latest_session": "2026-11-27"
+              },
+              "XLV": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                "latest_session": "2026-11-27"
+              },
+              "XLU": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                "latest_session": "2026-11-27"
+              },
+              "HYG": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                "latest_session": "2026-11-27"
+              },
+              "IEF": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                "latest_session": "2026-11-27"
+              },
+              "OIL": {
+                "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                "latest_session": "2026-11-27"
+              },
+              "COPPER": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                "latest_session": "2026-11-27"
+              },
+              "USD": {
+                "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                "latest_session": "2026-11-27"
+              },
+              "TNX": {
+                "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                "latest_session": "2026-11-27"
+              },
+              "VIX": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+                "latest_session": "2026-11-27"
+              },
+              "VXN": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                "latest_session": "2026-11-25"
+              },
+              "VIX3M": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+                "latest_session": "2026-11-27"
+              },
+              "SPX_BREADTH200": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                "latest_session": "2026-11-27"
+              },
+              "NDX_ADV": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-27"
+              },
+              "NDX_DECL": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-27"
+              }
+            },
+            "warnings": [
+              "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+              "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+              "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+              "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+              "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+              "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+            ],
+            "confirmation_components": {
+              "volatility": true,
+              "credit": false,
+              "breadth": true,
+              "price": true
+            },
+            "source_audit": {
+              "version": 1,
+              "session": "2026-11-27",
+              "previous_session": "2026-11-25",
+              "observations": {
+                "SPY": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "QQQ": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "RSP": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "QQQE": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "IWM": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "SMH": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLE": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLP": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLV": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLU": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "HYG": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "IEF": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "OIL": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation",
+                  "daily_change": -0.7399978637695312,
+                  "change_pct": -0.8843186676276349,
+                  "direction": "down",
+                  "settlement_verified": false
+                },
+                "COPPER": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation",
+                  "daily_change": 0.26800012588500977,
+                  "change_pct": 5.025787657639056,
+                  "direction": "up",
+                  "settlement_verified": false
+                },
+                "USD": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "TNX": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "VIX": {
+                  "provider": "Yahoo fallback (unofficial)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "VXN": {
+                  "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": null,
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-25",
+                  "status": "missing_for_session"
+                },
+                "VIX3M": {
+                  "provider": "Yahoo fallback (unofficial)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "SPX_BREADTH200": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "NDX_ADV": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "NDX_DECL": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                }
+              },
+              "method": "Same-date provider bars; futures session and settlement can differ from equities. Source provenance is not independent price verification.",
+              "early_equity_close": true
+            }
+          },
+          "macd_info": {
+            "macd": -11.99099,
+            "signal": -10.44676,
+            "histogram": -1.54423,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 716.7,
+          "close": 728.32,
+          "price_change_pct": 1.62132,
+          "score": 7,
+          "available": 16,
+          "total": 16,
+          "regime": "NEUTRAL",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "sp_breadth1d"
+          ],
+          "trend_5d": "IMPROVING",
+          "five_day_delta_range": [
+            -6,
+            -6
+          ],
+          "confirmation": {
+            "confirmed": 3,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "SELECTIVE",
+          "previous_score": 10,
+          "score_delta_1d": -3,
+          "previous_regime": "NEUTRAL",
+          "risk_transition": "unchanged",
+          "price_risk_status": "none",
+          "price_risk_label": "No price/risk alert"
+        },
+        "qqq": {
+          "metrics": {
+            "signals": {
+              "oil": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+              },
+              "usd": {
+                "state": "bear",
+                "label": "BEARISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+              },
+              "tnx": {
+                "state": "bear",
+                "label": "BEARISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+              },
+              "credit": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "HYG daily return at least IEF",
+                "source": "HYG / IEF"
+              },
+              "copper": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily copper change",
+                "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+              },
+              "vix_curve": {
+                "state": "warn",
+                "label": "SHALLOW CONTANGO",
+                "value": 1.0,
+                "note": "VIX / VIX3M implied-volatility ratio",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+              },
+              "vxn": {
+                "state": "na",
+                "label": "N/A",
+                "value": null,
+                "note": "Market data unavailable or stale",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
+              },
+              "nd_def": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Defensives lead on 10D",
+                "source": "XLP / XLV / XLU"
+              },
+              "nd_xle": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "XLE leads 10D",
+                "source": "XLE"
+              },
+              "nd_smh": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "SMH below 20D EMA",
+                "source": "SMH"
+              },
+              "qqq_trend": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Below 200D SMA",
+                "source": "QQQ"
+              },
+              "nd_rsi14": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 44.013,
+                "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+                "source": "QQQ EOD close"
+              },
+              "qqqe_qqq": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 0.86,
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
+                "source": "QQQE/QQQ"
+              },
+              "iwm_qqq": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.522,
+                "note": "Ratio vs 10D SMA; \u00b10.25% neutral band",
+                "source": "IWM/QQQ"
+              },
+              "nd_breadth1d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 92.857,
+                "note": "Today's advancing share % (not SPX 200D breadth)",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+              },
+              "nd_macd": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": -0.923,
+                "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+                "source": "QQQ EOD close \u00b7 EMA(12,26,9)"
+              },
+              "nd_breadth5d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 32.609,
+                "note": "Change in average advancing share between adjacent 5D windows; pp",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+              }
+            },
+            "names": {
+              "oil": "Crude Oil",
+              "usd": "US Dollar",
+              "tnx": "10Y Yield",
+              "credit": "Credit HYG/IEF",
+              "copper": "Copper",
+              "vix_curve": "VIX Curve",
+              "vxn": "VXN",
+              "nd_def": "Defensives/QQQ",
+              "nd_xle": "XLE/QQQ",
+              "nd_smh": "SMH/QQQ",
+              "qqq_trend": "QQQ Trend",
+              "nd_rsi14": "QQQ RSI (14)",
+              "qqqe_qqq": "QQQE/QQQ",
+              "iwm_qqq": "IWM/QQQ",
+              "nd_breadth1d": "Nasdaq Breadth 1D",
+              "nd_macd": "QQQ MACD (12,26,9)",
+              "nd_breadth5d": "Nasdaq Breadth 5D"
+            },
+            "moving_averages": {
+              "symbol": "QQQ",
+              "as_of": "2026-11-27",
+              "close": 650.99,
+              "averages": {
+                "5": {
+                  "value": 636.5,
+                  "distance_pct": 2.28,
+                  "state": "BULLISH"
+                },
+                "20": {
+                  "value": 663.513,
+                  "distance_pct": -1.89,
+                  "state": "BEARISH"
+                },
+                "50": {
+                  "value": 705.731,
+                  "distance_pct": -7.76,
+                  "state": "BEARISH"
+                },
+                "100": {
+                  "value": 707.859,
+                  "distance_pct": -8.03,
+                  "state": "BEARISH"
+                },
+                "200": {
+                  "value": 683.688,
+                  "distance_pct": -4.78,
+                  "state": "BEARISH"
+                }
+              },
+              "rsi": {
+                "period": 14,
+                "value": 44.01,
+                "state": "NEUTRAL"
+              }
+            },
+            "sources": {
+              "SPY": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                "latest_session": "2026-11-27"
+              },
+              "QQQ": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                "latest_session": "2026-11-27"
+              },
+              "RSP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                "latest_session": "2026-11-27"
+              },
+              "QQQE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                "latest_session": "2026-11-27"
+              },
+              "IWM": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                "latest_session": "2026-11-27"
+              },
+              "SMH": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                "latest_session": "2026-11-27"
+              },
+              "XLE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                "latest_session": "2026-11-27"
+              },
+              "XLP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                "latest_session": "2026-11-27"
+              },
+              "XLV": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                "latest_session": "2026-11-27"
+              },
+              "XLU": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                "latest_session": "2026-11-27"
+              },
+              "HYG": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                "latest_session": "2026-11-27"
+              },
+              "IEF": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                "latest_session": "2026-11-27"
+              },
+              "OIL": {
+                "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                "latest_session": "2026-11-27"
+              },
+              "COPPER": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                "latest_session": "2026-11-27"
+              },
+              "USD": {
+                "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                "latest_session": "2026-11-27"
+              },
+              "TNX": {
+                "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                "latest_session": "2026-11-27"
+              },
+              "VIX": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+                "latest_session": "2026-11-27"
+              },
+              "VXN": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                "latest_session": "2026-11-25"
+              },
+              "VIX3M": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+                "latest_session": "2026-11-27"
+              },
+              "SPX_BREADTH200": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                "latest_session": "2026-11-27"
+              },
+              "NDX_ADV": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-27"
+              },
+              "NDX_DECL": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-27"
+              }
+            },
+            "warnings": [
+              "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+              "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+              "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+              "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+              "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+              "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+            ],
+            "confirmation_components": {
+              "volatility": null,
+              "credit": false,
+              "breadth": true,
+              "price": true
+            },
+            "source_audit": {
+              "version": 1,
+              "session": "2026-11-27",
+              "previous_session": "2026-11-25",
+              "observations": {
+                "SPY": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "QQQ": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "RSP": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "QQQE": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "IWM": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "SMH": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLE": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLP": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLV": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLU": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "HYG": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "IEF": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "OIL": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation",
+                  "daily_change": -0.7399978637695312,
+                  "change_pct": -0.8843186676276349,
+                  "direction": "down",
+                  "settlement_verified": false
+                },
+                "COPPER": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation",
+                  "daily_change": 0.26800012588500977,
+                  "change_pct": 5.025787657639056,
+                  "direction": "up",
+                  "settlement_verified": false
+                },
+                "USD": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "TNX": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "VIX": {
+                  "provider": "Yahoo fallback (unofficial)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "VXN": {
+                  "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": null,
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-25",
+                  "status": "missing_for_session"
+                },
+                "VIX3M": {
+                  "provider": "Yahoo fallback (unofficial)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "SPX_BREADTH200": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "NDX_ADV": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "NDX_DECL": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                }
+              },
+              "method": "Same-date provider bars; futures session and settlement can differ from equities. Source provenance is not independent price verification.",
+              "early_equity_close": true
+            }
+          },
+          "macd_info": {
+            "macd": -18.81388,
+            "signal": -17.89134,
+            "histogram": -0.92254,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 633.93,
+          "close": 650.99,
+          "price_change_pct": 2.69115,
+          "score": 8,
+          "available": 15,
+          "total": 16,
+          "regime": "INCOMPLETE",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "nd_breadth1d"
+          ],
+          "trend_5d": "IMPROVING",
+          "five_day_delta_range": [
+            -3,
+            -2
+          ],
+          "confirmation": {
+            "confirmed": 2,
+            "available": 3,
+            "total": 4
+          },
+          "swing": "N/A",
+          "previous_score": null,
+          "score_delta_1d": null,
+          "previous_regime": "incomplete",
+          "risk_transition": "uncertain",
+          "price_risk_status": "uncertain",
+          "price_risk_label": "Score incomplete \u2014 no confirmed alert"
+        },
+        "signal_changes": {
+          "status": "complete",
+          "groups": {
+            "shared": {
+              "new_bearish": [
+                {
+                  "label": "US Dollar",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH DIV"
+                },
+                {
+                  "label": "10Y Yield",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH DIV"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "Crude Oil",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "Credit HYG/IEF",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "VIX Curve",
+                  "before": "BACKWARDATION",
+                  "after": "SHALLOW CONTANGO"
+                }
+              ],
+              "other": []
+            },
+            "sp": {
+              "new_bearish": [],
+              "eased": [
+                {
+                  "label": "XLE/SPY",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "SPY RSI (14)",
+                  "before": "BEARISH",
+                  "after": "CAUTION"
+                }
+              ],
+              "other": []
+            },
+            "nd": {
+              "new_bearish": [],
+              "eased": [],
+              "other": []
+            }
+          }
+        },
+        "spy_qqq_divergence": "uncertain"
       }
     ]
   }
