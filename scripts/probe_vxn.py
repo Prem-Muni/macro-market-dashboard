@@ -1,28 +1,24 @@
-"""Read-only public historical-download diagnostic; never publishes a snapshot."""
-import requests, pandas as pd, io
+"""One-off read-only live repair proof: no repository publication."""
+import json,sys
+from pathlib import Path
 from datetime import date
-target=pd.Timestamp("2026-11-27")
-for host in ("cdn.cboe.com","cdn-api.cboe.com"):
-    for symbol in ("VXN","VIX"):
-        url=f"https://{host}/api/global/us_indices/daily_prices/{symbol}_History.csv"
-        try:
-            r=requests.get(url,timeout=20,headers={"User-Agent":"MacroMarketDashboard/0.1 personal-research","Cache-Control":"no-cache"})
-            print(f"PROBE {host} {symbol} HTTP={r.status_code} final={r.url} type={r.headers.get('Content-Type')} last_modified={r.headers.get('Last-Modified')} age={r.headers.get('Age')}")
-            r.raise_for_status()
-            raw=r.text.splitlines()
-            start=next(i for i,line in enumerate(raw) if line.strip().lstrip('\ufeff').upper().startswith("DATE,"))
-            df=pd.read_csv(io.StringIO("\n".join(raw[start:])))
-            df.columns=[str(c).strip().upper() for c in df.columns]
-            dates=pd.to_datetime(df["DATE"],errors="coerce")
-            close=pd.to_numeric(df["CLOSE"],errors="coerce")
-            series=pd.Series(close.values,index=dates).dropna().sort_index()
-            print(f"PROBE RESULT {host} {symbol} latest={series.index.max()} target_present={target in series.index} target_close={series.get(target)}")
-        except Exception as e:
-            print(f"PROBE ERROR {host} {symbol}: {type(e).__name__}: {str(e)[:180]}")
-# Compare raw Yahoo dates and close to the Cboe download; no new auth or scraping.
-try:
-    import yfinance as yf
-    for ticker in ("^VXN","^VIX"):
-        d=yf.Ticker(ticker).history(period="5d",interval="1d",auto_adjust=False,actions=False,timeout=20)
-        print(f"PROBE YAHOO {ticker}: {d[['Close']].tail(3).to_string()}")
-except Exception as e:print(f"PROBE YAHOO ERROR {type(e).__name__}: {str(e)[:180]}")
+from update import official_cboe,repair_vxn_only
+p=Path("docs/data/latest.json")
+before=json.loads(p.read_text())
+day=date.fromisoformat(before["session"])
+series,providers,errors=official_cboe(("VXN",),fresh=True)
+after=repair_vxn_only(before,series.get("VXN"),day,providers.get("VXN","Cboe official historical CSV: VXN"))
+if after is None:
+    print("LIVE REPAIR NOT AVAILABLE",errors)
+    sys.exit(1)
+assert before["price_moves"]==after["price_moves"]
+assert before["markets"]["sp500"]==after["markets"]["sp500"]
+assert all(before["signals"][k]==after["signals"][k] for k in before["signals"] if k!="vxn")
+assert before["market_insights_history"]["entries"][:-1]==after["market_insights_history"]["entries"][:-1]
+print("LIVE REPAIR VERIFIED",after["session"],after["signals"]["vxn"]["value"],after["markets"]["nasdaq100"]["score"],after["markets"]["nasdaq100"]["momentum"],after["markets"]["nasdaq100"]["confirmation"],after["markets"]["nasdaq100"]["swing"])
+# Emit only a compact patch derived by the real engine, not the full raw dataset.
+keys=["generated_at","repair_metadata","published_comparison","signal_changes","retry_five_day_basis"]
+delta={k:after[k] for k in keys if k in after}
+delta.update(vxn=after["signals"]["vxn"],nd=after["markets"]["nasdaq100"],source=after["sources"]["VXN"],audit=after["source_audit"]["observations"]["VXN"],history_last=after["history"][-1],archive_last=after["market_insights_history"]["entries"][-1])
+# The archive is recreated by the real updater in production, no raw history dump.
+print("LIVE PATCH SUMMARY",json.dumps({k:v for k,v in delta.items() if k!="archive_last"},separators=(",",":")))
