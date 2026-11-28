@@ -65,3 +65,10 @@ def test_published_prior_recovery_and_protection():
     assert reason is None and result==candidate
     use_published_prior(old,result)
     assert result["markets"]["nasdaq100"]["momentum"]["d1_range"]==[-1,-1]
+
+
+def test_independent_backup_obeys_calendar_and_finalization():
+    assert eligible("workflow_dispatch","",datetime(2026,11,27,12,45,tzinfo=CT),{},False,"early")
+    assert not eligible("workflow_dispatch","",datetime(2026,11,25,12,45,tzinfo=CT),{},False,"early")
+    assert not eligible("workflow_dispatch","",datetime(2026,11,27,16,45,tzinfo=CT),{"session":"2026-11-27"},True,"regular")
+    assert eligible("workflow_dispatch","",datetime(2026,11,27,16,45,tzinfo=CT),{},False,"regular")
