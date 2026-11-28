@@ -11,3 +11,18 @@
 .journal-table-wrap{max-height:70vh;overflow:auto}.journal-table{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0}.journal-table th{position:sticky;top:0;z-index:2}.journal-table th:first-child,.journal-table td:first-child{position:sticky;left:0;background:#142337;z-index:1;box-shadow:2px 0 #354861}.journal-table th:first-child{z-index:3}.journal-table td{max-width:340px;min-width:95px;overflow-wrap:anywhere}.journal-table td:first-child{min-width:135px}.journal-caution{color:#f6db8e}.journal-pill.neutral{background:#443b27;color:#f6db8e;border-color:#78643c}
 
 .journal-table td{white-space:nowrap;padding:10px 12px}.journal-table .journal-long-value{display:block;max-width:270px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:left;color:inherit;background:none;border:0;padding:0;font:inherit;cursor:pointer}.journal-table .journal-long-value.expanded{white-space:normal;overflow-wrap:anywhere}.journal-table .journal-long-value:focus-visible{outline:1px solid #85bfff}.journal-table td:first-child{white-space:nowrap}.journal-table .journal-baseline-flag{display:block;margin-top:4px}
+
+/* Consolidated saved-session timeline and readable scored heatmap. */
+.j-combined-history #j-score-chart{max-height:none;min-height:0;height:auto;aspect-ratio:900/320}
+.j-heat-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;border-top:1px solid #30455e;margin-top:18px;padding-top:18px}
+.j-heat-heading h3{margin:0 0 5px;font-size:17px}.j-heat-heading p{margin:0;color:#a5b8ce;font-size:12px}
+.j-heat-legend{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.j-heat-legend span{border-radius:5px;padding:5px 9px;font-size:11px;font-weight:700}
+.j-heat-scroll{overflow:auto;max-width:100%;border:1px solid #30455e;border-radius:9px}
+.j-heat-table{width:100%;border-collapse:separate;border-spacing:3px;font-size:12px;font-variant-numeric:tabular-nums}
+.j-heat-table th,.j-heat-table td{padding:8px 10px;text-align:center;vertical-align:middle;min-width:105px;border-radius:4px}
+.j-heat-table th:first-child{position:sticky;left:0;z-index:1;text-align:left;background:#182c3e;min-width:155px;white-space:nowrap}
+.j-heat-table thead th{background:#182c3e;color:#e7f0fa;vertical-align:top}.j-heat-table span{display:block}.j-heat-date{white-space:nowrap;font-size:12px;font-weight:750}
+.j-heat-meta{font-size:10px;line-height:1.4;margin-top:3px;font-weight:500;opacity:.9}
+.j-heat-bull{background:#245e4c;color:#e0fff0}.j-heat-bear{background:#793942;color:#ffe7e9}.j-heat-warn{background:#665727;color:#fff0b5}.j-heat-na{background:#283746;color:#d0dce6}.j-heat-legacy{background:#263b50;color:#b2d4f5}
+.j-heat-summary strong{font-size:17px}.j-heat-table .j-heat-group th{background:#102033;color:#a9c5dc;letter-spacing:.04em;font-size:11px;text-transform:uppercase;position:static;padding:9px 10px}
+@media(max-width:620px){.j-heat-heading{align-items:flex-start;flex-wrap:wrap}.j-combined-history #j-score-chart{min-width:480px}.j-combined-history{overflow-x:auto}.j-heat-table th:first-child{min-width:125px}.j-heat-table th,.j-heat-table td{padding:7px 6px}}
