@@ -15,7 +15,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import pandas as pd
 import requests
-from engine import analyze, scored_signal_changes, score_momentum_bounds, swing_from_bounds
+from engine import analyze, scored_signal_changes, score_momentum_bounds, swing_from_bounds, volatility_signal, score_of, score_of_legacy14, SHARED, ND, safe
 from breadth import derive_breadth
 from price_risk import build_price_moves
 from insights_history import merge_daily_archive
@@ -37,7 +37,7 @@ SYMBOLS={
  "VIX":"^VIX", "VXN":"^VXN", "VIX3M":"^VIX3M",
 }
 FALLBACKS={"USD":"UUP", "TNX":"^TNX"}
-CBOE={k:f"https://cdn.cboe.com/api/global/us_indices/daily_prices/{k}_History.csv" for k in ("VIX","VXN","VIX3M")}
+CBOE={k:f"https://cdn-api.cboe.com/api/global/us_indices/daily_prices/{k}_History.csv" for k in ("VIX","VXN","VIX3M")}
 EXTRA_COLUMNS={"SPX_BREADTH200","NDX_ADV","NDX_DECL"}
 # Twenty months of evaluated signals plus 200+ trading-session lookback.
 # Use an explicit historical start: yfinance does not document 3y/20mo periods.
@@ -273,6 +273,78 @@ def protect_retry(previous: dict, candidate: dict):
     return candidate,None
 
 
+def can_repair_vxn(snapshot, day):
+    """Allow the narrow repair only for a verified same-session, single-input gap."""
+    try:
+        check_completed_snapshot(snapshot,day)
+        if not snapshot["markets"]["sp500"]["score"]["complete"]:
+            return False
+        sigs=snapshot["signals"]
+        return (snapshot["model_version"]=="16-point-health-v2-macd-neutral-6-10"
+                and snapshot["markets"]["nasdaq100"]["score"]["available"]==15
+                and [k for k in SHARED+ND if sigs[k]["state"]=="na"]==["vxn"])
+    except (RuntimeError,KeyError,TypeError,ValueError):
+        return False
+
+
+def repair_vxn_only(previous, series, day, provider):
+    """Fill one verified dated index observation without refetching other inputs."""
+    if not can_repair_vxn(previous,day) or not isinstance(series,pd.Series):
+        return None
+    stamp=pd.Timestamp(day)
+    x=safe(series.get(stamp))
+    if x is None or x<=0:
+        return None
+    result=deepcopy(previous)
+    result["signals"]["vxn"]=volatility_signal("vxn",x,provider).json()
+    sigs={k:SimpleNamespace(**v) for k,v in result["signals"].items() if isinstance(v,dict)}
+    nd=result["markets"]["nasdaq100"]
+    def prune(v):return {k:x for k,x in v.items() if k!="available_keys"}
+    nd["score"]=prune(score_of(sigs,SHARED+ND))
+    nd["legacy_15"]=prune(score_of(sigs,SHARED+[k for k in ND if k!="nd_macd"]))
+    nd["legacy_14"]=prune(score_of_legacy14(sigs,SHARED+[k for k in ND if k not in ("nd_macd","nd_rsi14")]))
+    rows=result.get("history",[])
+    if len(rows)<6 or rows[-1].get("date")!=day.isoformat():
+        return None
+    anchor=rows[-6]
+    prior_vol=safe(series.get(pd.Timestamp(anchor["date"])))
+    c=nd["confirmation"]
+    c["components"]["volatility"]=None if prior_vol is None or prior_vol<=0 else x<prior_vol
+    c["confirmed"]=sum(v is True for v in c["components"].values())
+    c["available"]=sum(v is not None for v in c["components"].values())
+    # Reuse original five-session anchor and original observed signals.
+    result,reason=protect_retry(previous,result)
+    if reason:
+        raise RuntimeError("VXN-only repair rejected: "+reason)
+    use_published_prior(previous,result)
+    # Never mix a new trading session into the last published row.
+    result["history"][-1].update(nd=nd["score"]["bearish"],nd_available=nd["score"]["available"],nd_max=nd["score"]["possible_max"])
+    session=day.isoformat()
+    prior_day=previous["price_moves"]["previous_session"]
+    before=safe(series.get(pd.Timestamp(prior_day)))
+    result["sources"]["VXN"]={"provider":provider,"latest_session":session}
+    result["source_audit"]["observations"]["VXN"]={"provider":provider,"requested_session":session,"observation_session":session,
+        "previous_observation_session":prior_day if before is not None and before>0 else None,
+        "latest_vendor_session":session,"status":"same_date_observation"}
+    result["repair_metadata"]={"kind":"single_missing_vxn","session":session,"original_generated_at":previous["generated_at"],
+        "source":provider,"research_note":"Research results preserved from original full build; refreshed on next full session."}
+    result["generated_at"]=datetime.now(timezone.utc).isoformat()
+    result["market_insights_history"]=merge_daily_archive(previous,result)
+    check_completed_snapshot(result,day)
+    if not is_finalized_snapshot(result):
+        raise RuntimeError("VXN repair did not complete coverage")
+    return result
+
+
+def write_snapshot(result):
+    temporary=OUT.with_name("latest.json.tmp")
+    try:
+        temporary.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
+        temporary.replace(OUT)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def main():
     DATA.mkdir(parents=True,exist_ok=True)
     needed = expected_close()
@@ -298,6 +370,25 @@ def main():
             print('::notice::No new regular completed session eligible; existing published snapshot retained.')
             return
     print(f'::notice::Verifying completed EOD session {needed}')
+    if can_repair_vxn(prior,needed):
+        official,providers,diagnostics=official_cboe(("VXN",),fresh=True)
+        series=official.get("VXN",pd.Series(dtype=float))
+        provider=providers.get("VXN","Cboe official historical CSV: VXN")
+        if safe(series.get(pd.Timestamp(needed))) is None:
+            recovered={"VXN":series}
+            recovered_sources={}
+            outcome=recover_vxn_close(recovered,recovered_sources,diagnostics,needed)
+            print("::notice::VXN targeted retry: "+outcome)
+            if "VXN" in recovered_sources:
+                series=recovered["VXN"]
+                provider=recovered_sources["VXN"]
+        fixed=repair_vxn_only(prior,series,needed,provider)
+        if fixed is None:
+            print("::warning::VXN exact-date daily observation still unavailable; retaining original snapshot")
+        else:
+            write_snapshot(fixed)
+            print("::notice::VXN-only repair complete; both markets 16/16; other observed signals and prices retained")
+        return
     prices,sources,errors=download_yahoo()
     # yfinance's historical batch request can lag a complete equity session.
     # Recheck missing SPY/QQQ closes individually before the strict EOD guard.
@@ -446,12 +537,7 @@ def main():
     else:
         result["market_insights_history"] = merge_daily_archive(previous_snapshot, result)
     check_completed_snapshot(result, needed)
-    temporary=OUT.with_name("latest.json.tmp")
-    try:
-        temporary.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
-        temporary.replace(OUT)
-    finally:
-        temporary.unlink(missing_ok=True)
+    write_snapshot(result)
     print(f"Wrote {OUT}: {result['session']} | SP {result['markets']['sp500']['score']['available']}/{result['markets']['sp500']['score']['total']}, "
           f"ND {result['markets']['nasdaq100']['score']['available']}/{result['markets']['nasdaq100']['score']['total']}")
     for err in errors[:8]:print("WARNING:",err[:160])
