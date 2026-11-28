@@ -142,6 +142,15 @@ def build_frames(prices: pd.DataFrame, extra: pd.DataFrame | None = None):
     return f
 
 
+def volatility_signal(key, value, source=""):
+    """Single source of truth for the existing VIX/VXN score thresholds."""
+    low, high = {"vix":(16,20),"vxn":(20,25)}[key]
+    x=safe(value)
+    if x is None or x<=0:
+        return signal("na",note="Market data unavailable or stale",source=source)
+    return signal("bear" if x>high else "bull" if x<low else "warn",value=x,note="Spot implied volatility",source=source)
+
+
 def build_day(f: pd.DataFrame, pos: int, sources:dict | None=None):
     sources=sources or {}
     row=f.iloc[pos]
@@ -158,11 +167,8 @@ def build_day(f: pd.DataFrame, pos: int, sources:dict | None=None):
         else:
             state,label,val,note=func(*vals)
             put(key,state,label,val,note,source)
-    for key,col,bull,bear in (("vix","VIX",16,20),("vxn","VXN",20,25)):
-        def volfunc(x,bull=bull,bear=bear):
-            st="bear" if x>bear else "bull" if x<bull else "warn"
-            return st,S[st],x,"Spot implied volatility"
-        condition(key,[col],volfunc,src(col))
+    for key,col in (("vix","VIX"),("vxn","VXN")):
+        sigs[key]=volatility_signal(key,v(col),src(col))
     for key,col in (("oil","oil_chg"),("usd","usd_chg"),("tnx","tnx_chg")):
         def cfunc(chg,sp):
             if chg==0 or sp==0: return "warn","FLAT",None,"No directional change"
