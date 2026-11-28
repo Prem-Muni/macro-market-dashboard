@@ -25,5 +25,3 @@ jobs:
           node --check docs/daily-summaries.js
           node --test tests/test_overview_signal_board.cjs tests/test_market_history_accordion.cjs
 
-      - name: Temporary live historical source diagnostic (read only)
-        run: python scripts/probe_vxn.py
