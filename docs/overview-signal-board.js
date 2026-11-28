@@ -23,7 +23,7 @@
   const confirmation=coverage?c.confirmed+"/"+c.total+" "+(c.confirmed>=3?"BROAD":c.confirmed<=1?"LIMITED":"MIXED"):finite(c.confirmed)&&finite(c.available)&&finite(c.total)?c.confirmed+"/"+c.available+" improving · "+c.available+"/"+c.total+" checked":"Unavailable";
   return [
    {key:key+"-health",title:"Market Health",state:tone(r),label:f.scoreFormat(s),value:r,detail:s.complete?"Complete scored session":"Partial coverage; displayed score is a range"},
-   {key:key+"-momentum",title:"Health Trend",state:tone(t.state),label:t.state||"Unavailable",value:"1D "+f.rangeText(f.invertedRange(t.d1_range))+" · 5D "+f.rangeText(f.invertedRange(t.d5_range))+(t.partial?" · bounded":""),detail:"Health-point change, not price return"},
+   {key:key+"-momentum",title:"Health Trend",state:tone(t.state),label:t.state||"Unavailable",value:"1D "+f.rangeText(f.invertedRange(t.d1_range))+" · 5D "+f.rangeText(f.invertedRange(t.d5_range))+(t.partial?" · bounded":""),detail:"Health-point change, not price return. 5D basis: "+(data.retry_five_day_basis?.session||"unavailable")+" · "+(data.retry_five_day_basis?.basis||"reconstructed or not documented")},
    {key:key+"-confirmation",title:"Confirmation 5D",state:coverage?(c.confirmed<=1?"bear":c.confirmed>=3?"bull":"warn"):"na",label:confirmation,value:"",detail:"Confirmation count; color indicates limited, mixed or full confirmation, not a scored input"},
    {key:key+"-swing",title:"Swing",state:tone(m.swing),label:m.swing||"Unavailable",value:"",detail:"Published swing classification"}
   ];
