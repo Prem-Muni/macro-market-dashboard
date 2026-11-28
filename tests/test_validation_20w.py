@@ -28,4 +28,23 @@ class Validation20Weeks(unittest.TestCase):
   d=evaluate([],self.frame,self.days[-1]);self.assertEqual(d['markets']['sp']['regimes']['RISK-ON']['horizons']['5']['n'],0)
  def test_one_day_no_overlap_equals_primary(self):
   d=evaluate(self.rows,self.frame,self.days[-1]);x=d['markets']['sp']['regimes']['NEUTRAL']['horizons']['1'];self.assertEqual(x['n'],x['nonoverlap_n'])
+ def test_missing_calendar_date_does_not_compress_forward_windows(self):
+  missing=self.days[30]
+  d=evaluate(self.rows,self.frame.drop(missing),self.days[-1])
+  base=evaluate(self.rows,self.frame,self.days[-1])
+  self.assertIn(missing.strftime('%Y-%m-%d'),d['calendar_missing_price_dates'])
+  self.assertEqual(base['markets']['sp']['all_eligible']['horizons']['5']['n']-d['markets']['sp']['all_eligible']['horizons']['5']['n'],6)
+ def test_matched_windows_partition_and_delayed_entry(self):
+  d=evaluate(list(reversed(self.rows)),self.frame,self.days[-1])
+  m=d['markets']['sp']
+  for h in ('1','5','10'):
+   non=m['matched_nonoverlap'][h]
+   self.assertEqual(non['all']['n'],sum(s['n'] for s in non['regimes'].values()))
+   paired=m['next_close_sensitivity'][h]['all']
+   self.assertEqual(paired['signal_close']['n'],paired['next_close']['n'])
+   self.assertLess(paired['signal_close']['n'],m['all_eligible']['horizons'][h]['n'])
+   self.assertGreater(paired['signal_close']['mean_pct'],paired['next_close']['mean_pct'])
+ def test_duplicate_price_dates_rejected(self):
+  with self.assertRaisesRegex(ValueError,'duplicate normalized'):
+   evaluate(self.rows,pd.concat([self.frame,self.frame.iloc[:1]]),self.days[-1])
 if __name__=='__main__':unittest.main()
