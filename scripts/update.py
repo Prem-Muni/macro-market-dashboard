@@ -231,6 +231,38 @@ def use_published_prior(previous: dict, fresh: dict) -> None:
         fresh["signal_changes"] = scored_signal_changes(prev_sigs,new_sigs,day,fresh["session"])
 
 
+def use_saved_five_day(previous: dict, fresh: dict) -> None:
+    """Prefer the exact five-session saved 16-point anchor, never a legacy score.
+    Research history remains separate. Call only on a genuinely new session.
+    """
+    rows = fresh.get("history") or []
+    if len(rows) < 6 or rows[-1].get("date") != fresh.get("session"):
+        return
+    anchor = rows[-6]
+    saved = next((r for r in (previous.get("market_insights_history") or {}).get("entries", [])
+                  if r.get("session") == anchor.get("date")), None)
+    keys = ("sp", "nd")
+    chosen = dict(anchor)
+    basis = "reconstructed 16-point anchor; no comparable complete saved session"
+    if saved and previous.get("model_version") == fresh.get("model_version"):
+        comparable = all(type(saved.get(sym, {}).get("score")) is int
+                         and saved[sym].get("total") == saved[sym].get("available") == 16
+                         and 0 <= saved[sym]["score"] <= 16
+                         for sym in ("spy", "qqq"))
+        if comparable:
+            basis = "saved complete 16-point EOD observation"
+            for key, sym in zip(keys, ("spy", "qqq")):
+                chosen.update({key:saved[sym]["score"], key+"_max":saved[sym]["score"], key+"_available":16})
+    for market,key,trend in (("sp500","sp","spy_trend"),("nasdaq100","nd","qqq_trend")):
+        m = fresh["markets"][market]
+        old = dict(bearish=chosen[key],possible_max=chosen[key+"_max"],available=chosen[key+"_available"],total=16)
+        bound = score_momentum_bounds(m["score"],old)
+        m["momentum"].update(d5=bound["observed"],d5_range=[bound["min"],bound["max"]],
+                             state=bound["state"],partial=not m["score"]["complete"] or old["available"]!=16)
+        m["swing"] = swing_from_bounds(m["score"],old,m["confirmation"],fresh["signals"][trend]["state"])
+    fresh["retry_five_day_basis"] = {"session":chosen["date"],"markets":{k:chosen[k] for k in ("sp","nd","sp_max","nd_max","sp_available","nd_available")},"basis":basis}
+
+
 def protect_retry(previous: dict, candidate: dict):
     """Only accept additional inputs; never silently replace an observed signal or price."""
     if previous.get("session") != candidate.get("session") or previous.get("model_version") != candidate.get("model_version"):
@@ -267,7 +299,7 @@ def protect_retry(previous: dict, candidate: dict):
             bound = score_momentum_bounds(m["score"],old_score)
             m["momentum"].update(d5=bound["observed"],d5_range=[bound["min"],bound["max"]],state=bound["state"],partial=not m["score"]["complete"] or old_score["available"]!=16)
             m["swing"] = swing_from_bounds(m["score"],old_score,m["confirmation"],candidate["signals"][trend]["state"])
-        candidate["retry_five_day_basis"] = {"session":anchor["date"],"markets":{k:anchor[k] for k in ("sp","nd","sp_max","nd_max","sp_available","nd_available")},"basis":"original reconstructed anchor, not a saved brokerage reading"}
+        candidate["retry_five_day_basis"] = {"session":anchor["date"],"markets":{k:anchor[k] for k in ("sp","nd","sp_max","nd_max","sp_available","nd_available")},"basis":saved_anchor.get("basis") or "original reconstructed anchor, not a saved brokerage reading"}
         # The research history remains a separately reconstructed series; the
         # frozen display anchor is carried forward via retry_five_day_basis.
     return candidate,None
@@ -535,6 +567,8 @@ def main():
         result["comparison_corrected_at"] = datetime.now(timezone.utc).isoformat()
         print("::notice::Prior-publication comparison corrected; original observations retained: "+retry_reason)
     else:
+        if previous_snapshot.get("session") != result.get("session"):
+            use_saved_five_day(previous_snapshot, result)
         result["market_insights_history"] = merge_daily_archive(previous_snapshot, result)
     check_completed_snapshot(result, needed)
     write_snapshot(result)

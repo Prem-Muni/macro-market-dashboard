@@ -32,16 +32,29 @@
     const tr=document.createElement('tr');tr.className='validation-baseline';
     ['All eligible signals',m.eligible_signal_sessions,baseline.n,per(baseline.positive_pct),pct(baseline.median_pct),pct(baseline.mean_pct),pct(baseline.worst_pct)].forEach(v=>tr.append(el('td','',v)));tbody.append(tr);
     const risk=regimeData[0].stats,neutral=regimeData[1].stats,off=regimeData[2].stats;
-    const relevant=risk.n>=10&&neutral.n>=10;
+    const relevant=risk.n>=10&&neutral.n>=10&&off.n>=10;
     put('validation-comparison', !risk.n?'No completed Risk-On forward outcomes were available in this window. That is a coverage finding, not a zero-percent success rate.':
       !relevant?'Interpret cautiously: at least one comparison group has fewer than 10 forward outcomes. The study does not support a strong performance conclusion.':
       `Risk-On positive outcomes: ${per(risk.positive_pct)} versus Neutral ${per(neutral.positive_pct)} and all eligible sessions ${per(baseline.positive_pct)}. Risk-Off negative outcomes: ${per(off.negative_pct)}. This comparison is descriptive, not proof of predictive accuracy.`);
     put('validation-nonoverlap',`Non-overlapping ${h}-session sensitivity (SPY/QQQ-specific): Risk-On ${risk.nonoverlap_n} windows with ${per(risk.nonoverlap_positive_pct)} positive; Neutral ${neutral.nonoverlap_n} with ${per(neutral.nonoverlap_positive_pct)} positive; Risk-Off ${off.nonoverlap_n} with ${per(off.nonoverlap_positive_pct)} positive.`);
+    const matched=m.matched_nonoverlap?.[h],delay=m.next_close_sensitivity?.[h];
+    const groupLabel=k=>k==='all'?'All eligible':names[k];
+    const keys=['all','RISK-ON','NEUTRAL','RISK-OFF'];
+    const target=$('validation-audit-body');if(target){
+      target.replaceChildren();
+      for(const key of keys){
+        const non=key==='all'?matched?.all:matched?.regimes?.[key];
+        const pair=key==='all'?delay?.all:delay?.regimes?.[key];
+        const row=el('tr');
+        [groupLabel(key),non?.n??'—',pct(non?.mean_pct),pair?.signal_close?.n??'—',pct(pair?.signal_close?.mean_pct),pct(pair?.next_close?.mean_pct)].forEach(v=>row.append(el('td','',v)));
+        target.append(row);
+      }
+    }
+    put('validation-audit-status',data.audit_version===2?'Calendar audit: '+(data.calendar_missing_price_dates?.length||0)+' missing expected price dates in the study window. Cross-regime non-overlap sample and next-close paired results are descriptive only.':'Pending the next full completed EOD build; existing historical results are preserved.');
     $('validation-export').disabled=false;
   }
   async function refresh(){
     if(!$('validation-status'))return;
-    if(data){render();return;}
     try{
       const response=await fetch('data/latest.json?validation20w='+Date.now(),{cache:'no-store'});
       if(!response.ok)throw new Error('HTTP '+response.status);
@@ -52,7 +65,7 @@
         return;
       }
       data=v;put('validation-period',`${v.start} → ${v.end} · reconstructed 16-point study`);
-      put('validation-status',`Historical analysis for ${latest.session||v.end}. Forward outcomes reflect completed sessions only; missing scores are excluded.`);
+      put('validation-status',`Historical analysis through ${v.end}. Forward outcomes reflect completed sessions only; missing scores are excluded.${latest.repair_metadata?.research_note?' '+latest.repair_metadata.research_note:''}`);
       render();
     }catch(err){put('validation-status','Validation data unavailable: '+err.message+'. Your existing history and saved scores are unaffected.');}
   }
@@ -68,6 +81,7 @@
       const blob=new Blob([rows.map(a=>a.join(',')).join('\n')+'\n'],{type:'text/csv;charset=utf-8'});
       const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${m.symbol}_market_health_20week_validation_${h}sessions.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
     });
+    $('refresh')?.addEventListener('click',refresh);
     if(location.hash.toLowerCase()==='#validation')refresh();
   });
   window.MarketValidation={refresh};

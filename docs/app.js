@@ -14,7 +14,7 @@ const scoreFormat=s=>{const r=healthRange(s);return !r?'—/16':r.min===r.max?`$
 const invertedRange=r=>Array.isArray(r)&&r.length===2&&r.every(v=>v!=null)?[-r[1],-r[0]]:null;
 const plus=n=>n==null?'—':`${n>0?'+':''}${n}`;
 const rangeText=r=>!Array.isArray(r)||r[0]==null?'—':r[0]===r[1]?plus(r[0]):`${plus(r[0])}…${plus(r[1])}`;
-let snapshot=null,horizon=30;
+let snapshot=null,horizon=30,historyMode='saved';
 function summary(prefix,model){
  const s=model.score,m=model.momentum,c=model.confirmation;
  $(prefix+'-score').textContent=scoreFormat(s);
@@ -67,9 +67,28 @@ const sessionDate=s=>{
  const [yyyy,mm,dd]=s.split('-').map(Number);
  return `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mm-1]||mm} ${dd}`;
 };
+// Saved observations and reconstructed research are separate series; never splice them.
+function savedHistoryRows(data){
+ const entries=data?.market_insights_history?.entries;
+ if(!Array.isArray(entries))return [];
+ return entries.filter(r=>/^\d{4}-\d{2}-\d{2}$/.test(r?.session||'')).map(r=>{
+  const row={date:r.session,previous_session:r.previous_session,saved:true};
+  for(const [key,sym] of [['sp','spy'],['nd','qqq']]){
+   const m=r[sym];if(!m||![15,16].includes(m.total)||!Number.isInteger(m.score)||!Number.isInteger(m.available)||m.score<0||m.score>m.available||m.available>m.total)continue;
+   row[key]=m.score;row[key+'_available']=m.available;row[key+'_total']=m.total;row[key+'_recovered']=!!m.metrics?.recovery;
+  }
+  return row;
+ }).sort((a,b)=>a.date.localeCompare(b.date));
+}
+function historyForChart(data,mode){
+ return mode==='research'?data?.history||[]:savedHistoryRows(data);
+}
 function plot(history){
  const svg=$('history-svg');svg.replaceChildren();
- const all=history||[];
+ const saved=historyMode==='saved';
+ const all=snapshot?.market_insights_history||historyMode==='research'?historyForChart(snapshot,historyMode):(history||[]);
+ const usingSaved=saved&&!!snapshot?.market_insights_history;
+ const source=usingSaved?'Saved EOD observations':'Reconstructed research — not original publications';
  const data=horizon===30||horizon===90?all.slice(-horizon):
   horizon==='year'&&all.length?all.filter(r=>Date.parse(r.date+'T00:00:00Z')>=Date.parse(all.at(-1).date+'T00:00:00Z')-365*86400000):
   all;
@@ -85,9 +104,9 @@ function plot(history){
  const y=v=>top+(maxPts-v)/maxPts*(H-top-bottom);
  const range=$('chart-range');
  if(range)range.textContent=data.length?
-  `${data.length} trading sessions · ${sessionDate(data[0].date)} – ${sessionDate(data.at(-1).date)}, ${String(data.at(-1).date||'').slice(0,4)}`:
-  'No trading-session history yet';
- svg.setAttribute('aria-label',`SPY and QQQ Market Health Scores, last ${data.length} completed sessions, out of ${maxPts}`);
+  `${source} · ${data.length} trading sessions · ${sessionDate(data[0].date)} – ${sessionDate(data.at(-1).date)}, ${String(data.at(-1).date||'').slice(0,4)}`:
+  source+' · no observations yet';
+ svg.setAttribute('aria-label',`${source}: SPY and QQQ Market Health, ${data.length} sessions; original denominators retained`);
  const yticks=[...new Set([0,5,10,maxPts].filter(v=>v<=maxPts))].sort((a,b)=>a-b);
  for(const v of yticks){
   el('line',{x1:left,x2:W-right,y1:y(v),y2:y(v),stroke:'#2b394b','stroke-width':1});
@@ -98,7 +117,7 @@ function plot(history){
   el('line',{x1:left,x2:W-right,y1:y(cut),y2:y(cut),stroke:'#eac66e','stroke-width':1.6,'stroke-dasharray':'7 5',opacity:.88});
   const marker=el('text',{x:W-right-4,y:y(cut)-5,'text-anchor':'end',fill:'#f1d68d','font-size':10,'font-weight':650});marker.textContent=label;
  }
- if(data.length<2){
+ if(data.length===0){
   const t=el('text',{x:W/2,y:105,'text-anchor':'middle',fill:'#8092ac','font-size':15});
   t.textContent='History will appear after additional data updates';return;
  }
@@ -123,23 +142,26 @@ function plot(history){
   data.forEach((row,i)=>{
    const v=Number(row[k]);
    if(row[k]==null||!Number.isFinite(v)){drawing=false;return;}
-   const avail=Number(row[k+'_available']);
-   const shown=(Number.isFinite(avail)?avail:maxPts)-v;
-   path+=(drawing?' L':' M')+x(i).toFixed(1)+','+y(shown).toFixed(1); drawing=true;
+   const total=row[k+'_total']||maxPts,avail=Number(row[k+'_available']);
+   const shown=(Number.isFinite(avail)?avail:total)-v;
+   if(usingSaved&&i&&row.previous_session!==data[i-1].date)drawing=false;
+   const exact=avail===total;
+   path+=(drawing&&exact?' L':' M')+x(i).toFixed(1)+','+y(shown).toFixed(1); drawing=exact;
   });
   if(path)el('path',{d:path.trim(),stroke:color,fill:'none','stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'});
   data.forEach((row,i)=>{
    const v=Number(row[k]);
    if(row[k]==null||!Number.isFinite(v))return;
-   const partial=Number(row[k+'_available'])<maxPts;
-   const avail=Number(row[k+'_available']);
-   const shown=(Number.isFinite(avail)?avail:maxPts)-v;
-   const dot=el('circle',{cx:x(i),cy:y(shown),r:partial?3:2.2,fill:color,opacity:partial?0.45:0.95});
+   const total=row[k+'_total']||maxPts,avail=Number(row[k+'_available']);
+   const partial=avail<total,legacy=total!==maxPts;
+   const shown=(Number.isFinite(avail)?avail:total)-v;
+   if(partial)el('line',{x1:x(i),x2:x(i),y1:y(shown),y2:y(total-v),stroke:color,'stroke-width':1.5,'stroke-dasharray':'3 3'});
+   const dot=el('circle',{cx:x(i),cy:y(shown),r:partial||legacy?3.8:2.8,fill:partial||legacy?'#132235':color,stroke:color,'stroke-width':1.2,opacity:partial?0.7:0.95});
    const tip=el('title',{},dot);
-   const lower=shown,upper=maxPts-v;
+   const lower=shown,upper=total-v;
    const classify=h=>h<=5?'RISK-OFF':h<=10?'NEUTRAL':'RISK-ON';
    const regime=classify(lower)===classify(upper)?classify(lower):'INCOMPLETE';
-   tip.textContent=`${market} · ${row.date} · ${lower===upper?lower:lower+'–'+upper}/${maxPts} Market Health · ${regime}${partial?' (partial coverage)':''}`;
+   tip.textContent=`${market} · ${row.date} · ${lower===upper?lower:lower+'–'+upper}/${total} Market Health · ${regime}${partial?' (partial coverage)':''}${legacy?' · legacy model':''}${row[k+'_recovered']?' · recovered matching details':''} · ${source}`;
   });
  }
 }
@@ -537,6 +559,7 @@ async function load(){
  catch(err){$('warning').textContent='Unable to read the latest published JSON: '+err.message; $('status-dot').className='status-dot warn';}
 }
 $('refresh').addEventListener('click',load);
+$('history-source')?.addEventListener('change',event=>{historyMode=event.target.value==='research'?'research':'saved';if(snapshot)plot(snapshot.history);});
 for(const mode of [30,90,'year','all']){
  const id=mode==='year'?'histYear':mode==='all'?'hist20m':'hist'+mode;
  $(id).addEventListener('click',()=>{

@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Daily Market Intelligence | SPY & QQQ</title>
   <meta name="description" content="Daily market-risk indicators with data-availability checks, S&P 500 and Nasdaq-100 signals, score momentum, and confirmation.">
-  <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
+  <link rel="stylesheet" href="styles.css?v=saved-history-20261127">
   <link rel="stylesheet" href="dashboard-clarity.css?v=compact-technicals-20261126">
   <link rel="stylesheet" href="daily-summaries.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
@@ -68,7 +68,7 @@
 }
 </style>
 <link rel="stylesheet" href="overview-signal-board.css?v=20261126-layout2">
-<script src="overview-signal-board.js?v=eod-reliability-20261127" defer></script>
+<script src="overview-signal-board.js?v=saved-anchor-20261127" defer></script>
 <script src="market-insights-extra.js?v=eod-reliability-20261127" defer></script>
 </head>
 <body>
@@ -223,7 +223,7 @@
         <p class="provider-note">Charts by <a href="https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/" target="_blank" rel="noopener noreferrer">TradingView</a>. Price data can be delayed or use Cboe-derived U.S. quotes; they may not match Thinkorswim tick-for-tick. These charts update independently of the dashboard's end-of-day scoring. Moving-average labels use BULLISH when the daily close is greater than or equal to its SMA, otherwise BEARISH. Moving-average and RSI(14) values use unadjusted SPY/QQQ end-of-day closes and can differ slightly from TradingView or Thinkorswim. RSI overbought/oversold thresholds describe momentum, not automatic trading signals. The five individual moving-average readings are informational only. Daily MACD(12,26,9) is a scored momentum signal: line ≥ signal adds one Market Health point; line below signal adds zero. The original SPY/QQQ Trend indicator is scored: BEARISH when close is below the 200D SMA; BULLISH when close is above 50D and 50D is above 200D; otherwise CAUTION. RSI contributes one separate momentum point. The price charts and Fear &amp; Greed remain external, informational visuals.</p>
       </section>
       <div class="context-chart-grid" aria-label="Historical market risk and sentiment side by side">
-      <section class="chartpanel history-panel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Market Health Over Time</h2><p>Historical Market Health points out of 16, one observation per completed session.</p><p class="threshold-policy-inline">Market Health: 0–5 Risk-Off · 6–10 Neutral · 11–16 Risk-On (both ETFs)</p><p class="chart-range" id="chart-range">Awaiting date range</p></div><div class="seg history-controls"><button id="hist30" class="active" type="button" title="Last 30 trading sessions">30 Sessions</button><button id="hist90" type="button" title="Last 90 trading sessions">90 Sessions</button><button id="histYear" type="button" title="Past 365 calendar days">1 Year</button><button id="hist20m" type="button" title="Past 20 calendar months">20 Months</button></div></div><svg id="history-svg" viewBox="0 0 620 270" role="img" aria-label="Historical SPY and QQQ Market Health Scores with Neutral boundaries"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="chart-threshold-key">- - - 5.5 / 10.5 health regime boundaries</span></div><p class="chart-footnote">Equal spacing represents consecutive sessions. Higher Market Health means fewer bearish signals; Neutral is 6–10. Partial scores are marked.</p></section>
+      <section class="chartpanel history-panel"><div class="panel-head"><div><div class="eyebrow">REGIME HISTORY</div><h2>Market Health Over Time</h2><p>Saved EOD observations are authoritative. Switch to reconstructed research for longer historical comparisons.</p><p class="threshold-policy-inline">Market Health: 0–5 Risk-Off · 6–10 Neutral · 11–16 Risk-On (both ETFs)</p><p class="chart-range" id="chart-range">Awaiting date range</p></div><div class="seg history-controls"><label class="history-source-label">Data source <select id="history-source" aria-label="History data source"><option value="saved" selected>Saved EOD</option><option value="research">Reconstructed research</option></select></label><button id="hist30" class="active" type="button" title="Last 30 trading sessions">30 Sessions</button><button id="hist90" type="button" title="Last 90 trading sessions">90 Sessions</button><button id="histYear" type="button" title="Past 365 calendar days">1 Year</button><button id="hist20m" type="button" title="Past 20 calendar months">20 Months</button></div></div><svg id="history-svg" viewBox="0 0 620 270" role="img" aria-label="Historical SPY and QQQ Market Health Scores with Neutral boundaries"></svg><div class="chart-legend"><span><i class="swatch swsp"></i>S&P 500</span><span><i class="swatch swnd"></i>Nasdaq-100</span><span class="chart-threshold-key">- - - 5.5 / 10.5 health regime boundaries</span></div><p class="chart-footnote">Saved history preserves original 15-/16-point denominators (hollow markers for legacy or partial readings), without filling gaps. Reconstructed research is recalculated from downloaded data and can differ from saved scores. Higher Market Health means fewer bearish signals.</p></section>
       <!-- Independent market sentiment, informational and not part of either score. -->
       <section class="chartpanel fear-panel" aria-label="Independent Fear and Greed Index history">
         <div class="panel-head fear-head">
@@ -250,7 +250,7 @@
   </div>
   <script src="market-intelligence.js?v=integrity-20261126a" defer></script>
   <script src="price-risk.js?v=macd16-20261125b-price-risk-20261123a" defer></script>
-  <script src="app.js?v=macd-label-20261126" defer></script>
+  <script src="app.js?v=saved-history-20261127" defer></script>
   <script src="market-extras.js?v=context-20261122b" defer></script>
   <script src="dashboard-clarity.js?v=compact-technicals-20261126" defer></script>
   <script src="daily-summaries.js?v=integrity-20261126a" defer></script>

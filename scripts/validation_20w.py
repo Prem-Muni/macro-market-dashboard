@@ -9,6 +9,10 @@ from datetime import timedelta
 from statistics import mean, median, stdev
 import math
 import pandas as pd
+try:
+    from eod_freshness import is_regular_session
+except ModuleNotFoundError:
+    from scripts.eod_freshness import is_regular_session
 
 REGIMES = ('RISK-OFF','NEUTRAL','RISK-ON')
 HORIZONS = (1, 5, 10)
@@ -22,15 +26,20 @@ def _safe(x):
 def _pct(x):
     return round(x,3) if x is not None else None
 
+def _nonoverlap(observations, horizon):
+    picked=[]; last=-10**9
+    for row in sorted(observations,key=lambda x:x['index']):
+        if row['index']>=last+horizon:
+            picked.append(row);last=row['index']
+    return picked
+
+
 def _stats(observations, horizon):
     vals=[x['return_pct'] for x in observations]
     n=len(vals)
     # Select signals separated by >= horizon sessions. Deterministic greedy
     # selection in chronological order; this is descriptive sensitivity only.
-    non=[]; last=-10**9
-    for row in observations:
-        if row['index']>=last+horizon:
-            non.append(row['return_pct']);last=row['index']
+    non=[r['return_pct'] for r in _nonoverlap(observations,horizon)]
     return {
         'n':n,
         'positive_n':sum(v>0 for v in vals),
@@ -58,14 +67,23 @@ def evaluate(records, prices, end_date=None, weeks=20):
     frame.index=pd.DatetimeIndex(frame.index).tz_localize(None).normalize()
     end=pd.Timestamp(end_date or frame.index.max()).normalize()
     start=end-timedelta(days=7*weeks)
-    items=[r for r in records if start<=pd.Timestamp(r['date'])<=end]
+    if frame.index.has_duplicates:raise ValueError('duplicate normalized price dates')
+    # Reindex to expected NYSE sessions so a missing common price date cannot
+    # silently compress a five-session holding period into six or more sessions.
+    expected=pd.DatetimeIndex([d for d in pd.date_range(frame.index.min(),end) if is_regular_session(d.date())])
+    missing_dates=expected.difference(frame.index)
+    frame=frame.reindex(expected)
+    items=sorted((r for r in records if start<=pd.Timestamp(r['date'])<=end and is_regular_session(pd.Timestamp(r['date']).date())),key=lambda r:r['date'])
+    if len({r['date'] for r in items})!=len(items):raise ValueError('duplicate scored dates')
     mapping={pd.Timestamp(d):i for i,d in enumerate(frame.index)}
     result={'version':1,'model':'16-point-health-v2-macd-neutral-6-10',
             'start':start.strftime('%Y-%m-%d'),'end':end.strftime('%Y-%m-%d'),
             'weeks':weeks,'method':'reconstructed_historical_EOD_not_point_in_time_saved_signals',
             'outcome':'positive ETF close-to-close return after 1/5/10 trading sessions',
             'thresholds':{'risk_off':[0,5],'neutral':[6,10],'risk_on':[11,16]},
-            'markets':{}}
+            'markets':{},'audit_version':2,
+            'calendar_missing_price_dates':[d.strftime('%Y-%m-%d') for d in missing_dates if start<=d<=end],
+            'execution_sensitivity':'next-session close to close h sessions later; same eligible signal dates as paired benchmark where both outcomes mature'}
     for key,symbol in [('sp','SPY'),('nd','QQQ')]:
         available=0;incomplete=0;eligible=[]
         for r in items:
@@ -81,9 +99,9 @@ def evaluate(records, prices, end_date=None, weeks=20):
             regime='RISK-OFF' if health<=5 else 'NEUTRAL' if health<=10 else 'RISK-ON'
             eligible.append({'index':idx,'date':r['date'],'health':int(health),'regime':regime,'close':close})
         regimes={name:{'signal_sessions':sum(row['regime']==name for row in eligible),'horizons':{}} for name in REGIMES}
-        baseline={}
+        baseline={}; matched={}; execution={}
         for h in HORIZONS:
-            groups={name:[] for name in REGIMES};all_obs=[]
+            groups={name:[] for name in REGIMES};all_obs=[];delayed=[];paired=[]
             for row in eligible:
                 idx=row['index']
                 if idx+h>=len(frame) or frame.index[idx+h]>end:continue
@@ -91,17 +109,31 @@ def evaluate(records, prices, end_date=None, weeks=20):
                 if len(vals)!=h or any(v is None for v in vals):continue
                 rr={**row,'return_pct':(vals[-1]/row['close']-1)*100}
                 groups[row['regime']].append(rr);all_obs.append(rr)
+                # The final EOD score is known only after the signal close.
+                # Compare the original outcome to a delayed next-close entry on
+                # an identical set of mature, complete windows.
+                if idx+h+1<len(frame) and frame.index[idx+h+1]<=end:
+                    exit_close=_safe(frame[symbol].iloc[idx+h+1])
+                    if exit_close is not None:
+                        delayed.append({**row,'return_pct':(exit_close/vals[0]-1)*100})
+                        paired.append(rr)
             for name in REGIMES:regimes[name]['horizons'][str(h)]=_stats(groups[name],h)
             baseline[str(h)]=_stats(all_obs,h)
+            independent=_nonoverlap(all_obs,h)
+            matched[str(h)]={'all':_stats(independent,h),'regimes':{name:_stats([r for r in independent if r['regime']==name],h) for name in REGIMES}}
+            execution[str(h)]={'all':{'signal_close':_stats(paired,h),'next_close':_stats(delayed,h)},'regimes':{name:{'signal_close':_stats([r for r in paired if r['regime']==name],h),'next_close':_stats([r for r in delayed if r['regime']==name],h)} for name in REGIMES}}
         result['markets'][key]={'symbol':symbol,'eligible_signal_sessions':available,
                                 'incomplete_or_missing_sessions':incomplete,
-                                'regimes':regimes,'all_eligible':{'horizons':baseline}}
+                                'regimes':regimes,'all_eligible':{'horizons':baseline},'matched_nonoverlap':matched,'next_close_sensitivity':execution}
     result['limitations']=[
         'Reconstructed historical signals, NOT saved historical live observations. Current constituents can introduce survivorship bias.',
         'No dividends, trading costs or slippage. Five- and ten-session return windows overlap; nonoverlap statistics are sensitivity checks.',
         'Classification thresholds were chosen before this test but after earlier model research; this is not out-of-sample proof.',
         'Short 20-week window. No statistical significance or predictive-performance claim is made.',
         'The latest sessions lack mature forward outcomes and are excluded from those horizons.',
-        'Exclude any incomplete 16-point scores instead of inferring their regime.'
+        'Exclude any incomplete 16-point scores instead of inferring their regime.',
+        'Signal-close entry is a descriptive benchmark, not a price known to be executable after the EOD model runs. Next-close entry is a separate delayed execution sensitivity, before costs.',
+        'NYSE standard holiday calendar; unanticipated closures are not modeled. Missing expected price dates invalidate affected windows rather than compressing them.',
+        'Matched non-overlap windows are selected chronologically across all regimes, separately for each ETF and horizon; adjacent windows may share an endpoint.'
     ]
     return result

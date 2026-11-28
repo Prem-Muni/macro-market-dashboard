@@ -466,3 +466,6 @@ html{scroll-behavior:smooth}
 .market-card[data-regime="NEUTRAL"] .risk-meter div{background:linear-gradient(90deg,#9b893a,#e9c568)}
 .market-card[data-regime="RISK-OFF"] .risk-meter div{background:linear-gradient(90deg,#9b394b,#fa6a77)}
 .market-card[data-regime="RISK-ON"] .risk-meter div{background:linear-gradient(90deg,#16835e,#34e2a4)}
+
+/* Saved/reconstructed history chooser. */
+.history-source-label{display:flex;align-items:center;gap:5px;font-size:11px;white-space:nowrap;color:#a8bfd2}.history-source-label select{background:#172b3c;color:#e0edf8;border:1px solid #40566b;border-radius:6px;padding:5px;font:inherit}.history-controls{flex-wrap:wrap;justify-content:flex-end}
