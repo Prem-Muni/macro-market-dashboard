@@ -1,6 +1,6 @@
 {
   "session": "2026-11-27",
-  "generated_at": "2026-11-27T22:35:21.081336+00:00",
+  "generated_at": "2026-11-28T02:42:50.874980+00:00",
   "model_version": "16-point-health-v2-macd-neutral-6-10",
   "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
   "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
@@ -68,64 +68,64 @@
     },
     "nasdaq100": {
       "score": {
-        "bearish": 8,
+        "bearish": 9,
         "possible_max": 9,
         "health": 7,
-        "health_max": 8,
+        "health_max": 7,
         "total": 16,
-        "available": 15,
-        "missing": 1,
+        "available": 16,
+        "missing": 0,
         "regime": "NEUTRAL",
-        "complete": false
+        "complete": true
       },
       "legacy_14": {
-        "bearish": 6,
+        "bearish": 7,
         "possible_max": 7,
         "health": 7,
-        "health_max": 8,
+        "health_max": 7,
         "total": 14,
-        "available": 13,
-        "missing": 1,
+        "available": 14,
+        "missing": 0,
         "regime": "CAUTION",
-        "complete": false
+        "complete": true
       },
       "legacy_15": {
-        "bearish": 7,
+        "bearish": 8,
         "possible_max": 8,
         "health": 7,
-        "health_max": 8,
+        "health_max": 7,
         "total": 15,
-        "available": 14,
-        "missing": 1,
+        "available": 15,
+        "missing": 0,
         "regime": "NEUTRAL",
-        "complete": false
+        "complete": true
       },
       "momentum": {
-        "d1": -2,
-        "d5": -3,
+        "d1": -1,
+        "d5": -2,
         "state": "IMPROVING",
         "d1_range": [
-          -2,
+          -1,
           -1
         ],
         "d5_range": [
-          -3,
+          -2,
           -2
         ],
-        "partial": true
+        "partial": false
       },
       "confirmation": {
-        "confirmed": 2,
-        "available": 3,
+        "confirmed": 3,
+        "available": 4,
         "total": 4,
         "components": {
-          "volatility": null,
+          "volatility": true,
           "credit": false,
           "breadth": true,
           "price": true
         }
       },
-      "swing": "N/A"
+      "swing": "EARLY IMPROVEMENT"
     }
   },
   "signals": {
@@ -137,11 +137,11 @@
       "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
     },
     "vxn": {
-      "state": "na",
-      "label": "N/A",
-      "value": null,
-      "note": "Market data unavailable or stale",
-      "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
+      "state": "bear",
+      "label": "BEARISH",
+      "value": 33.34,
+      "note": "Spot implied volatility",
+      "source": "Cboe official historical CSV: VXN"
     },
     "oil": {
       "state": "bull",
@@ -409,8 +409,8 @@
         "new_bearish": [],
         "eased": [],
         "other": [],
-        "compared": 9,
-        "skipped": 1,
+        "compared": 10,
+        "skipped": 0,
         "total": 10
       }
     },
@@ -4286,8 +4286,8 @@
       "sp": 7,
       "sp_available": 16,
       "sp_max": 7,
-      "nd": 8,
-      "nd_available": 15,
+      "nd": 9,
+      "nd_available": 16,
       "nd_max": 9
     }
   ],
@@ -6192,12 +6192,12 @@
         "status": "same_date_observation"
       },
       "VXN": {
-        "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+        "provider": "Cboe official historical CSV: VXN",
         "requested_session": "2026-11-27",
-        "observation_session": null,
+        "observation_session": "2026-11-27",
         "previous_observation_session": "2026-11-25",
-        "latest_vendor_session": "2026-11-25",
-        "status": "missing_for_session"
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
       },
       "VIX3M": {
         "provider": "Yahoo fallback (unofficial)",
@@ -6305,8 +6305,8 @@
       "latest_session": "2026-11-27"
     },
     "VXN": {
-      "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
-      "latest_session": "2026-11-25"
+      "provider": "Cboe official historical CSV: VXN",
+      "latest_session": "2026-11-27"
     },
     "VIX3M": {
       "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
@@ -9526,8 +9526,8 @@
                 "latest_session": "2026-11-27"
               },
               "VXN": {
-                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
-                "latest_session": "2026-11-25"
+                "provider": "Cboe official historical CSV: VXN",
+                "latest_session": "2026-11-27"
               },
               "VIX3M": {
                 "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
@@ -9668,8 +9668,8 @@
                   "previous_observation_session": "2026-11-25",
                   "latest_vendor_session": "2026-11-27",
                   "status": "same_date_observation",
-                  "daily_change": -0.7399978637695312,
-                  "change_pct": -0.8843186676276349,
+                  "daily_change": -0.5999984741210938,
+                  "change_pct": -0.717015382329035,
                   "direction": "down",
                   "settlement_verified": false
                 },
@@ -9710,12 +9710,12 @@
                   "status": "same_date_observation"
                 },
                 "VXN": {
-                  "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                  "provider": "Cboe official historical CSV: VXN",
                   "requested_session": "2026-11-27",
-                  "observation_session": null,
+                  "observation_session": "2026-11-27",
                   "previous_observation_session": "2026-11-25",
-                  "latest_vendor_session": "2026-11-25",
-                  "status": "missing_for_session"
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
                 },
                 "VIX3M": {
                   "provider": "Yahoo fallback (unofficial)",
@@ -9836,11 +9836,11 @@
                 "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
               },
               "vxn": {
-                "state": "na",
-                "label": "N/A",
-                "value": null,
-                "note": "Market data unavailable or stale",
-                "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 33.34,
+                "note": "Spot implied volatility",
+                "source": "Cboe official historical CSV: VXN"
               },
               "nd_def": {
                 "state": "bear",
@@ -10039,8 +10039,8 @@
                 "latest_session": "2026-11-27"
               },
               "VXN": {
-                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
-                "latest_session": "2026-11-25"
+                "provider": "Cboe official historical CSV: VXN",
+                "latest_session": "2026-11-27"
               },
               "VIX3M": {
                 "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
@@ -10068,7 +10068,7 @@
               "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
             ],
             "confirmation_components": {
-              "volatility": null,
+              "volatility": true,
               "credit": false,
               "breadth": true,
               "price": true
@@ -10181,8 +10181,8 @@
                   "previous_observation_session": "2026-11-25",
                   "latest_vendor_session": "2026-11-27",
                   "status": "same_date_observation",
-                  "daily_change": -0.7399978637695312,
-                  "change_pct": -0.8843186676276349,
+                  "daily_change": -0.5999984741210938,
+                  "change_pct": -0.717015382329035,
                   "direction": "down",
                   "settlement_verified": false
                 },
@@ -10223,12 +10223,12 @@
                   "status": "same_date_observation"
                 },
                 "VXN": {
-                  "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                  "provider": "Cboe official historical CSV: VXN",
                   "requested_session": "2026-11-27",
-                  "observation_session": null,
+                  "observation_session": "2026-11-27",
                   "previous_observation_session": "2026-11-25",
-                  "latest_vendor_session": "2026-11-25",
-                  "status": "missing_for_session"
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
                 },
                 "VIX3M": {
                   "provider": "Yahoo fallback (unofficial)",
@@ -10277,31 +10277,31 @@
           "previous_close": 633.93,
           "close": 650.99,
           "price_change_pct": 2.69115,
-          "score": 8,
-          "available": 15,
+          "score": 9,
+          "available": 16,
           "total": 16,
-          "regime": "INCOMPLETE",
+          "regime": "NEUTRAL",
           "estimated_count": 1,
           "estimated_signals": [
             "nd_breadth1d"
           ],
           "trend_5d": "IMPROVING",
           "five_day_delta_range": [
-            -3,
+            -2,
             -2
           ],
           "confirmation": {
-            "confirmed": 2,
-            "available": 3,
+            "confirmed": 3,
+            "available": 4,
             "total": 4
           },
-          "swing": "N/A",
-          "previous_score": null,
-          "score_delta_1d": null,
-          "previous_regime": "incomplete",
-          "risk_transition": "uncertain",
-          "price_risk_status": "uncertain",
-          "price_risk_label": "Score incomplete \u2014 no confirmed alert"
+          "swing": "EARLY IMPROVEMENT",
+          "previous_score": 10,
+          "score_delta_1d": -1,
+          "previous_regime": "NEUTRAL",
+          "risk_transition": "unchanged",
+          "price_risk_status": "watch",
+          "price_risk_label": "Large price move \u00b7 Neutral regime"
         },
         "signal_changes": {
           "status": "complete",
@@ -10361,7 +10361,7 @@
             }
           }
         },
-        "spy_qqq_divergence": "uncertain"
+        "spy_qqq_divergence": "none"
       }
     ]
   },
@@ -10383,5 +10383,24 @@
     },
     "basis": "saved complete EOD publication"
   },
-  "comparison_corrected_at": "2026-11-27T22:43:22.883341+00:00"
+  "comparison_corrected_at": "2026-11-27T22:43:22.883341+00:00",
+  "retry_five_day_basis": {
+    "session": "2026-11-19",
+    "markets": {
+      "sp": 13,
+      "nd": 11,
+      "sp_max": 13,
+      "nd_max": 11,
+      "sp_available": 16,
+      "nd_available": 16
+    },
+    "basis": "original reconstructed anchor, not a saved brokerage reading"
+  },
+  "repair_metadata": {
+    "kind": "single_missing_vxn",
+    "session": "2026-11-27",
+    "original_generated_at": "2026-11-27T22:35:21.081336+00:00",
+    "source": "Cboe official historical CSV: VXN",
+    "research_note": "Research results preserved from original full build; refreshed on next full session."
+  }
 }
