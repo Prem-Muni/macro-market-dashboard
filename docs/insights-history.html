@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="internals-recap.css?v=20261125-internals1">
   <script src="insights-history.js?v=consolidated-20261127" defer></script>
   <script src="daily-summaries.js?v=compact-history-20261126" defer></script>
-  <script src="model-validation.js?v=validation-20w-20261125a" defer></script>
+  <script src="model-validation.js?v=validation-audit-20261127" defer></script>
   <link rel="stylesheet" href="model-validation.css?v=validation-20w-20261125a">
   <link rel="stylesheet" href="dashboard-polish.css?v=visual-refresh-20261125a">
   <link rel="stylesheet" href="audit-cleanup.css?v=20261125a">
@@ -102,6 +102,10 @@
           <div class="validation-metrics" id="validation-cards"></div>
           <div class="validation-table-wrap"><table class="validation-table"><thead><tr><th>Regime at signal</th><th>Signals</th><th>Forward outcomes</th><th>Positive</th><th>Median return</th><th>Average return</th><th>Worst outcome</th></tr></thead><tbody id="validation-table-body"></tbody></table></div>
           <p class="validation-note" id="validation-comparison"></p>
+          <h4>Robustness and execution sensitivity</h4>
+          <p class="validation-note" id="validation-audit-status">Waiting for audited results.</p>
+          <div class="validation-table-wrap"><table class="validation-table"><thead><tr><th>Regime</th><th>Matched non-overlap N</th><th>Non-overlap mean</th><th>Paired N</th><th>Signal-close mean</th><th>Next-close mean</th></tr></thead><tbody id="validation-audit-body"></tbody></table></div>
+          <p class="validation-note">The delayed comparison enters at the next session close and exits the selected number of sessions later. Both entry conventions use the same eligible signal dates. No transaction costs are modeled. Non-overlap selection is across regimes, not separately within them.</p>
           <details class="validation-notes"><summary>How the test works · limitations and bias</summary>
             <p>Uses the same end-of-day price and reconstructed indicator inputs as the current 16-point dashboard. It evaluates the <em>following</em> completed sessions, so the signal itself uses no future prices. Full 16/16 signal coverage is required. The last 10 sessions may have no mature 10-session outcome.</p>
             <p>The sample uses reconstructed historical breadth based partly on today's constituents and can have survivorship bias. Return windows overlap. The non-overlapping 5-session sensitivity check offers fewer, less-dependent observations but is not a strategy simulation. Outcomes omit dividends, transaction costs, and slippage. Thresholds were chosen after earlier research, so this cannot establish statistical significance or independent predictive skill.</p>
