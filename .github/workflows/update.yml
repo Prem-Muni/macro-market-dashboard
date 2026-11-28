@@ -7,6 +7,12 @@ on:
     - cron: '20 20,21,22 * * 1-5'
     - cron: '20 0,1 * * 2-6'
   workflow_dispatch:
+    inputs:
+      backup_phase:
+        description: 'Manual deploy, or an independently scheduled eligibility-checked backup'
+        type: choice
+        options: [manual, early, regular, late]
+        default: manual
 
 permissions:
   contents: write
@@ -36,6 +42,7 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           EVENT_CRON: ${{ github.event.schedule }}
+          BACKUP_PHASE: ${{ inputs.backup_phase }}
         run: python scripts/schedule_gate.py
       - name: Generate latest EOD data
         if: steps.schedule_gate.outputs.publish == 'true'
@@ -52,7 +59,7 @@ jobs:
           git add docs/data/latest.json
           if git diff --cached --quiet; then
             echo "No new data"
-            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "deploy=true" >> "$GITHUB_OUTPUT"; else echo "deploy=false" >> "$GITHUB_OUTPUT"; fi
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.backup_phase }}" = "manual" ]; then echo "deploy=true" >> "$GITHUB_OUTPUT"; else echo "deploy=false" >> "$GITHUB_OUTPUT"; fi
           else
             echo "deploy=true" >> "$GITHUB_OUTPUT"
             git commit -m "Update market dashboard [skip ci]"
