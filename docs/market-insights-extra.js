@@ -140,7 +140,7 @@ body:has(#clarity-overview[hidden]) #mi-market-calendar{display:none!important}
   let hero=host.querySelector(".audit-research-hero");if(hero)hero.after(p);else host.prepend(p);render();
  }
  banner(null);
- async function load(){try{let res=await fetch("data/latest.json",{cache:"no-cache"});if(!res.ok)throw Error("HTTP "+res.status);let d=await res.json(),rs=M.rows(d);banner(d);dashboard(d,rs);history(d,rs);research(d,rs)}catch(err){console.warn("Market insights unavailable:",err);}}
+ async function load(){try{let res=await fetch("data/latest.json",{cache:"no-cache"});if(!res.ok)throw Error("HTTP "+res.status);let d=await res.json(),rs=M.rows(d);banner(d);dashboard(d,rs);research(d,rs)}catch(err){console.warn("Market insights unavailable:",err);}}
  banner();load();document.getElementById("refresh")?.addEventListener("click",load);if(document.querySelector("header.topbar[data-market-ticker]")){
   setInterval(()=>banner(),60000);
   // Reload only the external frame, never the dashboard or GitHub Actions.
