@@ -7,10 +7,10 @@
   <meta name="description" content="Saved daily SPY and QQQ scores, close-to-close price changes, price-risk alerts, and market signal changes.">
   <title>Market History | Daily Market Intelligence</title>
   <link rel="stylesheet" href="styles.css?v=macd16-20261125b">
-  <link rel="stylesheet" href="insights-history.css?v=integrity-20261126a">
+  <link rel="stylesheet" href="insights-history.css?v=consolidated-20261127">
   <link rel="stylesheet" href="daily-summaries.css?v=compact-history-20261126">
   <link rel="stylesheet" href="internals-recap.css?v=20261125-internals1">
-  <script src="insights-history.js?v=integrity-20261126a" defer></script>
+  <script src="insights-history.js?v=consolidated-20261127" defer></script>
   <script src="daily-summaries.js?v=compact-history-20261126" defer></script>
   <script src="model-validation.js?v=validation-20w-20261125a" defer></script>
   <link rel="stylesheet" href="model-validation.css?v=validation-20w-20261125a">
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="audit-cleanup.css?v=20261125a">
   <link rel="stylesheet" href="history-direct-tabs.css?v=20261125a">
   <link rel="stylesheet" href="site-brand.css?v=20261125-brand-icons1">
-<script src="market-insights-extra.js?v=overview-only-20261126b" defer></script>
+<script src="market-insights-extra.js?v=consolidated-20261127" defer></script>
 </head>
 <body>
   <div class="shell">
@@ -61,10 +61,14 @@
         <div class="journal-stat"><span>Latest saved EOD</span><strong id="j-last">—</strong><small id="j-last-note">Not yet available</small></div>
         <div class="journal-stat"><span>Price/risk divergence days</span><strong id="j-alerts">—</strong><small id="j-alerts-note">SPY sessions with a price/risk mismatch</small></div>
       </section>
-      <section class="journal-panel" aria-label="Risk-score trend of saved sessions">
-        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION TREND</div><h3 id="j-score-title">SPY Market Health Score history</h3><p>Historical records retain their recorded 15- or 16-point denominator; the November 20 screenshot baseline remains 15-point. Hollow markers identify legacy 15-point or incomplete records. Consecutive saved sessions are connected; missing sessions are not fabricated.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
-        <svg id="j-score-chart" role="img" viewBox="0 0 900 230" aria-label="SPY saved Market Health Scores over completed daily sessions"></svg>
-        <p class="j-chart-note">Scores reflect the daily saved snapshot. The dashed guides mark the Market Health boundaries: Risk-Off 0–5, Neutral 6–10, Risk-On 11–16.</p>
+      <section class="journal-panel j-combined-history" aria-label="Saved closing prices, Market Health and signal history">
+        <div class="journal-panel-header"><div><div class="eyebrow">SAVED SESSION HISTORY</div><h3 id="j-score-title">SPY closing price &amp; Market Health</h3><p>One timeline, two scales. Both charts use the same saved trading sessions.</p></div><div class="journal-key"><span id="j-chart-legend"><i class="j-key-dot spy"></i><span id="j-chart-legend-label">SPY</span></span></div></div>
+        <svg id="j-score-chart" role="img" viewBox="0 0 900 320" aria-label="Saved closing prices and Market Health on aligned dates"></svg>
+        <p class="j-chart-note">Risk-Off 0–5 · Neutral 6–10 · Risk-On 11–16 (current boundaries). Hollow markers identify legacy or incomplete scores; dashed vertical marks show incomplete score ranges. Legacy points are not rescaled. Gaps are not filled. Nov 20 close is a matching technical close, not a paired EOD price verification.</p>
+        <div class="j-heat-heading"><div><h3>Historical signal heatmap</h3><p>Only scored indicators. Each date shows its saved Market Health and the underlying signal states.</p></div><label class="journal-select">Heatmap lookback<select id="j-heatmap-range"><option value="5">5 sessions</option><option value="10" selected>10 sessions</option><option value="20">20 sessions</option><option value="30">30 sessions</option></select></label></div>
+        <div class="j-heat-legend"><span class="j-heat-bull">Bullish · +1</span><span class="j-heat-warn">Caution · +1</span><span class="j-heat-bear">Bearish · 0</span><span class="j-heat-na">Unavailable · unknown</span><span class="j-heat-legacy">Not scored · legacy model</span></div>
+        <div id="j-heatmap" class="j-heat-scroll" tabindex="0" aria-label="Scrollable saved signal heatmap"></div>
+        <p class="j-chart-note">Recovered = indicator details from a matching GitHub commit, not proof of original publication. Hover a cell for its recorded state and provenance. The 15-point model excludes MACD. Informational breadth measures remain in the daily records.</p>
       </section>
       <section class="journal-panel" aria-label="Historical daily insights">
         <div class="journal-panel-header journal-tools-heading"><div><div class="eyebrow">DAILY RECORDS</div><h3 id="j-log-title">SPY historical market log</h3><p>Full saved daily metrics · scroll horizontally for all columns. A dash means not recorded or unavailable. Fear &amp; Greed is external and not automatically archived; the captured Nov 20 value is retained.</p></div><button type="button" id="j-export" class="journal-export" disabled>↓ Export full CSV</button></div>
