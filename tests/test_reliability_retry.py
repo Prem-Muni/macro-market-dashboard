@@ -72,3 +72,21 @@ def test_independent_backup_obeys_calendar_and_finalization():
     assert not eligible("workflow_dispatch","",datetime(2026,11,25,12,45,tzinfo=CT),{},False,"early")
     assert not eligible("workflow_dispatch","",datetime(2026,11,27,16,45,tzinfo=CT),{"session":"2026-11-27"},True,"regular")
     assert eligible("workflow_dispatch","",datetime(2026,11,27,16,45,tzinfo=CT),{},False,"regular")
+
+
+def test_saved_five_day_anchor_and_legacy_fallback():
+    from update import use_saved_five_day
+    def score(b):return dict(bearish=b,possible_max=b,total=16,available=16,complete=True)
+    rows=[dict(date=f"2026-11-{d:02d}",sp=11,nd=11,sp_max=11,nd_max=11,sp_available=16,nd_available=16) for d in (19,20,23,24,25,27)]
+    fresh={"session":"2026-11-27","model_version":"16-point","history":rows,"markets":{m:{"score":score(b),"momentum":{},"confirmation":{"confirmed":3,"available":4,"total":4}} for m,b in (("sp500",7),("nasdaq100",9))},"signals":{"spy_trend":{"state":"bear"},"qqq_trend":{"state":"bear"}}}
+    old={"model_version":"16-point","market_insights_history":{"entries":[{"session":"2026-11-19","spy":{"score":13,"total":16,"available":16},"qqq":{"score":12,"total":16,"available":16}}]}}
+    raw=copy.deepcopy(rows)
+    use_saved_five_day(old,fresh)
+    assert fresh["markets"]["sp500"]["momentum"]["d5_range"]==[-6,-6]
+    assert fresh["markets"]["nasdaq100"]["momentum"]["d5_range"]==[-3,-3]
+    assert fresh["retry_five_day_basis"]["basis"]=="saved complete 16-point EOD observation"
+    assert fresh["history"]==raw
+    old["market_insights_history"]["entries"][0]["spy"]["total"]=15
+    use_saved_five_day(old,fresh)
+    assert fresh["markets"]["sp500"]["momentum"]["d5_range"]==[-4,-4]
+    assert "reconstructed" in fresh["retry_five_day_basis"]["basis"]
