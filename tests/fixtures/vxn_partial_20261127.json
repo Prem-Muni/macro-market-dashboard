@@ -1,0 +1,3317 @@
+{
+  "session": "2026-11-27",
+  "generated_at": "2026-11-27T22:35:21.081336+00:00",
+  "model_version": "16-point-health-v2-macd-neutral-6-10",
+  "mode": "LIVE AUTOMATED / PARTIAL WHEN FEEDS MISSING",
+  "method": "Daily-bar port of Thinkorswim rules; not a live brokerage feed",
+  "markets": {
+    "sp500": {
+      "score": {
+        "bearish": 7,
+        "possible_max": 7,
+        "health": 9,
+        "health_max": 9,
+        "total": 16,
+        "available": 16,
+        "missing": 0,
+        "regime": "NEUTRAL",
+        "complete": true
+      },
+      "legacy_14": {
+        "bearish": 6,
+        "possible_max": 6,
+        "health": 8,
+        "health_max": 8,
+        "total": 14,
+        "available": 14,
+        "missing": 0,
+        "regime": "CAUTION",
+        "complete": true
+      },
+      "legacy_15": {
+        "bearish": 6,
+        "possible_max": 6,
+        "health": 9,
+        "health_max": 9,
+        "total": 15,
+        "available": 15,
+        "missing": 0,
+        "regime": "NEUTRAL",
+        "complete": true
+      },
+      "momentum": {
+        "d1": -3,
+        "d5": -6,
+        "state": "IMPROVING",
+        "d1_range": [
+          -3,
+          -3
+        ],
+        "d5_range": [
+          -6,
+          -6
+        ],
+        "partial": false
+      },
+      "confirmation": {
+        "confirmed": 3,
+        "available": 4,
+        "total": 4,
+        "components": {
+          "volatility": true,
+          "credit": false,
+          "breadth": true,
+          "price": true
+        }
+      },
+      "swing": "SELECTIVE"
+    },
+    "nasdaq100": {
+      "score": {
+        "bearish": 8,
+        "possible_max": 9,
+        "health": 7,
+        "health_max": 8,
+        "total": 16,
+        "available": 15,
+        "missing": 1,
+        "regime": "NEUTRAL",
+        "complete": false
+      },
+      "legacy_14": {
+        "bearish": 6,
+        "possible_max": 7,
+        "health": 7,
+        "health_max": 8,
+        "total": 14,
+        "available": 13,
+        "missing": 1,
+        "regime": "CAUTION",
+        "complete": false
+      },
+      "legacy_15": {
+        "bearish": 7,
+        "possible_max": 8,
+        "health": 7,
+        "health_max": 8,
+        "total": 15,
+        "available": 14,
+        "missing": 1,
+        "regime": "NEUTRAL",
+        "complete": false
+      },
+      "momentum": {
+        "d1": -2,
+        "d5": -3,
+        "state": "IMPROVING",
+        "d1_range": [
+          -2,
+          -1
+        ],
+        "d5_range": [
+          -3,
+          -2
+        ],
+        "partial": true
+      },
+      "confirmation": {
+        "confirmed": 2,
+        "available": 3,
+        "total": 4,
+        "components": {
+          "volatility": null,
+          "credit": false,
+          "breadth": true,
+          "price": true
+        }
+      },
+      "swing": "N/A"
+    }
+  },
+  "signals": {
+    "vix": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": 23.81,
+      "note": "Spot implied volatility",
+      "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
+    },
+    "vxn": {
+      "state": "na",
+      "label": "N/A",
+      "value": null,
+      "note": "Market data unavailable or stale",
+      "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
+    },
+    "oil": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": null,
+      "note": "Daily direction vs SPY",
+      "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+    },
+    "usd": {
+      "state": "bear",
+      "label": "BEARISH DIV",
+      "value": null,
+      "note": "Daily direction vs SPY",
+      "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+    },
+    "tnx": {
+      "state": "bear",
+      "label": "BEARISH DIV",
+      "value": null,
+      "note": "Daily direction vs SPY",
+      "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+    },
+    "credit": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": null,
+      "note": "HYG daily return at least IEF",
+      "source": "HYG / IEF"
+    },
+    "copper": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": null,
+      "note": "Daily copper change",
+      "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+    },
+    "vix_curve": {
+      "state": "warn",
+      "label": "SHALLOW CONTANGO",
+      "value": 1,
+      "note": "VIX / VIX3M implied-volatility ratio",
+      "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+    },
+    "sp_def": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": null,
+      "note": "Defensives lead on 10D",
+      "source": "XLP / XLV / XLU"
+    },
+    "nd_def": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": null,
+      "note": "Defensives lead on 10D",
+      "source": "XLP / XLV / XLU"
+    },
+    "sp_xle": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": null,
+      "note": "Benchmark leads 10D",
+      "source": "XLE"
+    },
+    "nd_xle": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": null,
+      "note": "XLE leads 10D",
+      "source": "XLE"
+    },
+    "sp_smh": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": null,
+      "note": "SMH below 20D EMA",
+      "source": "SMH"
+    },
+    "nd_smh": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": null,
+      "note": "SMH below 20D EMA",
+      "source": "SMH"
+    },
+    "spy_trend": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": null,
+      "note": "Below 200D SMA",
+      "source": "SPY"
+    },
+    "qqq_trend": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": null,
+      "note": "Below 200D SMA",
+      "source": "QQQ"
+    },
+    "sp_rsi14": {
+      "state": "warn",
+      "label": "CAUTION",
+      "value": 45.043,
+      "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+      "source": "SPY EOD close"
+    },
+    "nd_rsi14": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": 44.013,
+      "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+      "source": "QQQ EOD close"
+    },
+    "sp_macd": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": -1.544,
+      "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+      "source": "SPY EOD close · EMA(12,26,9)"
+    },
+    "nd_macd": {
+      "state": "bear",
+      "label": "BEARISH",
+      "value": -0.923,
+      "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+      "source": "QQQ EOD close · EMA(12,26,9)"
+    },
+    "rsp_spy": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": 1.019,
+      "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+      "source": "RSP/SPY"
+    },
+    "iwm_spy": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": 1.442,
+      "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+      "source": "IWM/SPY"
+    },
+    "qqqe_qqq": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": 0.86,
+      "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+      "source": "QQQE/QQQ"
+    },
+    "iwm_qqq": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": 1.522,
+      "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+      "source": "IWM/QQQ"
+    },
+    "sp_breadth1d": {
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 3.808,
+      "note": "1D change in % of SPX constituents above 200D SMA; pp",
+      "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+    },
+    "sp_breadth5d": {
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 9.82,
+      "note": "5D change, percentage points",
+      "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+    },
+    "sp_breadth200": {
+      "state": "bull",
+      "label": "BULLISH",
+      "value": 62.325,
+      "note": "Current % of SPX constituents above own 200D SMA",
+      "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+    },
+    "nd_breadth1d": {
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 92.857,
+      "note": "Today's advancing share % (not SPX 200D breadth)",
+      "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+    },
+    "nd_breadth5d": {
+      "state": "bull",
+      "label": "EXPANDING",
+      "value": 32.609,
+      "note": "Change in average advancing share between adjacent 5D windows; pp",
+      "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+    }
+  },
+  "signal_changes": {
+    "from_session": "2026-11-25",
+    "to_session": "2026-11-27",
+    "groups": {
+      "shared": {
+        "new_bearish": [
+          {
+            "key": "usd",
+            "label": "US Dollar",
+            "before": "BULLISH DIV",
+            "after": "BEARISH DIV",
+            "kind": "new_bearish"
+          },
+          {
+            "key": "tnx",
+            "label": "10Y Yield",
+            "before": "BULLISH DIV",
+            "after": "BEARISH DIV",
+            "kind": "new_bearish"
+          }
+        ],
+        "eased": [
+          {
+            "key": "oil",
+            "label": "Crude Oil",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          },
+          {
+            "key": "credit",
+            "label": "Credit HYG/IEF",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          },
+          {
+            "key": "vix_curve",
+            "label": "VIX Curve",
+            "before": "BACKWARDATION",
+            "after": "SHALLOW CONTANGO",
+            "kind": "eased"
+          }
+        ],
+        "other": [],
+        "compared": 6,
+        "skipped": 0,
+        "total": 6
+      },
+      "sp": {
+        "new_bearish": [],
+        "eased": [
+          {
+            "key": "sp_xle",
+            "label": "XLE/SPY",
+            "before": "BEARISH",
+            "after": "BULLISH",
+            "kind": "eased"
+          },
+          {
+            "key": "sp_rsi14",
+            "label": "SPY RSI (14)",
+            "before": "BEARISH",
+            "after": "CAUTION",
+            "kind": "eased"
+          }
+        ],
+        "other": [],
+        "compared": 10,
+        "skipped": 0,
+        "total": 10
+      },
+      "nd": {
+        "new_bearish": [],
+        "eased": [],
+        "other": [],
+        "compared": 9,
+        "skipped": 1,
+        "total": 10
+      }
+    },
+    "by_key": {
+      "oil": "eased",
+      "usd": "new_bearish",
+      "tnx": "new_bearish",
+      "credit": "eased",
+      "vix_curve": "eased",
+      "sp_xle": "eased",
+      "sp_rsi14": "eased"
+    }
+  },
+  "moving_averages": {
+    "spy": {
+      "symbol": "SPY",
+      "as_of": "2026-11-27",
+      "close": 728.32,
+      "averages": {
+        "5": {
+          "value": 715.18,
+          "distance_pct": 1.84,
+          "state": "BULLISH"
+        },
+        "20": {
+          "value": 738.277,
+          "distance_pct": -1.35,
+          "state": "BEARISH"
+        },
+        "50": {
+          "value": 757.203,
+          "distance_pct": -3.81,
+          "state": "BEARISH"
+        },
+        "100": {
+          "value": 758.367,
+          "distance_pct": -3.96,
+          "state": "BEARISH"
+        },
+        "200": {
+          "value": 733.342,
+          "distance_pct": -0.68,
+          "state": "BEARISH"
+        }
+      },
+      "rsi": {
+        "period": 14,
+        "value": 45.04,
+        "state": "NEUTRAL"
+      }
+    },
+    "qqq": {
+      "symbol": "QQQ",
+      "as_of": "2026-11-27",
+      "close": 650.99,
+      "averages": {
+        "5": {
+          "value": 636.5,
+          "distance_pct": 2.28,
+          "state": "BULLISH"
+        },
+        "20": {
+          "value": 663.513,
+          "distance_pct": -1.89,
+          "state": "BEARISH"
+        },
+        "50": {
+          "value": 705.731,
+          "distance_pct": -7.76,
+          "state": "BEARISH"
+        },
+        "100": {
+          "value": 707.859,
+          "distance_pct": -8.03,
+          "state": "BEARISH"
+        },
+        "200": {
+          "value": 683.688,
+          "distance_pct": -4.78,
+          "state": "BEARISH"
+        }
+      },
+      "rsi": {
+        "period": 14,
+        "value": 44.01,
+        "state": "NEUTRAL"
+      }
+    }
+  },
+  "history": [
+    {
+      "date": "2026-11-19",
+      "sp": 13,
+      "sp_available": 16,
+      "sp_max": 13,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2026-11-20",
+      "sp": 12,
+      "sp_available": 16,
+      "sp_max": 12,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
+    },
+    {
+      "date": "2026-11-23",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 12,
+      "nd_available": 16,
+      "nd_max": 12
+    },
+    {
+      "date": "2026-11-24",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2026-11-25",
+      "sp": 11,
+      "sp_available": 16,
+      "sp_max": 11,
+      "nd": 11,
+      "nd_available": 16,
+      "nd_max": 11
+    },
+    {
+      "date": "2026-11-27",
+      "sp": 7,
+      "sp_available": 16,
+      "sp_max": 7,
+      "nd": 8,
+      "nd_available": 15,
+      "nd_max": 9
+    }
+  ],
+  "history_window_months": 20,
+  "history_storage": "legacy_bearish_counts_display_as_health",
+  "risk_policy": {
+    "score_name": "Market Health",
+    "direction": "higher_is_healthier",
+    "formula": "16 minus bearish signal count; neutral/warning input counts as non-bearish; daily MACD line >= signal earns one health point",
+    "sp500": {
+      "risk_off_max": 5,
+      "neutral_min": 6,
+      "neutral_max": 10,
+      "risk_on_min": 11
+    },
+    "nasdaq100": {
+      "risk_off_max": 5,
+      "neutral_min": 6,
+      "neutral_max": 10,
+      "risk_on_min": 11
+    },
+    "legacy_backtest_policy": "Earlier forward-return research used bearish scores and different thresholds; not validated for this new policy.",
+    "decision_date": "2026-11-25",
+    "prior_model": "15-point-health-v1-neutral-6-10",
+    "macd_rule": "Daily MACD(12,26,9) histogram >=0: non-bearish (+1 health); <0: bearish (+0 health)",
+    "fear_greed_scored": false
+  },
+  "order": {
+    "shared": [
+      "oil",
+      "usd",
+      "tnx",
+      "credit",
+      "copper",
+      "vix_curve"
+    ],
+    "sp500": [
+      "vix",
+      "sp_def",
+      "sp_xle",
+      "sp_smh",
+      "spy_trend",
+      "sp_rsi14",
+      "rsp_spy",
+      "iwm_spy",
+      "sp_breadth1d",
+      "sp_macd",
+      "sp_breadth5d",
+      "sp_breadth200"
+    ],
+    "nasdaq100": [
+      "vxn",
+      "nd_def",
+      "nd_xle",
+      "nd_smh",
+      "qqq_trend",
+      "nd_rsi14",
+      "qqqe_qqq",
+      "iwm_qqq",
+      "nd_breadth1d",
+      "nd_macd",
+      "nd_breadth5d"
+    ]
+  },
+  "names": {
+    "vix": "VIX",
+    "vxn": "VXN",
+    "oil": "Crude Oil",
+    "usd": "US Dollar",
+    "tnx": "10Y Yield",
+    "credit": "Credit HYG/IEF",
+    "copper": "Copper",
+    "vix_curve": "VIX Curve",
+    "sp_rsi14": "SPY RSI (14)",
+    "nd_rsi14": "QQQ RSI (14)",
+    "sp_macd": "SPY MACD (12,26,9)",
+    "nd_macd": "QQQ MACD (12,26,9)",
+    "sp_def": "Defensives/SPY",
+    "sp_xle": "XLE/SPY",
+    "sp_smh": "SMH/SPY",
+    "spy_trend": "SPY Trend",
+    "rsp_spy": "RSP/SPY",
+    "iwm_spy": "IWM/SPY",
+    "sp_breadth1d": "S&P Breadth 1D",
+    "sp_breadth5d": "S&P Breadth 5D",
+    "sp_breadth200": "S&P Breadth 200D",
+    "nd_def": "Defensives/QQQ",
+    "nd_xle": "XLE/QQQ",
+    "nd_smh": "SMH/QQQ",
+    "qqq_trend": "QQQ Trend",
+    "qqqe_qqq": "QQQE/QQQ",
+    "iwm_qqq": "IWM/QQQ",
+    "nd_breadth1d": "Nasdaq Breadth 1D",
+    "nd_breadth5d": "Nasdaq Breadth 5D"
+  },
+  "explanation": {
+    "missing": "Breadth may be estimated from current constituents and unofficial price history when coverage is adequate; otherwise N/A.",
+    "partial": "Health Score is an interval when inputs are missing. Missing points are never automatically counted as healthy.",
+    "rights": "Confirm provider display and redistribution permissions before publishing derived data publicly.",
+    "model": "Experimental 16-point Market Health model for both indexes: higher is healthier; 0–5 Risk-Off, 6–10 Neutral, 11–16 Risk-On. Health counts non-bearish scored states (bullish or neutral), not purely bullish votes. Raw bearish counts are retained for archival compatibility. Historical 20-month scores are reconstructed from downloaded market data, not previously recorded historical snapshots. Breadth uses current constituent membership and may suffer survivorship bias. The existing score ≤4/5 historical research still uses the archived 15-point model; future 5-session ETF price returns are descriptive and overlapping. QQQ risk validation adds median, standard deviation, downside-tail and non-overlapping sensitivity statistics plus chronological 10-month halves. RSI(14) and MACD(12,26,9) each add one point; original 50D/200D trend rule is retained; five SMA readings and external Fear & Greed remain informational only."
+  },
+  "price_moves": {
+    "session": "2026-11-27",
+    "previous_session": "2026-11-25",
+    "status": "complete",
+    "spy": {
+      "previous_close": 716.700012,
+      "close": 728.320007,
+      "change_pct": 1.62132
+    },
+    "qqq": {
+      "previous_close": 633.929993,
+      "close": 650.98999,
+      "change_pct": 2.69115
+    }
+  },
+  "daily_macd": {
+    "parameters": {
+      "fast": 12,
+      "slow": 26,
+      "signal": 9
+    },
+    "source": "unadjusted SPY/QQQ daily closes, same sessions as scored EOD model",
+    "scored": true,
+    "spy": {
+      "as_of": "2026-11-27",
+      "status": "complete",
+      "macd": -11.99099,
+      "signal": -10.44676,
+      "histogram": -1.54423,
+      "relation": "below",
+      "crossover": "none"
+    },
+    "qqq": {
+      "as_of": "2026-11-27",
+      "status": "complete",
+      "macd": -18.81388,
+      "signal": -17.89134,
+      "histogram": -0.92254,
+      "relation": "below",
+      "crossover": "none"
+    }
+  },
+  "source_audit": {
+    "version": 1,
+    "session": "2026-11-27",
+    "previous_session": "2026-11-25",
+    "observations": {
+      "SPY": {
+        "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "QQQ": {
+        "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "RSP": {
+        "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "QQQE": {
+        "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "IWM": {
+        "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "SMH": {
+        "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "XLE": {
+        "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "XLP": {
+        "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "XLV": {
+        "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "XLU": {
+        "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "HYG": {
+        "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "IEF": {
+        "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "OIL": {
+        "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation",
+        "daily_change": -0.5999984741210938,
+        "change_pct": -0.717015382329035,
+        "direction": "down",
+        "settlement_verified": false
+      },
+      "COPPER": {
+        "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation",
+        "daily_change": 0.26800012588500977,
+        "change_pct": 5.025787657639056,
+        "direction": "up",
+        "settlement_verified": false
+      },
+      "USD": {
+        "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "TNX": {
+        "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "VIX": {
+        "provider": "Yahoo fallback (unofficial)",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "VXN": {
+        "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+        "requested_session": "2026-11-27",
+        "observation_session": null,
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-25",
+        "status": "missing_for_session"
+      },
+      "VIX3M": {
+        "provider": "Yahoo fallback (unofficial)",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "SPX_BREADTH200": {
+        "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "NDX_ADV": {
+        "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      },
+      "NDX_DECL": {
+        "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+        "requested_session": "2026-11-27",
+        "observation_session": "2026-11-27",
+        "previous_observation_session": "2026-11-25",
+        "latest_vendor_session": "2026-11-27",
+        "status": "same_date_observation"
+      }
+    },
+    "method": "Same-date provider bars; futures session and settlement can differ from equities. Source provenance is not independent price verification.",
+    "early_equity_close": true
+  },
+  "sources": {
+    "SPY": {
+      "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+      "latest_session": "2026-11-27"
+    },
+    "QQQ": {
+      "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+      "latest_session": "2026-11-27"
+    },
+    "RSP": {
+      "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+      "latest_session": "2026-11-27"
+    },
+    "QQQE": {
+      "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+      "latest_session": "2026-11-27"
+    },
+    "IWM": {
+      "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+      "latest_session": "2026-11-27"
+    },
+    "SMH": {
+      "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+      "latest_session": "2026-11-27"
+    },
+    "XLE": {
+      "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+      "latest_session": "2026-11-27"
+    },
+    "XLP": {
+      "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+      "latest_session": "2026-11-27"
+    },
+    "XLV": {
+      "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+      "latest_session": "2026-11-27"
+    },
+    "XLU": {
+      "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+      "latest_session": "2026-11-27"
+    },
+    "HYG": {
+      "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+      "latest_session": "2026-11-27"
+    },
+    "IEF": {
+      "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+      "latest_session": "2026-11-27"
+    },
+    "OIL": {
+      "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+      "latest_session": "2026-11-27"
+    },
+    "COPPER": {
+      "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+      "latest_session": "2026-11-27"
+    },
+    "USD": {
+      "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+      "latest_session": "2026-11-27"
+    },
+    "TNX": {
+      "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+      "latest_session": "2026-11-27"
+    },
+    "VIX": {
+      "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+      "latest_session": "2026-11-27"
+    },
+    "VXN": {
+      "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+      "latest_session": "2026-11-25"
+    },
+    "VIX3M": {
+      "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+      "latest_session": "2026-11-27"
+    },
+    "SPX_BREADTH200": {
+      "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+      "latest_session": "2026-11-27"
+    },
+    "NDX_ADV": {
+      "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+      "latest_session": "2026-11-27"
+    },
+    "NDX_DECL": {
+      "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+      "latest_session": "2026-11-27"
+    }
+  },
+  "warnings": [
+    "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+    "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+    "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+    "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+    "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+    "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+  ],
+  "market_insights_history": {
+    "version": 1,
+    "entries": [
+      {
+        "session": "2026-11-20",
+        "previous_session": "2026-11-19",
+        "model": "15-point experimental",
+        "record_source": "screenshot_backfill",
+        "source_note": "Friday, November 20, 2026 EOD website screenshots supplied by user. One-time baseline; no November 19 ETF close was supplied, so Friday's price return and price/risk alert were not evaluated. QQQ's collapsed fourth signal change was not visible.",
+        "baseline": true,
+        "spy": {
+          "previous_close": null,
+          "close": 689.81,
+          "price_change_pct": null,
+          "score": 11,
+          "available": 15,
+          "total": 15,
+          "regime": "RISK-OFF",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "sp_breadth1d"
+          ],
+          "trend_5d": "DETERIORATING",
+          "five_day_delta_range": [
+            5,
+            5
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 12,
+          "score_delta_1d": -1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "unchanged",
+          "price_risk_status": "uncertain",
+          "price_risk_label": "Baseline only · previous ETF close unavailable; price/risk alert not evaluated",
+          "baseline_context": {
+            "volatility_index": {
+              "name": "VIX",
+              "value": 35.89,
+              "state": "BEARISH"
+            },
+            "rsi14": 24.91,
+            "index_specific_bearish": 7,
+            "shared_macro_bearish": 4,
+            "breadth_1d": {
+              "state": "CONTRACTING",
+              "value": -3.81,
+              "units": "percentage points"
+            },
+            "breadth_5d": {
+              "state": "CONTRACTING",
+              "value": -18.44,
+              "units": "percentage points"
+            },
+            "breadth_200d": {
+              "state": "CAUTION",
+              "value": 48.7,
+              "units": "percent"
+            },
+            "sma": {
+              "5D": 721.65,
+              "20D": 747.81,
+              "50D": 760.18,
+              "100D": 759.4,
+              "200D": 732.75
+            }
+          }
+        },
+        "qqq": {
+          "previous_close": null,
+          "close": 608.45,
+          "price_change_pct": null,
+          "score": 11,
+          "available": 15,
+          "total": 15,
+          "regime": "RISK-OFF",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "nd_breadth1d"
+          ],
+          "trend_5d": "STABLE",
+          "five_day_delta_range": [
+            1,
+            1
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 10,
+          "score_delta_1d": 1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "unchanged",
+          "price_risk_status": "uncertain",
+          "price_risk_label": "Baseline only · previous ETF close unavailable; price/risk alert not evaluated",
+          "baseline_context": {
+            "volatility_index": {
+              "name": "VXN",
+              "value": 45.25,
+              "state": "BEARISH"
+            },
+            "rsi14": 26.63,
+            "index_specific_bearish": 7,
+            "shared_macro_bearish": 4,
+            "breadth_1d": {
+              "state": "CONTRACTING",
+              "value": 19.39,
+              "units": "advancers percent"
+            },
+            "breadth_5d": {
+              "state": "CONTRACTING",
+              "value": -32.14,
+              "units": "percentage points"
+            },
+            "sma": {
+              "5D": 646.34,
+              "20D": 675.83,
+              "50D": 710.96,
+              "100D": 710.68,
+              "200D": 683.06
+            }
+          }
+        },
+        "spy_qqq_divergence": "opposite_risk_moves",
+        "signal_changes": {
+          "status": "partial",
+          "from_session": "2026-11-19",
+          "to_session": "2026-11-20",
+          "note": "Only changes visible in the user's screenshot were transcribed. One additional QQQ-specific change was collapsed and is not recorded here.",
+          "groups": {
+            "shared": {
+              "new_bearish": [
+                {
+                  "label": "Crude Oil",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "US Dollar",
+                  "before": "BEARISH",
+                  "after": "BULLISH DIV"
+                }
+              ],
+              "other": []
+            },
+            "sp": {
+              "new_bearish": [],
+              "eased": [
+                {
+                  "label": "IWM/SPY",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                }
+              ],
+              "other": []
+            },
+            "nd": {
+              "new_bearish": [
+                {
+                  "label": "Defensives/QQQ",
+                  "before": "CAUTION",
+                  "after": "BEARISH"
+                },
+                {
+                  "label": "XLE/QQQ",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "IWM/QQQ",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                }
+              ],
+              "other": []
+            }
+          }
+        },
+        "shared_macro_snapshot": {
+          "bearish": 4,
+          "total": 6,
+          "oil": "BEARISH",
+          "usd": "BULLISH DIV",
+          "tnx": "BULLISH DIV",
+          "credit": "BEARISH",
+          "copper": "BEARISH",
+          "vix_curve": "BACKWARDATION",
+          "vix_curve_ratio": 1.16
+        },
+        "external_sentiment_snapshot": {
+          "provider_label": "FearGreedChart.com",
+          "as_of": "2026-11-20",
+          "value": 18,
+          "classification": "Extreme Fear",
+          "scored": false
+        }
+      },
+      {
+        "session": "2026-11-23",
+        "previous_session": "2026-11-20",
+        "model": "15-point experimental",
+        "spy": {
+          "previous_close": 689.81,
+          "close": 722.29,
+          "price_change_pct": 4.70854,
+          "score": 10,
+          "available": 15,
+          "total": 15,
+          "regime": "RISK-OFF",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "sp_breadth1d"
+          ],
+          "trend_5d": "STABLE",
+          "five_day_delta_range": [
+            1,
+            1
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": -1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "unchanged",
+          "price_risk_status": "divergence",
+          "price_risk_label": "Strong rally · Risk-Off persists"
+        },
+        "qqq": {
+          "previous_close": 608.45,
+          "close": 651.03,
+          "price_change_pct": 6.99811,
+          "score": 11,
+          "available": 15,
+          "total": 15,
+          "regime": "RISK-OFF",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "nd_breadth1d"
+          ],
+          "trend_5d": "DETERIORATING",
+          "five_day_delta_range": [
+            2,
+            2
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": 0,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "unchanged",
+          "price_risk_status": "divergence",
+          "price_risk_label": "Strong rally · Risk-Off persists"
+        },
+        "signal_changes": {
+          "status": "complete",
+          "groups": {
+            "shared": {
+              "new_bearish": [
+                {
+                  "label": "US Dollar",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH DIV"
+                },
+                {
+                  "label": "10Y Yield",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH DIV"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "Crude Oil",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "Credit HYG/IEF",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "Copper",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                }
+              ],
+              "other": []
+            },
+            "sp": {
+              "new_bearish": [
+                {
+                  "label": "IWM/SPY",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "S&P Breadth 1D",
+                  "before": "CONTRACTING",
+                  "after": "EXPANDING"
+                }
+              ],
+              "other": [
+                {
+                  "label": "RSP/SPY",
+                  "before": "BULLISH",
+                  "after": "CAUTION"
+                }
+              ]
+            },
+            "nd": {
+              "new_bearish": [
+                {
+                  "label": "QQQE/QQQ",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                },
+                {
+                  "label": "IWM/QQQ",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "Nasdaq Breadth 1D",
+                  "before": "CONTRACTING",
+                  "after": "EXPANDING"
+                }
+              ],
+              "other": []
+            }
+          }
+        },
+        "spy_qqq_divergence": "none"
+      },
+      {
+        "session": "2026-11-24",
+        "previous_session": "2026-11-23",
+        "model": "16-point Market Health with scored MACD",
+        "spy": {
+          "macd_info": {
+            "macd": -12.86124,
+            "signal": -9.33189,
+            "histogram": -3.52935,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 722.29,
+          "close": 718.78,
+          "price_change_pct": -0.48595,
+          "score": 11,
+          "available": 16,
+          "total": 16,
+          "regime": "RISK-OFF",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "sp_breadth1d"
+          ],
+          "trend_5d": "STABLE",
+          "five_day_delta_range": [
+            0,
+            0
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": 0,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "unchanged",
+          "price_risk_status": "none",
+          "price_risk_label": "No price/risk alert"
+        },
+        "qqq": {
+          "macd_info": {
+            "macd": -19.84865,
+            "signal": -17.0358,
+            "histogram": -2.81285,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 651.03,
+          "close": 638.1,
+          "price_change_pct": -1.98609,
+          "score": 11,
+          "available": 16,
+          "total": 16,
+          "regime": "RISK-OFF",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "nd_breadth1d"
+          ],
+          "trend_5d": "STABLE",
+          "five_day_delta_range": [
+            -1,
+            -1
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 12,
+          "score_delta_1d": -1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "unchanged",
+          "price_risk_status": "none",
+          "price_risk_label": "No price/risk alert"
+        },
+        "signal_changes": {
+          "status": "complete",
+          "groups": {
+            "shared": {
+              "new_bearish": [
+                {
+                  "label": "Crude Oil",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                },
+                {
+                  "label": "Credit HYG/IEF",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                },
+                {
+                  "label": "Copper",
+                  "before": "BULLISH",
+                  "after": "BEARISH"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "US Dollar",
+                  "before": "BEARISH DIV",
+                  "after": "BULLISH DIV"
+                },
+                {
+                  "label": "10Y Yield",
+                  "before": "BEARISH DIV",
+                  "after": "BULLISH DIV"
+                }
+              ],
+              "other": []
+            },
+            "sp": {
+              "new_bearish": [],
+              "eased": [
+                {
+                  "label": "IWM/SPY",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                }
+              ],
+              "other": [
+                {
+                  "label": "RSP/SPY",
+                  "before": "CAUTION",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "S&P Breadth 1D",
+                  "before": "EXPANDING",
+                  "after": "STABLE"
+                }
+              ]
+            },
+            "nd": {
+              "new_bearish": [],
+              "eased": [
+                {
+                  "label": "QQQE/QQQ",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "IWM/QQQ",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                }
+              ],
+              "other": [
+                {
+                  "label": "Nasdaq Breadth 1D",
+                  "before": "EXPANDING",
+                  "after": "STABLE"
+                }
+              ]
+            }
+          }
+        },
+        "spy_qqq_divergence": "none"
+      },
+      {
+        "session": "2026-11-25",
+        "previous_session": "2026-11-24",
+        "model": "16-point Market Health with scored MACD",
+        "spy": {
+          "metrics": {
+            "signals": {
+              "oil": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+              },
+              "usd": {
+                "state": "bull",
+                "label": "BULLISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+              },
+              "tnx": {
+                "state": "bull",
+                "label": "BULLISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+              },
+              "credit": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "HYG daily return below IEF",
+                "source": "HYG / IEF"
+              },
+              "copper": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily copper change",
+                "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+              },
+              "vix_curve": {
+                "state": "bear",
+                "label": "BACKWARDATION",
+                "value": 1.076,
+                "note": "VIX / VIX3M implied-volatility ratio",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+              },
+              "vix": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 28.29,
+                "note": "Spot implied volatility",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
+              },
+              "sp_def": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Defensives lead on 10D",
+                "source": "XLP / XLV / XLU"
+              },
+              "sp_xle": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "XLE leads 10D",
+                "source": "XLE"
+              },
+              "sp_smh": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "SMH below 20D EMA",
+                "source": "SMH"
+              },
+              "spy_trend": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Below 200D SMA",
+                "source": "SPY"
+              },
+              "sp_rsi14": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 39.833,
+                "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+                "source": "SPY EOD close"
+              },
+              "rsp_spy": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.7,
+                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "source": "RSP/SPY"
+              },
+              "iwm_spy": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.458,
+                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "source": "IWM/SPY"
+              },
+              "sp_breadth1d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 2.806,
+                "note": "1D change in % of SPX constituents above 200D SMA; pp",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              },
+              "sp_macd": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": -2.915,
+                "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+                "source": "SPY EOD close · EMA(12,26,9)"
+              },
+              "sp_breadth5d": {
+                "state": "warn",
+                "label": "STABLE",
+                "value": 0.2,
+                "note": "5D change, percentage points",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              },
+              "sp_breadth200": {
+                "state": "warn",
+                "label": "CAUTION",
+                "value": 58.517,
+                "note": "Current % of SPX constituents above own 200D SMA",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              }
+            },
+            "names": {
+              "oil": "Crude Oil",
+              "usd": "US Dollar",
+              "tnx": "10Y Yield",
+              "credit": "Credit HYG/IEF",
+              "copper": "Copper",
+              "vix_curve": "VIX Curve",
+              "vix": "VIX",
+              "sp_def": "Defensives/SPY",
+              "sp_xle": "XLE/SPY",
+              "sp_smh": "SMH/SPY",
+              "spy_trend": "SPY Trend",
+              "sp_rsi14": "SPY RSI (14)",
+              "rsp_spy": "RSP/SPY",
+              "iwm_spy": "IWM/SPY",
+              "sp_breadth1d": "S&P Breadth 1D",
+              "sp_macd": "SPY MACD (12,26,9)",
+              "sp_breadth5d": "S&P Breadth 5D",
+              "sp_breadth200": "S&P Breadth 200D"
+            },
+            "moving_averages": {
+              "symbol": "SPY",
+              "as_of": "2026-11-25",
+              "close": 716.7,
+              "averages": {
+                "5": {
+                  "value": 712.69,
+                  "distance_pct": 0.56,
+                  "state": "BULLISH"
+                },
+                "20": {
+                  "value": 740.329,
+                  "distance_pct": -3.19,
+                  "state": "BEARISH"
+                },
+                "50": {
+                  "value": 757.889,
+                  "distance_pct": -5.43,
+                  "state": "BEARISH"
+                },
+                "100": {
+                  "value": 758.538,
+                  "distance_pct": -5.52,
+                  "state": "BEARISH"
+                },
+                "200": {
+                  "value": 733.161,
+                  "distance_pct": -2.25,
+                  "state": "BEARISH"
+                }
+              },
+              "rsi": {
+                "period": 14,
+                "value": 39.83,
+                "state": "NEUTRAL"
+              }
+            },
+            "sources": {
+              "SPY": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                "latest_session": "2026-11-25"
+              },
+              "QQQ": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                "latest_session": "2026-11-25"
+              },
+              "RSP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                "latest_session": "2026-11-25"
+              },
+              "QQQE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                "latest_session": "2026-11-25"
+              },
+              "IWM": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                "latest_session": "2026-11-25"
+              },
+              "SMH": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                "latest_session": "2026-11-25"
+              },
+              "XLE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                "latest_session": "2026-11-25"
+              },
+              "XLP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                "latest_session": "2026-11-25"
+              },
+              "XLV": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                "latest_session": "2026-11-25"
+              },
+              "XLU": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                "latest_session": "2026-11-25"
+              },
+              "HYG": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                "latest_session": "2026-11-25"
+              },
+              "IEF": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                "latest_session": "2026-11-25"
+              },
+              "OIL": {
+                "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                "latest_session": "2026-11-25"
+              },
+              "COPPER": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                "latest_session": "2026-11-25"
+              },
+              "USD": {
+                "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                "latest_session": "2026-11-25"
+              },
+              "TNX": {
+                "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                "latest_session": "2026-11-25"
+              },
+              "VIX": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+                "latest_session": "2026-11-25"
+              },
+              "VXN": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                "latest_session": "2026-11-25"
+              },
+              "VIX3M": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+                "latest_session": "2026-11-25"
+              },
+              "SPX_BREADTH200": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                "latest_session": "2026-11-25"
+              },
+              "NDX_ADV": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-25"
+              },
+              "NDX_DECL": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-25"
+              }
+            },
+            "warnings": [
+              "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+              "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+              "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+              "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+              "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+              "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+            ],
+            "confirmation_components": {
+              "volatility": false,
+              "credit": false,
+              "breadth": false,
+              "price": false
+            }
+          },
+          "macd_info": {
+            "macd": -12.97595,
+            "signal": -10.0607,
+            "histogram": -2.91525,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 718.78,
+          "close": 716.7,
+          "price_change_pct": -0.28938,
+          "score": 10,
+          "available": 16,
+          "total": 16,
+          "regime": "NEUTRAL",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "sp_breadth1d"
+          ],
+          "trend_5d": "STABLE",
+          "five_day_delta_range": [
+            -1,
+            -1
+          ],
+          "confirmation": {
+            "confirmed": 0,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": -1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "changed",
+          "price_risk_status": "none",
+          "price_risk_label": "No price/risk alert"
+        },
+        "qqq": {
+          "metrics": {
+            "signals": {
+              "oil": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+              },
+              "usd": {
+                "state": "bull",
+                "label": "BULLISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+              },
+              "tnx": {
+                "state": "bull",
+                "label": "BULLISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+              },
+              "credit": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "HYG daily return below IEF",
+                "source": "HYG / IEF"
+              },
+              "copper": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily copper change",
+                "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+              },
+              "vix_curve": {
+                "state": "bear",
+                "label": "BACKWARDATION",
+                "value": 1.076,
+                "note": "VIX / VIX3M implied-volatility ratio",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+              },
+              "vxn": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 38.53,
+                "note": "Spot implied volatility",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
+              },
+              "nd_def": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Defensives lead on 10D",
+                "source": "XLP / XLV / XLU"
+              },
+              "nd_xle": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "XLE leads 10D",
+                "source": "XLE"
+              },
+              "nd_smh": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "SMH below 20D EMA",
+                "source": "SMH"
+              },
+              "qqq_trend": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Below 200D SMA",
+                "source": "QQQ"
+              },
+              "nd_rsi14": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 38.581,
+                "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+                "source": "QQQ EOD close"
+              },
+              "qqqe_qqq": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.327,
+                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "source": "QQQE/QQQ"
+              },
+              "iwm_qqq": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 2.777,
+                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "source": "IWM/QQQ"
+              },
+              "nd_breadth1d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 56.122,
+                "note": "Today's advancing share % (not SPX 200D breadth)",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+              },
+              "nd_macd": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": -2.5,
+                "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+                "source": "QQQ EOD close · EMA(12,26,9)"
+              },
+              "nd_breadth5d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 11.313,
+                "note": "Change in average advancing share between adjacent 5D windows; pp",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+              }
+            },
+            "names": {
+              "oil": "Crude Oil",
+              "usd": "US Dollar",
+              "tnx": "10Y Yield",
+              "credit": "Credit HYG/IEF",
+              "copper": "Copper",
+              "vix_curve": "VIX Curve",
+              "vxn": "VXN",
+              "nd_def": "Defensives/QQQ",
+              "nd_xle": "XLE/QQQ",
+              "nd_smh": "SMH/QQQ",
+              "qqq_trend": "QQQ Trend",
+              "nd_rsi14": "QQQ RSI (14)",
+              "qqqe_qqq": "QQQE/QQQ",
+              "iwm_qqq": "IWM/QQQ",
+              "nd_breadth1d": "Nasdaq Breadth 1D",
+              "nd_macd": "QQQ MACD (12,26,9)",
+              "nd_breadth5d": "Nasdaq Breadth 5D"
+            },
+            "moving_averages": {
+              "symbol": "QQQ",
+              "as_of": "2026-11-25",
+              "close": 633.93,
+              "averages": {
+                "5": {
+                  "value": 635.31,
+                  "distance_pct": -0.22,
+                  "state": "BEARISH"
+                },
+                "20": {
+                  "value": 666.731,
+                  "distance_pct": -4.92,
+                  "state": "BEARISH"
+                },
+                "50": {
+                  "value": 707.05,
+                  "distance_pct": -10.34,
+                  "state": "BEARISH"
+                },
+                "100": {
+                  "value": 708.464,
+                  "distance_pct": -10.52,
+                  "state": "BEARISH"
+                },
+                "200": {
+                  "value": 683.499,
+                  "distance_pct": -7.25,
+                  "state": "BEARISH"
+                }
+              },
+              "rsi": {
+                "period": 14,
+                "value": 38.58,
+                "state": "NEUTRAL"
+              }
+            },
+            "sources": {
+              "SPY": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                "latest_session": "2026-11-25"
+              },
+              "QQQ": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                "latest_session": "2026-11-25"
+              },
+              "RSP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                "latest_session": "2026-11-25"
+              },
+              "QQQE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                "latest_session": "2026-11-25"
+              },
+              "IWM": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                "latest_session": "2026-11-25"
+              },
+              "SMH": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                "latest_session": "2026-11-25"
+              },
+              "XLE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                "latest_session": "2026-11-25"
+              },
+              "XLP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                "latest_session": "2026-11-25"
+              },
+              "XLV": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                "latest_session": "2026-11-25"
+              },
+              "XLU": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                "latest_session": "2026-11-25"
+              },
+              "HYG": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                "latest_session": "2026-11-25"
+              },
+              "IEF": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                "latest_session": "2026-11-25"
+              },
+              "OIL": {
+                "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                "latest_session": "2026-11-25"
+              },
+              "COPPER": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                "latest_session": "2026-11-25"
+              },
+              "USD": {
+                "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                "latest_session": "2026-11-25"
+              },
+              "TNX": {
+                "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                "latest_session": "2026-11-25"
+              },
+              "VIX": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+                "latest_session": "2026-11-25"
+              },
+              "VXN": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                "latest_session": "2026-11-25"
+              },
+              "VIX3M": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+                "latest_session": "2026-11-25"
+              },
+              "SPX_BREADTH200": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                "latest_session": "2026-11-25"
+              },
+              "NDX_ADV": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-25"
+              },
+              "NDX_DECL": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-25"
+              }
+            },
+            "warnings": [
+              "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+              "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+              "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+              "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+              "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+              "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+            ],
+            "confirmation_components": {
+              "volatility": false,
+              "credit": false,
+              "breadth": true,
+              "price": false
+            }
+          },
+          "macd_info": {
+            "macd": -20.16034,
+            "signal": -17.66071,
+            "histogram": -2.49963,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 638.1,
+          "close": 633.93,
+          "price_change_pct": -0.6535,
+          "score": 10,
+          "available": 16,
+          "total": 16,
+          "regime": "NEUTRAL",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "nd_breadth1d"
+          ],
+          "trend_5d": "IMPROVING",
+          "five_day_delta_range": [
+            -3,
+            -3
+          ],
+          "confirmation": {
+            "confirmed": 1,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "BEARISH",
+          "previous_score": 11,
+          "score_delta_1d": -1,
+          "previous_regime": "RISK-OFF",
+          "risk_transition": "changed",
+          "price_risk_status": "none",
+          "price_risk_label": "No price/risk alert"
+        },
+        "signal_changes": {
+          "status": "complete",
+          "groups": {
+            "shared": {
+              "new_bearish": [],
+              "eased": [
+                {
+                  "label": "Copper",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                }
+              ],
+              "other": []
+            },
+            "sp": {
+              "new_bearish": [],
+              "eased": [],
+              "other": [
+                {
+                  "label": "S&P Breadth 1D",
+                  "before": "STABLE",
+                  "after": "EXPANDING"
+                }
+              ]
+            },
+            "nd": {
+              "new_bearish": [],
+              "eased": [],
+              "other": [
+                {
+                  "label": "Nasdaq Breadth 1D",
+                  "before": "STABLE",
+                  "after": "EXPANDING"
+                }
+              ]
+            }
+          }
+        },
+        "spy_qqq_divergence": "none"
+      },
+      {
+        "session": "2026-11-27",
+        "previous_session": "2026-11-25",
+        "model": "16-point Market Health with scored MACD",
+        "spy": {
+          "metrics": {
+            "signals": {
+              "oil": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+              },
+              "usd": {
+                "state": "bear",
+                "label": "BEARISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+              },
+              "tnx": {
+                "state": "bear",
+                "label": "BEARISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+              },
+              "credit": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "HYG daily return at least IEF",
+                "source": "HYG / IEF"
+              },
+              "copper": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily copper change",
+                "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+              },
+              "vix_curve": {
+                "state": "warn",
+                "label": "SHALLOW CONTANGO",
+                "value": 1,
+                "note": "VIX / VIX3M implied-volatility ratio",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+              },
+              "vix": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 23.81,
+                "note": "Spot implied volatility",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX)"
+              },
+              "sp_def": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Defensives lead on 10D",
+                "source": "XLP / XLV / XLU"
+              },
+              "sp_xle": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Benchmark leads 10D",
+                "source": "XLE"
+              },
+              "sp_smh": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "SMH below 20D EMA",
+                "source": "SMH"
+              },
+              "spy_trend": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Below 200D SMA",
+                "source": "SPY"
+              },
+              "sp_rsi14": {
+                "state": "warn",
+                "label": "CAUTION",
+                "value": 45.043,
+                "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+                "source": "SPY EOD close"
+              },
+              "rsp_spy": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.019,
+                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "source": "RSP/SPY"
+              },
+              "iwm_spy": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.442,
+                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "source": "IWM/SPY"
+              },
+              "sp_breadth1d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 3.808,
+                "note": "1D change in % of SPX constituents above 200D SMA; pp",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              },
+              "sp_macd": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": -1.544,
+                "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+                "source": "SPY EOD close · EMA(12,26,9)"
+              },
+              "sp_breadth5d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 9.82,
+                "note": "5D change, percentage points",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              },
+              "sp_breadth200": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 62.325,
+                "note": "Current % of SPX constituents above own 200D SMA",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage"
+              }
+            },
+            "names": {
+              "oil": "Crude Oil",
+              "usd": "US Dollar",
+              "tnx": "10Y Yield",
+              "credit": "Credit HYG/IEF",
+              "copper": "Copper",
+              "vix_curve": "VIX Curve",
+              "vix": "VIX",
+              "sp_def": "Defensives/SPY",
+              "sp_xle": "XLE/SPY",
+              "sp_smh": "SMH/SPY",
+              "spy_trend": "SPY Trend",
+              "sp_rsi14": "SPY RSI (14)",
+              "rsp_spy": "RSP/SPY",
+              "iwm_spy": "IWM/SPY",
+              "sp_breadth1d": "S&P Breadth 1D",
+              "sp_macd": "SPY MACD (12,26,9)",
+              "sp_breadth5d": "S&P Breadth 5D",
+              "sp_breadth200": "S&P Breadth 200D"
+            },
+            "moving_averages": {
+              "symbol": "SPY",
+              "as_of": "2026-11-27",
+              "close": 728.32,
+              "averages": {
+                "5": {
+                  "value": 715.18,
+                  "distance_pct": 1.84,
+                  "state": "BULLISH"
+                },
+                "20": {
+                  "value": 738.277,
+                  "distance_pct": -1.35,
+                  "state": "BEARISH"
+                },
+                "50": {
+                  "value": 757.203,
+                  "distance_pct": -3.81,
+                  "state": "BEARISH"
+                },
+                "100": {
+                  "value": 758.367,
+                  "distance_pct": -3.96,
+                  "state": "BEARISH"
+                },
+                "200": {
+                  "value": 733.342,
+                  "distance_pct": -0.68,
+                  "state": "BEARISH"
+                }
+              },
+              "rsi": {
+                "period": 14,
+                "value": 45.04,
+                "state": "NEUTRAL"
+              }
+            },
+            "sources": {
+              "SPY": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                "latest_session": "2026-11-27"
+              },
+              "QQQ": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                "latest_session": "2026-11-27"
+              },
+              "RSP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                "latest_session": "2026-11-27"
+              },
+              "QQQE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                "latest_session": "2026-11-27"
+              },
+              "IWM": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                "latest_session": "2026-11-27"
+              },
+              "SMH": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                "latest_session": "2026-11-27"
+              },
+              "XLE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                "latest_session": "2026-11-27"
+              },
+              "XLP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                "latest_session": "2026-11-27"
+              },
+              "XLV": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                "latest_session": "2026-11-27"
+              },
+              "XLU": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                "latest_session": "2026-11-27"
+              },
+              "HYG": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                "latest_session": "2026-11-27"
+              },
+              "IEF": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                "latest_session": "2026-11-27"
+              },
+              "OIL": {
+                "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                "latest_session": "2026-11-27"
+              },
+              "COPPER": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                "latest_session": "2026-11-27"
+              },
+              "USD": {
+                "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                "latest_session": "2026-11-27"
+              },
+              "TNX": {
+                "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                "latest_session": "2026-11-27"
+              },
+              "VIX": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+                "latest_session": "2026-11-27"
+              },
+              "VXN": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                "latest_session": "2026-11-25"
+              },
+              "VIX3M": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+                "latest_session": "2026-11-27"
+              },
+              "SPX_BREADTH200": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                "latest_session": "2026-11-27"
+              },
+              "NDX_ADV": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-27"
+              },
+              "NDX_DECL": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-27"
+              }
+            },
+            "warnings": [
+              "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+              "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+              "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+              "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+              "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+              "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+            ],
+            "confirmation_components": {
+              "volatility": true,
+              "credit": false,
+              "breadth": true,
+              "price": true
+            },
+            "source_audit": {
+              "version": 1,
+              "session": "2026-11-27",
+              "previous_session": "2026-11-25",
+              "observations": {
+                "SPY": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "QQQ": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "RSP": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "QQQE": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "IWM": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "SMH": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLE": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLP": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLV": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLU": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "HYG": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "IEF": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "OIL": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation",
+                  "daily_change": -0.7399978637695312,
+                  "change_pct": -0.8843186676276349,
+                  "direction": "down",
+                  "settlement_verified": false
+                },
+                "COPPER": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation",
+                  "daily_change": 0.26800012588500977,
+                  "change_pct": 5.025787657639056,
+                  "direction": "up",
+                  "settlement_verified": false
+                },
+                "USD": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "TNX": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "VIX": {
+                  "provider": "Yahoo fallback (unofficial)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "VXN": {
+                  "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": null,
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-25",
+                  "status": "missing_for_session"
+                },
+                "VIX3M": {
+                  "provider": "Yahoo fallback (unofficial)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "SPX_BREADTH200": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "NDX_ADV": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "NDX_DECL": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                }
+              },
+              "method": "Same-date provider bars; futures session and settlement can differ from equities. Source provenance is not independent price verification.",
+              "early_equity_close": true
+            }
+          },
+          "macd_info": {
+            "macd": -11.99099,
+            "signal": -10.44676,
+            "histogram": -1.54423,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 716.7,
+          "close": 728.32,
+          "price_change_pct": 1.62132,
+          "score": 7,
+          "available": 16,
+          "total": 16,
+          "regime": "NEUTRAL",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "sp_breadth1d"
+          ],
+          "trend_5d": "IMPROVING",
+          "five_day_delta_range": [
+            -6,
+            -6
+          ],
+          "confirmation": {
+            "confirmed": 3,
+            "available": 4,
+            "total": 4
+          },
+          "swing": "SELECTIVE",
+          "previous_score": 10,
+          "score_delta_1d": -3,
+          "previous_regime": "NEUTRAL",
+          "risk_transition": "unchanged",
+          "price_risk_status": "none",
+          "price_risk_label": "No price/risk alert"
+        },
+        "qqq": {
+          "metrics": {
+            "signals": {
+              "oil": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): CL=F"
+              },
+              "usd": {
+                "state": "bear",
+                "label": "BEARISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB"
+              },
+              "tnx": {
+                "state": "bear",
+                "label": "BEARISH DIV",
+                "value": null,
+                "note": "Daily direction vs SPY",
+                "source": "Yahoo Finance via yfinance (unofficial): ^TNX"
+              },
+              "credit": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "HYG daily return at least IEF",
+                "source": "HYG / IEF"
+              },
+              "copper": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": null,
+                "note": "Daily copper change",
+                "source": "Yahoo Finance via yfinance (unofficial): HG=F"
+              },
+              "vix_curve": {
+                "state": "warn",
+                "label": "SHALLOW CONTANGO",
+                "value": 1,
+                "note": "VIX / VIX3M implied-volatility ratio",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VIX3M)"
+              },
+              "vxn": {
+                "state": "na",
+                "label": "N/A",
+                "value": null,
+                "note": "Market data unavailable or stale",
+                "source": "Cboe historical; Yahoo fallback on missing dates (VXN)"
+              },
+              "nd_def": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Defensives lead on 10D",
+                "source": "XLP / XLV / XLU"
+              },
+              "nd_xle": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "XLE leads 10D",
+                "source": "XLE"
+              },
+              "nd_smh": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "SMH below 20D EMA",
+                "source": "SMH"
+              },
+              "qqq_trend": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": null,
+                "note": "Below 200D SMA",
+                "source": "QQQ"
+              },
+              "nd_rsi14": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": 44.013,
+                "note": "Wilder RSI(14): <45 bearish; 45-55 caution; >55 bullish; overbought is not automatically bearish",
+                "source": "QQQ EOD close"
+              },
+              "qqqe_qqq": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 0.86,
+                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "source": "QQQE/QQQ"
+              },
+              "iwm_qqq": {
+                "state": "bull",
+                "label": "BULLISH",
+                "value": 1.522,
+                "note": "Ratio vs 10D SMA; ±0.25% neutral band",
+                "source": "IWM/QQQ"
+              },
+              "nd_breadth1d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 92.857,
+                "note": "Today's advancing share % (not SPX 200D breadth)",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+              },
+              "nd_macd": {
+                "state": "bear",
+                "label": "BEARISH",
+                "value": -0.923,
+                "note": "Daily MACD line minus signal line; >=0 earns one Market Health point; <0 earns zero",
+                "source": "QQQ EOD close · EMA(12,26,9)"
+              },
+              "nd_breadth5d": {
+                "state": "bull",
+                "label": "EXPANDING",
+                "value": 32.609,
+                "note": "Change in average advancing share between adjacent 5D windows; pp",
+                "source": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage"
+              }
+            },
+            "names": {
+              "oil": "Crude Oil",
+              "usd": "US Dollar",
+              "tnx": "10Y Yield",
+              "credit": "Credit HYG/IEF",
+              "copper": "Copper",
+              "vix_curve": "VIX Curve",
+              "vxn": "VXN",
+              "nd_def": "Defensives/QQQ",
+              "nd_xle": "XLE/QQQ",
+              "nd_smh": "SMH/QQQ",
+              "qqq_trend": "QQQ Trend",
+              "nd_rsi14": "QQQ RSI (14)",
+              "qqqe_qqq": "QQQE/QQQ",
+              "iwm_qqq": "IWM/QQQ",
+              "nd_breadth1d": "Nasdaq Breadth 1D",
+              "nd_macd": "QQQ MACD (12,26,9)",
+              "nd_breadth5d": "Nasdaq Breadth 5D"
+            },
+            "moving_averages": {
+              "symbol": "QQQ",
+              "as_of": "2026-11-27",
+              "close": 650.99,
+              "averages": {
+                "5": {
+                  "value": 636.5,
+                  "distance_pct": 2.28,
+                  "state": "BULLISH"
+                },
+                "20": {
+                  "value": 663.513,
+                  "distance_pct": -1.89,
+                  "state": "BEARISH"
+                },
+                "50": {
+                  "value": 705.731,
+                  "distance_pct": -7.76,
+                  "state": "BEARISH"
+                },
+                "100": {
+                  "value": 707.859,
+                  "distance_pct": -8.03,
+                  "state": "BEARISH"
+                },
+                "200": {
+                  "value": 683.688,
+                  "distance_pct": -4.78,
+                  "state": "BEARISH"
+                }
+              },
+              "rsi": {
+                "period": 14,
+                "value": 44.01,
+                "state": "NEUTRAL"
+              }
+            },
+            "sources": {
+              "SPY": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                "latest_session": "2026-11-27"
+              },
+              "QQQ": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                "latest_session": "2026-11-27"
+              },
+              "RSP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                "latest_session": "2026-11-27"
+              },
+              "QQQE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                "latest_session": "2026-11-27"
+              },
+              "IWM": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                "latest_session": "2026-11-27"
+              },
+              "SMH": {
+                "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                "latest_session": "2026-11-27"
+              },
+              "XLE": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                "latest_session": "2026-11-27"
+              },
+              "XLP": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                "latest_session": "2026-11-27"
+              },
+              "XLV": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                "latest_session": "2026-11-27"
+              },
+              "XLU": {
+                "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                "latest_session": "2026-11-27"
+              },
+              "HYG": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                "latest_session": "2026-11-27"
+              },
+              "IEF": {
+                "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                "latest_session": "2026-11-27"
+              },
+              "OIL": {
+                "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                "latest_session": "2026-11-27"
+              },
+              "COPPER": {
+                "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                "latest_session": "2026-11-27"
+              },
+              "USD": {
+                "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                "latest_session": "2026-11-27"
+              },
+              "TNX": {
+                "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                "latest_session": "2026-11-27"
+              },
+              "VIX": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX)",
+                "latest_session": "2026-11-27"
+              },
+              "VXN": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                "latest_session": "2026-11-25"
+              },
+              "VIX3M": {
+                "provider": "Cboe historical; Yahoo fallback on missing dates (VIX3M)",
+                "latest_session": "2026-11-27"
+              },
+              "SPX_BREADTH200": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                "latest_session": "2026-11-27"
+              },
+              "NDX_ADV": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-27"
+              },
+              "NDX_DECL": {
+                "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                "latest_session": "2026-11-27"
+              }
+            },
+            "warnings": [
+              "Breadth NDX100 validated recent-session constituent coverage: 97.0% (minimum 95%)",
+              "Breadth SP500 validated recent-session constituent coverage: 99.2% (minimum 95%)",
+              "Constituent breadth, when shown, is an ESTIMATE using current membership and adjusted closes; NOT a licensed S&P/Nasdaq benchmark series.",
+              "Unofficial price feeds can fail or change. Inspect N/A labels and actual session date.",
+              "Backtest uses reconstructed daily data and current constituent membership; historical breadth estimates are NOT point-in-time and may be survivorship-biased.",
+              "Public redistribution or display of vendor price data may require permission. Dashboard displays derived states, not full raw histories."
+            ],
+            "confirmation_components": {
+              "volatility": null,
+              "credit": false,
+              "breadth": true,
+              "price": true
+            },
+            "source_audit": {
+              "version": 1,
+              "session": "2026-11-27",
+              "previous_session": "2026-11-25",
+              "observations": {
+                "SPY": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): SPY",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "QQQ": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): QQQ",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "RSP": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): RSP",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "QQQE": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): QQQE",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "IWM": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): IWM",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "SMH": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): SMH",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLE": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLE",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLP": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLP",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLV": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLV",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "XLU": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): XLU",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "HYG": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): HYG",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "IEF": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): IEF",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "OIL": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): CL=F",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation",
+                  "daily_change": -0.7399978637695312,
+                  "change_pct": -0.8843186676276349,
+                  "direction": "down",
+                  "settlement_verified": false
+                },
+                "COPPER": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): HG=F",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation",
+                  "daily_change": 0.26800012588500977,
+                  "change_pct": 5.025787657639056,
+                  "direction": "up",
+                  "settlement_verified": false
+                },
+                "USD": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): DX-Y.NYB",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "TNX": {
+                  "provider": "Yahoo Finance via yfinance (unofficial): ^TNX",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "VIX": {
+                  "provider": "Yahoo fallback (unofficial)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "VXN": {
+                  "provider": "Cboe historical; Yahoo fallback on missing dates (VXN)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": null,
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-25",
+                  "status": "missing_for_session"
+                },
+                "VIX3M": {
+                  "provider": "Yahoo fallback (unofficial)",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "SPX_BREADTH200": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 99.2% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "NDX_ADV": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                },
+                "NDX_DECL": {
+                  "provider": "EXPERIMENTAL constituent estimate; current Wikipedia membership; unofficial adjusted stock closes; 97.0% coverage",
+                  "requested_session": "2026-11-27",
+                  "observation_session": "2026-11-27",
+                  "previous_observation_session": "2026-11-25",
+                  "latest_vendor_session": "2026-11-27",
+                  "status": "same_date_observation"
+                }
+              },
+              "method": "Same-date provider bars; futures session and settlement can differ from equities. Source provenance is not independent price verification.",
+              "early_equity_close": true
+            }
+          },
+          "macd_info": {
+            "macd": -18.81388,
+            "signal": -17.89134,
+            "histogram": -0.92254,
+            "relation": "below",
+            "crossover": "none"
+          },
+          "previous_close": 633.93,
+          "close": 650.99,
+          "price_change_pct": 2.69115,
+          "score": 8,
+          "available": 15,
+          "total": 16,
+          "regime": "INCOMPLETE",
+          "estimated_count": 1,
+          "estimated_signals": [
+            "nd_breadth1d"
+          ],
+          "trend_5d": "IMPROVING",
+          "five_day_delta_range": [
+            -3,
+            -2
+          ],
+          "confirmation": {
+            "confirmed": 2,
+            "available": 3,
+            "total": 4
+          },
+          "swing": "N/A",
+          "previous_score": null,
+          "score_delta_1d": null,
+          "previous_regime": "incomplete",
+          "risk_transition": "uncertain",
+          "price_risk_status": "uncertain",
+          "price_risk_label": "Score incomplete — no confirmed alert"
+        },
+        "signal_changes": {
+          "status": "complete",
+          "groups": {
+            "shared": {
+              "new_bearish": [
+                {
+                  "label": "US Dollar",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH DIV"
+                },
+                {
+                  "label": "10Y Yield",
+                  "before": "BULLISH DIV",
+                  "after": "BEARISH DIV"
+                }
+              ],
+              "eased": [
+                {
+                  "label": "Crude Oil",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "Credit HYG/IEF",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "VIX Curve",
+                  "before": "BACKWARDATION",
+                  "after": "SHALLOW CONTANGO"
+                }
+              ],
+              "other": []
+            },
+            "sp": {
+              "new_bearish": [],
+              "eased": [
+                {
+                  "label": "XLE/SPY",
+                  "before": "BEARISH",
+                  "after": "BULLISH"
+                },
+                {
+                  "label": "SPY RSI (14)",
+                  "before": "BEARISH",
+                  "after": "CAUTION"
+                }
+              ],
+              "other": []
+            },
+            "nd": {
+              "new_bearish": [],
+              "eased": [],
+              "other": []
+            }
+          }
+        },
+        "spy_qqq_divergence": "uncertain"
+      }
+    ]
+  },
+  "published_comparison": {
+    "session": "2026-11-25",
+    "markets": {
+      "sp500": {
+        "bearish": 10,
+        "possible_max": 10,
+        "total": 16,
+        "available": 16
+      },
+      "nasdaq100": {
+        "bearish": 10,
+        "possible_max": 10,
+        "total": 16,
+        "available": 16
+      }
+    },
+    "basis": "saved complete EOD publication"
+  },
+  "comparison_corrected_at": "2026-11-27T22:43:22.883341+00:00"
+}
