@@ -150,8 +150,31 @@
     return [...days.values()].reverse();
   }
 
+  // Historical cells describe saved signals only, with model-specific coverage.
+  function heatmapModel(rows,market,limit=10){
+    const recent=rows.slice(-limit);
+    const scored=[...sharedKeys,...marketKeys[market].slice(0,10)];
+    const cell=(rec,id)=>{
+      const d=rec[market],legacy=d?.total===15&&id.endsWith('_macd');
+      if(legacy)return {label:'Not scored',state:'legacy',title:'MACD was not part of the 15-point model.'};
+      const s=d?.metrics?.signals?.[id],state=s?.state==='wash'?'bear':s?.state;
+      if(!['bull','bear','warn'].includes(state))return {label:'Unavailable',state:'na',title:'No saved scored state for '+rec.date};
+      const label=state==='bull'?'Bullish':state==='bear'?'Bearish':'Caution';
+      return {label,state,title:[rec.date,s.label,s.note,s.source,d.metrics?.recovery?'Recovered matching commit '+d.metrics.recovery.commit?.slice(0,7):null].filter(Boolean).join(' · '),value:isNum(s.value)?s.value:null};
+    };
+    const columns=recent.map(rec=>{
+      const d=rec[market],cells=scored.map(id=>cell(rec,id));
+      const count=state=>cells.filter(c=>c.state===state).length;
+      const bull=count('bull'),bear=count('bear'),warn=count('warn'),missing=count('na');
+      return {date:rec.date,total:d?.total,score:d?.score,max:d?.score_max,regime:d?.regime,close:d?.close,
+        recovered:!!d?.metrics?.recovery,recovery:d?.metrics?.recovery,bull,bear,warn,missing,
+        matches:bull+warn===d?.score&&bear===d?.archived_bearish&&missing===0&&bull+bear+warn===d?.total};
+    });
+    return {columns,groups:[{label:'Index-specific · scored',rows:scored.slice(6).map(id=>({id,label:names[id],cells:recent.map(rec=>cell(rec,id))}))},{label:'Shared macro · scored',rows:sharedKeys.map(id=>({id,label:names[id],cells:recent.map(rec=>cell(rec,id))}))}]};
+  }
+
   // The remaining code runs only in the browser.
-  if(typeof document==='undefined')return {validArchive,filterRows,toCSV,chartRows,signed,dateLabel,columns};
+  if(typeof document==='undefined')return {validArchive,filterRows,toCSV,chartRows,signed,dateLabel,columns,heatmapModel};
   const $=id=>document.getElementById(id);
   let entries=[],lastSession=null;
   const options={range:'all',market:'spy',alertsOnly:false};
@@ -248,65 +271,88 @@
     }
     target.appendChild(frag);
   }
-  function chart(entriesForChart){
+  function chart(records){
     const svg=$('j-score-chart');svg.replaceChildren();
-    const W=900,H=230,L=44,R=22,T=16,B=46;
-    const el=(tag,attrs={},parent=svg)=>{
-      const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
-      for(const [k,v]of Object.entries(attrs))node.setAttribute(k,v);
-      parent.appendChild(node);return node;
-    };
-    const x=i=>L+(entriesForChart.length<2?0:i/(entriesForChart.length-1))*(W-L-R);
-    const y=v=>T+(16-v)/16*(H-T-B);
-    for(const [low,high,color] of [[0,5.5,'#d45b65'],[5.5,10.5,'#d4ae58'],[10.5,16,'#32bf8b']]){
-      el('rect',{x:L,y:y(high),width:W-L-R,height:y(low)-y(high),fill:color,'fill-opacity':0.075});
-    }
-    for(const n of [0,5,11,16]){
-      el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:'#30435a','stroke-width':1});
-      const t=el('text',{x:8,y:y(n)+4,fill:'#93abc5','font-size':12});t.textContent=String(n);
-    }
-    for(const [n,color] of [[5.5,'#8f4856'],[10.5,'#887348']]){
-      el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:color,'stroke-width':1,'stroke-dasharray':'6 5'});
-    }
-    if(!entriesForChart.length){
-      const t=el('text',{x:W/2,y:113,'text-anchor':'middle',fill:'#9aadc4','font-size':17});t.textContent='Saved daily scores will appear after the next eligible EOD refresh';return;
-    }
-    const marks=entriesForChart.map((_,i)=>i).filter(i=>i===0||i===entriesForChart.length-1||i%Math.ceil(entriesForChart.length/6)===0);
-    for(const i of marks){
-      const t=el('text',{x:x(i),y:H-14,'text-anchor':i===0?'start':i===entriesForChart.length-1?'end':'middle',fill:'#92a9c1','font-size':12});
-      t.textContent=dateLabel(entriesForChart[i].date).replace(/, \d{4}$/,'');
-    }
-    for(const [market,color]of [[options.market,options.market==='spy'?'#34e2a4':'#85bfff']]){
+    const W=900,H=320,L=76,R=25,market=options.market;
+    const el=(tag,attrs={},parent=svg)=>{const n=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);parent.appendChild(n);return n;};
+    const txt=(x,y,value,anchor='start',fill='#a9c0d1')=>{const n=el('text',{x,y,'text-anchor':anchor,fill,'font-size':12});n.textContent=value;return n;};
+    const x=i=>L+(records.length===1?(W-L-R)/2:i/Math.max(1,records.length-1)*(W-L-R));
+    const y=v=>275-v/16*112;
+    const prices=records.map(r=>r[market]?.close).filter(v=>isNum(v)&&v>0);
+    let lo=prices.length?Math.min(...prices):0,hi=prices.length?Math.max(...prices):1;
+    const pad=(hi-lo)*.1||Math.max(1,hi*.01);lo-=pad;hi+=pad;
+    const py=v=>130-(v-lo)/(hi-lo)*98;
+    txt(L,17,'Closing price');txt(L,151,'Market Health · recorded points');
+    if(prices.length)for(const n of [lo,(lo+hi)/2,hi]){el('line',{x1:L,x2:W-R,y1:py(n),y2:py(n),stroke:'#30435a'});txt(L-8,py(n)+4,money(n),'end');}
+    else txt(W/2,82,'No saved closing prices','middle');
+    for(const [low,high,color] of [[0,5.5,'#d45b65'],[5.5,10.5,'#d4ae58'],[10.5,16,'#32bf8b']])el('rect',{x:L,y:y(high),width:W-L-R,height:y(low)-y(high),fill:color,'fill-opacity':.10});
+    for(const n of [0,5,11,16]){el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:'#30435a'});txt(L-8,y(n)+4,String(n),'end');}
+    for(const [n,color] of [[5.5,'#8f4856'],[10.5,'#887348']])el('line',{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:color,'stroke-dasharray':'6 5'});
+    if(!records.length){txt(W/2,215,'No saved market health observations','middle');return;}
+    const series=(get,scale,color,isHealth)=>{
       let path='',started=false;
-      entriesForChart.forEach((rec,i)=>{
-        const d=rec[market],v=d?.score;
-        if(!isNum(v)){started=false;return;}
-        if(i>0 && rec.previous_session!==entriesForChart[i-1].date)started=false;
-        path+=(started?' L':' M')+x(i).toFixed(2)+','+y(v).toFixed(2);started=true;
+      records.forEach((r,i)=>{const d=r[market],v=get(d);if(!isNum(v)){started=false;return;}if(i&&r.previous_session!==records[i-1].date)started=false;
+        // Do not imply an exact health trajectory across incomplete score ranges.
+        const exact=!isHealth||d.score===d.score_max;
+        path+=(started&&exact?' L':' M')+x(i).toFixed(2)+','+scale(v).toFixed(2);started=exact;
       });
-      if(path)el('path',{d:path,fill:'none',stroke:color,'stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});
-      entriesForChart.forEach((rec,i)=>{
-        const d=rec[market];if(!isNum(d?.score))return;
-        const c=el('circle',{cx:x(i),cy:y(d.score),r:entriesForChart.length===1?5:3.5,
-          fill:d.available===d.total&&d.total===16?color:'#101b2b',stroke:color,'stroke-width':1.5});
-        const t=el('title',{},c);t.textContent=`${rec.date} · ${market.toUpperCase()} ${d.score}${d.score_max!==d.score?'–'+d.score_max:''}/${d.total} Market Health · ${d.regime}`;
+      if(path)el('path',{d:path,fill:'none',stroke:color,'stroke-width':2.5,'stroke-linejoin':'round','stroke-linecap':'round'});
+      records.forEach((r,i)=>{const d=r[market],v=get(d);if(!isNum(v))return;
+        if(isHealth&&d.score_max!==d.score&&isNum(d.score_max))el('line',{x1:x(i),x2:x(i),y1:scale(v),y2:scale(d.score_max),stroke:color,'stroke-width':2,'stroke-dasharray':'3 3'});
+        const hollow=isHealth&&(d.available!==d.total||d.total!==16);
+        const dot=el('circle',{cx:x(i),cy:scale(v),r:4,fill:hollow?'#101b2b':color,stroke:color,'stroke-width':1.5});
+        const t=el('title',{},dot);t.textContent=r.date+' · '+(isHealth?d.score+(d.score_max!==d.score?'–'+d.score_max:'')+'/'+d.total+' · '+d.regime:money(v));
+        if(records.length<=8)txt(x(i),scale(v)-9,isHealth?d.score+(d.score_max!==d.score?'–'+d.score_max:'')+'/'+d.total:money(v),i===0?'start':i===records.length-1?'end':'middle',color);
       });
+    };
+    series(d=>isNum(d?.close)&&d.close>0?d.close:null,py,'#9fc9f2',false);
+    series(d=>d?.score,y,'#34e2a4',true);
+    records.forEach((r,i)=>{if(i===0||i===records.length-1||i%Math.ceil(records.length/6)===0)txt(x(i),305,dateLabel(r.date).replace(/, \\d{4}$/,''),i===0?'start':i===records.length-1?'end':'middle');});
+  }
+  function renderHeatmap(records){
+    const host=$('j-heatmap');if(!host)return;host.replaceChildren();
+    const model=heatmapModel(records,options.market,Number($('j-heatmap-range')?.value||10));
+    if(!model.columns.length){small('p','No saved signals for this range.','j-chart-note',host);return;}
+    const t=make('table','j-heat-table',host),head=make('thead','',t),hr=make('tr','',head);
+    small('th','Indicator / score','',hr).scope='col';
+    for(const c of model.columns){
+      const th=make('th','',hr);th.scope='col';
+      small('span',dateLabel(c.date),'j-heat-date',th);
+      small('span',c.total===15?'15-point model':'16-point model','j-heat-meta',th);
+      if(c.recovered){const n=small('span','Recovered','j-heat-meta',th);n.title=c.recovery?.verification||'Matching GitHub commit; original publication not verified';}
+    }
+    const body=make('tbody','',t),row=make('tr','j-heat-summary',body);
+    small('th','Market Health','',row).scope='row';
+    for(const c of model.columns){
+      const td=make('td','j-heat-'+({'RISK-OFF':'bear','NEUTRAL':'warn','RISK-ON':'bull'}[c.regime]||'na'),row);
+      small('strong',isNum(c.score)?c.score+(c.max!==c.score?'–'+c.max:'')+'/'+c.total:'Unavailable','',td);
+      small('span',c.regime||'Unavailable','j-heat-meta',td);
+      small('span',c.matches?c.bull+' bull · '+c.warn+' caution · '+c.bear+' bear':'Detailed states incomplete or do not reconcile','j-heat-meta',td);
+    }
+    for(const group of model.groups){
+      const g=make('tr','j-heat-group',body),th=small('th',group.label,'',g);th.colSpan=model.columns.length+1;
+      for(const r of group.rows){
+        const tr=make('tr','',body);small('th',r.label,'',tr).scope='row';
+        for(const c of r.cells){const td=make('td','j-heat-'+c.state,tr);td.title=c.title;small('span',c.label,'',td);if(isNum(c.value))small('span',String(Number(c.value.toFixed(2))),'j-heat-meta',td);}
+      }
     }
   }
   function rerender(){
     const market=options.market,display=market.toUpperCase();
     $('j-market-panel').setAttribute('aria-labelledby','summary-tab-'+market);
-    $('j-score-title').textContent=`${display} Market Health history`;
+    $('j-score-title').textContent=`${display} closing price & Market Health`;
     $('j-log-title').textContent=`${display} historical market log`;
     $('j-chart-legend-label').textContent=display;
     $('j-chart-legend').querySelector('i').className='j-key-dot '+market;
-    $('j-score-chart').setAttribute('aria-label',`${display} saved Market Health scores over completed daily sessions`);
+    $('j-score-chart').setAttribute('aria-label',`${display} saved closing prices and Market Health on aligned session dates`);
     $('j-count').textContent=entries.length.toLocaleString();
     $('j-alerts').textContent=entries.filter(day=>healthView(day[market],day.baseline===true).price_risk_status==='divergence').length.toLocaleString();
     $('j-alerts-note').textContent=`${display} sessions with a price/risk mismatch`;
     const rows=filterRows(entries,options);
     renderTable(rows);
-    chart(chartRows(entries,{...options,alertsOnly:false}));
+    const saved=chartRows(entries,{...options,alertsOnly:false});
+    chart(saved);
+    renderHeatmap(saved);
     $('j-message').textContent=entries.length?
       `Showing saved ${options.market.toUpperCase()} EOD observations. November 20 is a labeled screenshot baseline. CSV exports all columns for the selected date range and alert filter.`:
       'No journal entries yet. New completed EOD sessions will appear automatically. Prior bearish scores are inverted only for display; 15-point and 16-point snapshots retain their own denominators; original archived counts remain preserved.';
@@ -358,6 +404,7 @@
     rerender();
     if(moveFocus)document.getElementById('summary-tab-'+market)?.focus();
   }
+  $('j-heatmap-range')?.addEventListener('change',rerender);
   $('j-columns')?.addEventListener('change',()=>renderTable(filterRows(entries,options)));
   $('j-alert-only').addEventListener('change',event=>{options.alertsOnly=event.target.checked;rerender();});
   $('j-export').addEventListener('click',()=>{
@@ -371,5 +418,5 @@
     }finally{setTimeout(()=>URL.revokeObjectURL(url),1000);}
   });
   load();
-  return {validArchive,filterRows,toCSV,chartRows,signed,dateLabel,selectMarket};
+  return {validArchive,filterRows,toCSV,chartRows,signed,dateLabel,selectMarket,heatmapModel};
 });
